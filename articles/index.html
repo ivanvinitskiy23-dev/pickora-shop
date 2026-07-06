@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <head><meta charset="UTF-8">
-	
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="max-image-preview:large">
 <title>Articles – Pickora</title>
 <link rel="dns-prefetch" href="//www.googletagmanager.com">
@@ -15,15 +15,13 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 /*# sourceURL=wp-img-auto-sizes-contain-inline-css */
 </style>
 <style>
-    /* Прячем дикий дефолтный заголовок, который вылазит на страницах */
-    .wp-block-post-title, 
-    body > h1:not(.pk-main-title) { 
-        display: none !important; 
+    /* Агентская правка: скрываем дублирующийся черный заголовок темы */
+    h1.wp-block-post-title,
+    body > h1:first-of-type,
+    main > h1:first-of-type {
+        display: none !important;
     }
 </style>
-<style id="wp-block-site-title-inline-css">
-.wp-block-site-title{box-sizing:border-box}.wp-block-site-title :where(a){color:inherit;font-family:inherit;font-size:inherit;font-style:inherit;font-weight:inherit;letter-spacing:inherit;line-height:inherit;text-decoration:inherit}
-/*# sourceURL=https://pickora.shop/wp-includes/blocks/site-title/style.min.css */
 </style>
 <style id="wp-block-group-inline-css">
 .wp-block-group{box-sizing:border-box}:where(.wp-block-group.wp-block-group-is-layout-constrained){position:relative}
@@ -979,4 +977,4 @@ const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(
 //# sourceURL=https://pickora.shop/wp-includes/js/wp-emoji-loader.min.js
 </script>
 </body>
-</html><!-- Page cached by LiteSpeed Cache 7.8.1 on 2026-07-05 16:01:00 -->
+</html>
