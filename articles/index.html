@@ -15,11 +15,46 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 /*# sourceURL=wp-img-auto-sizes-contain-inline-css */
 </style>
 <style>
-    /* Агентская правка: скрываем дублирующийся черный заголовок темы */
+    /* 1. Скрываем лишний заголовок «Articles» */
     h1.wp-block-post-title,
     body > h1:first-of-type,
     main > h1:first-of-type {
         display: none !important;
+    }
+
+    /* 2. Чиним поплывший блок "About Us" внизу страницы */
+    /* Находим дефолтные заголовки Elementor/WP в этой секции */
+    h2:has(+ p), 
+    h2:contains("About Us"),
+    .elementor-widget-heading h2 {
+        max-width: 1200px;
+        margin: 60px auto 16px auto !important;
+        padding: 0 20px;
+        font-family: 'Arial', sans-serif;
+        font-size: 32px !important;
+        font-weight: 700;
+        color: #111827;
+        text-align: left;
+    }
+
+    /* Выравниваем текст описания под заголовком */
+    h2 + p {
+        max-width: 1200px;
+        margin: 0 auto 30px auto !important;
+        padding: 0 20px;
+        font-family: 'Arial', sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: #4b5563;
+    }
+
+    /* Делаем списки Our Mission и Why Us аккуратными и компактными */
+    h2 ~ h4, 
+    h2 ~ p:not(h2 + p) {
+        max-width: 1200px;
+        margin: 10px auto !important;
+        padding: 0 20px;
+        font-family: 'Arial', sans-serif;
     }
 </style>
 </style>
