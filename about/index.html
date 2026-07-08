@@ -10,6 +10,294 @@
 <link rel="alternate" type="application/rss+xml" title="Pickora » Comments Feed" href="https://pickora.shop/comments/feed/">
 <link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="https://pickora.shop/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fpickora.shop%2Fabout%2F">
 <link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="https://pickora.shop/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fpickora.shop%2Fabout%2F&amp;format=xml">
+
+<!-- ========================================================================= -->
+<!-- ПРЕМИУМ ДИЗАЙН V3: БАННЕР-КАРТОЧКА, ИДЕАЛЬНАЯ СИММЕТРИЯ И АДАПТИВНОСТЬ  -->
+<!-- ========================================================================= -->
+<style>
+    /* Убираем глобальный баг с пустотой под шапкой */
+    main#wp--skip-link--target { margin-top: 0 !important; padding-top: 0 !important; }
+    main#wp--skip-link--target > .wp-block-group { margin-block-start: 0 !important; display: none !important;}
+
+    body { font-family: 'Open Sans', sans-serif; color: #54595F; }
+
+    /* Ограничитель контента */
+    .pk-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* 1. ГЛАВНЫЙ ЭКРАН (HERO) В ВИДЕ БОЛЬШОЙ КАРТОЧКИ */
+    .pk-hero-section {
+        position: relative;
+        max-width: 1200px;
+        width: calc(100% - 40px);
+        margin: 40px auto -60px auto; /* 40px сверху, по центру, и отрицательный снизу для наезда карточек */
+        height: 550px;
+        background-image: url('https://pickora.shop/wp-content/uploads/2026/06/Ultra_premium_editorial_banner_image_202606161704-scaled.jpeg');
+        background-size: cover;
+        background-position: center;
+        border-radius: 30px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(21, 34, 59, 0.15);
+    }
+    
+    .pk-hero-overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(180deg, rgba(21, 34, 59, 0.6) 0%, rgba(21, 34, 59, 0.85) 100%);
+        z-index: 1;
+    }
+
+    .pk-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 850px;
+        padding: 0 20px;
+        margin-top: -40px; /* Компенсируем визуальный центр из-за наезда нижних карточек */
+    }
+
+    .pk-hero-content h1 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 52px;
+        color: #ffffff;
+        font-weight: 800;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+
+    .pk-hero-content p {
+        font-size: 20px;
+        color: #e2e8f0;
+        line-height: 1.6;
+    }
+
+    /* 2. МИССИЯ И ПОЧЕМУ МЫ (НАЕЗЖАЮЩИЕ КАРТОЧКИ) */
+    .pk-mission-container {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        gap: 30px;
+        justify-content: center;
+        margin-bottom: 80px;
+    }
+    
+    .pk-card-mini {
+        background: #ffffff;
+        padding: 40px 30px;
+        border-radius: 20px;
+        text-align: center;
+        flex: 1;
+        max-width: 380px;
+        box-sizing: border-box; /* Важно для мобилок */
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .pk-card-mini:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(32, 117, 210, 0.15);
+    }
+    
+    .pk-card-mini h3 {
+        font-family: 'Montserrat', sans-serif;
+        color: #2075d2;
+        font-size: 24px;
+        margin-bottom: 12px;
+        font-weight: 700;
+    }
+    .pk-card-mini p {
+        margin: 0;
+        font-size: 16px;
+        color: #54595F;
+    }
+
+    /* 3. НАШИ УСЛУГИ (ИДЕАЛЬНО СИММЕТРИЧНАЯ СЕТКА) */
+    .pk-services-section {
+        background: #F5FAFF;
+        padding: 100px 40px;
+        border-radius: 40px;
+        margin-bottom: 100px;
+    }
+    
+    .pk-services-title {
+        text-align: center;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 40px;
+        color: #15223B;
+        margin-bottom: 60px;
+        font-weight: 800;
+    }
+    
+    .pk-services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 30px;
+    }
+    
+    /* Делаем карточки одинаковой высоты */
+    .pk-service-card {
+        background: #ffffff;
+        border-radius: 24px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column; /* Flex внутри карточки */
+        height: 100%; /* Растягиваем на всю высоту грида */
+    }
+    
+    .pk-service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(32, 117, 210, 0.1);
+    }
+    
+    .pk-service-card img {
+        width: 100%;
+        height: 220px; /* Строго одинаковая высота для всех картинок */
+        object-fit: cover;
+        border-radius: 16px;
+        margin-bottom: 25px;
+    }
+    
+    .pk-service-card h4 {
+        font-family: 'Montserrat', sans-serif;
+        color: #15223B;
+        font-size: 22px;
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+    
+    .pk-service-card p {
+        font-size: 15px;
+        line-height: 1.6;
+        flex-grow: 1; /* Если текст разный, он равномерно заполнит пространство */
+        margin: 0;
+    }
+
+    /* 4. ОТЗЫВЫ (REAL FEEDBACK) */
+    .pk-feedback-section {
+        background: linear-gradient(135deg, #15223B 0%, #1e3a68 100%);
+        padding: 80px 40px;
+        border-radius: 30px;
+        text-align: center;
+        margin-bottom: 80px;
+        box-shadow: 0 20px 40px rgba(21, 34, 59, 0.15);
+    }
+    
+    .pk-feedback-section span {
+        display: inline-block;
+        background: rgba(32, 117, 210, 0.2);
+        padding: 8px 20px;
+        border-radius: 30px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 13px;
+        margin-bottom: 25px;
+        color: #6ec1e4;
+        font-weight: 700;
+    }
+    
+    .pk-feedback-section p {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 32px;
+        font-style: italic;
+        color: #ffffff;
+        max-width: 900px;
+        margin: 0 auto;
+        line-height: 1.4;
+        font-weight: 500;
+    }
+
+    /* 5. ПЛАВНЫЙ ПЕРЕХОД К ФУТЕРУ (CTA) */
+    .pk-cta-wrapper {
+        width: 100%;
+        background: linear-gradient(to bottom, #ffffff 0%, #f2f7fc 100%);
+        padding: 100px 20px 120px;
+    }
+    
+    .pk-cta-inner {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    .pk-cta-inner h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 42px;
+        color: #15223B;
+        margin-bottom: 20px;
+        font-weight: 800;
+    }
+    
+    .pk-cta-inner p {
+        font-size: 18px;
+        color: #54595F;
+        margin-bottom: 40px;
+    }
+    
+    .pk-btn-primary {
+        background: #2075d2;
+        color: #ffffff !important;
+        text-decoration: none;
+        padding: 20px 60px;
+        border-radius: 50px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 18px;
+        display: inline-block;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(32, 117, 210, 0.2);
+    }
+    
+    .pk-btn-primary:hover {
+        background: #15223B;
+        box-shadow: 0 15px 30px rgba(21, 34, 59, 0.3);
+        transform: translateY(-3px);
+    }
+
+    /* 6. ИДЕАЛЬНАЯ МОБИЛЬНАЯ АДАПТИВНОСТЬ */
+    @media(max-width: 768px) {
+        .pk-hero-section { 
+            height: 400px; 
+            margin: 20px auto -40px auto; 
+            width: calc(100% - 30px);
+            border-radius: 20px;
+        }
+        .pk-hero-content h1 { font-size: 32px; }
+        .pk-hero-content p { font-size: 16px; }
+        
+        .pk-mission-container { 
+            flex-direction: column; 
+            gap: 20px; 
+            padding: 0 15px; /* Защита от прилипания к краям */
+        }
+        .pk-card-mini { 
+            max-width: 100%; 
+            width: 100%; 
+        }
+        
+        .pk-services-section { padding: 50px 20px; border-radius: 24px; margin-bottom: 60px; }
+        .pk-services-title { font-size: 30px; margin-bottom: 40px; }
+        .pk-service-card { padding: 25px 20px; }
+        .pk-service-card img { height: 200px; }
+        
+        .pk-feedback-section { padding: 50px 20px; border-radius: 24px; margin-bottom: 60px; }
+        .pk-feedback-section p { font-size: 22px; }
+        
+        .pk-cta-wrapper { padding: 60px 20px 80px; }
+        .pk-cta-inner h2 { font-size: 30px; }
+        .pk-btn-primary { padding: 18px 40px; font-size: 16px; }
+    }
+</style>
+<!-- ========================================================================= -->
+
 <style id="wp-img-auto-sizes-contain-inline-css">
 img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 /*# sourceURL=wp-img-auto-sizes-contain-inline-css */
@@ -201,147 +489,81 @@ gtag("config", "GT-MB8GRCPZ");
 
 
 <main id="wp--skip-link--target" class="wp-block-group is-layout-flow wp-block-group-is-layout-flow" style="padding-top:0;padding-bottom:0">
-    <div class="wp-block-group alignfull has-text-color has-link-color wp-elements-6bb2b050fdd67e8e6a2d28c355b243b5 has-global-padding is-layout-constrained wp-block-group-is-layout-constrained" style="padding-top: 0;padding-bottom: 0;"><h1 class="has-text-align-center has-link-color hostinger-ai-page-title wp-elements-2d266627045914afbd88ec37ebfaf796 wp-block-post-title has-text-color has-dark-color has-x-large-font-size">About</h1></div>
     
+    <div class="entry-content wp-block-post-content has-global-padding is-layout-constrained wp-block-post-content-is-layout-constrained">
+        
+        <!-- СТАРТ ЧИСТОГО ПРЕМИУМ-БЛОКА "О НАС" V3 -->
+        
+        <!-- Hero Баннер-Карточка -->
+        <div class="pk-hero-section">
+            <div class="pk-hero-overlay"></div>
+            <div class="pk-hero-content">
+                <h1>About Us</h1>
+                <p>At Pickora Shop, we’re passionate about helping you find the best Amazon products through honest reviews and clear comparisons.</p>
+            </div>
+        </div>
 
-    <div class="entry-content wp-block-post-content has-global-padding is-layout-constrained wp-block-post-content-is-layout-constrained">		<div data-elementor-type="wp-page" data-elementor-id="13" class="elementor elementor-13">
-				<div data-aos="fade-up" class="hostinger-elementor-aos elementor-element elementor-element-36a0b95 e-grid hostinger-ai-about-us-2 e-con-boxed e-con e-parent" data-id="36a0b95" data-element_type="container" data-e-type="container">
-					<div class="e-con-inner">
-				<div class="elementor-element elementor-element-fddd938 hostinger-ai-image hostinger-index-1 elementor-widget elementor-widget-image" data-id="fddd938" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-															<img fetchpriority="high" decoding="async" width="2560" height="1429" src="https://pickora.shop/wp-content/uploads/2026/06/Ultra_premium_editorial_banner_image_202606161704-scaled.jpeg" class="attachment-full size-full wp-image-174" alt="" srcset="https://pickora.shop/wp-content/uploads/2026/06/Ultra_premium_editorial_banner_image_202606161704-scaled.jpeg 2560w, https://pickora.shop/wp-content/uploads/2026/06/Ultra_premium_editorial_banner_image_202606161704-300x167.jpeg 300w, https://pickora.shop/wp-content/uploads/2026/06/Ultra_premium_editorial_banner_image_202606161704-1024x572.jpeg 1024w, https://pickora.shop/wp-content/uploads/2026/06/Ultra_premium_editorial_banner_image_202606161704-768x429.jpeg 768w, https://pickora.shop/wp-content/uploads/2026/06/Ultra_premium_editorial_banner_image_202606161704-1536x857.jpeg 1536w, https://pickora.shop/wp-content/uploads/2026/06/Ultra_premium_editorial_banner_image_202606161704-2048x1143.jpeg 2048w" sizes="(max-width: 2560px) 100vw, 2560px">															</div>
-				</div>
-		<div data-aos="fade-up" class="hostinger-elementor-aos elementor-element elementor-element-f2b9264 e-con-full e-flex e-con e-child" data-id="f2b9264" data-element_type="container" data-e-type="container">
-		<div data-aos="fade-up" class="hostinger-elementor-aos elementor-element elementor-element-9b3a7c8 e-flex e-con-boxed e-con e-child" data-id="9b3a7c8" data-element_type="container" data-e-type="container">
-					<div class="e-con-inner">
-				<div class="elementor-element elementor-element-9f7db66 hostinger-ai-title elementor-widget elementor-widget-heading" data-id="9f7db66" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
-				<div class="elementor-widget-container">
-					<h2 class="elementor-heading-title elementor-size-default">About Us</h2>				</div>
-				</div>
-				<div class="elementor-element elementor-element-1de8563 hostinger-ai-description elementor-widget elementor-widget-text-editor" data-id="1de8563" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
-				<div class="elementor-widget-container">
-									At Pickora Shop, we’re passionate about helping you find the best Amazon products through honest reviews and clear comparisons.								</div>
-				</div>
-		<div data-aos="fade-up" class="hostinger-elementor-aos elementor-element elementor-element-b642f02 e-flex e-con-boxed e-con e-child" data-id="b642f02" data-element_type="container" data-e-type="container">
-					<div class="e-con-inner">
-		<div class="elementor-element elementor-element-4273f23 e-flex e-con-boxed e-con e-child" data-id="4273f23" data-element_type="container" data-e-type="container">
-					<div class="e-con-inner">
-				<div class="elementor-element elementor-element-62fc4e3 hostinger-ai-title hostinger-index-1 elementor-widget elementor-widget-heading" data-id="62fc4e3" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
-				<div class="elementor-widget-container">
-					<span class="elementor-heading-title elementor-size-default">Our Mission</span>				</div>
-				</div>
-				<div class="elementor-element elementor-element-745f710 hostinger-ai-subtitle elementor-widget elementor-widget-text-editor" data-id="745f710" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
-				<div class="elementor-widget-container">
-									Trusted Picks								</div>
-				</div>
-					</div>
-				</div>
-		<div class="elementor-element elementor-element-233de37 e-flex e-con-boxed e-con e-child" data-id="233de37" data-element_type="container" data-e-type="container">
-					<div class="e-con-inner">
-				<div class="elementor-element elementor-element-9a27775 hostinger-ai-title hostinger-index-2 elementor-widget elementor-widget-heading" data-id="9a27775" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
-				<div class="elementor-widget-container">
-					<span class="elementor-heading-title elementor-size-default">Why Us</span>				</div>
-				</div>
-				<div class="elementor-element elementor-element-b19a728 hostinger-ai-subtitle hostinger-index-1 elementor-widget elementor-widget-text-editor" data-id="b19a728" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
-				<div class="elementor-widget-container">
-									Smart Choices								</div>
-				</div>
-					</div>
-				</div>
-					</div>
-				</div>
-					</div>
-				</div>
-				</div>
-					</div>
-				</div>
-		<div data-aos="fade-up" class="hostinger-elementor-aos elementor-element elementor-element-76384ba hostinger-ai-our-services-2 e-flex e-con-boxed e-con e-parent" data-id="76384ba" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
-					<div class="e-con-inner">
-		<div data-aos="fade-up" class="hostinger-elementor-aos elementor-element elementor-element-6aabfe1 e-con-full e-flex e-con e-child" data-id="6aabfe1" data-element_type="container" data-e-type="container">
-				<div class="elementor-element elementor-element-f7ed4dd hostinger-ai-title elementor-widget elementor-widget-heading" data-id="f7ed4dd" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
-				<div class="elementor-widget-container">
-					<h2 class="elementor-heading-title elementor-size-default">Our Services</h2>				</div>
-				</div>
-		<div data-aos="fade-up" class="hostinger-elementor-aos elementor-element elementor-element-fdcb56c e-grid e-con-full e-con e-child" data-id="fdcb56c" data-element_type="container" data-e-type="container">
-		<div data-aos="fade-up" class="hostinger-elementor-aos elementor-element elementor-element-df3b27a e-con-full e-flex e-con e-child" data-id="df3b27a" data-element_type="container" data-e-type="container">
-				<div class="elementor-element elementor-element-d13d5fe hostinger-ai-service-image elementor-widget elementor-widget-image" data-id="d13d5fe" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-															<img decoding="async" width="1024" height="572" src="https://pickora.shop/wp-content/uploads/2026/06/Modern_flat-lay_style_hero_image_202606161822-1024x572.jpeg" class="attachment-large size-large wp-image-185" alt="" srcset="https://pickora.shop/wp-content/uploads/2026/06/Modern_flat-lay_style_hero_image_202606161822-1024x572.jpeg 1024w, https://pickora.shop/wp-content/uploads/2026/06/Modern_flat-lay_style_hero_image_202606161822-300x167.jpeg 300w, https://pickora.shop/wp-content/uploads/2026/06/Modern_flat-lay_style_hero_image_202606161822-768x429.jpeg 768w, https://pickora.shop/wp-content/uploads/2026/06/Modern_flat-lay_style_hero_image_202606161822-1536x857.jpeg 1536w, https://pickora.shop/wp-content/uploads/2026/06/Modern_flat-lay_style_hero_image_202606161822-2048x1143.jpeg 2048w" sizes="(max-width: 1024px) 100vw, 1024px">															</div>
-				</div>
-				<div class="elementor-element elementor-element-3e790c6 hostinger-ai-service-description elementor-widget elementor-widget-text-editor" data-id="3e790c6" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
-				<div class="elementor-widget-container">
-									<p dir="auto"><strong>Honest In-Depth Reviews<br></strong></p><p dir="auto">Expert-tested reviews with real-world testing, pros &amp; cons, and honest recommendations.</p><p dir="auto"><strong> </strong></p>								</div>
-				</div>
-				</div>
-		<div data-aos="fade-up" class="hostinger-elementor-aos elementor-element elementor-element-0d9383c e-con-full e-flex e-con e-child" data-id="0d9383c" data-element_type="container" data-e-type="container">
-				<div class="elementor-element elementor-element-3377a60 hostinger-ai-service-image hostinger-index-1 elementor-widget elementor-widget-image" data-id="3377a60" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-															<img decoding="async" width="1024" height="572" src="https://pickora.shop/wp-content/uploads/2026/06/Professional_hero_image_showing_a_202606161823-1024x572.jpeg" class="attachment-large size-large wp-image-186" alt="" srcset="https://pickora.shop/wp-content/uploads/2026/06/Professional_hero_image_showing_a_202606161823-1024x572.jpeg 1024w, https://pickora.shop/wp-content/uploads/2026/06/Professional_hero_image_showing_a_202606161823-300x167.jpeg 300w, https://pickora.shop/wp-content/uploads/2026/06/Professional_hero_image_showing_a_202606161823-768x429.jpeg 768w, https://pickora.shop/wp-content/uploads/2026/06/Professional_hero_image_showing_a_202606161823-1536x857.jpeg 1536w, https://pickora.shop/wp-content/uploads/2026/06/Professional_hero_image_showing_a_202606161823-2048x1143.jpeg 2048w" sizes="(max-width: 1024px) 100vw, 1024px">															</div>
-				</div>
-				<div class="elementor-element elementor-element-97eff75 hostinger-ai-service-description hostinger-index-1 elementor-widget elementor-widget-text-editor" data-id="97eff75" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
-				<div class="elementor-widget-container">
-									<p dir="auto"><strong>Expert Buying Guides<br></strong></p><p dir="auto">Comprehensive comparison guides and buyer’s advice to help you choose the best product.</p><p dir="auto"><strong> </strong></p>								</div>
-				</div>
-				</div>
-		<div data-aos="fade-up" class="hostinger-elementor-aos elementor-element elementor-element-cb22ced e-con-full e-flex e-con e-child" data-id="cb22ced" data-element_type="container" data-e-type="container">
-				<div class="elementor-element elementor-element-7f71384 hostinger-ai-service-image hostinger-index-2 elementor-widget elementor-widget-image" data-id="7f71384" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-															<img loading="lazy" decoding="async" width="1024" height="572" src="https://pickora.shop/wp-content/uploads/2026/06/Tech_products_on_wooden_table_202606161829-1024x572.jpeg" class="attachment-large size-large wp-image-187" alt="" srcset="https://pickora.shop/wp-content/uploads/2026/06/Tech_products_on_wooden_table_202606161829-1024x572.jpeg 1024w, https://pickora.shop/wp-content/uploads/2026/06/Tech_products_on_wooden_table_202606161829-300x167.jpeg 300w, https://pickora.shop/wp-content/uploads/2026/06/Tech_products_on_wooden_table_202606161829-768x429.jpeg 768w, https://pickora.shop/wp-content/uploads/2026/06/Tech_products_on_wooden_table_202606161829.jpeg 1376w" sizes="auto, (max-width: 1024px) 100vw, 1024px">															</div>
-				</div>
-				<div class="elementor-element elementor-element-9a21c25 hostinger-ai-service-description hostinger-index-1 elementor-widget elementor-widget-text-editor" data-id="9a21c25" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
-				<div class="elementor-widget-container">
-									<p dir="auto"><strong>Curated Top Picks<br></strong></p><p dir="auto">Handpicked best products of 2026 with detailed testing and current prices.</p><p dir="auto"><strong> </strong></p>								</div>
-				</div>
-				</div>
-				</div>
-				</div>
-					</div>
-				</div>
-		<div data-aos="fade-up" class="hostinger-elementor-aos elementor-element elementor-element-1508e25 hostinger-ai-customer-reviews-4 hostinger-ai-background-image hostinger-ai-background-image e-grid e-con-boxed e-con e-parent" data-id="1508e25" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
-					<div class="e-con-inner">
-		<div data-aos="fade-up" class="hostinger-elementor-aos elementor-element elementor-element-da27cbb e-con-full e-flex e-con e-child" data-id="da27cbb" data-element_type="container" data-e-type="container">
-		<div data-aos="fade-up" class="hostinger-elementor-aos elementor-element elementor-element-ccd4dec e-con-full e-flex e-con e-child" data-id="ccd4dec" data-element_type="container" data-e-type="container">
-				<div class="elementor-element elementor-element-5cfcd55 hostinger-ai-subtitle elementor-widget elementor-widget-heading" data-id="5cfcd55" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
-				<div class="elementor-widget-container">
-					<p class="elementor-heading-title elementor-size-default">Real Feedback</p>				</div>
-				</div>
-				</div>
-		<div data-aos="fade-up" class="hostinger-elementor-aos elementor-element elementor-element-e807982 e-con-full e-flex e-con e-child" data-id="e807982" data-element_type="container" data-e-type="container">
-				<div class="elementor-element elementor-element-b3abf2f hostinger-ai-testimonial-text hostinger-ai-font-bold hostinger-index-2 elementor-widget elementor-widget-heading" data-id="b3abf2f" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
-				<div class="elementor-widget-container">
-					<p class="elementor-heading-title elementor-size-default">Pickora Shop’s honest reviews helped me pick the perfect gadget — saved time and avoided buyer’s remorse!</p>				</div>
-				</div>
-				</div>
-				</div>
-					</div>
-				</div>
-		<div data-aos="fade-up" class="hostinger-elementor-aos elementor-element elementor-element-425a1bf e-flex e-con-boxed e-con e-parent" data-id="425a1bf" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
-					<div class="e-con-inner">
-		<div data-aos="fade-up" class="hostinger-elementor-aos elementor-element elementor-element-8eb3a11 e-con-full e-flex e-con e-child" data-id="8eb3a11" data-element_type="container" data-e-type="container">
-				<div class="elementor-element elementor-element-2516ff0 hostinger-ai-title elementor-widget elementor-widget-heading" data-id="2516ff0" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
-				<div class="elementor-widget-container">
-					<h2 class="elementor-heading-title elementor-size-default">Get Started</h2>				</div>
-				</div>
-				<div class="elementor-element elementor-element-bb2189c elementor-widget__width-initial hostinger-ai-description elementor-widget elementor-widget-text-editor" data-id="bb2189c" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
-				<div class="elementor-widget-container">
-									Find your perfect product with honest reviews and smart recommendations.								</div>
-				</div>
-				<div class="elementor-element elementor-element-c0f4a8e hostinger-ai-cta-button hostinger-index-0 elementor-widget elementor-widget-button" data-id="c0f4a8e" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
-				<div class="elementor-widget-container">
-									<div class="elementor-button-wrapper">
-					<a class="elementor-button elementor-button-link elementor-size-sm" href="https://pickora.shop/products/">
-						<span class="elementor-button-content-wrapper">
-									<span class="elementor-button-text">Shop</span>
-					</span>
-					</a>
-				</div>
-								</div>
-				</div>
-				</div>
-					</div>
-				</div>
-				</div>
-		</div></main>
+        <div class="pk-container">
+            
+            <!-- Миссия и Почему мы (наезжают на баннер) -->
+            <div class="pk-mission-container">
+                <div class="pk-card-mini">
+                    <h3>Our Mission</h3>
+                    <p>Trusted Picks</p>
+                </div>
+                <div class="pk-card-mini">
+                    <h3>Why Us</h3>
+                    <p>Smart Choices</p>
+                </div>
+            </div>
+
+            <!-- Наши Услуги (ровная сетка) -->
+            <div class="pk-services-section">
+                <h2 class="pk-services-title">Our Services</h2>
+                <div class="pk-services-grid">
+                    
+                    <div class="pk-service-card">
+                        <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/06/Modern_flat-lay_style_hero_image_202606161822-1024x572.jpeg" alt="Honest Reviews">
+                        <h4>Honest In-Depth Reviews</h4>
+                        <p>Expert-tested reviews with real-world testing, pros & cons, and honest recommendations.</p>
+                    </div>
+
+                    <div class="pk-service-card">
+                        <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/06/Professional_hero_image_showing_a_202606161823-1024x572.jpeg" alt="Buying Guides">
+                        <h4>Expert Buying Guides</h4>
+                        <p>Comprehensive comparison guides and buyer’s advice to help you choose the best product.</p>
+                    </div>
+
+                    <div class="pk-service-card">
+                        <img loading="lazy" decoding="async" src="https://pickora.shop/wp-content/uploads/2026/06/Tech_products_on_wooden_table_202606161829-1024x572.jpeg" alt="Top Picks">
+                        <h4>Curated Top Picks</h4>
+                        <p>Handpicked best products of 2026 with detailed testing and current prices.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Отзывы -->
+            <div class="pk-feedback-section">
+                <span>Real Feedback</span>
+                <p>“Pickora Shop’s honest reviews helped me pick the perfect gadget — saved time and avoided buyer’s remorse!”</p>
+            </div>
+            
+        </div> <!-- Конец pk-container -->
+
+        <!-- CTA и плавный переход к футеру (Full Width) -->
+        <div class="pk-cta-wrapper">
+            <div class="pk-cta-inner">
+                <h2>Get Started</h2>
+                <p>Find your perfect product with honest reviews and smart recommendations.</p>
+                <a class="pk-btn-primary" href="https://pickora.shop/products/">Shop Now</a>
+            </div>
+        </div>
+        
+        <!-- КОНЕЦ ЧИСТОГО ПРЕМИУМ-БЛОКА "О НАС" V3 -->
+
+    </div>
+</main>
 
 
 <footer class="site-footer wp-block-template-part">
@@ -486,4 +708,4 @@ const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(
 //# sourceURL=https://pickora.shop/wp-includes/js/wp-emoji-loader.min.js
 </script>
 </body>
-</html><!-- Page cached by LiteSpeed Cache 7.8.1 on 2026-07-05 16:00:59 -->
+</html>
