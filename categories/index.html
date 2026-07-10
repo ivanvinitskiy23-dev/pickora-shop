@@ -678,6 +678,25 @@ gtag("config", "GT-MB8GRCPZ");
   }
   function forceClosePin() { document.getElementById('pin-popup').classList.remove('active'); }
   function handleOverlayClick(e) { if (e.target.id === 'pin-popup') forceClosePin(); }
+// =======================================================
+  // ФУНКЦИЯ ДЛЯ РАНДОМНОГО ПЕРЕМЕШИВАНИЯ КАРТОЧЕК ПРИ ЗАГРУЗКЕ
+  // =======================================================
+  document.addEventListener("DOMContentLoaded", function() {
+    const grid = document.getElementById('pins-grid');
+    if (!grid) return;
+    
+    const pins = Array.from(grid.querySelectorAll('.pickora-board-pin'));
+    
+    for (let i = pins.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pins[i], pins[j]] = [pins[j], pins[i]];
+    }
+    
+    pins.forEach(pin => grid.appendChild(pin));
+  });
+</script>
+
+
 </script>				</div>
 				</div>
 		
