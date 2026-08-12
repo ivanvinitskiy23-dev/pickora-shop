@@ -43,6 +43,10 @@
 ---
 ## Change Log
 
+### 2026-08-12 — Fix huge whitespace gap on /articles/
+- Replaced rigid 3-column grid with `auto-fill` + `align-items: start`; forced `min-height: auto` on `main` / Elementor containers.
+- Removed Shop Smart `margin-top: -400px` hack; restored normal spacing and disclosure before footer.
+
 ### 2026-08-12 — Global disclosure banner & footer legal links
 - Added `pk-disclosure-footer` before `<footer>` on all 19 HTML pages.
 - Added centered `pk-footer-bottom` legal links (Privacy, Disclosure, Terms, Contact) above the © 2026 line on all pages.
