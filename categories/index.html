@@ -377,10 +377,16 @@ footer.site-footer {
 
     <!-- Стили остаются прежними и точными, как на твоем скриншоте -->
     <style>
+        /* Cancel WP .wp-site-blocks > * { margin-block-start: 40px } so hub spacing matches Products/Articles */
+        .wp-site-blocks > .elementor-widget-container {
+            margin-block-start: 0 !important;
+        }
+
         .pk-catalog-header {
             text-align: center;
             font-family: 'Montserrat', 'Open Sans', sans-serif;
-            padding: 10px 20px 20px 20px;
+            /* Shared hub top offset with /products/ and /articles/ */
+            padding: 48px 20px 20px 20px;
             max-width: 850px;
             margin: 0 auto;
             box-sizing: border-box;
@@ -396,7 +402,9 @@ footer.site-footer {
             align-items: center;
             justify-content: center;
             gap: 8px;
-            margin-bottom: 25px;
+            margin: 0 0 16px;
+            padding: 0;
+            line-height: 1.2;
             text-transform: uppercase;
         }
 
@@ -452,7 +460,7 @@ footer.site-footer {
             }
             .pk-catalog-badge {
                 font-size: 11px;
-                margin-bottom: 15px;
+                margin-bottom: 16px;
             }
         }
     </style>

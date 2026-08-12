@@ -380,12 +380,19 @@ footer.site-footer {
 </div>
 
 <style>
+/* Cancel WP .wp-site-blocks > * { margin-block-start: 40px } so hub spacing matches Products/Categories */
+main#wp--skip-link--target {
+    margin-block-start: 0 !important;
+}
+
 .pk-hub-header-section {
     text-align: center;
     max-width: 850px;
-    margin: 40px auto 20px auto;
+    /* Shared hub top offset with /products/ and /categories/ */
+    margin: 48px auto 20px auto;
     padding: 0 20px;
     font-family: inherit;
+    box-sizing: border-box;
 }
 
 .pk-pre-title {
@@ -394,7 +401,9 @@ footer.site-footer {
     text-transform: uppercase;
     letter-spacing: 2px;
     color: #64748B;
-    margin-bottom: 15px;
+    margin: 0 0 16px;
+    padding: 0;
+    line-height: 1.2;
     display: flex;
     align-items: center;
     justify-content: center;

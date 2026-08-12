@@ -459,9 +459,16 @@ footer.site-footer {
     --pk-text: #4B5563;
     --pk-radius: 24px;
     --transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-    padding: 60px 0;
+    /* Shared hub top offset with /articles/ and /categories/ (48px after WP sibling margin reset) */
+    padding: 48px 0 60px;
     max-width: 1240px;
     margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Cancel WP .wp-site-blocks > * { margin-block-start: 40px } so hub spacing is identical across pages */
+main#wp--skip-link--target {
+    margin-block-start: 0 !important;
 }
 
 /* HEADER STYLE */
@@ -470,6 +477,7 @@ footer.site-footer {
     max-width: 800px;
     margin: 0 auto 60px;
     padding: 0 20px;
+    box-sizing: border-box;
 }
 
 .pk-pre-title-hub {
@@ -478,7 +486,9 @@ footer.site-footer {
     text-transform: uppercase;
     letter-spacing: 2px;
     color: var(--pk-text);
-    margin-bottom: 15px;
+    margin: 0 0 16px;
+    padding: 0;
+    line-height: 1.2;
     display: flex;
     align-items: center;
     justify-content: center;

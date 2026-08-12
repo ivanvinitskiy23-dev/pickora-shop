@@ -43,6 +43,9 @@
 ---
 ## Change Log
 
+### 2026-08-12 — Unify Products / Articles / Categories hub header spacing
+- Reset WP `margin-block-start: 40px` on page content wrappers; set shared `48px` top offset for `.pk-products-hub`, `.pk-hub-header-section`, and `.pk-catalog-header` so badge→title blocks no longer jump between pages.
+
 ### 2026-08-12 — Footer bottom bar padding (stop text flush to edge)
 - `.pk-footer-bottom`: added `padding: 20px 20px 32px` and `line-height: 1.4` so legal links/© are not cramped against the bottom of the navy footer.
 
