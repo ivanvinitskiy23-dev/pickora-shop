@@ -43,6 +43,10 @@
 ---
 ## Change Log
 
+### 2026-08-12 — Hide mobile nav icons on desktop header
+- Root cause: Phase 1 tap-target CSS forced `display: inline-flex !important` on burger/close buttons at all breakpoints.
+- Desktop (≥769px): hide open/close icons; show inline nav. Mobile (≤768px): keep 44×44 tap targets. Header row: logo left / menu right via flex.
+
 ### 2026-08-12 — Phase 1 complete: CWV images, scripts, tap targets
 - Recompressed **71** uploads >500KB (max width 1600, WebP/JPEG q≈82): **~273 MB** saved; uploads images ≈330MB → ≈59MB.
 - All site HTML: hero `loading="eager" fetchpriority="high"`; below-fold `loading="lazy" decoding="async"`; explicit `width`/`height` where local files exist.
