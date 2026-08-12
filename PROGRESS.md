@@ -43,6 +43,10 @@
 ---
 ## Change Log
 
+### 2026-08-12 — Hard fix /articles/ empty field (AOS + height reset)
+- Root cause: `.hostinger-elementor-aos { opacity: 0 }` hid About/Shop Smart while they still occupied ~1000px.
+- Forced AOS elements visible, stripped `data-aos` hooks, hard-reset `min-height`/`height` on wrappers, normalized disclosure margins.
+
 ### 2026-08-12 — Fix huge whitespace gap on /articles/
 - Replaced rigid 3-column grid with `auto-fill` + `align-items: start`; forced `min-height: auto` on `main` / Elementor containers.
 - Removed Shop Smart `margin-top: -400px` hack; restored normal spacing and disclosure before footer.
