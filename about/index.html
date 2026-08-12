@@ -14,6 +14,22 @@
 <!-- ========================================================================= -->
 <!-- ПРЕМИУМ ДИЗАЙН V3: БАННЕР-КАРТОЧКА, ИДЕАЛЬНАЯ СИММЕТРИЯ И АДАПТИВНОСТЬ  -->
 <!-- ========================================================================= -->
+<style id="pk-global-reset-inline-css">
+*, *::before, *::after { box-sizing: border-box; }
+html, body { max-width: 100%; overflow-x: clip; }
+</style>
+<style id="pk-tap-targets-inline-css">
+.wp-block-navigation__responsive-container-open,
+.wp-block-navigation__responsive-container-close {
+    min-width: 44px; min-height: 44px; display: inline-flex;
+    align-items: center; justify-content: center; padding: 10px; margin: -10px;
+}
+.wp-block-social-links .wp-social-link {
+    min-width: 44px; min-height: 44px; display: inline-flex;
+    align-items: center; justify-content: center;
+}
+.pk-filter-btn, .categories-filter button { min-height: 44px; padding-block: 10px; }
+</style>
 <style>
     /* Убираем глобальный баг с пустотой под шапкой */
     main#wp--skip-link--target { margin-top: 0 !important; padding-top: 0 !important; }
@@ -136,7 +152,7 @@
     
     .pk-services-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
         gap: 30px;
     }
     
@@ -217,7 +233,9 @@
 
     /* 5. ПЛАВНЫЙ ПЕРЕХОД К ФУТЕРУ (CTA) */
     .pk-cta-wrapper {
+        box-sizing: border-box;
         width: 100%;
+        max-width: 100%;
         background: linear-gradient(to bottom, #ffffff 0%, #f2f7fc 100%);
         padding: 100px 20px 120px;
     }
@@ -394,9 +412,7 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
 <link rel="stylesheet" id="elementor-gf-opensans-css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&amp;display=swap" media="all">
 <link rel="stylesheet" id="elementor-gf-robotoslab-css" href="https://fonts.googleapis.com/css?family=Roboto+Slab:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&amp;display=swap" media="all">
 <link rel="stylesheet" id="elementor-gf-montserrat-css" href="https://fonts.googleapis.com/css?family=Montserrat:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&amp;display=swap" media="all">
-<script id="jquery-core-js" src="https://pickora.shop/wp-includes/js/jquery/jquery.min.js?ver=3.7.1"></script>
-<script id="jquery-migrate-js" src="https://pickora.shop/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1"></script>
-
+<script id="jquery-core-js" src="https://pickora.shop/wp-includes/js/jquery/jquery.min.js?ver=3.7.1" defer></script>
 <!-- Google tag (gtag.js) snippet added by Site Kit -->
 <!-- Google Analytics snippet added by Site Kit -->
 <script id="google_gtagjs-js" src="https://www.googletagmanager.com/gtag/js?id=GT-MB8GRCPZ" async></script>
@@ -523,19 +539,19 @@ gtag("config", "GT-MB8GRCPZ");
                 <div class="pk-services-grid">
                     
                     <div class="pk-service-card">
-                        <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/06/Modern_flat-lay_style_hero_image_202606161822-1024x572.jpeg" alt="Honest Reviews">
+                        <img src="https://pickora.shop/wp-content/uploads/2026/06/Modern_flat-lay_style_hero_image_202606161822-1024x572.jpeg" alt="Honest Reviews" loading="eager" fetchpriority="high" decoding="async" width="1024" height="572">
                         <h4>Honest In-Depth Reviews</h4>
                         <p>Expert-tested reviews with real-world testing, pros & cons, and honest recommendations.</p>
                     </div>
 
                     <div class="pk-service-card">
-                        <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/06/Professional_hero_image_showing_a_202606161823-1024x572.jpeg" alt="Buying Guides">
+                        <img src="https://pickora.shop/wp-content/uploads/2026/06/Professional_hero_image_showing_a_202606161823-1024x572.jpeg" alt="Buying Guides" loading="lazy" decoding="async" width="1024" height="572">
                         <h4>Expert Buying Guides</h4>
                         <p>Comprehensive comparison guides and buyer’s advice to help you choose the best product.</p>
                     </div>
 
                     <div class="pk-service-card">
-                        <img loading="lazy" decoding="async" src="https://pickora.shop/wp-content/uploads/2026/06/Tech_products_on_wooden_table_202606161829-1024x572.jpeg" alt="Top Picks">
+                        <img src="https://pickora.shop/wp-content/uploads/2026/06/Tech_products_on_wooden_table_202606161829-1024x572.jpeg" alt="Top Picks" loading="lazy" decoding="async" width="1024" height="572">
                         <h4>Curated Top Picks</h4>
                         <p>Handpicked best products of 2026 with detailed testing and current prices.</p>
                     </div>

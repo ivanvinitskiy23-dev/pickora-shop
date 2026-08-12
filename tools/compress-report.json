@@ -1,0 +1,586 @@
+{
+  "processed_files": 18,
+  "total_before_bytes": 2913295,
+  "total_after_bytes": 2329330,
+  "saved_bytes": 583965,
+  "saved_kb": 570.3,
+  "saved_mb": 0.56,
+  "results": [
+    {
+      "file": "wp-content\\uploads\\2026\\06\\A_modern_black_air_fryer_202606131522-scaled.jpeg",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\06\\A_modern_black_air_fryer_202606131522-scaled.jpeg",
+          "before": 187043,
+          "after": 59706,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\A_modern_black_air_fryer_202606131522-1200w.jpeg",
+          "before": 0,
+          "after": 59706,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\A_modern_black_air_fryer_202606131522-800w.jpeg",
+          "before": 0,
+          "after": 32589,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\06\\A_premium_commercial_lifestyle_product_202606301559-scaled.webp",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\06\\A_premium_commercial_lifestyle_product_202606301559-scaled.webp",
+          "before": 88534,
+          "after": 23852,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\A_premium_commercial_lifestyle_product_202606301559-1200w.webp",
+          "before": 0,
+          "after": 23852,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\A_premium_commercial_lifestyle_product_202606301559-800w.webp",
+          "before": 0,
+          "after": 13828,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\06\\Create_an_ultra-realistic_editorial_hero_202606141914-scaled.jpeg",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Create_an_ultra-realistic_editorial_hero_202606141914-scaled.jpeg",
+          "before": 234128,
+          "after": 71757,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Create_an_ultra-realistic_editorial_hero_202606141914-1200w.jpeg",
+          "before": 0,
+          "after": 71757,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Create_an_ultra-realistic_editorial_hero_202606141914-800w.jpeg",
+          "before": 0,
+          "after": 37658,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171856-scaled.jpeg",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171856-scaled.jpeg",
+          "before": 189791,
+          "after": 61214,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171856-1200w.jpeg",
+          "before": 0,
+          "after": 61214,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171856-800w.jpeg",
+          "before": 0,
+          "after": 33571,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171858-1-scaled.jpeg",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171858-1-scaled.jpeg",
+          "before": 159186,
+          "after": 51915,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171858-1-1200w.jpeg",
+          "before": 0,
+          "after": 51915,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171858-1-800w.jpeg",
+          "before": 0,
+          "after": 27955,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171858-scaled.jpeg",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171858-scaled.jpeg",
+          "before": 142428,
+          "after": 47807,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171858-1200w.jpeg",
+          "before": 0,
+          "after": 47807,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171858-800w.jpeg",
+          "before": 0,
+          "after": 25452,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171900-scaled.jpeg",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171900-scaled.jpeg",
+          "before": 165848,
+          "after": 56890,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171900-1200w.jpeg",
+          "before": 0,
+          "after": 56890,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171900-800w.jpeg",
+          "before": 0,
+          "after": 30862,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171921-scaled.jpeg",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171921-scaled.jpeg",
+          "before": 220123,
+          "after": 62867,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171921-1200w.jpeg",
+          "before": 0,
+          "after": 62867,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Improve_this_product_photo_of_202606171921-800w.jpeg",
+          "before": 0,
+          "after": 33293,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\06\\Premium_wireless_earbuds_with_charging_202606131523-scaled.jpeg",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Premium_wireless_earbuds_with_charging_202606131523-scaled.jpeg",
+          "before": 85804,
+          "after": 24391,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Premium_wireless_earbuds_with_charging_202606131523-1200w.jpeg",
+          "before": 0,
+          "after": 24391,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Premium_wireless_earbuds_with_charging_202606131523-800w.jpeg",
+          "before": 0,
+          "after": 12687,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\06\\Ultra-premium_hero_banner_for_a_202606091835-scaled.jpeg",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Ultra-premium_hero_banner_for_a_202606091835-scaled.jpeg",
+          "before": 187924,
+          "after": 59351,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Ultra-premium_hero_banner_for_a_202606091835-1200w.jpeg",
+          "before": 0,
+          "after": 59351,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Ultra-premium_hero_banner_for_a_202606091835-800w.jpeg",
+          "before": 0,
+          "after": 32167,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\06\\Ultra-premium_hero_image_for_a_202606091713-1-scaled.jpeg",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Ultra-premium_hero_image_for_a_202606091713-1-scaled.jpeg",
+          "before": 184195,
+          "after": 56890,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Ultra-premium_hero_image_for_a_202606091713-1-1200w.jpeg",
+          "before": 0,
+          "after": 56890,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Ultra-premium_hero_image_for_a_202606091713-1-800w.jpeg",
+          "before": 0,
+          "after": 30005,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\06\\Ultra-premium_hero_image_for_a_202606091713-scaled.jpeg",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Ultra-premium_hero_image_for_a_202606091713-scaled.jpeg",
+          "before": 184195,
+          "after": 56890,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Ultra-premium_hero_image_for_a_202606091713-1200w.jpeg",
+          "before": 0,
+          "after": 56890,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\06\\Ultra-premium_hero_image_for_a_202606091713-800w.jpeg",
+          "before": 0,
+          "after": 30005,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\07\\A_modern_black_air_fryer_202606131522-scaled.webp",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\07\\A_modern_black_air_fryer_202606131522-scaled.webp",
+          "before": 83998,
+          "after": 26376,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\07\\A_modern_black_air_fryer_202606131522-1200w.webp",
+          "before": 0,
+          "after": 26376,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\07\\A_modern_black_air_fryer_202606131522-800w.webp",
+          "before": 0,
+          "after": 16146,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\07\\A_modern_robot_vacuum_cleaner_202606131525-scaled.webp",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\07\\A_modern_robot_vacuum_cleaner_202606131525-scaled.webp",
+          "before": 148652,
+          "after": 42248,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\07\\A_modern_robot_vacuum_cleaner_202606131525-1200w.webp",
+          "before": 0,
+          "after": 42248,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\07\\A_modern_robot_vacuum_cleaner_202606131525-800w.webp",
+          "before": 0,
+          "after": 24394,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\07\\A_smart_pet_camera_on_202606131525-scaled.webp",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\07\\A_smart_pet_camera_on_202606131525-scaled.webp",
+          "before": 212202,
+          "after": 66092,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\07\\A_smart_pet_camera_on_202606131525-1200w.webp",
+          "before": 0,
+          "after": 66092,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\07\\A_smart_pet_camera_on_202606131525-800w.webp",
+          "before": 0,
+          "after": 39602,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\07\\Black_wireless_earbuds_in_charging_202606131603-scaled.webp",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\07\\Black_wireless_earbuds_in_charging_202606131603-scaled.webp",
+          "before": 163076,
+          "after": 51926,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\07\\Black_wireless_earbuds_in_charging_202606131603-1200w.webp",
+          "before": 0,
+          "after": 51926,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\07\\Black_wireless_earbuds_in_charging_202606131603-800w.webp",
+          "before": 0,
+          "after": 32120,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\07\\Ninja_Air_Fryer_Pro_on_202606131645-1-scaled.webp",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\07\\Ninja_Air_Fryer_Pro_on_202606131645-1-scaled.webp",
+          "before": 138084,
+          "after": 45228,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\07\\Ninja_Air_Fryer_Pro_on_202606131645-1-1200w.webp",
+          "before": 0,
+          "after": 45228,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\07\\Ninja_Air_Fryer_Pro_on_202606131645-1-800w.webp",
+          "before": 0,
+          "after": 27870,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    },
+    {
+      "file": "wp-content\\uploads\\2026\\07\\Ninja_Air_Fryer_Pro_on_202606131645-scaled.webp",
+      "entries": [
+        {
+          "path": "wp-content\\uploads\\2026\\07\\Ninja_Air_Fryer_Pro_on_202606131645-scaled.webp",
+          "before": 138084,
+          "after": 45228,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "replace-scaled-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\07\\Ninja_Air_Fryer_Pro_on_202606131645-1200w.webp",
+          "before": 0,
+          "after": 45228,
+          "quality": 82,
+          "width": 1200,
+          "height": 670,
+          "action": "variant-1200w"
+        },
+        {
+          "path": "wp-content\\uploads\\2026\\07\\Ninja_Air_Fryer_Pro_on_202606131645-800w.webp",
+          "before": 0,
+          "after": 27870,
+          "quality": 82,
+          "width": 800,
+          "height": 447,
+          "action": "variant-800w"
+        }
+      ]
+    }
+  ]
+}

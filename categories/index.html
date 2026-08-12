@@ -10,6 +10,22 @@
 <link rel="alternate" type="application/rss+xml" title="Pickora » Comments Feed" href="https://pickora.shop/comments/feed/">
 <link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="https://pickora.shop/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fpickora.shop%2Fcategories%2F">
 <link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="https://pickora.shop/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fpickora.shop%2Fcategories%2F&amp;format=xml">
+<style id="pk-global-reset-inline-css">
+*, *::before, *::after { box-sizing: border-box; }
+html, body { max-width: 100%; overflow-x: clip; }
+</style>
+<style id="pk-tap-targets-inline-css">
+.wp-block-navigation__responsive-container-open,
+.wp-block-navigation__responsive-container-close {
+    min-width: 44px; min-height: 44px; display: inline-flex;
+    align-items: center; justify-content: center; padding: 10px; margin: -10px;
+}
+.wp-block-social-links .wp-social-link {
+    min-width: 44px; min-height: 44px; display: inline-flex;
+    align-items: center; justify-content: center;
+}
+.pk-filter-btn, .categories-filter button { min-height: 44px; padding-block: 10px; }
+</style>
 <style id="wp-img-auto-sizes-contain-inline-css">
 img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 /*# sourceURL=wp-img-auto-sizes-contain-inline-css */
@@ -105,9 +121,7 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
 <link rel="stylesheet" id="elementor-gf-robotoslab-css" href="https://fonts.googleapis.com/css?family=Roboto+Slab:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&amp;display=swap" media="all">
 <link rel="stylesheet" id="elementor-gf-montserrat-css" href="https://fonts.googleapis.com/css?family=Montserrat:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&amp;display=swap" media="all">
 <link rel="stylesheet" id="elementor-gf-opensans-css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&amp;display=swap" media="all">
-<script id="jquery-core-js" src="https://pickora.shop/wp-includes/js/jquery/jquery.min.js?ver=3.7.1"></script>
-<script id="jquery-migrate-js" src="https://pickora.shop/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1"></script>
-
+<script id="jquery-core-js" src="https://pickora.shop/wp-includes/js/jquery/jquery.min.js?ver=3.7.1" defer></script>
 <!-- Google tag (gtag.js) snippet added by Site Kit -->
 <!-- Google Analytics snippet added by Site Kit -->
 <script id="google_gtagjs-js" src="https://www.googletagmanager.com/gtag/js?id=GT-MB8GRCPZ" async></script>
@@ -501,7 +515,7 @@ gtag("config", "GT-MB8GRCPZ");
   <div class="pickora-board-grid" id="pins-grid">
     
     <div class="pickora-board-pin" data-category="work" onclick="openPin(1)">
-      <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/07/Desk_with_MacBook_and_keyboard_202607011350.webp" alt="Minimalist Japandi home office setup featuring an Apple MacBook Pro on an aluminum Rain Design mStand laptop stand, light oak desk with soft morning window shadows, and a Keychron mechanical keyboard">
+      <img src="https://pickora.shop/wp-content/uploads/2026/07/Desk_with_MacBook_and_keyboard_202607011350.webp" alt="Minimalist Japandi home office setup featuring an Apple MacBook Pro on an aluminum Rain Design mStand laptop stand, light oak desk with soft morning window shadows, and a Keychron mechanical keyboard" loading="eager" fetchpriority="high" decoding="async" width="896" height="1200">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">Sunlit Simplicity</h4>
         <p class="pickora-board-desc">Find your flow in a space defined by light and clarity. Minimalist Apple tech meets the organic warmth of a Japandi-inspired workspace.</p>
@@ -509,7 +523,7 @@ gtag("config", "GT-MB8GRCPZ");
     </div>
 
     <div class="pickora-board-pin" data-category="kitchen" onclick="openPin(2)">
-      <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/07/Digen_image_1782918584661.webp" alt="Minimalist coffee setup featuring a Fellow Stagg white electric kettle and Ember smart mug on a light wood counter with morning window shadows.">
+      <img src="https://pickora.shop/wp-content/uploads/2026/07/Digen_image_1782918584661.webp" alt="Minimalist coffee setup featuring a Fellow Stagg white electric kettle and Ember smart mug on a light wood counter with morning window shadows." loading="lazy" decoding="async" width="2048" height="2048">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">The Morning Alchemist </h4>
         <p class="pickora-board-desc">Master the art of the slow pour in a sun-drenched sanctuary.</p>
@@ -517,7 +531,7 @@ gtag("config", "GT-MB8GRCPZ");
     </div>
 
     <div class="pickora-board-pin" data-category="work" onclick="openPin(3)">
-      <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/07/Desk_setup_with_cyan_reflection_202607011648.webp" alt="Monitor setup">
+      <img src="https://pickora.shop/wp-content/uploads/2026/07/Desk_setup_with_cyan_reflection_202607011648.webp" alt="Monitor setup" loading="lazy" decoding="async" width="896" height="1200">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">Neon Noir Command</h4>
         <p class="pickora-board-desc">Embrace the night with a setup built for deep focus and futuristic vibes. A stealthy, all-black battle station illuminated by the glow of the screen.</p>
@@ -525,7 +539,7 @@ gtag("config", "GT-MB8GRCPZ");
     </div>
 
     <div class="pickora-board-pin" data-category="travel" onclick="openPin(4)">
-      <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/06/Aesthetic_flatlay_product_photography_of_202606262059-scaled.webp" alt="Travel gear accessories flatlay">
+      <img src="https://pickora.shop/wp-content/uploads/2026/06/Aesthetic_flatlay_product_photography_of_202606262059-scaled.webp" alt="Travel gear accessories flatlay" loading="lazy" decoding="async" width="1200" height="1608">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">Urban Explorer EDC</h4>
         <p class="pickora-board-desc">Premium travel gear and minimalist essentials for life on the move.</p>
@@ -533,21 +547,21 @@ gtag("config", "GT-MB8GRCPZ");
     </div>
     
     <div class="pickora-board-pin" data-category="work" onclick="openPin(5)">
-      <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/07/Digen_image_1782915940164.webp" alt="Cozy dark academia study setup featuring an Azio Retro Classic mechanical keyboard with wood accents on a cognac leather Harber London desk mat, illuminated by a warm brass Edison bulb lamp.">
+      <img src="https://pickora.shop/wp-content/uploads/2026/07/Digen_image_1782915940164.webp" alt="Cozy dark academia study setup featuring an Azio Retro Classic mechanical keyboard with wood accents on a cognac leather Harber London desk mat, illuminated by a warm brass Edison bulb lamp." loading="lazy" decoding="async" width="1728" height="2304">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">The Scholar’s Corner</h4>
         <p class="pickora-board-desc">Disconnect from the noise and reconnect with tactile craftsmanship. A warm, inviting desk that blends timeless analog tools with modern tech.</p>
       </div>
     </div>
     <div class="pickora-board-pin" data-category="kitchen" onclick="openPin(6)">
-      <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/07/A_moody_cinematic_close-up_of_202607011921.webp" alt="Moody home bar scene with a cocktail smoker kit, crystal decanter, and matte black ice tools on dark marble under cinematic lighting.">
+      <img src="https://pickora.shop/wp-content/uploads/2026/07/A_moody_cinematic_close-up_of_202607011921.webp" alt="Moody home bar scene with a cocktail smoker kit, crystal decanter, and matte black ice tools on dark marble under cinematic lighting." loading="lazy" decoding="async" width="896" height="1200">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">The Midnight Speakeasy </h4>
         <p class="pickora-board-desc">Sophisticated cocktail tech for the modern nocturnal host.</p>
       </div>
     </div>
    <div class="pickora-board-pin" data-category="home" onclick="openPin(7)">
-     <img decoding="async" src="../wp-content/uploads/2026/07/Sleek_Dyson_Hot_Cool_purifier_standing_on_slate_flagstone_flooring_beside.webp" alt="Sleek Dyson Hot+Cool purifier standing on slate flagstone flooring beside a rust-colored mohair armchair, enclosed in curved bone-colored plaster walls during a moody, rainy afternoon..">
+     <img src="../wp-content/uploads/2026/07/Sleek_Dyson_Hot_Cool_purifier_standing_on_slate_flagstone_flooring_beside.webp" alt="Sleek Dyson Hot+Cool purifier standing on slate flagstone flooring beside a rust-colored mohair armchair, enclosed in curved bone-colored plaster walls during a moody, rainy afternoon.." loading="lazy" decoding="async" width="896" height="1200">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">Plaster & Mohair Hideaway </h4>
         <p class="pickora-board-desc">Shelter from the rain in a cavernous, heated reading alcove wrapped in tactile warmth.</p>

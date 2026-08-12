@@ -10,6 +10,22 @@
 <link rel="alternate" type="application/rss+xml" title="Pickora » Comments Feed" href="https://pickora.shop/comments/feed/">
 <link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="https://pickora.shop/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fpickora.shop%2F">
 <link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="https://pickora.shop/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fpickora.shop%2F&amp;format=xml">
+<style id="pk-global-reset-inline-css">
+*, *::before, *::after { box-sizing: border-box; }
+html, body { max-width: 100%; overflow-x: clip; }
+</style>
+<style id="pk-tap-targets-inline-css">
+.wp-block-navigation__responsive-container-open,
+.wp-block-navigation__responsive-container-close {
+    min-width: 44px; min-height: 44px; display: inline-flex;
+    align-items: center; justify-content: center; padding: 10px; margin: -10px;
+}
+.wp-block-social-links .wp-social-link {
+    min-width: 44px; min-height: 44px; display: inline-flex;
+    align-items: center; justify-content: center;
+}
+.pk-filter-btn, .categories-filter button { min-height: 44px; padding-block: 10px; }
+</style>
 <style id="wp-img-auto-sizes-contain-inline-css">
 img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 /*# sourceURL=wp-img-auto-sizes-contain-inline-css */
@@ -103,9 +119,7 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
 <link rel="stylesheet" id="elementor-gf-robotoslab-css" href="https://fonts.googleapis.com/css?family=Roboto+Slab:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&amp;display=swap" media="all">
 <link rel="stylesheet" id="elementor-gf-montserrat-css" href="https://fonts.googleapis.com/css?family=Montserrat:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&amp;display=swap" media="all">
 <link rel="stylesheet" id="elementor-gf-opensans-css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&amp;display=swap" media="all">
-<script id="jquery-core-js" src="https://pickora.shop/wp-includes/js/jquery/jquery.min.js?ver=3.7.1"></script>
-<script id="jquery-migrate-js" src="https://pickora.shop/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1"></script>
-
+<script id="jquery-core-js" src="https://pickora.shop/wp-includes/js/jquery/jquery.min.js?ver=3.7.1" defer></script>
 <!-- Google tag (gtag.js) snippet added by Site Kit -->
 <!-- Google Analytics snippet added by Site Kit -->
 <script id="google_gtagjs-js" src="https://www.googletagmanager.com/gtag/js?id=GT-MB8GRCPZ" async></script>
@@ -596,7 +610,7 @@ gtag("config", "GT-MB8GRCPZ");
         <!-- Категория 1 -->
         <a href="https://pickora.shop/consumer-electronics/" class="pk-item">
             <div class="pk-image-container">
-                <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/07/Luxury_tech_products_composition_202606122059.webp" alt="Electronics">
+                <img src="https://pickora.shop/wp-content/uploads/2026/07/Luxury_tech_products_composition_202606122059.webp" alt="Electronics" loading="eager" fetchpriority="high" decoding="async" width="1200" height="896">
                 <div class="pk-overlay"></div>
                 <div class="pk-text">
                     <h3 class="pk-title">Consumer Electronics</h3>
@@ -608,7 +622,7 @@ gtag("config", "GT-MB8GRCPZ");
         <!-- Категория 2 -->
         <a href="https://pickora.shop/home-kitchen/" class="pk-item">
             <div class="pk-image-container">
-                <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/07/Home_kitchen_appliances_showcase-_202606122059.webp" alt="Kitchen">
+                <img src="https://pickora.shop/wp-content/uploads/2026/07/Home_kitchen_appliances_showcase-_202606122059.webp" alt="Kitchen" loading="lazy" decoding="async" width="1200" height="896">
                 <div class="pk-overlay"></div>
                 <div class="pk-text">
                     <h3 class="pk-title">Home &amp; Kitchen</h3>
@@ -620,7 +634,7 @@ gtag("config", "GT-MB8GRCPZ");
         <!-- Категория 3 -->
         <a href="https://pickora.shop/fitness-health/" class="pk-item">
             <div class="pk-image-container">
-                <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/07/Fitness_and_health_products_show-_202606122059.webp" alt="Fitness">
+                <img src="https://pickora.shop/wp-content/uploads/2026/07/Fitness_and_health_products_show-_202606122059.webp" alt="Fitness" loading="lazy" decoding="async" width="1200" height="896">
                 <div class="pk-overlay"></div>
                 <div class="pk-text">
                     <h3 class="pk-title">Fitness &amp; Health</h3>
@@ -632,7 +646,7 @@ gtag("config", "GT-MB8GRCPZ");
         <!-- Категория 4 -->
         <a href="https://pickora.shop/pet-supplies/" class="pk-item">
             <div class="pk-image-container">
-                <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/07/Pet_supplies_showcase_luxury_acc-_202606122059.webp" alt="Pets">
+                <img src="https://pickora.shop/wp-content/uploads/2026/07/Pet_supplies_showcase_luxury_acc-_202606122059.webp" alt="Pets" loading="lazy" decoding="async" width="1200" height="896">
                 <div class="pk-overlay"></div>
                 <div class="pk-text">
                     <h3 class="pk-title">Pet Supplies</h3>
@@ -812,7 +826,7 @@ gtag("config", "GT-MB8GRCPZ");
         <article class="pk-rev-card">
             <a href="https://pickora.shop/best-air-fryers-of-2026-which-one-should-you-buy/" class="pk-rev-link">
                 <div class="pk-rev-image">
-                    <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/07/A_modern_black_air_fryer_202606131522-scaled.webp" alt="Best Budget Air Fryers Review 2026" loading="lazy">
+                    <img src="https://pickora.shop/wp-content/uploads/2026/07/A_modern_black_air_fryer_202606131522-scaled.webp" alt="Best Budget Air Fryers Review 2026" loading="lazy" decoding="async" width="1200" height="670">
                     <span class="pk-rev-category">Kitchen Tech</span>
                 </div>
                 <div class="pk-rev-content">
@@ -829,7 +843,7 @@ gtag("config", "GT-MB8GRCPZ");
         <article class="pk-rev-card">
             <a href="https://pickora.shop/best-wireless-earbuds-2026-top-7-models-tested-honest-reviews/" class="pk-rev-link">
                 <div class="pk-rev-image">
-                    <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/07/Black_wireless_earbuds_in_charging_202606131603-scaled.webp" alt="Top Wireless Earbuds Review" loading="lazy">
+                    <img src="https://pickora.shop/wp-content/uploads/2026/07/Black_wireless_earbuds_in_charging_202606131603-scaled.webp" alt="Top Wireless Earbuds Review" loading="lazy" decoding="async" width="1200" height="670">
                     <span class="pk-rev-category">Audio</span>
                 </div>
                 <div class="pk-rev-content">
@@ -846,7 +860,7 @@ gtag("config", "GT-MB8GRCPZ");
         <article class="pk-rev-card">
             <a href="https://pickora.shop/best-robot-vacuums-2026-top-8-models-tested-honest-reviews/" class="pk-rev-link">
                 <div class="pk-rev-image">
-                    <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/07/A_modern_robot_vacuum_cleaner_202606131525-scaled.webp" alt="Best Robot Vacuums Review" loading="lazy">
+                    <img src="https://pickora.shop/wp-content/uploads/2026/07/A_modern_robot_vacuum_cleaner_202606131525-scaled.webp" alt="Best Robot Vacuums Review" loading="lazy" decoding="async" width="1200" height="670">
                     <span class="pk-rev-category">Smart Home</span>
                 </div>
                 <div class="pk-rev-content">
@@ -863,7 +877,7 @@ gtag("config", "GT-MB8GRCPZ");
         <article class="pk-rev-card">
             <a href="https://pickora.shop/best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews/" class="pk-rev-link">
                 <div class="pk-rev-image">
-                    <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/07/A_smart_pet_camera_on_202606131525-scaled.webp" alt="Best Pet Cameras Review" loading="lazy">
+                    <img src="https://pickora.shop/wp-content/uploads/2026/07/A_smart_pet_camera_on_202606131525-scaled.webp" alt="Best Pet Cameras Review" loading="lazy" decoding="async" width="1200" height="670">
                     <span class="pk-rev-category">Pet Tech</span>
                 </div>
                 <div class="pk-rev-content">
@@ -1347,7 +1361,7 @@ gtag("config", "GT-MB8GRCPZ");
     <div class="pk-best-container">
         <div class="pk-best-visual">
             <div class="pk-image-wrap">
-                <img decoding="async" src="https://pickora.shop/wp-content/uploads/2026/07/Ninja_Air_Fryer_Pro_on_202606131645-scaled.webp" alt="Ninja Air Fryer Pro">
+                <img src="https://pickora.shop/wp-content/uploads/2026/07/Ninja_Air_Fryer_Pro_on_202606131645-scaled.webp" alt="Ninja Air Fryer Pro" loading="lazy" decoding="async" width="1200" height="670">
                 <div class="pk-badge-floating">
                     <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15L13.5 11.5L17 10L13.5 8.5L12 5L10.5 8.5L7 10L10.5 11.5L12 15Z" fill="currentColor"></path></svg>
                     Top Pick

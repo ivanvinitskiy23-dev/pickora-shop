@@ -1,0 +1,537 @@
+{
+  "html_files": 15,
+  "total_img_attribute_changes": 12,
+  "pages": [
+    {
+      "file": "about\\index.html",
+      "img_count": 3,
+      "hero_index": 0,
+      "changes": 0,
+      "tags": [
+        {
+          "index": 0,
+          "hero": true,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Modern_flat-lay_style_hero_image_202606161822-1024x572.jpeg",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Modern_flat-lay_style_hero_image_202606161822-1024x572.jpeg\" alt=\"Honest Reviews\" loading=\"eager\" fetchpriority=\"high\" dec",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Modern_flat-lay_style_hero_image_202606161822-1024x572.jpeg\" alt=\"Honest Reviews\" loading=\"eager\" fetchpriority=\"high\" dec"
+        },
+        {
+          "index": 1,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Professional_hero_image_showing_a_202606161823-1024x572.jpeg",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Professional_hero_image_showing_a_202606161823-1024x572.jpeg\" alt=\"Buying Guides\" loading=\"lazy\" decoding=\"async\" width=\"1",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Professional_hero_image_showing_a_202606161823-1024x572.jpeg\" alt=\"Buying Guides\" loading=\"lazy\" decoding=\"async\" width=\"1"
+        },
+        {
+          "index": 2,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Tech_products_on_wooden_table_202606161829-1024x572.jpeg",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Tech_products_on_wooden_table_202606161829-1024x572.jpeg\" alt=\"Top Picks\" loading=\"lazy\" decoding=\"async\" width=\"1024\" hei",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Tech_products_on_wooden_table_202606161829-1024x572.jpeg\" alt=\"Top Picks\" loading=\"lazy\" decoding=\"async\" width=\"1024\" hei"
+        }
+      ]
+    },
+    {
+      "file": "articles\\index.html",
+      "img_count": 6,
+      "hero_index": 5,
+      "changes": 1,
+      "tags": [
+        {
+          "index": 1,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/A_smart_pet_camera_on_202606131525-scaled.jpeg",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/A_smart_pet_camera_on_202606131525-scaled.jpeg\" alt=\"Pet Cameras\" loading=\"lazy\" decoding=\"async\" width=\"1200\" height=\"670",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/A_smart_pet_camera_on_202606131525-scaled.jpeg\" alt=\"Pet Cameras\" loading=\"lazy\" decoding=\"async\" width=\"1200\" height=\"670"
+        },
+        {
+          "index": 2,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_premium_editorial_hero_202606161627-scaled.jpeg",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_premium_editorial_hero_202606161627-scaled.jpeg\" alt=\"Robot Vacuums\" loading=\"lazy\" decoding=\"async\" width",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_premium_editorial_hero_202606161627-scaled.jpeg\" alt=\"Robot Vacuums\" loading=\"lazy\" decoding=\"async\" width"
+        },
+        {
+          "index": 3,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Create_an_ultra-realistic_editorial_hero_202606141914-scaled.jpeg",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Create_an_ultra-realistic_editorial_hero_202606141914-scaled.jpeg\" alt=\"Wireless Earbuds\" loading=\"lazy\" decoding=\"async\" ",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Create_an_ultra-realistic_editorial_hero_202606141914-scaled.jpeg\" alt=\"Wireless Earbuds\" loading=\"lazy\" decoding=\"async\" "
+        },
+        {
+          "index": 4,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_commercial_food_photography_202606141721-1-scaled.jpeg",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_commercial_food_photography_202606141721-1-scaled.jpeg\" alt=\"Air Fryers\" loading=\"lazy\" decoding=\"async\" w",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_commercial_food_photography_202606141721-1-scaled.jpeg\" alt=\"Air Fryers\" loading=\"lazy\" decoding=\"async\" w"
+        },
+        {
+          "index": 5,
+          "hero": true,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Ultra_premium_editorial_banner_image_202606161704-scaled.jpeg",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Ultra_premium_editorial_banner_image_202606161704-scaled.jpeg\" class=\"attachment-full size-full wp-image-174\" alt=\"\" srcse",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Ultra_premium_editorial_banner_image_202606161704-scaled.jpeg\" class=\"attachment-full size-full wp-image-174\" alt=\"\" srcse"
+        }
+      ]
+    },
+    {
+      "file": "author\\ivanvinitskiy23gmail-com\\index.html",
+      "img_count": 0,
+      "hero_index": null,
+      "changes": 0,
+      "tags": []
+    },
+    {
+      "file": "best-air-fryers-of-2026-which-one-should-you-buy\\index.html",
+      "img_count": 9,
+      "hero_index": 0,
+      "changes": 0,
+      "tags": [
+        {
+          "index": 0,
+          "hero": true,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_commercial_food_photography_202606141721-scaled.jpeg",
+          "before": "<img class=\"e-image-base e-0727ae5-d362b56\" data-interaction-id=\"0727ae5\" id=\"98\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_commercial_food_photography_2",
+          "after": "<img class=\"e-image-base e-0727ae5-d362b56\" data-interaction-id=\"0727ae5\" id=\"98\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_commercial_food_photography_2"
+        }
+      ]
+    },
+    {
+      "file": "best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews\\index.html",
+      "img_count": 15,
+      "hero_index": 0,
+      "changes": 5,
+      "tags": [
+        {
+          "index": 0,
+          "hero": true,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Heartwarming_scene_of_a_dog_202606171925-scaled.jpeg",
+          "before": "<img class=\"e-image-base e-1c392ac-5c8a213\" data-interaction-id=\"1c392ac\" id=\"204\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Heartwarming_scene_of_a_dog_202606171925-sca",
+          "after": "<img class=\"e-image-base e-1c392ac-5c8a213\" data-interaction-id=\"1c392ac\" id=\"204\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Heartwarming_scene_of_a_dog_202606171925-sca"
+        },
+        {
+          "index": 8,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Improve_this_product_photo_of_202606171856-scaled.jpeg",
+          "before": "<img class=\"aligncenter\" style=\"width: 100%; height: auto; display: block;\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Improve_this_product_photo_of_202606171856-scaled.j",
+          "after": "<img class=\"aligncenter\" style=\"width: 100%; height: auto; display: block;\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Improve_this_product_photo_of_202606171856-scaled.j"
+        },
+        {
+          "index": 9,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Pet_camera_product_photo_202606171907.jpeg",
+          "before": "<img style=\"width: 100%; height: auto; display: block;\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Pet_camera_product_photo_202606171907.jpeg\" alt=\"Furbo 360\u00b0 Dog Camera\"",
+          "after": "<img style=\"width: 100%; height: auto; display: block;\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Pet_camera_product_photo_202606171907.jpeg\" alt=\"Furbo 360\u00b0 Dog Camera\""
+        },
+        {
+          "index": 10,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Improve_this_product_photo_of_202606171858-1-scaled.jpeg",
+          "before": "<img class=\"aligncenter\" style=\"width: 100%; height: auto; display: block;\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Improve_this_product_photo_of_202606171858-1-scaled",
+          "after": "<img class=\"aligncenter\" style=\"width: 100%; height: auto; display: block;\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Improve_this_product_photo_of_202606171858-1-scaled"
+        },
+        {
+          "index": 11,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Improve_this_product_photo_of_202606171858-scaled.jpeg",
+          "before": "<img style=\"width: 100%; height: auto; display: block;\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Improve_this_product_photo_of_202606171858-scaled.jpeg\" alt=\"Furbo 360\u00b0",
+          "after": "<img style=\"width: 100%; height: auto; display: block;\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Improve_this_product_photo_of_202606171858-scaled.jpeg\" alt=\"Furbo 360\u00b0"
+        },
+        {
+          "index": 12,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Improve_this_product_photo_of_202606171900-scaled.jpeg",
+          "before": "<img style=\"width: 100%; height: auto; display: block;\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Improve_this_product_photo_of_202606171900-scaled.jpeg\" alt=\"Furbo 360\u00b0",
+          "after": "<img style=\"width: 100%; height: auto; display: block;\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Improve_this_product_photo_of_202606171900-scaled.jpeg\" alt=\"Furbo 360\u00b0"
+        },
+        {
+          "index": 13,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Pet_camera_product_photo_202606171918.jpeg",
+          "before": "<img style=\"width: 100%; height: auto; display: block;\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Pet_camera_product_photo_202606171918.jpeg\" alt=\"Furbo 360\u00b0 Dog Camera\"",
+          "after": "<img style=\"width: 100%; height: auto; display: block;\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Pet_camera_product_photo_202606171918.jpeg\" alt=\"Furbo 360\u00b0 Dog Camera\""
+        },
+        {
+          "index": 14,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Improve_this_product_photo_of_202606171921-scaled.jpeg",
+          "before": "<img style=\"width: 100%; height: auto; display: block;\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Improve_this_product_photo_of_202606171921-scaled.jpeg\" alt=\"Furbo 360\u00b0",
+          "after": "<img style=\"width: 100%; height: auto; display: block;\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Improve_this_product_photo_of_202606171921-scaled.jpeg\" alt=\"Furbo 360\u00b0"
+        }
+      ]
+    },
+    {
+      "file": "best-robot-vacuums-2026-top-8-models-tested-honest-reviews\\index.html",
+      "img_count": 1,
+      "hero_index": 0,
+      "changes": 0,
+      "tags": [
+        {
+          "index": 0,
+          "hero": true,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_premium_editorial_hero_202606161627-scaled.jpeg",
+          "before": "<img class=\"e-image-base e-b6af096-02429b2\" data-interaction-id=\"b6af096\" id=\"163\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_premium_editorial_hero_20260",
+          "after": "<img class=\"e-image-base e-b6af096-02429b2\" data-interaction-id=\"b6af096\" id=\"163\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_premium_editorial_hero_20260"
+        }
+      ]
+    },
+    {
+      "file": "best-wireless-earbuds-2026-top-7-models-tested-honest-reviews\\index.html",
+      "img_count": 1,
+      "hero_index": 0,
+      "changes": 1,
+      "tags": [
+        {
+          "index": 0,
+          "hero": true,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Create_an_ultra-realistic_editorial_hero_202606141914-scaled.jpeg",
+          "before": "<img class=\"e-image-base e-13225c5-cf5358c\" data-interaction-id=\"13225c5\" id=\"145\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Create_an_ultra-realistic_editorial_hero_202",
+          "after": "<img class=\"e-image-base e-13225c5-cf5358c\" data-interaction-id=\"13225c5\" id=\"145\" src=\"https://pickora.shop/wp-content/uploads/2026/06/Create_an_ultra-realistic_editorial_hero_202"
+        }
+      ]
+    },
+    {
+      "file": "categories\\index.html",
+      "img_count": 8,
+      "hero_index": 0,
+      "changes": 0,
+      "tags": [
+        {
+          "index": 0,
+          "hero": true,
+          "src": "https://pickora.shop/wp-content/uploads/2026/07/Desk_with_MacBook_and_keyboard_202607011350.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Desk_with_MacBook_and_keyboard_202607011350.webp\" alt=\"Minimalist Japandi home office setup featuring an Apple MacBook Pro",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Desk_with_MacBook_and_keyboard_202607011350.webp\" alt=\"Minimalist Japandi home office setup featuring an Apple MacBook Pro"
+        },
+        {
+          "index": 1,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/07/Digen_image_1782918584661.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Digen_image_1782918584661.webp\" alt=\"Minimalist coffee setup featuring a Fellow Stagg white electric kettle and Ember smar",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Digen_image_1782918584661.webp\" alt=\"Minimalist coffee setup featuring a Fellow Stagg white electric kettle and Ember smar"
+        },
+        {
+          "index": 2,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/07/Desk_setup_with_cyan_reflection_202607011648.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Desk_setup_with_cyan_reflection_202607011648.webp\" alt=\"Monitor setup\" loading=\"lazy\" decoding=\"async\" width=\"896\" height=",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Desk_setup_with_cyan_reflection_202607011648.webp\" alt=\"Monitor setup\" loading=\"lazy\" decoding=\"async\" width=\"896\" height="
+        },
+        {
+          "index": 3,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Aesthetic_flatlay_product_photography_of_202606262059-scaled.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Aesthetic_flatlay_product_photography_of_202606262059-scaled.webp\" alt=\"Travel gear accessories flatlay\" loading=\"lazy\" de",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Aesthetic_flatlay_product_photography_of_202606262059-scaled.webp\" alt=\"Travel gear accessories flatlay\" loading=\"lazy\" de"
+        },
+        {
+          "index": 4,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/07/Digen_image_1782915940164.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Digen_image_1782915940164.webp\" alt=\"Cozy dark academia study setup featuring an Azio Retro Classic mechanical keyboard wi",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Digen_image_1782915940164.webp\" alt=\"Cozy dark academia study setup featuring an Azio Retro Classic mechanical keyboard wi"
+        },
+        {
+          "index": 5,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/07/A_moody_cinematic_close-up_of_202607011921.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/A_moody_cinematic_close-up_of_202607011921.webp\" alt=\"Moody home bar scene with a cocktail smoker kit, crystal decanter, a",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/A_moody_cinematic_close-up_of_202607011921.webp\" alt=\"Moody home bar scene with a cocktail smoker kit, crystal decanter, a"
+        },
+        {
+          "index": 6,
+          "hero": false,
+          "src": "../wp-content/uploads/2026/07/Sleek_Dyson_Hot_Cool_purifier_standing_on_slate_flagstone_flooring_beside.webp",
+          "before": "<img src=\"../wp-content/uploads/2026/07/Sleek_Dyson_Hot_Cool_purifier_standing_on_slate_flagstone_flooring_beside.webp\" alt=\"Sleek Dyson Hot+Cool purifier standing on slate flagsto",
+          "after": "<img src=\"../wp-content/uploads/2026/07/Sleek_Dyson_Hot_Cool_purifier_standing_on_slate_flagstone_flooring_beside.webp\" alt=\"Sleek Dyson Hot+Cool purifier standing on slate flagsto"
+        }
+      ]
+    },
+    {
+      "file": "category\\uncategorized\\index.html",
+      "img_count": 0,
+      "hero_index": null,
+      "changes": 0,
+      "tags": []
+    },
+    {
+      "file": "consumer-electronics\\index.html",
+      "img_count": 5,
+      "hero_index": 0,
+      "changes": 0,
+      "tags": [
+        {
+          "index": 0,
+          "hero": true,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_the_202606261502-scaled.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_the_202606261502-scaled.webp\" alt=\"Premium customizable mechanical keyboard on a minimali",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_the_202606261502-scaled.webp\" alt=\"Premium customizable mechanical keyboard on a minimali"
+        },
+        {
+          "index": 1,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261757-scaled.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261757-scaled.webp\" alt=\"Premium customizable mechanical keyboard on a mini",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261757-scaled.webp\" alt=\"Premium customizable mechanical keyboard on a mini"
+        },
+        {
+          "index": 2,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261931-scaled.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261931-scaled.webp\" alt=\"Sony WH-1000XM5 premium wireless noise canceling h",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261931-scaled.webp\" alt=\"Sony WH-1000XM5 premium wireless noise canceling h"
+        },
+        {
+          "index": 3,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261942-2-scaled.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261942-2-scaled.webp\" alt=\"Phomemo M110 portable smart thermal label maker ",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261942-2-scaled.webp\" alt=\"Phomemo M110 portable smart thermal label maker "
+        },
+        {
+          "index": 4,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261954-scaled.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261954-scaled.webp\" alt=\"Samsung 49-inch Odyssey OLED G9 Super Ultrawide cu",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261954-scaled.webp\" alt=\"Samsung 49-inch Odyssey OLED G9 Super Ultrawide cu"
+        }
+      ]
+    },
+    {
+      "file": "fitness-health\\index.html",
+      "img_count": 5,
+      "hero_index": 0,
+      "changes": 0,
+      "tags": [
+        {
+          "index": 0,
+          "hero": true,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Silver_smart_ring_on_tray_202606281909.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Silver_smart_ring_on_tray_202606281909.webp\" alt=\"Premium silver Oura Ring 4 smart ring resting on a clean white quartz tr",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Silver_smart_ring_on_tray_202606281909.webp\" alt=\"Premium silver Oura Ring 4 smart ring resting on a clean white quartz tr"
+        },
+        {
+          "index": 1,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Water_bottle_on_fitness_mat_202606281918.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Water_bottle_on_fitness_mat_202606281918.webp\" alt=\"Matte white LARQ Bottle PureVis self-cleaning water bottle resting on ",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Water_bottle_on_fitness_mat_202606281918.webp\" alt=\"Matte white LARQ Bottle PureVis self-cleaning water bottle resting on "
+        },
+        {
+          "index": 2,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Adjustable_dumbbells_on_concrete-_202606281927.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Adjustable_dumbbells_on_concrete-_202606281927.webp\" alt=\"Heavy-duty CAP ADJUSTABELL adjustable dumbbells in their black c",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Adjustable_dumbbells_on_concrete-_202606281927.webp\" alt=\"Heavy-duty CAP ADJUSTABELL adjustable dumbbells in their black c"
+        },
+        {
+          "index": 3,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Minimalist_smart_scale_on_floor_202606281934.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Minimalist_smart_scale_on_floor_202606281934.webp\" alt=\"Premium black Wyze Smart Scale X with a glowing digital display on",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Minimalist_smart_scale_on_floor_202606281934.webp\" alt=\"Premium black Wyze Smart Scale X with a glowing digital display on"
+        },
+        {
+          "index": 4,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Massage_gun_in_travel_case_202606281946.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Massage_gun_in_travel_case_202606281946.webp\" alt=\"Matte black Sharper Image PowerBoost Circuit massage gun in its open sl",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Massage_gun_in_travel_case_202606281946.webp\" alt=\"Matte black Sharper Image PowerBoost Circuit massage gun in its open sl"
+        }
+      ]
+    },
+    {
+      "file": "home-kitchen\\index.html",
+      "img_count": 5,
+      "hero_index": 0,
+      "changes": 0,
+      "tags": [
+        {
+          "index": 0,
+          "hero": true,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Espresso_machine_and_latte_mug_202606281727.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Espresso_machine_and_latte_mug_202606281727.webp\" alt=\"Matte black Breville Bambino Plus espresso machine on a modern whit",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Espresso_machine_and_latte_mug_202606281727.webp\" alt=\"Matte black Breville Bambino Plus espresso machine on a modern whit"
+        },
+        {
+          "index": 1,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Air_fryer_with_sweet_potato_202606281752.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Air_fryer_with_sweet_potato_202606281752.webp\" alt=\"Matte black Cosori TurboBlaze air fryer on a clean white quartz kitche",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Air_fryer_with_sweet_potato_202606281752.webp\" alt=\"Matte black Cosori TurboBlaze air fryer on a clean white quartz kitche"
+        },
+        {
+          "index": 2,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Black_kettle_on_kitchen_countertop_202606281801.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Black_kettle_on_kitchen_countertop_202606281801.webp\" alt=\"Matte black Cosori electric gooseneck kettle on a minimalist wo",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Black_kettle_on_kitchen_countertop_202606281801.webp\" alt=\"Matte black Cosori electric gooseneck kettle on a minimalist wo"
+        },
+        {
+          "index": 3,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Stainless_steel_smart_toaster_to-_202606281811.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Stainless_steel_smart_toaster_to-_202606281811.webp\" alt=\"Stainless steel Keenstone 4-slice digital smart toaster with glo",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Stainless_steel_smart_toaster_to-_202606281811.webp\" alt=\"Stainless steel Keenstone 4-slice digital smart toaster with glo"
+        },
+        {
+          "index": 4,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Glass_water_filter_pitcher_empty_202606281821.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Glass_water_filter_pitcher_empty_202606281821.webp\" alt=\"Elegant glass LifeStraw Home water filter pitcher on a bright woo",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Glass_water_filter_pitcher_empty_202606281821.webp\" alt=\"Elegant glass LifeStraw Home water filter pitcher on a bright woo"
+        }
+      ]
+    },
+    {
+      "file": "index.html",
+      "img_count": 9,
+      "hero_index": 0,
+      "changes": 5,
+      "tags": [
+        {
+          "index": 0,
+          "hero": true,
+          "src": "https://pickora.shop/wp-content/uploads/2026/07/Luxury_tech_products_composition_202606122059.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Luxury_tech_products_composition_202606122059.webp\" alt=\"Electronics\" loading=\"eager\" fetchpriority=\"high\" decoding=\"async",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Luxury_tech_products_composition_202606122059.webp\" alt=\"Electronics\" loading=\"eager\" fetchpriority=\"high\" decoding=\"async"
+        },
+        {
+          "index": 1,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/07/Home_kitchen_appliances_showcase-_202606122059.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Home_kitchen_appliances_showcase-_202606122059.webp\" alt=\"Kitchen\" loading=\"lazy\" decoding=\"async\" width=\"1200\" height=\"89",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Home_kitchen_appliances_showcase-_202606122059.webp\" alt=\"Kitchen\" loading=\"lazy\" decoding=\"async\" width=\"1200\" height=\"89"
+        },
+        {
+          "index": 2,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/07/Fitness_and_health_products_show-_202606122059.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Fitness_and_health_products_show-_202606122059.webp\" alt=\"Fitness\" loading=\"lazy\" decoding=\"async\" width=\"1200\" height=\"89",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Fitness_and_health_products_show-_202606122059.webp\" alt=\"Fitness\" loading=\"lazy\" decoding=\"async\" width=\"1200\" height=\"89"
+        },
+        {
+          "index": 3,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/07/Pet_supplies_showcase_luxury_acc-_202606122059.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Pet_supplies_showcase_luxury_acc-_202606122059.webp\" alt=\"Pets\" loading=\"lazy\" decoding=\"async\" width=\"1200\" height=\"896\">",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Pet_supplies_showcase_luxury_acc-_202606122059.webp\" alt=\"Pets\" loading=\"lazy\" decoding=\"async\" width=\"1200\" height=\"896\">"
+        },
+        {
+          "index": 4,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/07/A_modern_black_air_fryer_202606131522-scaled.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/A_modern_black_air_fryer_202606131522-scaled.webp\" alt=\"Best Budget Air Fryers Review 2026\" loading=\"lazy\" decoding=\"async",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/A_modern_black_air_fryer_202606131522-scaled.webp\" alt=\"Best Budget Air Fryers Review 2026\" loading=\"lazy\" decoding=\"async"
+        },
+        {
+          "index": 5,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/07/Black_wireless_earbuds_in_charging_202606131603-scaled.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Black_wireless_earbuds_in_charging_202606131603-scaled.webp\" alt=\"Top Wireless Earbuds Review\" loading=\"lazy\" decoding=\"as",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Black_wireless_earbuds_in_charging_202606131603-scaled.webp\" alt=\"Top Wireless Earbuds Review\" loading=\"lazy\" decoding=\"as"
+        },
+        {
+          "index": 6,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/07/A_modern_robot_vacuum_cleaner_202606131525-scaled.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/A_modern_robot_vacuum_cleaner_202606131525-scaled.webp\" alt=\"Best Robot Vacuums Review\" loading=\"lazy\" decoding=\"async\" wi",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/A_modern_robot_vacuum_cleaner_202606131525-scaled.webp\" alt=\"Best Robot Vacuums Review\" loading=\"lazy\" decoding=\"async\" wi"
+        },
+        {
+          "index": 7,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/07/A_smart_pet_camera_on_202606131525-scaled.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/A_smart_pet_camera_on_202606131525-scaled.webp\" alt=\"Best Pet Cameras Review\" loading=\"lazy\" decoding=\"async\" width=\"2560\"",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/A_smart_pet_camera_on_202606131525-scaled.webp\" alt=\"Best Pet Cameras Review\" loading=\"lazy\" decoding=\"async\" width=\"1200\""
+        },
+        {
+          "index": 8,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/07/Ninja_Air_Fryer_Pro_on_202606131645-scaled.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Ninja_Air_Fryer_Pro_on_202606131645-scaled.webp\" alt=\"Ninja Air Fryer Pro\" loading=\"lazy\" decoding=\"async\" width=\"2560\" he",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/07/Ninja_Air_Fryer_Pro_on_202606131645-scaled.webp\" alt=\"Ninja Air Fryer Pro\" loading=\"lazy\" decoding=\"async\" width=\"1200\" he"
+        }
+      ]
+    },
+    {
+      "file": "pet-supplies\\index.html",
+      "img_count": 5,
+      "hero_index": 0,
+      "changes": 0,
+      "tags": [
+        {
+          "index": 0,
+          "hero": true,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Minimalist_smart_pet_feeder_202606282002.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Minimalist_smart_pet_feeder_202606282002.webp\" alt=\"Minimalist white PETKIT automatic pet feeder with a stainless steel bo",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Minimalist_smart_pet_feeder_202606282002.webp\" alt=\"Minimalist white PETKIT automatic pet feeder with a stainless steel bo"
+        },
+        {
+          "index": 1,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Pet_water_fountain_minimalist_de-_202606301436.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Pet_water_fountain_minimalist_de-_202606301436.webp\" alt=\"Minimalist translucent PETKIT pet water fountain with a gentle w",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Pet_water_fountain_minimalist_de-_202606301436.webp\" alt=\"Minimalist translucent PETKIT pet water fountain with a gentle w"
+        },
+        {
+          "index": 2,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/An_aesthetic_product_photography_of_202606301447.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/An_aesthetic_product_photography_of_202606301447.webp\" alt=\"Large white Ellenpent automatic self-cleaning litter box with ",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/An_aesthetic_product_photography_of_202606301447.webp\" alt=\"Large white Ellenpent automatic self-cleaning litter box with "
+        },
+        {
+          "index": 3,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/An_aesthetic_product_photography_of_202606301516.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/An_aesthetic_product_photography_of_202606301516.webp\" alt=\"Sleek minimalist white Tractive GPS pet tracker attached to a ",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/An_aesthetic_product_photography_of_202606301516.webp\" alt=\"Sleek minimalist white Tractive GPS pet tracker attached to a "
+        },
+        {
+          "index": 4,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Heartwarming_scene_of_a_dog_202606171925-scaled.jpeg",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Heartwarming_scene_of_a_dog_202606171925-scaled.jpeg\" alt=\"Sleek white Furbo 360 dog camera with a premium wooden top lid ",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Heartwarming_scene_of_a_dog_202606171925-scaled.jpeg\" alt=\"Sleek white Furbo 360 dog camera with a premium wooden top lid "
+        }
+      ]
+    },
+    {
+      "file": "products\\index.html",
+      "img_count": 4,
+      "hero_index": 0,
+      "changes": 0,
+      "tags": [
+        {
+          "index": 0,
+          "hero": true,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Tech_gadgets_on_desk_202606231445.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Tech_gadgets_on_desk_202606231445.webp\" alt=\"Consumer Electronics\" loading=\"eager\" fetchpriority=\"high\" decoding=\"async\" w",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Tech_gadgets_on_desk_202606231445.webp\" alt=\"Consumer Electronics\" loading=\"eager\" fetchpriority=\"high\" decoding=\"async\" w"
+        },
+        {
+          "index": 1,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_modern_202606231450-scaled.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_modern_202606231450-scaled.webp\" alt=\"Home &amp; Kitchen\" loading=\"lazy\" decoding=\"async\"",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_modern_202606231450-scaled.webp\" alt=\"Home &amp; Kitchen\" loading=\"lazy\" decoding=\"async\""
+        },
+        {
+          "index": 2,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_modern_202606231456-scaled.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_modern_202606231456-scaled.webp\" alt=\"Fitness &amp; Health\" loading=\"lazy\" decoding=\"asyn",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_modern_202606231456-scaled.webp\" alt=\"Fitness &amp; Health\" loading=\"lazy\" decoding=\"asyn"
+        },
+        {
+          "index": 3,
+          "hero": false,
+          "src": "https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_premium_202606231533-scaled.webp",
+          "before": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_premium_202606231533-scaled.webp\" alt=\"Pet Supplies\" loading=\"lazy\" decoding=\"async\" widt",
+          "after": "<img src=\"https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_premium_202606231533-scaled.webp\" alt=\"Pet Supplies\" loading=\"lazy\" decoding=\"async\" widt"
+        }
+      ]
+    }
+  ]
+}
