@@ -43,6 +43,11 @@
 ---
 ## Change Log
 
+### 2026-08-13 — Sanitize & unify header/nav across all pages
+- Desktop: logo left / Home–About on one horizontal row on every page (including `/articles/`).
+- Removed black focus outlines and long underlines on `a:focus` / `.current-menu-item` / `aria-current`.
+- Mobile overlay: single left column (`padding-left: 0`), close button top-right (`margin: 0`), no border/outline/underline on active/focus links.
+
 ### 2026-08-12 — Mobile menu column align + footer bottom gap
 - Open nav: fixed full-viewport overlay (`z-index: 999999`), close button top-right, menu links in a left-aligned column (no staggered indent).
 - Search (`#pk-search-system`) forced under the overlay (`z-index: 1`).
