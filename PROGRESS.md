@@ -43,6 +43,12 @@
 ---
 ## Change Log
 
+### 2026-08-13 — Premium mobile nav rewrite (sitewide)
+- Root cause: open menu inherited header `justify-right` and WP `.responsive-close` `max-width: wide-size` (side drawer + staircase).
+- Full-viewport white overlay; close pill top-right; uniform left column links (22px/600, 14px padding, soft hover/current states).
+- Removed focus rings, long underlines, and `::before/::after` on current items (desktop + mobile).
+- Sticky header + mobile hub top offset so titles are not clipped under the bar.
+
 ### 2026-08-13 — Sanitize & unify header/nav across all pages
 - Desktop: logo left / Home–About on one horizontal row on every page (including `/articles/`).
 - Removed black focus outlines and long underlines on `a:focus` / `.current-menu-item` / `aria-current`.
