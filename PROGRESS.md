@@ -43,6 +43,9 @@
 ---
 ## Change Log
 
+### 2026-08-12 — Sticky footer on legal pages (remove bottom white gap)
+- `/privacy-policy/`, `/affiliate-disclosure/`, `/terms-of-service/`, `/contact/`: flex sticky-footer layout (`body` + `.wp-site-blocks` column, `main` grows, `footer` `margin-top: auto`, `#15223B` background) so the blue footer pins to the viewport bottom on short pages.
+
 ### 2026-08-12 — Phase 0 complete: Amazon compliance, Consent Mode v2, GA4 tracking
 - Fixed **57** Amazon `<a>` links with `rel="sponsored nofollow noopener noreferrer"` + `target="_blank"`; categories popup CTAs updated to the same `rel`.
 - Replaced Site Kit (`GT-MB8GRCPZ`) with GA4 `G-Q4SCHBR4QM` + Consent Mode v2 defaults on all 19 HTML pages.

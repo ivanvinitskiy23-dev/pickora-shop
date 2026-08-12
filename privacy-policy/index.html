@@ -231,6 +231,57 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
   .pk-legal-badge { font-size: 11px; letter-spacing: 0.12em; }
   .pk-legal-content { margin-top: 32px; margin-bottom: 90px !important; padding: 0 14px; padding-bottom: 30px !important; }
 }
+
+/* Sticky footer — pin footer to bottom of viewport on legal pages */
+html, body {
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: #ffffff;
+}
+
+body {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
+}
+
+/* WP wrapper must be a flex column so footer margin-top:auto works */
+.wp-site-blocks {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 0 auto !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Main content takes remaining free space */
+main, .pk-legal-container, .pk-legal-content, .entry-content {
+  flex: 1 0 auto !important;
+}
+
+.pk-disclosure-footer {
+  flex-shrink: 0 !important;
+}
+
+/* Footer always sticks to the bottom */
+footer,
+footer.site-footer {
+  flex-shrink: 0 !important;
+  width: 100% !important;
+  margin-top: auto !important;
+  margin-bottom: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  position: static !important;
+  bottom: auto !important;
+  background-color: #15223B !important;
+}
+
+footer.site-footer > .wp-block-group.has-color-2-background-color {
+  background-color: #15223B !important;
+}
 </style>
 
 <style id="core-block-supports-inline-css">
