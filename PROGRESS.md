@@ -43,6 +43,10 @@
 ---
 ## Change Log
 
+### 2026-08-12 — Restore consent banner & analytics scripts
+- Recreated `assets/js/pickora-consent.js` (Consent Mode v2 cookie banner) and `assets/js/pickora-analytics.js` (affiliate clicks, scroll depth, engaged read) from report §3.3.
+- Linked both scripts with `defer` in `<head>` and before `</body>` on all site HTML pages.
+
 ### 2026-08-12 — Homepage footer legal links
 - Added centered `pk-footer-bottom` / `pk-footer-legal` nav (Privacy, Disclosure, Terms, Contact) in `index.html` footer, above the © 2026 copyright line.
 
