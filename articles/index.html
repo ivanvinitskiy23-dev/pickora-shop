@@ -385,11 +385,20 @@ main#wp--skip-link--target {
     margin-block-start: 0 !important;
 }
 
+/* Kill stacked WP block gaps that inflate the Articles hero */
+main#wp--skip-link--target > *,
+main#wp--skip-link--target .entry-content > *,
+.elementor-11 > .e-con,
+.elementor-11 > .e-flexbox-base {
+    margin-block-start: 0 !important;
+    margin-top: 0 !important;
+}
+
 .pk-hub-header-section {
     text-align: center;
     max-width: 850px;
-    /* Shared hub top offset with /products/ and /categories/ */
-    margin: 48px auto 20px auto;
+    /* Compact shared hub top (was 48px + 40px main/entry padding = huge gap) */
+    margin: 32px auto 16px auto;
     padding: 0 20px;
     font-family: inherit;
     box-sizing: border-box;
@@ -473,9 +482,9 @@ main#wp--skip-link--target {
 #pk-search-system {
     width: 100% !important;
     max-width: 580px !important;
-    margin: 0 auto 50px auto !important;
+    margin: 8px auto 24px auto !important;
     position: relative !important;
-    z-index: 9999 !important; /* Поверх всего контента */
+    z-index: 9999 !important; /* Above content for suggestions */
 }
 
 .pk-search-outer-container {
@@ -804,13 +813,26 @@ html, body, main, section, div.elementor, div.entry-content {
 }
 
 .pk-articles-section,
+main#wp--skip-link--target,
 main,
 .entry-content {
-  padding-top: 40px !important;
-  padding-bottom: 40px !important;
+  padding-top: 0 !important;
+  padding-bottom: 24px !important;
+  margin-top: 0 !important;
   margin-bottom: 0 !important;
   min-height: 0 !important;
   height: auto !important;
+}
+
+/* Collapse Elementor section gaps between hero / search / grid */
+.elementor-11 > .elementor-element,
+.elementor-11 .e-flexbox-base,
+.elementor-11 .e-con {
+  margin: 0 !important;
+  padding-block: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  gap: 0 !important;
 }
 
 /* AOS left sections at opacity:0 without JS — force visible */
@@ -821,20 +843,6 @@ main,
   visibility: visible !important;
 }
 
-/* Fix huge whitespace gap on /articles/ */
-.pk-articles-section,
-main#wp--skip-link--target,
-main {
-  min-height: 0 !important;
-  height: auto !important;
-  padding-bottom: 40px !important;
-}
-
-.elementor-11,
-.elementor-11 .e-con,
-.elementor-11 .e-flexbox-base,
-.elementor-11 .e-grid,
-.elementor-11 .e-con-boxed,
 .pk-articles-about {
   min-height: 0 !important;
   height: auto !important;
@@ -844,7 +852,7 @@ main {
     width: 100%;
     max-width: 1140px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 0 20px 20px;
     box-sizing: border-box;
     min-height: 0 !important;
     height: auto !important;
@@ -857,8 +865,8 @@ main {
     gap: 30px;
     align-items: start;
     max-width: 1140px;
-    margin: 40px auto;
-    padding: 0 20px;
+    margin: 8px auto 32px;
+    padding: 0;
     box-sizing: border-box;
 }
 
@@ -964,8 +972,8 @@ main {
 @media (max-width: 767px) {
     .pk-articles-grid {
         grid-template-columns: 1fr;
-        margin: 24px auto;
-        padding: 0 16px;
+        margin: 8px auto 24px;
+        padding: 0;
         gap: 20px;
     }
     .pk-card-content {

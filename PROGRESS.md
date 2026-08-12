@@ -43,6 +43,10 @@
 ---
 ## Change Log
 
+### 2026-08-12 — Fix oversized vertical gaps on /articles/
+- Removed stacked `padding-top: 40px` on `main`/`entry-content` plus hub `margin-top: 48px` (was ~120px+ above badge).
+- Tightened search→grid spacing (`#pk-search-system` bottom 24px, grid top 8px) and collapsed Elementor section gaps.
+
 ### 2026-08-12 — Unify Products / Articles / Categories hub header spacing
 - Reset WP `margin-block-start: 40px` on page content wrappers; set shared `48px` top offset for `.pk-products-hub`, `.pk-hub-header-section`, and `.pk-catalog-header` so badge→title blocks no longer jump between pages.
 
