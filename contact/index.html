@@ -392,9 +392,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 <link rel="stylesheet" id="elementor-gf-opensans-css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&amp;display=swap" media="all">
 <link rel="stylesheet" id="elementor-gf-robotoslab-css" href="https://fonts.googleapis.com/css?family=Roboto+Slab:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&amp;display=swap" media="all">
 <link rel="stylesheet" id="elementor-gf-montserrat-css" href="https://fonts.googleapis.com/css?family=Montserrat:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&amp;display=swap" media="all">
-<script id="jquery-core-js" src="https://pickora.shop/wp-includes/js/jquery/jquery.min.js?ver=3.7.1"></script>
-<script id="jquery-migrate-js" src="https://pickora.shop/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1"></script>
-
+<script id="jquery-core-js" src="https://pickora.shop/wp-includes/js/jquery/jquery.min.js?ver=3.7.1" defer></script>
 <!-- ============ Google Analytics 4 + Consent Mode v2 ============ -->
 <!-- Place as high as possible in <head>, before other scripts -->
 <script>
@@ -594,6 +592,22 @@ footer.site-footer {
   .pk-disclosure-footer p {
     white-space: normal;
   }
+}
+</style>
+
+<style id="pk-tap-targets-inline-css">
+.wp-block-navigation__responsive-container-open,
+.wp-block-navigation__responsive-container-close {
+  min-width: 44px !important; min-height: 44px !important;
+  display: inline-flex !important; align-items: center !important; justify-content: center !important;
+  padding: 10px !important; margin: -10px !important;
+}
+.wp-block-social-links .wp-social-link {
+  min-width: 44px !important; min-height: 44px !important;
+  display: inline-flex !important; align-items: center !important; justify-content: center !important;
+}
+.pk-filter-btn, .categories-filter button {
+  min-height: 44px !important; padding-block: 10px !important;
 }
 </style>
 

@@ -17,15 +17,19 @@ html, body { max-width: 100%; overflow-x: clip; }
 <style id="pk-tap-targets-inline-css">
 .wp-block-navigation__responsive-container-open,
 .wp-block-navigation__responsive-container-close {
-    min-width: 44px; min-height: 44px; display: inline-flex;
-    align-items: center; justify-content: center; padding: 10px; margin: -10px;
+  min-width: 44px !important; min-height: 44px !important;
+  display: inline-flex !important; align-items: center !important; justify-content: center !important;
+  padding: 10px !important; margin: -10px !important;
 }
 .wp-block-social-links .wp-social-link {
-    min-width: 44px; min-height: 44px; display: inline-flex;
-    align-items: center; justify-content: center;
+  min-width: 44px !important; min-height: 44px !important;
+  display: inline-flex !important; align-items: center !important; justify-content: center !important;
 }
-.pk-filter-btn, .categories-filter button { min-height: 44px; padding-block: 10px; }
+.pk-filter-btn, .categories-filter button {
+  min-height: 44px !important; padding-block: 10px !important;
+}
 </style>
+
 <style id="wp-img-auto-sizes-contain-inline-css">
 img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 /*# sourceURL=wp-img-auto-sizes-contain-inline-css */
@@ -682,7 +686,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const highlightedTitle = art.title.replace(regex, '<span class="pk-highlight">$1</span>');
 
                 item.innerHTML = `
-                    <img loading="lazy" decoding="async" src="${art.img}" class="pk-suggest-img" onerror="this.style.display='none'">
+                    <img class="pk-suggest-img" src="${art.img}" loading="eager" fetchpriority="high" decoding="async" onerror="this.style.display='none'">
                     <div class="pk-suggest-info">
                         <span>${art.tag}</span>
                         <h4>${highlightedTitle}</h4>
@@ -733,7 +737,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <article class="pk-card">
             <a href="https://pickora.shop/best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews/" class="pk-card-inner">
                 <div class="pk-card-media">
-                    <img src="https://pickora.shop/wp-content/uploads/2026/06/A_smart_pet_camera_on_202606131525-scaled.jpeg" alt="Pet Cameras" loading="lazy" decoding="async" width="1200" height="670">
+                    <img src="https://pickora.shop/wp-content/uploads/2026/06/A_smart_pet_camera_on_202606131525-scaled.jpeg" alt="Pet Cameras" width="1200" height="670" loading="lazy" decoding="async">
                     <span class="pk-card-tag">Pet Tech</span>
                 </div>
                 <div class="pk-card-content">
@@ -752,7 +756,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <article class="pk-card">
             <a href="https://pickora.shop/best-robot-vacuums-2026-top-8-models-tested-honest-reviews/" class="pk-card-inner">
                 <div class="pk-card-media">
-                    <img src="https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_premium_editorial_hero_202606161627-scaled.jpeg" alt="Robot Vacuums" loading="lazy" decoding="async" width="1200" height="670">
+                    <img src="https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_premium_editorial_hero_202606161627-scaled.jpeg" alt="Robot Vacuums" width="1200" height="670" loading="lazy" decoding="async">
                     <span class="pk-card-tag">Smart Home</span>
                 </div>
                 <div class="pk-card-content">
@@ -770,7 +774,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <article class="pk-card">
             <a href="https://pickora.shop/best-wireless-earbuds-2026-top-7-models-tested-honest-reviews/" class="pk-card-inner">
                 <div class="pk-card-media">
-                    <img src="https://pickora.shop/wp-content/uploads/2026/06/Create_an_ultra-realistic_editorial_hero_202606141914-scaled.jpeg" alt="Wireless Earbuds" loading="lazy" decoding="async" width="1200" height="670">
+                    <img src="https://pickora.shop/wp-content/uploads/2026/06/Create_an_ultra-realistic_editorial_hero_202606141914-scaled.jpeg" alt="Wireless Earbuds" width="1200" height="670" loading="lazy" decoding="async">
                     <span class="pk-card-tag">Audio</span>
                 </div>
                 <div class="pk-card-content">
@@ -788,7 +792,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <article class="pk-card">
             <a href="https://pickora.shop/best-air-fryers-of-2026-which-one-should-you-buy/" class="pk-card-inner">
                 <div class="pk-card-media">
-                    <img src="https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_commercial_food_photography_202606141721-1-scaled.jpeg" alt="Air Fryers" loading="lazy" decoding="async" width="1200" height="670">
+                    <img src="https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_commercial_food_photography_202606141721-1-scaled.jpeg" alt="Air Fryers" width="1200" height="670" loading="lazy" decoding="async">
                     <span class="pk-card-tag">Kitchen Tech</span>
                 </div>
                 <div class="pk-card-content">

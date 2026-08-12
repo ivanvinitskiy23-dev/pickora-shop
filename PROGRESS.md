@@ -43,6 +43,12 @@
 ---
 ## Change Log
 
+### 2026-08-12 — Phase 1 complete: CWV images, scripts, tap targets
+- Recompressed **71** uploads >500KB (max width 1600, WebP/JPEG q≈82): **~273 MB** saved; uploads images ≈330MB → ≈59MB.
+- All site HTML: hero `loading="eager" fetchpriority="high"`; below-fold `loading="lazy" decoding="async"`; explicit `width`/`height` where local files exist.
+- Removed jquery-migrate; deferred head jQuery; refreshed WCAG 44×44 tap-target CSS with `!important`.
+- Confirmed broken Elementor `local-95/132/160/193` CSS links absent.
+
 ### 2026-08-12 — Fix oversized vertical gaps on /articles/
 - Removed stacked `padding-top: 40px` on `main`/`entry-content` plus hub `margin-top: 48px` (was ~120px+ above badge).
 - Tightened search→grid spacing (`#pk-search-system` bottom 24px, grid top 8px) and collapsed Elementor section gaps.
