@@ -118,18 +118,52 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
 <link rel="stylesheet" id="elementor-gf-montserrat-css" href="https://fonts.googleapis.com/css?family=Montserrat:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&amp;display=swap" media="all">
 <link rel="stylesheet" id="elementor-gf-opensans-css" href="https://fonts.googleapis.com/css?family=Open+Sans:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&amp;display=swap" media="all">
 <script id="jquery-core-js" src="https://pickora.shop/wp-includes/js/jquery/jquery.min.js?ver=3.7.1" defer></script>
-<!-- Google tag (gtag.js) snippet added by Site Kit -->
-<!-- Google Analytics snippet added by Site Kit -->
-<script id="google_gtagjs-js" src="https://www.googletagmanager.com/gtag/js?id=GT-MB8GRCPZ" async></script>
-<script id="google_gtagjs-js-after">
-window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}
-gtag("set","linker",{"domains":["pickora.shop"]});
-gtag("js", new Date());
-gtag("set", "developer_id.dZTNiMT", true);
-gtag("config", "GT-MB8GRCPZ");
- window._googlesitekit = window._googlesitekit || {}; window._googlesitekit.throttledEvents = []; window._googlesitekit.gtagEvent = (name, data) => { var key = JSON.stringify( { name, data } ); if ( !! window._googlesitekit.throttledEvents[ key ] ) { return; } window._googlesitekit.throttledEvents[ key ] = true; setTimeout( () => { delete window._googlesitekit.throttledEvents[ key ]; }, 5 ); gtag( "event", name, { ...data, event_source: "site-kit" } ); }; 
-//# sourceURL=google_gtagjs-js-after
+<!-- ============ Google Analytics 4 + Consent Mode v2 ============ -->
+<!-- Place as high as possible in <head>, before other scripts -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+
+  // 1) Before GA loads: default consent for EU/UK/CH (denied until accept).
+  gtag('consent', 'default', {
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied',
+    'analytics_storage': 'denied',
+    'functionality_storage': 'granted',
+    'security_storage': 'granted',
+    'wait_for_update': 500,
+    'region': ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE',
+               'IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE',
+               'GB','CH','NO','IS','LI']
+  });
+
+  // 2) Rest of world (US = main Amazon traffic): analytics allowed.
+  gtag('consent', 'default', {
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied',
+    'analytics_storage': 'granted',
+    'functionality_storage': 'granted',
+    'security_storage': 'granted'
+  });
+
+  // 3) Restore previously saved user choice.
+  try {
+    var saved = JSON.parse(localStorage.getItem('pk_consent') || 'null');
+    if (saved && saved.analytics_storage) {
+      gtag('consent', 'update', saved);
+    }
+  } catch (e) {}
+
+  gtag('js', new Date());
+  gtag('config', 'G-Q4SCHBR4QM', {
+    'anonymize_ip': true,
+    'send_page_view': true,
+    'cookie_flags': 'SameSite=None;Secure'
+  });
 </script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q4SCHBR4QM"></script>
 <link rel="https://api.w.org/" href="https://pickora.shop/wp-json/"><link rel="alternate" title="JSON" type="application/json" href="https://pickora.shop/wp-json/wp/v2/pages/10"><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://pickora.shop/xmlrpc.php?rsd">
 <meta name="generator" content="WordPress 7.0">
 <link rel="canonical" href="https://pickora.shop/products/">
@@ -175,8 +209,7 @@ gtag("config", "GT-MB8GRCPZ");
 <link rel="apple-touch-icon" href="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-180x180.png">
 <meta name="msapplication-TileImage" content="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-270x270.png">
 <!-- pk-analytics-head -->
-<script src="/assets/js/pickora-consent.js" defer></script>
-<script src="/assets/js/pickora-analytics.js" defer></script>
+
 <style id="pk-disclosure-footer-inline-css">
 .pk-disclosure-footer {
   max-width: 1200px !important;
@@ -1047,6 +1080,7 @@ const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(
 //# sourceURL=https://pickora.shop/wp-includes/js/wp-emoji-loader.min.js
 </script>
 <!-- pk-analytics-body -->
+
 <script src="/assets/js/pickora-consent.js" defer></script>
 <script src="/assets/js/pickora-analytics.js" defer></script>
 </body>

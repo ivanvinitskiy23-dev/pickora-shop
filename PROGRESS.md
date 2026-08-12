@@ -43,6 +43,12 @@
 ---
 ## Change Log
 
+### 2026-08-12 — Phase 0 complete: Amazon compliance, Consent Mode v2, GA4 tracking
+- Fixed **57** Amazon `<a>` links with `rel="sponsored nofollow noopener noreferrer"` + `target="_blank"`; categories popup CTAs updated to the same `rel`.
+- Replaced Site Kit (`GT-MB8GRCPZ`) with GA4 `G-Q4SCHBR4QM` + Consent Mode v2 defaults on all 19 HTML pages.
+- Ensured `assets/js/pickora-consent.js` and `assets/js/pickora-analytics.js` (affiliate `select_item`/`affiliate_click`, scroll depth, engaged read) load once before `</body>`.
+- Verified `.pk-disclosure-footer` before footer and legal footer links (`/privacy-policy/`, `/affiliate-disclosure/`, `/terms-of-service/`, `/contact/`) on all pages.
+
 ### 2026-08-12 — Premium redesign: /about/, /articles/, single-line disclosure
 - Global `.pk-disclosure-footer`: centered one-line-friendly styles (`max-width: 1200px`, `inline-block` paragraph) on all HTML pages.
 - `/articles/`: removed heavy blue Shop Smart block; replaced bulky About Us with light `#f8fafc` card + soft shadow.

@@ -6,9 +6,6 @@
 (function () {
   'use strict';
 
-  if (window.__pkAnalyticsLoaded) return;
-  window.__pkAnalyticsLoaded = true;
-
   if (typeof window.gtag !== 'function') {
     window.dataLayer = window.dataLayer || [];
     window.gtag = function () { window.dataLayer.push(arguments); };

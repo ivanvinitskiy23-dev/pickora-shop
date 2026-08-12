@@ -258,10 +258,12 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
 <script id="jquery-migrate-js" src="https://pickora.shop/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1"></script>
 
 <!-- ============ Google Analytics 4 + Consent Mode v2 ============ -->
+<!-- Place as high as possible in <head>, before other scripts -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
 
+  // 1) Before GA loads: default consent for EU/UK/CH (denied until accept).
   gtag('consent', 'default', {
     'ad_storage': 'denied',
     'ad_user_data': 'denied',
@@ -275,6 +277,7 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
                'GB','CH','NO','IS','LI']
   });
 
+  // 2) Rest of world (US = main Amazon traffic): analytics allowed.
   gtag('consent', 'default', {
     'ad_storage': 'denied',
     'ad_user_data': 'denied',
@@ -284,6 +287,7 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
     'security_storage': 'granted'
   });
 
+  // 3) Restore previously saved user choice.
   try {
     var saved = JSON.parse(localStorage.getItem('pk_consent') || 'null');
     if (saved && saved.analytics_storage) {
@@ -398,8 +402,7 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
 }
 </style>
 <!-- pk-analytics-head -->
-<script src="/assets/js/pickora-consent.js" defer></script>
-<script src="/assets/js/pickora-analytics.js" defer></script>
+
 <style id="pk-disclosure-footer-inline-css">
 .pk-disclosure-footer {
   max-width: 1200px !important;
@@ -643,6 +646,7 @@ const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(
 //# sourceURL=https://pickora.shop/wp-includes/js/wp-emoji-loader.min.js
 </script>
 <!-- pk-analytics-body -->
+
 <script src="/assets/js/pickora-consent.js" defer></script>
 <script src="/assets/js/pickora-analytics.js" defer></script>
 </body>
