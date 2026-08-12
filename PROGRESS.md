@@ -43,6 +43,9 @@
 ---
 ## Change Log
 
+### 2026-08-12 — Footer bottom bar padding (stop text flush to edge)
+- `.pk-footer-bottom`: added `padding: 20px 20px 32px` and `line-height: 1.4` so legal links/© are not cramped against the bottom of the navy footer.
+
 ### 2026-08-12 — Header badge, disclosure line, footer axis alignment
 - Legal/Contact: fixed clipped `.pk-legal-badge` (extra top margin/padding, visible overflow).
 - Global `.pk-disclosure-footer`: centered single-line styles (`max-width: 1140px`, `margin: 50px auto 40px`).
