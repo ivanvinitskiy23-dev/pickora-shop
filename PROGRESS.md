@@ -43,6 +43,10 @@
 ---
 ## Change Log
 
+### 2026-08-12 — Global disclosure banner & footer legal links
+- Added `pk-disclosure-footer` before `<footer>` on all 19 HTML pages.
+- Added centered `pk-footer-bottom` legal links (Privacy, Disclosure, Terms, Contact) above the © 2026 line on all pages.
+
 ### 2026-08-12 — Restore consent banner & analytics scripts
 - Recreated `assets/js/pickora-consent.js` (Consent Mode v2 cookie banner) and `assets/js/pickora-analytics.js` (affiliate clicks, scroll depth, engaged read) from report §3.3.
 - Linked both scripts with `defer` in `<head>` and before `</body>` on all site HTML pages.
