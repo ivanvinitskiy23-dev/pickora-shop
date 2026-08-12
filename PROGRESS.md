@@ -43,6 +43,9 @@
 ---
 ## Change Log
 
+### 2026-08-12 — Homepage footer legal links
+- Added centered `pk-footer-bottom` / `pk-footer-legal` nav (Privacy, Disclosure, Terms, Contact) in `index.html` footer, above the © 2026 copyright line.
+
 ### 2026-08-12 — Task 1.4: WCAG 44×44px tap targets
 - Added `pk-tap-targets-inline-css` to all 15 HTML pages (after global reset): burger open/close, footer social links, and category filter buttons now meet min 44×44px hit area (report §2.5).
 
