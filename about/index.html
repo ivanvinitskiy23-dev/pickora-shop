@@ -93,52 +93,58 @@ html, body { max-width: 100%; overflow-x: clip; }
         line-height: 1.6;
     }
 
-    /* 2. МИССИЯ И ПОЧЕМУ МЫ (НАЕЗЖАЮЩИЕ КАРТОЧКИ) */
+    /* 2. MISSION / WHY US — laconic mini cards */
     .pk-mission-container {
         position: relative;
         z-index: 10;
         display: flex;
-        gap: 30px;
+        gap: 20px;
         justify-content: center;
-        margin-bottom: 80px;
+        margin-bottom: 72px;
+        padding: 0 16px;
+        box-sizing: border-box;
     }
-    
+
     .pk-card-mini {
         background: #ffffff;
-        padding: 40px 30px;
-        border-radius: 20px;
+        padding: 24px;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
         text-align: center;
         flex: 1;
-        max-width: 380px;
-        box-sizing: border-box; /* Важно для мобилок */
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        max-width: 360px;
+        box-sizing: border-box;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
-    
+
     .pk-card-mini:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 25px 50px rgba(32, 117, 210, 0.15);
+        transform: translateY(-3px);
+        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
     }
-    
+
     .pk-card-mini h3 {
         font-family: 'Montserrat', sans-serif;
-        color: #2075d2;
-        font-size: 24px;
-        margin-bottom: 12px;
+        color: #15223B;
+        font-size: 20px;
+        margin: 0 0 8px;
         font-weight: 700;
     }
     .pk-card-mini p {
         margin: 0;
-        font-size: 16px;
-        color: #54595F;
+        font-size: 15px;
+        color: #64748b;
+        line-height: 1.5;
     }
 
     /* 3. НАШИ УСЛУГИ (ИДЕАЛЬНО СИММЕТРИЧНАЯ СЕТКА) */
     .pk-services-section {
-        background: #F5FAFF;
-        padding: 100px 40px;
-        border-radius: 40px;
-        margin-bottom: 100px;
+        background: #f8fafc;
+        padding: 72px 40px;
+        border-radius: 24px;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 40px;
+        box-sizing: border-box;
     }
     
     .pk-services-title {
@@ -156,79 +162,100 @@ html, body { max-width: 100%; overflow-x: clip; }
         gap: 30px;
     }
     
-    /* Делаем карточки одинаковой высоты */
+    /* Equal-height service cards */
     .pk-service-card {
         background: #ffffff;
-        border-radius: 24px;
-        padding: 30px;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 24px;
         text-align: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
         display: flex;
-        flex-direction: column; /* Flex внутри карточки */
-        height: 100%; /* Растягиваем на всю высоту грида */
+        flex-direction: column;
+        height: 100%;
+        box-sizing: border-box;
     }
-    
+
     .pk-service-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(32, 117, 210, 0.1);
+        transform: translateY(-4px);
+        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
     }
-    
+
     .pk-service-card img {
         width: 100%;
-        height: 220px; /* Строго одинаковая высота для всех картинок */
+        aspect-ratio: 16 / 9;
+        height: auto;
         object-fit: cover;
-        border-radius: 16px;
-        margin-bottom: 25px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: block;
     }
-    
+
     .pk-service-card h4 {
         font-family: 'Montserrat', sans-serif;
         color: #15223B;
-        font-size: 22px;
-        margin-bottom: 15px;
+        font-size: 20px;
+        margin: 0 0 12px;
         font-weight: 700;
+        letter-spacing: -0.02em;
     }
-    
+
     .pk-service-card p {
         font-size: 15px;
-        line-height: 1.6;
-        flex-grow: 1; /* Если текст разный, он равномерно заполнит пространство */
+        line-height: 1.65;
+        color: #64748b;
+        flex-grow: 1;
         margin: 0;
     }
 
-    /* 4. ОТЗЫВЫ (REAL FEEDBACK) */
+    /* 4. REAL FEEDBACK — elegant light quote */
     .pk-feedback-section {
-        background: linear-gradient(135deg, #15223B 0%, #1e3a68 100%);
-        padding: 80px 40px;
-        border-radius: 30px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding: 48px 40px 44px;
+        border-radius: 20px;
         text-align: center;
-        margin-bottom: 80px;
-        box-shadow: 0 20px 40px rgba(21, 34, 59, 0.15);
+        max-width: 800px;
+        margin: 60px auto 80px;
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+        box-sizing: border-box;
+        position: relative;
     }
-    
+
+    .pk-feedback-section::before {
+        content: "\201C";
+        display: block;
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 64px;
+        line-height: 1;
+        color: #2075d2;
+        opacity: 0.35;
+        margin-bottom: 8px;
+    }
+
     .pk-feedback-section span {
         display: inline-block;
-        background: rgba(32, 117, 210, 0.2);
-        padding: 8px 20px;
-        border-radius: 30px;
+        background: transparent;
+        padding: 0;
+        border-radius: 0;
         text-transform: uppercase;
-        letter-spacing: 2px;
-        font-size: 13px;
-        margin-bottom: 25px;
-        color: #6ec1e4;
+        letter-spacing: 0.14em;
+        font-size: 12px;
+        margin-bottom: 16px;
+        color: #64748b;
         font-weight: 700;
     }
-    
+
     .pk-feedback-section p {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 32px;
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: clamp(20px, 2.4vw, 26px);
         font-style: italic;
-        color: #ffffff;
-        max-width: 900px;
+        color: #334155;
+        max-width: 640px;
         margin: 0 auto;
-        line-height: 1.4;
-        font-weight: 500;
+        line-height: 1.55;
+        font-weight: 400;
     }
 
     /* 5. ПЛАВНЫЙ ПЕРЕХОД К ФУТЕРУ (CTA) */
@@ -304,9 +331,9 @@ html, body { max-width: 100%; overflow-x: clip; }
         .pk-services-section { padding: 50px 20px; border-radius: 24px; margin-bottom: 60px; }
         .pk-services-title { font-size: 30px; margin-bottom: 40px; }
         .pk-service-card { padding: 25px 20px; }
-        .pk-service-card img { height: 200px; }
+        .pk-service-card img { aspect-ratio: 16 / 9; height: auto; }
         
-        .pk-feedback-section { padding: 50px 20px; border-radius: 24px; margin-bottom: 60px; }
+        .pk-feedback-section { padding: 36px 20px 32px; margin: 40px auto 60px; width: calc(100% - 30px); }
         .pk-feedback-section p { font-size: 22px; }
         
         .pk-cta-wrapper { padding: 60px 20px 80px; }
@@ -472,6 +499,33 @@ gtag("config", "GT-MB8GRCPZ");
 <!-- pk-analytics-head -->
 <script src="/assets/js/pickora-consent.js" defer></script>
 <script src="/assets/js/pickora-analytics.js" defer></script>
+<style id="pk-disclosure-footer-inline-css">
+.pk-disclosure-footer {
+  max-width: 1200px !important;
+  width: 100% !important;
+  margin: 40px auto 30px !important;
+  padding: 0 20px !important;
+  text-align: center !important;
+  color: #64748b !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  white-space: normal;
+  box-sizing: border-box !important;
+}
+.pk-disclosure-footer,
+.pk-disclosure-footer * {
+  box-sizing: border-box;
+}
+.pk-disclosure-footer p {
+  margin: 0 !important;
+  display: inline-block;
+  max-width: 100%;
+}
+.pk-disclosure-footer a {
+  color: #2075d2 !important;
+  text-decoration: underline;
+}
+</style>
 </head>
 
 <body data-rsssl="1" class="wp-singular page-template-default page page-id-13 wp-embed-responsive wp-theme-hostinger-ai-theme hostinger-ai-builder-elementor elementor-default elementor-kit-4 elementor-page elementor-page-13">
@@ -583,11 +637,7 @@ gtag("config", "GT-MB8GRCPZ");
 
     </div>
 </main>
-
-
-<div class="pk-disclosure-footer" style="max-width: 1140px; margin: 0 auto 40px; padding: 0 20px; text-align: center; color: #64748b; font-size: 13px; line-height: 1.6; box-sizing: border-box;">
-  Pickora is reader-supported. When you buy through links on our site, we may earn an affiliate commission at no extra cost to you. As an Amazon Associate we earn from qualifying purchases. <a href="/affiliate-disclosure/" style="color: #2075d2; text-decoration: underline;">Learn more</a>.
-</div>
+<div class="pk-disclosure-footer"><p>Pickora is reader-supported. When you buy through links on our site, we may earn an affiliate commission at no extra cost to you. As an Amazon Associate we earn from qualifying purchases. <a href="/affiliate-disclosure/">Learn more</a>.</p></div>
 <footer class="site-footer wp-block-template-part">
 <div class="wp-block-group has-color-2-background-color has-background has-global-padding is-layout-constrained wp-block-group-is-layout-constrained" style="padding-top:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--60)">
 <div class="wp-block-columns alignwide is-layout-flex wp-container-core-columns-is-layout-7094c525 wp-block-columns-is-layout-flex">

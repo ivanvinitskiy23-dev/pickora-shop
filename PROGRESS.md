@@ -43,6 +43,11 @@
 ---
 ## Change Log
 
+### 2026-08-12 — Premium redesign: /about/, /articles/, single-line disclosure
+- Global `.pk-disclosure-footer`: centered one-line-friendly styles (`max-width: 1200px`, `inline-block` paragraph) on all HTML pages.
+- `/articles/`: removed heavy blue Shop Smart block; replaced bulky About Us with light `#f8fafc` card + soft shadow.
+- `/about/`: laconic Mission/Why Us mini-cards (`#e2e8f0` borders, 16px radius); equal-height Services cards with `aspect-ratio: 16/9` images; Real Feedback as elegant light quote (`max-width: 800px`) instead of giant dark plaque.
+
 ### 2026-08-12 — Hard fix /articles/ empty field (AOS + height reset)
 - Root cause: `.hostinger-elementor-aos { opacity: 0 }` hid About/Shop Smart while they still occupied ~1000px.
 - Forced AOS elements visible, stripped `data-aos` hooks, hard-reset `min-height`/`height` on wrappers, normalized disclosure margins.
