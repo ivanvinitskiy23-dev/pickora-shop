@@ -282,6 +282,22 @@ footer.site-footer {
 footer.site-footer > .wp-block-group.has-color-2-background-color {
   background-color: #15223B !important;
 }
+
+/* Fix clipped hero / legal badge text */
+.pk-hero-badge,
+.pk-page-kicker,
+.pk-legal-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  margin-top: 20px !important;
+  padding-top: 10px !important;
+  line-height: 1.2 !important;
+  overflow: visible !important;
+}
+.pk-legal-hero {
+  overflow: visible !important;
+  padding-top: max(64px, 4rem) !important;
+}
 </style>
 
 <style id="core-block-supports-inline-css">
@@ -406,65 +422,77 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
   box-sizing: border-box;
 }
 .pk-footer-bottom {
-  max-width: 1140px;
-  margin: 40px auto 0;
-  padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
+  max-width: 1140px !important;
+  width: 100% !important;
+  margin: 30px auto 0 !important;
+  padding-top: 20px !important;
+  border-top: 1px solid rgba(255,255,255,0.1) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
   gap: 16px;
-  font-size: 13px;
-  line-height: 1;
+  flex-wrap: wrap;
 }
 .pk-footer-legal {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  margin: 0;
 }
 .pk-footer-legal a {
   color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
-  transition: color 0.2s ease;
+  line-height: 1;
 }
 .pk-footer-legal a:hover {
   color: #ffffff;
-  text-decoration: underline;
 }
 .pk-footer-legal .pk-sep {
   color: rgba(255, 255, 255, 0.3);
+  line-height: 1;
 }
 .pk-footer-copyright {
-  color: rgba(255, 255, 255, 0.5);
+  margin: 0 !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  text-align: right;
   white-space: nowrap;
 }
 @media (max-width: 768px) {
   .pk-footer-bottom {
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    gap: 12px;
+    flex-direction: column !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 12px !important;
   }
   .pk-footer-legal {
     justify-content: center;
   }
+  .pk-footer-copyright {
+    text-align: center;
+    white-space: normal;
+  }
 }
 </style>
+
 <!-- pk-analytics-head -->
 
 <style id="pk-disclosure-footer-inline-css">
 .pk-disclosure-footer {
-  max-width: 1200px !important;
+  max-width: 1140px !important;
   width: 100% !important;
-  margin: 40px auto 30px !important;
+  margin: 50px auto 40px !important;
   padding: 0 20px !important;
   text-align: center !important;
   color: #64748b !important;
   font-size: 13px !important;
   line-height: 1.5 !important;
-  white-space: normal;
+  white-space: nowrap;
   box-sizing: border-box !important;
 }
 .pk-disclosure-footer,
@@ -475,12 +503,21 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
   margin: 0 !important;
   display: inline-block;
   max-width: 100%;
+  white-space: nowrap;
 }
 .pk-disclosure-footer a {
   color: #2075d2 !important;
   text-decoration: underline;
+  white-space: nowrap;
+}
+@media (max-width: 900px) {
+  .pk-disclosure-footer,
+  .pk-disclosure-footer p {
+    white-space: normal;
+  }
 }
 </style>
+
 </head>
 
 <body data-rsssl="1" class="wp-singular page-template-default page page-id-13 wp-embed-responsive wp-theme-hostinger-ai-theme hostinger-ai-builder-elementor elementor-default elementor-kit-4 elementor-page elementor-page-13">
@@ -682,16 +719,8 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 
 
 </div>
-<div class="pk-footer-bottom" style="max-width: 1140px; margin: 30px auto 0; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center; gap: 12px; font-size: 13px; flex-wrap: wrap; box-sizing: border-box;">
-  <a href="/privacy-policy/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Privacy Policy</a>
-  <span style="color: rgba(255,255,255,0.3);">•</span>
-  <a href="/affiliate-disclosure/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Affiliate Disclosure</a>
-  <span style="color: rgba(255,255,255,0.3);">•</span>
-  <a href="/terms-of-service/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Terms of Service</a>
-  <span style="color: rgba(255,255,255,0.3);">•</span>
-  <a href="/contact/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Contact</a>
-</div>
-<p class="has-text-align-center has-light-color has-text-color has-small-font-size wp-block-paragraph"> © 2026 Pickora Shop. All rights reserved.</p>
+<div class="pk-footer-bottom"><nav class="pk-footer-legal" aria-label="Legal"><a href="/privacy-policy/">Privacy Policy</a><span class="pk-sep" aria-hidden="true">•</span><a href="/affiliate-disclosure/">Affiliate Disclosure</a><span class="pk-sep" aria-hidden="true">•</span><a href="/terms-of-service/">Terms of Service</a><span class="pk-sep" aria-hidden="true">•</span><a href="/contact/">Contact</a></nav><p class="pk-footer-copyright">© 2026 Pickora Shop. All rights reserved.</p></div>
+
 </footer>
 </div>
 <script type="speculationrules">

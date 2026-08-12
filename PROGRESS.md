@@ -43,6 +43,11 @@
 ---
 ## Change Log
 
+### 2026-08-12 — Header badge, disclosure line, footer axis alignment
+- Legal/Contact: fixed clipped `.pk-legal-badge` (extra top margin/padding, visible overflow).
+- Global `.pk-disclosure-footer`: centered single-line styles (`max-width: 1140px`, `margin: 50px auto 40px`).
+- Global `.pk-footer-bottom`: links + © on one flex row with `space-between` / `align-items: center`.
+
 ### 2026-08-12 — Sticky footer on legal pages (remove bottom white gap)
 - `/privacy-policy/`, `/affiliate-disclosure/`, `/terms-of-service/`, `/contact/`: flex sticky-footer layout (`body` + `.wp-site-blocks` column, `main` grows, `footer` `margin-top: auto`, `#15223B` background) so the blue footer pins to the viewport bottom on short pages.
 

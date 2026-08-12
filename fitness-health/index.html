@@ -213,15 +213,15 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
 
 <style id="pk-disclosure-footer-inline-css">
 .pk-disclosure-footer {
-  max-width: 1200px !important;
+  max-width: 1140px !important;
   width: 100% !important;
-  margin: 40px auto 30px !important;
+  margin: 50px auto 40px !important;
   padding: 0 20px !important;
   text-align: center !important;
   color: #64748b !important;
   font-size: 13px !important;
   line-height: 1.5 !important;
-  white-space: normal;
+  white-space: nowrap;
   box-sizing: border-box !important;
 }
 .pk-disclosure-footer,
@@ -232,12 +232,87 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
   margin: 0 !important;
   display: inline-block;
   max-width: 100%;
+  white-space: nowrap;
 }
 .pk-disclosure-footer a {
   color: #2075d2 !important;
   text-decoration: underline;
+  white-space: nowrap;
+}
+@media (max-width: 900px) {
+  .pk-disclosure-footer,
+  .pk-disclosure-footer p {
+    white-space: normal;
+  }
 }
 </style>
+
+<style id="pk-footer-bottom-inline-css">
+.pk-footer-bottom,
+.pk-footer-bottom *,
+.pk-footer-bottom *::before,
+.pk-footer-bottom *::after {
+  box-sizing: border-box;
+}
+.pk-footer-bottom {
+  max-width: 1140px !important;
+  width: 100% !important;
+  margin: 30px auto 0 !important;
+  padding-top: 20px !important;
+  border-top: 1px solid rgba(255,255,255,0.1) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.pk-footer-legal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0;
+}
+.pk-footer-legal a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  line-height: 1;
+}
+.pk-footer-legal a:hover {
+  color: #ffffff;
+}
+.pk-footer-legal .pk-sep {
+  color: rgba(255, 255, 255, 0.3);
+  line-height: 1;
+}
+.pk-footer-copyright {
+  margin: 0 !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  text-align: right;
+  white-space: nowrap;
+}
+@media (max-width: 768px) {
+  .pk-footer-bottom {
+    flex-direction: column !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 12px !important;
+  }
+  .pk-footer-legal {
+    justify-content: center;
+  }
+  .pk-footer-copyright {
+    text-align: center;
+    white-space: normal;
+  }
+}
+</style>
+
 </head>
 
 <body data-rsssl="1" class="wp-singular page-template-default page page-id-392 wp-embed-responsive wp-theme-hostinger-ai-theme hostinger-ai-builder-elementor elementor-default elementor-kit-4 elementor-page elementor-page-392">
@@ -1631,16 +1706,8 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
 
 
 <div class="wp-block-group alignwide is-content-justification-center is-layout-flex wp-container-core-group-is-layout-da6cc66d wp-block-group-is-layout-flex" style="margin-top:var(--wp--preset--spacing--60);padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">
-<div class="pk-footer-bottom" style="max-width: 1140px; margin: 30px auto 0; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center; gap: 12px; font-size: 13px; flex-wrap: wrap; box-sizing: border-box;">
-  <a href="/privacy-policy/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Privacy Policy</a>
-  <span style="color: rgba(255,255,255,0.3);">•</span>
-  <a href="/affiliate-disclosure/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Affiliate Disclosure</a>
-  <span style="color: rgba(255,255,255,0.3);">•</span>
-  <a href="/terms-of-service/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Terms of Service</a>
-  <span style="color: rgba(255,255,255,0.3);">•</span>
-  <a href="/contact/" style="color: rgba(255,255,255,0.7); text-decoration: none;">Contact</a>
-</div>
-<p class="has-text-align-center has-light-color has-text-color has-link-color has-small-font-size wp-elements-4c8a89dfccf171208bb684cb4addcde5 wp-block-paragraph"> © 2026 Pickora Shop. All rights reserved.</p>
+<div class="pk-footer-bottom"><nav class="pk-footer-legal" aria-label="Legal"><a href="/privacy-policy/">Privacy Policy</a><span class="pk-sep" aria-hidden="true">•</span><a href="/affiliate-disclosure/">Affiliate Disclosure</a><span class="pk-sep" aria-hidden="true">•</span><a href="/terms-of-service/">Terms of Service</a><span class="pk-sep" aria-hidden="true">•</span><a href="/contact/">Contact</a></nav><p class="pk-footer-copyright">© 2026 Pickora Shop. All rights reserved.</p></div>
+
 </div>
 </div>
 </footer>
