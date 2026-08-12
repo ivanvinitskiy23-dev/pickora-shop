@@ -43,6 +43,11 @@
 ---
 ## Change Log
 
+### 2026-08-12 — Mobile menu column align + footer bottom gap
+- Open nav: fixed full-viewport overlay (`z-index: 999999`), close button top-right, menu links in a left-aligned column (no staggered indent).
+- Search (`#pk-search-system`) forced under the overlay (`z-index: 1`).
+- Sticky footer: `html` navy `#15223B`, `body`/`wp-site-blocks` flex column, footer `padding-bottom: 30px` — removes white strip under the footer.
+
 ### 2026-08-12 — Hide mobile nav icons on desktop header
 - Root cause: Phase 1 tap-target CSS forced `display: inline-flex !important` on burger/close buttons at all breakpoints.
 - Desktop (≥769px): hide open/close icons; show inline nav. Mobile (≤768px): keep 44×44 tap targets. Header row: logo left / menu right via flex.
