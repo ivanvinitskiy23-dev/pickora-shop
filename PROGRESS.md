@@ -43,6 +43,11 @@
 ---
 ## Change Log
 
+### 2026-08-13 — Legal pages white content + articles/categories spacing
+- Stopped navy `#15223B` from painting `html` (it leaked through transparent legal `main` / `.pk-legal-content` and made black text unreadable).
+- Legal/content surfaces forced white + dark text; only the footer stays navy (overscroll via footer box-shadow).
+- Articles hub title restored to 48px under the sticky header; Categories pins grid no longer swallowed by flex-grown empty Elementor wrappers.
+
 ### 2026-08-13 — Premium mobile nav rewrite (sitewide)
 - Root cause: open menu inherited header `justify-right` and WP `.responsive-close` `max-width: wide-size` (side drawer + staircase).
 - Full-viewport white overlay; close pill top-right; uniform left column links (22px/600, 14px padding, soft hover/current states).

@@ -395,6 +395,8 @@ header.site-header {
   z-index: 10000 !important;
   background: #ffffff !important;
   width: 100% !important;
+  flex: 0 0 auto !important;
+  min-height: 72px !important;
   box-shadow: 0 1px 0 rgba(15, 23, 42, 0.06) !important;
 }
 
@@ -478,6 +480,18 @@ header.site-header .hostinger-ai-site-navigation.wp-block-navigation {
   header.site-header .wp-block-navigation-item__content[aria-current="page"] {
     color: #2075d2 !important;
     font-weight: 600 !important;
+    background: transparent !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+  }
+  header.site-header .wp-block-navigation,
+  header.site-header .wp-block-navigation ul,
+  header.site-header .wp-block-navigation li,
+  header.site-header .wp-block-navigation a {
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
   }
 }
 
@@ -699,9 +713,7 @@ input#pk-realtime-search {
 .wp-block-navigation__responsive-container.is-menu-open li.wp-block-navigation-item,
 .wp-block-navigation__responsive-container.has-modal-open li.wp-block-navigation-item,
 .wp-block-navigation__responsive-container.is-menu-open li.current-menu-item,
-.wp-block-navigation__responsive-container.has-modal-open li.current-menu-item,
-header.site-header li.wp-block-navigation-item,
-header.site-header li.current-menu-item {
+.wp-block-navigation__responsive-container.has-modal-open li.current-menu-item {
   display: block !important;
   width: 100% !important;
   max-width: 100% !important;
@@ -722,14 +734,6 @@ header.site-header li.current-menu-item {
   box-shadow: none !important;
   outline: 0 !important;
   box-sizing: border-box !important;
-}
-
-@media (min-width: 769px) {
-  header.site-header li.wp-block-navigation-item,
-  header.site-header li.current-menu-item {
-    display: inline-flex !important;
-    width: auto !important;
-  }
 }
 
 .wp-block-navigation__responsive-container.is-menu-open li.wp-block-navigation-item::before,
@@ -795,24 +799,51 @@ html.has-modal-open {
   padding: 0 !important;
 }
 
-/* Hub titles: clear sticky header on mobile */
+/* Hub titles: keep space under sticky header (do not collapse) */
+.pk-hub-header-section {
+  margin-top: 56px !important;
+  padding-top: 12px !important;
+}
+.pk-catalog-header {
+  padding-top: 48px !important;
+}
 @media (max-width: 768px) {
-  .pk-hub-header-section,
-  .pk-products-hub,
+  .pk-hub-header-section {
+    margin-top: 36px !important;
+    padding-top: 12px !important;
+  }
   .pk-catalog-header {
-    margin-top: 28px !important;
-    padding-top: 8px !important;
+    padding-top: 36px !important;
   }
   .pk-main-title {
     line-height: 1.15 !important;
   }
 }
 
+/* Categories board must stay visible; no flex-grown empty gap */
+.pickora-pins-container {
+  display: block !important;
+  min-height: 0 !important;
+}
+.pickora-board-grid {
+  display: grid !important;
+}
+.wp-site-blocks > .elementor-widget-container,
+.wp-site-blocks > .elementor-element,
+.e-con.e-flexbox-base,
+.elementor-widget-container {
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 0 !important;
+}
+
 /* =========================================================
-   Sticky footer / no white strip under navy footer
+   Sticky footer WITHOUT painting legal content navy
    ========================================================= */
 html {
-  background-color: #15223B !important;
+  background-color: #ffffff !important;
   height: 100% !important;
 }
 
@@ -823,6 +854,7 @@ body {
   display: flex !important;
   flex-direction: column !important;
   background-color: #ffffff !important;
+  color: #0f172a !important;
 }
 
 body > .wp-site-blocks {
@@ -832,13 +864,28 @@ body > .wp-site-blocks {
   min-height: 100vh !important;
   width: 100% !important;
   box-sizing: border-box !important;
+  background-color: #ffffff !important;
 }
 
-main,
+main {
+  flex: 1 0 auto !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
 .entry-content,
 .pk-legal-container,
-.pk-legal-content {
-  flex: 1 0 auto !important;
+.pk-legal-content,
+.pk-legal-hero {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.pk-legal-content p,
+.pk-legal-content li,
+.pk-legal-content h2,
+.pk-legal-content h3 {
+  color: #0f172a !important;
 }
 
 footer,
@@ -849,6 +896,7 @@ footer.site-footer {
   margin-bottom: 0 !important;
   padding-bottom: 30px !important;
   background-color: #15223B !important;
+  box-shadow: 0 50vh 0 0 #15223B;
 }
 
 footer.site-footer > .wp-block-group.has-color-2-background-color {
