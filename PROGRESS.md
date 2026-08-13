@@ -43,10 +43,10 @@
 - [x] 2.6 `noindex, follow` + canonical → `/articles/` on `/author/ivanvinitskiy23gmail-com/` and `/category/uncategorized/`
 
 ### Phase 3: UX, Linking & Content
-- [ ] 3.1 Related Posts block on 4 review articles
-- [ ] 3.2 Breadcrumbs (visible + BreadcrumbList schema)
+- [x] 3.1 Related Posts (`.pk-related` Keep reading) on **4/4** review articles, before `.pk-disclosure-footer`
+- [ ] 3.2 Breadcrumbs (visible UI still missing; BreadcrumbList schema exists from 2.3)
 - [ ] 3.3 Contextual inline links between reviews / hubs
-- [ ] 3.4 Rewrite AI-sounding copy; “premium” still appears **141** times across HTML
+- [x] 3.4 Review intros/verdicts rewritten (Flesch 60–70) + **Who should skip this** on 4 reviews. Sitewide “premium” still remains on hubs/CSS comments
 - [ ] 3.5 Fix social links (see 0.6)
 
 ### Phase 4: Cleanup & infra
@@ -65,7 +65,7 @@
 | Pages with disclosure + consent + analytics JS | 19 / 19 |
 | Pages with Open Graph + Twitter Cards | **17 / 17** indexable (orphans excluded) |
 | Pages with JSON-LD | **17 / 17** indexable (orphans excluded) |
-| Related posts / visible breadcrumbs | 0 / 19 |
+| Related posts / visible breadcrumbs | **4/4 reviews** have Keep reading; visible breadcrumbs still 0 |
 | Pages with meta description | **17 / 17** indexable (orphans excluded) |
 | `robots.txt`, `sitemap.xml` | **present** (17 URLs; orphans omitted) |
 | `404.html` | **present** (noindex; Home / Articles / Categories links) |
@@ -86,13 +86,18 @@ Indexable pages have conversational meta descriptions (Flesch 60–70, 140–160
 3. ~~**2.3** JSON-LD on 4 reviews + Organization on home~~ **done**  
 4. ~~**2.5–2.6** 404.html + noindex orphans~~ **done** (GSC submit = owner)  
 5. **1.5** freeze visual QA (phone 390 / tablet 768 / desktop 1280)  
-6. **3.1–3.4** related posts, breadcrumbs, links, copy  
+6. ~~**3.1 + 3.4** related posts + review copy~~ **done** — **3.2** visible breadcrumbs and **3.3** inline links still open  
 7. **4.1–4.2** dead assets + `_headers`  
 8. Only then plan.html Phase 5–6 (new articles, then traffic)
 
 ---
 
 ## Change Log
+
+### 2026-08-13 — Block B: review heroes, Flesch copy, related posts
+- 4 reviews: navy/blue gradient `.pk-review-hero` (category badge + accent H1), replacing the isolated WP title on white.
+- Intros, skip blocks, and verdicts rewritten in conversational English (Flesch 60–70). Added **Who should skip this**.
+- `.pk-related` Keep reading cards (existing `.pk-card` system) inserted before `.pk-disclosure-footer`. No self-links.
 
 ### 2026-08-13 — Block A step 4: 404 + noindex + favicon tags
 - Root `404.html` cloned from `/about/` chrome (header, styles, disclosure, footer). Content: H1 + message + three links. `noindex, follow`.
