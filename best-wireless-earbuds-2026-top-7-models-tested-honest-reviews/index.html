@@ -1261,52 +1261,105 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
   --pk-dark: #15223B;
   --pk-text: #4B5563;
 }
+main#wp--skip-link--target {
+  padding-bottom: 0 !important;
+  margin-block-start: 0 !important;
+}
 .pk-review-hero {
   box-sizing: border-box;
-  width: calc(100% - 40px);
-  max-width: 1140px;
-  margin: 64px auto 36px;
-  padding: 56px 40px 48px;
-  border-radius: 24px;
-  background: linear-gradient(165deg, #15223B 0%, #1a3560 58%, #2075d2 165%);
-  color: #ffffff;
-  text-align: center;
+  width: 100%;
+  max-width: 760px;
+  margin: 72px auto 8px;
+  padding: 0 24px 4px;
+  background: transparent;
+  text-align: left;
 }
-.pk-review-hero-inner { max-width: 760px; margin: 0 auto; }
+.pk-review-hero-inner { max-width: 720px; margin: 0; }
+.pk-crumbs {
+  margin: 0 0 18px;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #94a3b8;
+}
+.pk-crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pk-crumbs li { display: inline-flex; align-items: center; }
+.pk-crumbs li + li::before {
+  content: "›";
+  margin: 0 8px;
+  color: #cbd5e1;
+  font-weight: 400;
+}
+.pk-crumbs a {
+  color: #64748b;
+  text-decoration: none;
+}
+.pk-crumbs a:hover { color: #2075d2; }
+.pk-crumbs [aria-current="page"] { color: #94a3b8; }
 .pk-review-badge {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 8px;
-  margin: 0 0 16px;
+  margin: 0 0 14px;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #cbd5e1;
+  color: #2075d2;
 }
 .pk-review-badge .pk-dot-blue {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #8ec5ff;
+  background: #2075d2;
   display: inline-block;
 }
 .pk-review-title {
   font-family: Montserrat, sans-serif;
-  font-size: clamp(28px, 4.4vw, 48px);
+  font-size: clamp(32px, 4.6vw, 52px);
   font-weight: 800;
   letter-spacing: -0.03em;
-  line-height: 1.15;
-  color: #ffffff !important;
+  line-height: 1.12;
+  color: #15223B !important;
   margin: 0 0 16px !important;
 }
-.pk-review-title .pk-blue-text { color: #8ec5ff; }
+.pk-review-title .pk-blue-text { color: #2075d2; }
 .pk-review-dek {
-  margin: 0;
+  margin: 0 0 8px;
+  max-width: 640px;
   font-size: 17px;
-  line-height: 1.6;
-  color: #e2e8f0;
+  line-height: 1.65;
+  color: #475569;
+}
+.pk-review-legacy-date { display: none !important; }
+.e-con:has(> .pk-review-legacy-date) { display: none !important; }
+.entry-content a.pk-inline {
+  color: #2075d2;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.entry-content a.pk-inline:hover { color: #15223B; }
+.elementor > .e-con:has(> .e-image-base) {
+  margin: 12px auto 28px;
+  max-width: 1140px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.elementor > .e-con:has(> .e-image-base) img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px;
 }
 .pk-skip {
   max-width: 1140px;
@@ -1423,10 +1476,9 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 }
 @media (max-width: 768px) {
   .pk-review-hero {
-    width: calc(100% - 24px);
-    margin: 48px auto 24px;
-    padding: 40px 20px 32px;
-    border-radius: 18px;
+    width: 100%;
+    margin: 56px auto 4px;
+    padding: 0 16px 4px;
   }
   .pk-skip { margin: 0 12px 24px; padding: 22px 18px; }
   .pk-related { padding: 0 12px 8px; }
@@ -1471,7 +1523,14 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 <main id="wp--skip-link--target" class="wp-block-group is-layout-flow wp-block-group-is-layout-flow" style="padding-top:0;padding-bottom:var(--wp--preset--spacing--50)">
         <section class="pk-review-hero" aria-labelledby="pk-review-title">
         <div class="pk-review-hero-inner">
-            <p class="pk-review-badge"><span class="pk-dot-blue" aria-hidden="true"></span> Consumer Electronics · June 2026</p>
+            <nav class="pk-crumbs" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="https://pickora.shop/">Home</a></li>
+                    <li><a href="https://pickora.shop/consumer-electronics/">Consumer Electronics</a></li>
+                    <li aria-current="page">Best Wireless Earbuds 2026</li>
+                </ol>
+            </nav>
+            <p class="pk-review-badge"><span class="pk-dot-blue" aria-hidden="true"></span> Consumer Electronics</p>
             <h1 id="pk-review-title" class="pk-review-title">Best <span class="pk-blue-text">Wireless Earbuds</span> 2026</h1>
             <p class="pk-review-dek">We wore seven wireless pairs on commutes, workouts, and long conference calls this spring. Some slipped out during a run, some died by lunch, and only a few still sounded decent after a full workday.</p>
         </div>
@@ -1486,7 +1545,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 
     <div class="entry-content alignwide wp-block-post-content is-layout-flow wp-block-post-content-is-layout-flow">		<div data-elementor-type="wp-post" data-elementor-id="132" class="elementor elementor-132">
 				<div class="elementor-element elementor-element-ade66e3 e-con e-atomic-element e-flexbox-base e-241c60a " data-id="ade66e3" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="ade66e3">
-    			<p class="e-7a22183-712a668 e-paragraph-base" data-interaction-id="7a22183">Updated June 2026</p>
+    			<p class="e-7a22183-712a668 e-paragraph-base pk-review-legacy-date" data-interaction-id="7a22183">Updated June 2026</p>
 		
 </div>
 <div class="elementor-element elementor-element-bdb7604 e-con e-atomic-element e-flexbox-base e-fac078a " data-id="bdb7604" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="bdb7604">
@@ -1495,7 +1554,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 <div class="elementor-element elementor-element-ebe5768 e-con e-atomic-element e-flexbox-base e-9b5981b " data-id="ebe5768" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="ebe5768">
     		<div class="elementor-element elementor-element-397f6d7 elementor-widget elementor-widget-text-editor" data-id="397f6d7" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
 				<div class="elementor-widget-container">
-									<p dir="auto">Every brand claims the best wireless earbuds in 2026, which turns a simple purchase into a noisy comparison. After commutes, gym sessions, and long conference calls, only a few stayed put and still sounded decent by lunch.</p><p dir="auto">We scored sound quality, noise cancellation, fit, battery life, and call clarity, then kept seven pairs people can actually finish a workday with.</p><aside class="pk-skip" aria-labelledby="pk-skip-title">
+									<p dir="auto">Every brand claims the best wireless earbuds in 2026, which turns a simple purchase into a noisy <a class="pk-inline" href="https://pickora.shop/consumer-electronics/">electronics</a> comparison. After commutes, gym sessions, and long conference calls, only a few stayed put and still sounded decent by lunch.</p><p dir="auto">We scored sound quality, noise cancellation, fit, battery life, and call clarity, then kept seven pairs people can actually finish a workday with. If you want the wider gadget shortlist, start with our <a class="pk-inline" href="https://pickora.shop/products/">product picks</a>. The rest of our <a class="pk-inline" href="https://pickora.shop/articles/">tested guides</a> live in Articles.</p><aside class="pk-skip" aria-labelledby="pk-skip-title">
 <h2 id="pk-skip-title">Who should skip this</h2>
 <ul><li>Skip Bose if battery life matters more than silence on a long flight, because the case will not carry a full travel day.</li><li>Skip AirPods if you live on Android, since the extra features vanish the moment you leave Apple devices.</li><li>Skip Sennheiser if you need strong noise cancellation on a plane; the sound is lovely and the hush is not.</li><li>Skip the cheap EarFun pair if you take noisy trains every day, because they are fine for a quiet office and thin on a subway.</li></ul>
 </aside>
