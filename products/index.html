@@ -914,6 +914,43 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 }
 </style>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://pickora.shop/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Products"
+        }
+      ]
+    },
+    {
+      "@type": "CollectionPage",
+      "name": "Products",
+      "url": "https://pickora.shop/products/",
+      "description": "Browse current Amazon picks for home, tech, fitness, and pets. Every card opens a comparison review that lists the flaws, not only the sale price.",
+      "isPartOf": {
+        "@id": "https://pickora.shop/#website"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Pickora",
+        "url": "https://pickora.shop/"
+      }
+    }
+  ]
+}
+</script>
 </head>
 
 <body data-rsssl="1" class="wp-singular page-template page-template-no-title page page-id-10 wp-embed-responsive wp-theme-hostinger-ai-theme hostinger-ai-builder-elementor elementor-default elementor-kit-4 elementor-page elementor-page-10">

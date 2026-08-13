@@ -37,7 +37,7 @@
 ### Phase 2: SEO & Analytics floor (NEXT — do this before content scale)
 - [x] 2.1 Create `robots.txt` and `sitemap.xml` (17 indexable URLs; author + uncategorized omitted)
 - [x] 2.2 Meta descriptions + canonical + Open Graph + Twitter Cards on **17/17** indexable pages (orphans excluded; `og:type=article` on 4 reviews)
-- [ ] 2.3 JSON-LD Schema.org on **0/19** (Article, Product, Review, FAQ, BreadcrumbList, Organization)
+- [x] 2.3 JSON-LD Schema.org on **17/17** indexable pages (no `AggregateRating`; no `FAQPage` — reviews have no FAQ block)
 - [x] 2.4 Affiliate click + scroll tracking exists in `assets/js/pickora-analytics.js` (verify in GA4 DebugView)
 - [ ] 2.5 Add `404.html`; confirm favicon; submit sitemap to Google Search Console + Bing
 - [ ] 2.6 `noindex` orphan `/author/ivanvinitskiy23gmail-com/` and `/category/uncategorized/`
@@ -64,7 +64,8 @@
 | `amzn.to` links with full rel + `_blank` | 57 / 57 |
 | Pages with disclosure + consent + analytics JS | 19 / 19 |
 | Pages with Open Graph + Twitter Cards | **17 / 17** indexable (orphans excluded) |
-| Pages with JSON-LD / related posts / breadcrumbs | 0 / 19 |
+| Pages with JSON-LD | **17 / 17** indexable (orphans excluded) |
+| Related posts / visible breadcrumbs | 0 / 19 |
 | Pages with meta description | **17 / 17** indexable (orphans excluded) |
 | `robots.txt`, `sitemap.xml` | **present** (17 URLs; orphans omitted) |
 | `_headers`, `404.html` | **missing** |
@@ -80,7 +81,7 @@ Indexable pages have conversational meta descriptions (Flesch 60–70, 140–160
 
 1. ~~**2.1** robots.txt + sitemap.xml~~ **done**  
 2. ~~**2.2** meta + OG on 4 review articles, then remaining pages~~ **done**  
-3. **2.3** JSON-LD on 4 reviews + Organization on home  
+3. ~~**2.3** JSON-LD on 4 reviews + Organization on home~~ **done**  
 4. **2.5–2.6** 404.html + noindex orphans  
 5. **1.5** freeze visual QA (phone 390 / tablet 768 / desktop 1280)  
 6. **3.1–3.4** related posts, breadcrumbs, links, copy  
@@ -90,6 +91,11 @@ Indexable pages have conversational meta descriptions (Flesch 60–70, 140–160
 ---
 
 ## Change Log
+
+### 2026-08-13 — Block A step 3: JSON-LD Schema.org
+- Home: Organization + WebSite/SearchAction. Reviews: Article + BreadcrumbList + ItemList/Product with ReviewRating from on-page tables. No FAQPage (no FAQ in review HTML). No AggregateRating.
+- Category/listing hubs: CollectionPage + BreadcrumbList. About/Contact: AboutPage/ContactPage. Legal: WebPage.
+- Head-only `<script type="application/ld+json">` before `</head>`. JSON validated with `json.loads`.
 
 ### 2026-08-13 — Block A step 2: meta + canonical + Open Graph
 - 17 indexable pages: unique meta description (Flesch 60–70, no banned hype words), existing canonical kept, OG + Twitter `summary_large_image`.
