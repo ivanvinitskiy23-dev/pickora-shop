@@ -36,7 +36,7 @@
 
 ### Phase 2: SEO & Analytics floor (NEXT — do this before content scale)
 - [x] 2.1 Create `robots.txt` and `sitemap.xml` (17 indexable URLs; author + uncategorized omitted)
-- [ ] 2.2 Meta descriptions on remaining **10/19** pages (all 4 review articles lack them) + Open Graph + Twitter Cards on **0/19**
+- [x] 2.2 Meta descriptions + canonical + Open Graph + Twitter Cards on **17/17** indexable pages (orphans excluded; `og:type=article` on 4 reviews)
 - [ ] 2.3 JSON-LD Schema.org on **0/19** (Article, Product, Review, FAQ, BreadcrumbList, Organization)
 - [x] 2.4 Affiliate click + scroll tracking exists in `assets/js/pickora-analytics.js` (verify in GA4 DebugView)
 - [ ] 2.5 Add `404.html`; confirm favicon; submit sitemap to Google Search Console + Bing
@@ -63,23 +63,23 @@
 | Site HTML pages | 19 |
 | `amzn.to` links with full rel + `_blank` | 57 / 57 |
 | Pages with disclosure + consent + analytics JS | 19 / 19 |
-| Pages with OG / JSON-LD / related posts / breadcrumbs | 0 / 19 |
-| Pages with meta description | 9 / 19 |
+| Pages with Open Graph + Twitter Cards | **17 / 17** indexable (orphans excluded) |
+| Pages with JSON-LD / related posts / breadcrumbs | 0 / 19 |
+| Pages with meta description | **17 / 17** indexable (orphans excluded) |
 | `robots.txt`, `sitemap.xml` | **present** (17 URLs; orphans omitted) |
 | `_headers`, `404.html` | **missing** |
 | Uploads images | 728 files, **61.7 MB** (2 still >500KB) |
 | `wp-content` total | **~224 MB** |
 | CNAME | `pickora.shop` present |
 
-Hubs with meta description: home, about, articles, products, categories, 4 legal/contact.  
-**Money pages without meta description:** air fryers, pet cameras, robot vacuums, earbuds (+ category/author/hub leftovers).
+Indexable pages have conversational meta descriptions (Flesch 60–70, 140–160 chars) + OG/Twitter. Orphans still have neither.
 
 ---
 
 ## Execution order (do not skip)
 
 1. ~~**2.1** robots.txt + sitemap.xml~~ **done**  
-2. **2.2** meta + OG on 4 review articles, then remaining pages  
+2. ~~**2.2** meta + OG on 4 review articles, then remaining pages~~ **done**  
 3. **2.3** JSON-LD on 4 reviews + Organization on home  
 4. **2.5–2.6** 404.html + noindex orphans  
 5. **1.5** freeze visual QA (phone 390 / tablet 768 / desktop 1280)  
@@ -90,6 +90,11 @@ Hubs with meta description: home, about, articles, products, categories, 4 legal
 ---
 
 ## Change Log
+
+### 2026-08-13 — Block A step 2: meta + canonical + Open Graph
+- 17 indexable pages: unique meta description (Flesch 60–70, no banned hype words), existing canonical kept, OG + Twitter `summary_large_image`.
+- `og:type=article` on 4 reviews; `website` elsewhere. `og:image` is an existing WebP.
+- Head-only. No body/CSS/JS. Author + uncategorized untouched.
 
 ### 2026-08-13 — Block A step 1: robots.txt + sitemap.xml
 - Added root `robots.txt` (`Allow: /`, sitemap pointer). No Disallow on orphans (noindex is step 2.6).
