@@ -39,15 +39,15 @@
 - [x] 2.2 Meta descriptions + canonical + Open Graph + Twitter Cards on **17/17** indexable pages (orphans excluded; `og:type=article` on 4 reviews)
 - [x] 2.3 JSON-LD Schema.org on **17/17** indexable pages (no `AggregateRating`; no `FAQPage` — reviews have no FAQ block)
 - [x] 2.4 Affiliate click + scroll tracking exists in `assets/js/pickora-analytics.js` (verify in GA4 DebugView)
-- [ ] 2.5 Add `404.html`; confirm favicon; submit sitemap to Google Search Console + Bing
-- [ ] 2.6 `noindex` orphan `/author/ivanvinitskiy23gmail-com/` and `/category/uncategorized/`
+- [x] 2.5 Root `404.html` (about chrome + disclosure + footer) + `<link rel="icon" href="/favicon.ico">` on all 19 pages and 404. **GSC/Bing sitemap submit still needs the owner.**
+- [x] 2.6 `noindex, follow` + canonical → `/articles/` on `/author/ivanvinitskiy23gmail-com/` and `/category/uncategorized/`
 
 ### Phase 3: UX, Linking & Content
 - [ ] 3.1 Related Posts block on 4 review articles
 - [ ] 3.2 Breadcrumbs (visible + BreadcrumbList schema)
 - [ ] 3.3 Contextual inline links between reviews / hubs
 - [ ] 3.4 Rewrite AI-sounding copy; “premium” still appears **141** times across HTML
-- [ ] 3.5 Fix social links (see 0.6) + orphan noindex (see 2.6)
+- [ ] 3.5 Fix social links (see 0.6)
 
 ### Phase 4: Cleanup & infra
 - [ ] 4.1 Reduce unused WP plugin/theme payload (`wp-content` still **~224 MB**)
@@ -68,7 +68,9 @@
 | Related posts / visible breadcrumbs | 0 / 19 |
 | Pages with meta description | **17 / 17** indexable (orphans excluded) |
 | `robots.txt`, `sitemap.xml` | **present** (17 URLs; orphans omitted) |
-| `_headers`, `404.html` | **missing** |
+| `404.html` | **present** (noindex; Home / Articles / Categories links) |
+| Favicon tag `/favicon.ico` | **20/20** HTML files (physical `.ico` still to be uploaded by owner) |
+| `_headers` | **missing** |
 | Uploads images | 728 files, **61.7 MB** (2 still >500KB) |
 | `wp-content` total | **~224 MB** |
 | CNAME | `pickora.shop` present |
@@ -82,7 +84,7 @@ Indexable pages have conversational meta descriptions (Flesch 60–70, 140–160
 1. ~~**2.1** robots.txt + sitemap.xml~~ **done**  
 2. ~~**2.2** meta + OG on 4 review articles, then remaining pages~~ **done**  
 3. ~~**2.3** JSON-LD on 4 reviews + Organization on home~~ **done**  
-4. **2.5–2.6** 404.html + noindex orphans  
+4. ~~**2.5–2.6** 404.html + noindex orphans~~ **done** (GSC submit = owner)  
 5. **1.5** freeze visual QA (phone 390 / tablet 768 / desktop 1280)  
 6. **3.1–3.4** related posts, breadcrumbs, links, copy  
 7. **4.1–4.2** dead assets + `_headers`  
@@ -91,6 +93,12 @@ Indexable pages have conversational meta descriptions (Flesch 60–70, 140–160
 ---
 
 ## Change Log
+
+### 2026-08-13 — Block A step 4: 404 + noindex + favicon tags
+- Root `404.html` cloned from `/about/` chrome (header, styles, disclosure, footer). Content: H1 + message + three links. `noindex, follow`.
+- Orphans: `noindex, follow` and canonical to `/articles/`.
+- `<link rel="icon" href="/favicon.ico" type="image/x-icon">` on all 19 pages + 404. Owner still uploads the physical file.
+- GSC/Bing sitemap submit is not done in-repo.
 
 ### 2026-08-13 — Block A step 3: JSON-LD Schema.org
 - Home: Organization + WebSite/SearchAction. Reviews: Article + BreadcrumbList + ItemList/Product with ReviewRating from on-page tables. No FAQPage (no FAQ in review HTML). No AggregateRating.

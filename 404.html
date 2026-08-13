@@ -3,13 +3,410 @@
 <head><meta charset="UTF-8">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="max-image-preview:large">
-<title>Terms of Service – Pickora</title>
+<meta name="robots" content="noindex, follow">
+<title>404: Page Not Found – Pickora</title>
 <link rel="dns-prefetch" href="//www.googletagmanager.com">
 <link rel="alternate" type="application/rss+xml" title="Pickora » Feed" href="https://pickora.shop/feed/">
 <link rel="alternate" type="application/rss+xml" title="Pickora » Comments Feed" href="https://pickora.shop/comments/feed/">
-<link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="https://pickora.shop/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fpickora.shop%2Fterms-of-service%2F">
-<link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="https://pickora.shop/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fpickora.shop%2Fterms-of-service%2F&amp;format=xml">
+<link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="https://pickora.shop/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fpickora.shop%2F">
+<link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="https://pickora.shop/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fpickora.shop%2F&amp;format=xml">
+
+<!-- ========================================================================= -->
+<!-- ПРЕМИУМ ДИЗАЙН V3: БАННЕР-КАРТОЧКА, ИДЕАЛЬНАЯ СИММЕТРИЯ И АДАПТИВНОСТЬ  -->
+<!-- ========================================================================= -->
+<style id="pk-global-reset-inline-css">
+*, *::before, *::after { box-sizing: border-box; }
+html, body { max-width: 100%; overflow-x: clip; }
+</style>
+<style id="pk-tap-targets-inline-css">
+/* Touch targets — mobile only; do not force burger/close visible on desktop */
+@media (max-width: 768px) {
+  .wp-block-navigation__responsive-container-open,
+  .wp-block-navigation__responsive-container-close {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 10px !important;
+    margin: -10px !important;
+  }
+  .wp-block-navigation__responsive-container-open {
+    display: flex !important;
+  }
+}
+.wp-block-social-links .wp-social-link {
+  min-width: 44px !important;
+  min-height: 44px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.pk-filter-btn, .categories-filter button {
+  min-height: 44px !important;
+  padding-block: 10px !important;
+}
+
+/* Hide mobile nav icons on desktop */
+@media (min-width: 769px) {
+  .wp-block-navigation__responsive-container-open,
+  .wp-block-navigation__responsive-container-close,
+  .wp-block-navigation__responsive-container-open:not(.always-show) {
+    display: none !important;
+  }
+  header.site-header .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open) {
+    display: block !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: transparent !important;
+  }
+  header.site-header .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open) .wp-block-navigation__responsive-close,
+  header.site-header .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open) .wp-block-navigation__responsive-dialog {
+    display: contents !important;
+  }
+  header.site-header .wp-block-navigation__responsive-container-content {
+    display: flex !important;
+    visibility: visible !important;
+    position: static !important;
+    padding: 0 !important;
+  }
+}
+
+/* Header: logo left, menu right, one horizontal line */
+header.site-header .hostinger-ai-menu-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+  grid-template-columns: none !important;
+}
+header.site-header .hostinger-ai-site-navigation-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  margin-left: auto !important;
+}
+header.site-header .hostinger-ai-site-navigation.wp-block-navigation {
+  display: flex !important;
+  align-items: center !important;
+}
+</style>
+
+<style>
+    /* Убираем глобальный баг с пустотой под шапкой */
+    main#wp--skip-link--target { margin-top: 0 !important; padding-top: 0 !important; }
+    main#wp--skip-link--target > .wp-block-group { margin-block-start: 0 !important; display: none !important;}
+
+    body { font-family: 'Open Sans', sans-serif; color: #54595F; }
+
+    /* Ограничитель контента */
+    .pk-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* 1. ГЛАВНЫЙ ЭКРАН (HERO) В ВИДЕ БОЛЬШОЙ КАРТОЧКИ */
+    .pk-hero-section {
+        position: relative;
+        max-width: 1200px;
+        width: calc(100% - 40px);
+        margin: 40px auto -60px auto; /* 40px сверху, по центру, и отрицательный снизу для наезда карточек */
+        height: 550px;
+        background-image: url('https://pickora.shop/wp-content/uploads/2026/06/Ultra_premium_editorial_banner_image_202606161704-scaled.jpeg');
+        background-size: cover;
+        background-position: center;
+        border-radius: 30px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(21, 34, 59, 0.15);
+    }
+    
+    .pk-hero-overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(180deg, rgba(21, 34, 59, 0.6) 0%, rgba(21, 34, 59, 0.85) 100%);
+        z-index: 1;
+    }
+
+    .pk-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 850px;
+        padding: 0 20px;
+        margin-top: -40px; /* Компенсируем визуальный центр из-за наезда нижних карточек */
+    }
+
+    .pk-hero-content h1 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 52px;
+        color: #ffffff;
+        font-weight: 800;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+
+    .pk-hero-content p {
+        font-size: 20px;
+        color: #e2e8f0;
+        line-height: 1.6;
+    }
+
+    /* 2. MISSION / WHY US — laconic mini cards */
+    .pk-mission-container {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 72px;
+        padding: 0 16px;
+        box-sizing: border-box;
+    }
+
+    .pk-card-mini {
+        background: #ffffff;
+        padding: 24px;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        text-align: center;
+        flex: 1;
+        max-width: 360px;
+        box-sizing: border-box;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .pk-card-mini:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+    }
+
+    .pk-card-mini h3 {
+        font-family: 'Montserrat', sans-serif;
+        color: #15223B;
+        font-size: 20px;
+        margin: 0 0 8px;
+        font-weight: 700;
+    }
+    .pk-card-mini p {
+        margin: 0;
+        font-size: 15px;
+        color: #64748b;
+        line-height: 1.5;
+    }
+
+    /* 3. НАШИ УСЛУГИ (ИДЕАЛЬНО СИММЕТРИЧНАЯ СЕТКА) */
+    .pk-services-section {
+        background: #f8fafc;
+        padding: 72px 40px;
+        border-radius: 24px;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 40px;
+        box-sizing: border-box;
+    }
+    
+    .pk-services-title {
+        text-align: center;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 40px;
+        color: #15223B;
+        margin-bottom: 60px;
+        font-weight: 800;
+    }
+    
+    .pk-services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+        gap: 30px;
+    }
+    
+    /* Equal-height service cards */
+    .pk-service-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 24px;
+        text-align: center;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        box-sizing: border-box;
+    }
+
+    .pk-service-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+    }
+
+    .pk-service-card img {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        height: auto;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    .pk-service-card h4 {
+        font-family: 'Montserrat', sans-serif;
+        color: #15223B;
+        font-size: 20px;
+        margin: 0 0 12px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    .pk-service-card p {
+        font-size: 15px;
+        line-height: 1.65;
+        color: #64748b;
+        flex-grow: 1;
+        margin: 0;
+    }
+
+    /* 4. REAL FEEDBACK — elegant light quote */
+    .pk-feedback-section {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding: 48px 40px 44px;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 800px;
+        margin: 60px auto 80px;
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    .pk-feedback-section::before {
+        content: "\201C";
+        display: block;
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 64px;
+        line-height: 1;
+        color: #2075d2;
+        opacity: 0.35;
+        margin-bottom: 8px;
+    }
+
+    .pk-feedback-section span {
+        display: inline-block;
+        background: transparent;
+        padding: 0;
+        border-radius: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-size: 12px;
+        margin-bottom: 16px;
+        color: #64748b;
+        font-weight: 700;
+    }
+
+    .pk-feedback-section p {
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: clamp(20px, 2.4vw, 26px);
+        font-style: italic;
+        color: #334155;
+        max-width: 640px;
+        margin: 0 auto;
+        line-height: 1.55;
+        font-weight: 400;
+    }
+
+    /* 5. ПЛАВНЫЙ ПЕРЕХОД К ФУТЕРУ (CTA) */
+    .pk-cta-wrapper {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 100%;
+        background: linear-gradient(to bottom, #ffffff 0%, #f2f7fc 100%);
+        padding: 100px 20px 120px;
+    }
+    
+    .pk-cta-inner {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    .pk-cta-inner h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 42px;
+        color: #15223B;
+        margin-bottom: 20px;
+        font-weight: 800;
+    }
+    
+    .pk-cta-inner p {
+        font-size: 18px;
+        color: #54595F;
+        margin-bottom: 40px;
+    }
+    
+    .pk-btn-primary {
+        background: #2075d2;
+        color: #ffffff !important;
+        text-decoration: none;
+        padding: 20px 60px;
+        border-radius: 50px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 18px;
+        display: inline-block;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(32, 117, 210, 0.2);
+    }
+    
+    .pk-btn-primary:hover {
+        background: #15223B;
+        box-shadow: 0 15px 30px rgba(21, 34, 59, 0.3);
+        transform: translateY(-3px);
+    }
+
+    /* 6. ИДЕАЛЬНАЯ МОБИЛЬНАЯ АДАПТИВНОСТЬ */
+    @media(max-width: 768px) {
+        .pk-hero-section { 
+            height: 400px; 
+            margin: 20px auto -40px auto; 
+            width: calc(100% - 30px);
+            border-radius: 20px;
+        }
+        .pk-hero-content h1 { font-size: 32px; }
+        .pk-hero-content p { font-size: 16px; }
+        
+        .pk-mission-container { 
+            flex-direction: column; 
+            gap: 20px; 
+            padding: 0 15px; /* Защита от прилипания к краям */
+        }
+        .pk-card-mini { 
+            max-width: 100%; 
+            width: 100%; 
+        }
+        
+        .pk-services-section { padding: 50px 20px; border-radius: 24px; margin-bottom: 60px; }
+        .pk-services-title { font-size: 30px; margin-bottom: 40px; }
+        .pk-service-card { padding: 25px 20px; }
+        .pk-service-card img { aspect-ratio: 16 / 9; height: auto; }
+        
+        .pk-feedback-section { padding: 36px 20px 32px; margin: 40px auto 60px; width: calc(100% - 30px); }
+        .pk-feedback-section p { font-size: 22px; }
+        
+        .pk-cta-wrapper { padding: 60px 20px 80px; }
+        .pk-cta-inner h2 { font-size: 30px; }
+        .pk-btn-primary { padding: 18px 40px; font-size: 16px; }
+    }
+</style>
+<!-- ========================================================================= -->
+
 <style id="wp-img-auto-sizes-contain-inline-css">
 img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 /*# sourceURL=wp-img-auto-sizes-contain-inline-css */
@@ -85,221 +482,6 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
 :root :where(.wp-block-heading){line-height: 1.2;}
 /*# sourceURL=global-styles-inline-css */
 </style>
-
-<style id="pk-legal-page-inline-css">
-.pk-legal-hero {
-  box-sizing: border-box;
-  width: 100%;
-  background: linear-gradient(180deg, #f8fafc 0%, #eef6ff 55%, #ffffff 100%);
-  padding: 64px 20px 48px;
-  text-align: center;
-  border-bottom: 1px solid #e2e8f0;
-}
-.pk-legal-hero-inner {
-  box-sizing: border-box;
-  max-width: 780px;
-  margin: 0 auto;
-}
-.pk-legal-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: Montserrat, system-ui, sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #2075d2;
-  margin: 0 0 18px;
-}
-.pk-legal-badge-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #2075d2;
-  flex-shrink: 0;
-}
-.pk-legal-hero h1 {
-  font-family: Montserrat, system-ui, sans-serif;
-  font-size: clamp(2rem, 5vw, 3.25rem);
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.03em;
-  color: #0f172a;
-  margin: 0 0 16px;
-}
-.pk-legal-hero h1 .pk-accent { color: #2075d2; }
-.pk-legal-hero-sub {
-  margin: 0 auto;
-  max-width: 560px;
-  font-size: 1.05rem;
-  line-height: 1.65;
-  color: #64748b;
-}
-.pk-legal-content {
-  box-sizing: border-box;
-  max-width: 780px;
-  margin: 60px auto 0;
-  margin-bottom: 90px !important;
-  padding: 0 20px;
-  padding-bottom: 30px !important;
-  font-size: 16px;
-  line-height: 1.8;
-  color: #334155;
-}
-.pk-legal-content .pk-legal-meta {
-  font-size: 0.875rem;
-  color: #94a3b8;
-  margin: 0 0 1.75rem;
-}
-.pk-legal-content h2 {
-  font-family: Montserrat, system-ui, sans-serif;
-  font-size: 1.35rem;
-  margin-top: 40px;
-  margin-bottom: 16px;
-  color: #0f172a;
-  font-weight: 700;
-  line-height: 1.3;
-  letter-spacing: -0.02em;
-}
-.pk-legal-content h3 {
-  font-family: Montserrat, system-ui, sans-serif;
-  font-size: 1.1rem;
-  margin: 28px 0 12px;
-  color: #1e293b;
-  font-weight: 700;
-}
-.pk-legal-content p {
-  margin: 0 0 1.15rem;
-  color: #334155;
-  font-size: 16px;
-  line-height: 1.8;
-}
-.pk-legal-content ul,
-.pk-legal-content ol {
-  margin: 0 0 1.35rem;
-  padding-left: 1.35rem;
-}
-.pk-legal-content li {
-  margin: 0 0 0.55rem;
-  padding-left: 0.35rem;
-  color: #334155;
-  line-height: 1.75;
-}
-.pk-legal-content ul { list-style: none; padding-left: 0; }
-.pk-legal-content ul li {
-  position: relative;
-  padding-left: 1.35rem;
-  margin-bottom: 10px;
-  line-height: 1.6;
-}
-.pk-legal-content ul li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.65em;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #2075d2;
-}
-.pk-legal-content ol { padding-left: 1.4rem; }
-.pk-legal-content a {
-  color: #2075d2;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.pk-legal-content a:hover {
-  color: #15223B;
-}
-.pk-legal-content code {
-  font-size: 0.9em;
-  background: #f1f5f9;
-  padding: 0.1em 0.35em;
-  border-radius: 4px;
-  color: #0f172a;
-}
-@media (max-width: 768px) {
-  .pk-legal-hero { padding: 48px 16px 36px; }
-  .pk-legal-content { margin-top: 40px; margin-bottom: 90px !important; padding: 0 16px; padding-bottom: 30px !important; font-size: 15.5px; }
-  .pk-legal-content h2 { margin-top: 32px; font-size: 1.2rem; }
-  .pk-legal-hero-sub { font-size: 0.98rem; }
-}
-@media (max-width: 480px) {
-  .pk-legal-hero { padding: 40px 14px 28px; }
-  .pk-legal-badge { font-size: 11px; letter-spacing: 0.12em; }
-  .pk-legal-content { margin-top: 32px; margin-bottom: 90px !important; padding: 0 14px; padding-bottom: 30px !important; }
-}
-
-/* Sticky footer — pin footer to bottom of viewport on legal pages */
-html, body {
-  height: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  background-color: #ffffff;
-}
-
-body {
-  display: flex !important;
-  flex-direction: column !important;
-  min-height: 100vh !important;
-}
-
-/* WP wrapper must be a flex column so footer margin-top:auto works */
-.wp-site-blocks {
-  display: flex !important;
-  flex-direction: column !important;
-  flex: 1 0 auto !important;
-  min-height: 100vh !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-/* Main content takes remaining free space */
-main, .pk-legal-container, .pk-legal-content, .entry-content {
-  flex: 1 0 auto !important;
-}
-
-.pk-disclosure-footer {
-  flex-shrink: 0 !important;
-}
-
-/* Footer always sticks to the bottom */
-footer,
-footer.site-footer {
-  flex-shrink: 0 !important;
-  width: 100% !important;
-  margin-top: auto !important;
-  margin-bottom: 0 !important;
-  height: auto !important;
-  max-height: none !important;
-  position: static !important;
-  bottom: auto !important;
-  background-color: #15223B !important;
-}
-
-footer.site-footer > .wp-block-group.has-color-2-background-color {
-  background-color: #15223B !important;
-}
-
-/* Fix clipped hero / legal badge text */
-.pk-hero-badge,
-.pk-page-kicker,
-.pk-legal-badge {
-  display: inline-flex !important;
-  align-items: center !important;
-  margin-top: 20px !important;
-  padding-top: 10px !important;
-  line-height: 1.2 !important;
-  overflow: visible !important;
-}
-.pk-legal-hero {
-  overflow: visible !important;
-  padding-top: max(64px, 4rem) !important;
-}
-</style>
-
 <style id="core-block-supports-inline-css">
 .wp-elements-51a1c652b428c38aaa01fc4cea114070 a:where(:not(.wp-element-button)){color:var(--wp--preset--color--color-3);}.wp-elements-51a1c652b428c38aaa01fc4cea114070 a:where(:not(.wp-element-button)):hover{color:var(--wp--preset--color--color-3);}.wp-container-core-group-is-layout-7094c525{flex-wrap:nowrap;}.wp-container-core-group-is-layout-8f614a2c{flex-wrap:nowrap;justify-content:flex-end;}.wp-container-core-group-is-layout-46703f0f{grid-template-columns:repeat(2, minmax(0, 1fr));}.wp-elements-6bb2b050fdd67e8e6a2d28c355b243b5 a:where(:not(.wp-element-button)){color:var(--wp--preset--color--dark);}.wp-elements-2d266627045914afbd88ec37ebfaf796 a:where(:not(.wp-element-button)){color:var(--wp--preset--color--dark);}.wp-elements-8bcb85dba70b1825e61d65d4780a9f01 a:where(:not(.wp-element-button)){color:var(--wp--preset--color--light);}.wp-container-core-navigation-is-layout-55b6a12f{gap:var(--wp--preset--spacing--30);flex-direction:column;align-items:flex-start;}.wp-elements-c2a0dd262116d47410b00474bebbda23 a:where(:not(.wp-element-button)){color:var(--wp--preset--color--light);}.wp-elements-f8607804e1199f92668658b8c64ba78c a:where(:not(.wp-element-button)){color:var(--wp--preset--color--light);}.wp-elements-5ae2023f0bdf7002e795580d67ad0dcb a:where(:not(.wp-element-button)){color:var(--wp--preset--color--light);}.wp-container-core-social-links-is-layout-87452e7f{gap:40px var(--wp--preset--spacing--20);}.wp-elements-1f6518724eb976793f640f13eec34eee a:where(:not(.wp-element-button)){color:var(--wp--preset--color--light);}.wp-container-core-columns-is-layout-7094c525{flex-wrap:nowrap;}.wp-elements-4c8a89dfccf171208bb684cb4addcde5 a:where(:not(.wp-element-button)){color:var(--wp--preset--color--light);}.wp-container-core-group-is-layout-da6cc66d{justify-content:center;}
 /*# sourceURL=core-block-supports-inline-css */
@@ -370,19 +552,19 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q4SCHBR4QM"></script>
 <link rel="https://api.w.org/" href="https://pickora.shop/wp-json/"><link rel="alternate" title="JSON" type="application/json" href="https://pickora.shop/wp-json/wp/v2/pages/13"><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://pickora.shop/xmlrpc.php?rsd">
 <meta name="generator" content="WordPress 7.0">
-<link rel="canonical" href="https://pickora.shop/terms-of-service/">
+<link rel="canonical" href="https://pickora.shop/">
 <link rel="shortlink" href="https://pickora.shop/?p=13">
 <meta name="generator" content="Site Kit by Google 1.182.0"><meta name="keywords" content="Amazon product reviews,buying guides,top product comparisons">
-<meta name="description" content="These terms cover using this site, how Amazon affiliate links work, and what we cannot promise. Read them before you rely on any review or outbound link.">
+<meta name="description" content="This Pickora page is missing. Head home, read the latest reviews, or browse categories to keep shopping with honest guides.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Pickora">
-<meta property="og:title" content="Terms of Service – Pickora">
-<meta property="og:description" content="These terms cover using this site, how Amazon affiliate links work, and what we cannot promise. Read them before you rely on any review or outbound link.">
-<meta property="og:url" content="https://pickora.shop/terms-of-service/">
+<meta property="og:title" content="404: Page Not Found – Pickora">
+<meta property="og:description" content="Pickora is a small review shop that studies specs and buyer complaints. We say who should skip a product, instead of repeating advertising promises.">
+<meta property="og:url" content="https://pickora.shop/">
 <meta property="og:image" content="https://pickora.shop/wp-content/uploads/2026/06/Modern_flat-lay_style_hero_image_202606161822.webp">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Terms of Service – Pickora">
-<meta name="twitter:description" content="These terms cover using this site, how Amazon affiliate links work, and what we cannot promise. Read them before you rely on any review or outbound link.">
+<meta name="twitter:title" content="404: Page Not Found – Pickora">
+<meta name="twitter:description" content="Pickora is a small review shop that studies specs and buyer complaints. We say who should skip a product, instead of repeating advertising promises.">
 <meta name="twitter:image" content="https://pickora.shop/wp-content/uploads/2026/06/Modern_flat-lay_style_hero_image_202606161822.webp">
 <meta name="title" content="Honest Amazon Product Reviews &amp; Comparisons">
 <script id="wp-importmap" type="importmap">
@@ -423,6 +605,44 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 <link rel="icon" href="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-192x192.png" sizes="192x192">
 <link rel="apple-touch-icon" href="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-180x180.png">
 <meta name="msapplication-TileImage" content="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-270x270.png">
+<!-- pk-analytics-head -->
+
+<style id="pk-disclosure-footer-inline-css">
+.pk-disclosure-footer {
+  max-width: 1140px !important;
+  width: 100% !important;
+  margin: 50px auto 40px !important;
+  padding: 0 20px !important;
+  text-align: center !important;
+  color: #64748b !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  white-space: nowrap;
+  box-sizing: border-box !important;
+}
+.pk-disclosure-footer,
+.pk-disclosure-footer * {
+  box-sizing: border-box;
+}
+.pk-disclosure-footer p {
+  margin: 0 !important;
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+}
+.pk-disclosure-footer a {
+  color: #2075d2 !important;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+@media (max-width: 900px) {
+  .pk-disclosure-footer,
+  .pk-disclosure-footer p {
+    white-space: normal;
+  }
+}
+</style>
+
 <style id="pk-footer-bottom-inline-css">
 .pk-footer-bottom,
 .pk-footer-bottom *,
@@ -494,120 +714,6 @@ footer.site-footer {
     text-align: center;
     white-space: normal;
   }
-}
-</style>
-
-<!-- pk-analytics-head -->
-
-<style id="pk-disclosure-footer-inline-css">
-.pk-disclosure-footer {
-  max-width: 1140px !important;
-  width: 100% !important;
-  margin: 50px auto 40px !important;
-  padding: 0 20px !important;
-  text-align: center !important;
-  color: #64748b !important;
-  font-size: 13px !important;
-  line-height: 1.5 !important;
-  white-space: nowrap;
-  box-sizing: border-box !important;
-}
-.pk-disclosure-footer,
-.pk-disclosure-footer * {
-  box-sizing: border-box;
-}
-.pk-disclosure-footer p {
-  margin: 0 !important;
-  display: inline-block;
-  max-width: 100%;
-  white-space: nowrap;
-}
-.pk-disclosure-footer a {
-  color: #2075d2 !important;
-  text-decoration: underline;
-  white-space: nowrap;
-}
-@media (max-width: 900px) {
-  .pk-disclosure-footer,
-  .pk-disclosure-footer p {
-    white-space: normal;
-  }
-}
-</style>
-
-<style id="pk-tap-targets-inline-css">
-/* Touch targets — mobile only; do not force burger/close visible on desktop */
-@media (max-width: 768px) {
-  .wp-block-navigation__responsive-container-open,
-  .wp-block-navigation__responsive-container-close {
-    min-width: 44px !important;
-    min-height: 44px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 10px !important;
-    margin: -10px !important;
-  }
-  .wp-block-navigation__responsive-container-open {
-    display: flex !important;
-  }
-}
-.wp-block-social-links .wp-social-link {
-  min-width: 44px !important;
-  min-height: 44px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-.pk-filter-btn, .categories-filter button {
-  min-height: 44px !important;
-  padding-block: 10px !important;
-}
-
-/* Hide mobile nav icons on desktop */
-@media (min-width: 769px) {
-  .wp-block-navigation__responsive-container-open,
-  .wp-block-navigation__responsive-container-close,
-  .wp-block-navigation__responsive-container-open:not(.always-show) {
-    display: none !important;
-  }
-  header.site-header .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open) {
-    display: block !important;
-    position: static !important;
-    width: auto !important;
-    height: auto !important;
-    overflow: visible !important;
-    background: transparent !important;
-  }
-  header.site-header .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open) .wp-block-navigation__responsive-close,
-  header.site-header .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open) .wp-block-navigation__responsive-dialog {
-    display: contents !important;
-  }
-  header.site-header .wp-block-navigation__responsive-container-content {
-    display: flex !important;
-    visibility: visible !important;
-    position: static !important;
-    padding: 0 !important;
-  }
-}
-
-/* Header: logo left, menu right, one horizontal line */
-header.site-header .hostinger-ai-menu-wrapper {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 24px !important;
-  grid-template-columns: none !important;
-}
-header.site-header .hostinger-ai-site-navigation-wrapper {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  margin-left: auto !important;
-}
-header.site-header .hostinger-ai-site-navigation.wp-block-navigation {
-  display: flex !important;
-  align-items: center !important;
 }
 </style>
 <style id="pk-mobile-menu-footer-fix-inline-css">
@@ -1135,9 +1241,9 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "name": "Terms of Service – Pickora",
-  "url": "https://pickora.shop/terms-of-service/",
-  "description": "These terms cover using this site, how Amazon affiliate links work, and what we cannot promise. Read them before you rely on any review or outbound link.",
+  "name": "404: Page Not Found – Pickora",
+  "url": "https://pickora.shop/",
+  "description": "This Pickora page is missing. Head home, read the latest reviews, or browse categories.",
   "isPartOf": {
     "@id": "https://pickora.shop/#website"
   },
@@ -1148,6 +1254,30 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
   }
 }
 </script>
+
+<style id="pk-404-actions-inline-css">
+.pk-404-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+}
+.pk-404-actions .pk-btn-primary {
+  padding: 16px 28px;
+  font-size: 16px;
+}
+@media (max-width: 768px) {
+  .pk-404-actions {
+    flex-direction: column;
+  }
+  .pk-404-actions .pk-btn-primary {
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+  }
+}
+</style>
 </head>
 
 <body data-rsssl="1" class="wp-singular page-template-default page page-id-13 wp-embed-responsive wp-theme-hostinger-ai-theme hostinger-ai-builder-elementor elementor-default elementor-kit-4 elementor-page elementor-page-13">
@@ -1184,61 +1314,24 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 
 
 <main id="wp--skip-link--target" class="wp-block-group is-layout-flow wp-block-group-is-layout-flow" style="padding-top:0;padding-bottom:0">
-<section class="pk-legal-hero" aria-label="Page introduction">
-  <div class="pk-legal-hero-inner">
-    <p class="pk-legal-badge"><span class="pk-legal-badge-dot" aria-hidden="true"></span> Legal & Transparency</p>
-    <h1>Terms of <span class="pk-accent">Service</span></h1>
-    <p class="pk-legal-hero-sub">The rules that govern your use of pickora.shop, including content disclaimers, intellectual property, and liability limits.</p>
-  </div>
-</section>
-<article class="pk-legal-content">
-<p class="pk-legal-meta">Last updated: August 12, 2026</p>
-  <p>These Terms of Service (&quot;Terms&quot;) govern your use of pickora.shop (the &quot;Site&quot;), operated by Pickora. By accessing or using the Site, you agree to these Terms. If you do not agree, do not use the Site.</p>
-
-  <h2>1. Informational purpose only</h2>
-  <p>You must be at least 18 years of age, or accessing the Site under parent/guardian supervision, to use this Site.</p>
-  <p>Content on the Site—including reviews, comparisons, buying guides, and rankings—is for general informational purposes. It is not professional, financial, medical, or legal advice. Always verify product details, warranties, and safety information with the manufacturer or seller before purchase.</p>
-
-  <h2>2. No warranty on products or prices</h2>
-  <p>We do not manufacture the products discussed. We do not guarantee accuracy, completeness, or timeliness of prices, specifications, availability, or third-party claims. Amazon and other merchants control checkout, shipping, returns, and customer service for purchases made on their platforms.</p>
-
-  <h2>3. Affiliate relationships</h2>
-  <p>The Site contains affiliate links. We may earn commissions as described in our <a href="/affiliate-disclosure/">Affiliate Disclosure</a>. Your use of those links is subject to the merchant&apos;s terms.</p>
-
-  <h2>4. Intellectual property</h2>
-  <p>Site text, branding, layout, and original graphics are owned by Pickora or licensed to us. You may not copy, scrape, republish, or commercially exploit Site content without prior written permission, except for fair use or other rights that cannot be waived under applicable law.</p>
-
-  <h2>5. Acceptable use</h2>
-  <p>You agree not to:</p>
-  <ul>
-    <li>Interfere with Site security or availability.</li>
-    <li>Attempt unauthorized access to systems or data.</li>
-    <li>Use automated scraping in a way that overloads or harms the Site.</li>
-    <li>Misrepresent affiliation with Pickora.</li>
-    <li>Upload malware or unlawful content through any forms we provide.</li>
-  </ul>
-
-  <h2>6. Third-party services</h2>
-  <p>The Site may use Google Analytics 4, email tools, hosting providers, and outbound commerce links. Your interactions with third parties are governed by their terms and privacy policies. See our <a href="/privacy-policy/">Privacy Policy</a>.</p>
-
-  <h2>7. Disclaimer of warranties</h2>
-  <p>THE SITE AND ALL CONTENT ARE PROVIDED &quot;AS IS&quot; AND &quot;AS AVAILABLE&quot; WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT, TO THE MAXIMUM EXTENT PERMITTED BY LAW.</p>
-
-  <h2>8. Limitation of liability</h2>
-  <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, PICKORA AND ITS OPERATORS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS, DATA, OR GOODWILL, ARISING FROM YOUR USE OF THE SITE OR RELIANCE ON ITS CONTENT. OUR TOTAL LIABILITY FOR ANY CLAIM RELATED TO THE SITE SHALL NOT EXCEED ONE HUNDRED U.S. DOLLARS (USD $100).</p>
-
-  <h2>9. Indemnification</h2>
-  <p>You agree to indemnify and hold harmless Pickora from claims arising out of your misuse of the Site or violation of these Terms.</p>
-
-  <h2>10. Changes</h2>
-  <p>We may update these Terms at any time. The &quot;Last updated&quot; date will change when we do. Continued use after changes constitutes acceptance of the revised Terms.</p>
-
-  <h2>11. Governing law</h2>
-  <p>These Terms are governed by the laws applicable to the operator of the Site, without regard to conflict-of-law principles, except where mandatory consumer protections in your country apply.</p>
-
-  <h2>12. Contact</h2>
-  <p>Questions: <a href="mailto:admin@pickora.shop">admin@pickora.shop</a> — <a href="/contact/">Contact page</a>.</p>
-</article>
+    <div class="entry-content wp-block-post-content has-global-padding is-layout-constrained wp-block-post-content-is-layout-constrained">
+        <div class="pk-hero-section">
+            <div class="pk-hero-overlay"></div>
+            <div class="pk-hero-content">
+                <h1>404: Page Not Found</h1>
+                <p>Looks like this page is missing. Don't worry, we have plenty of other honest reviews and guides to explore.</p>
+            </div>
+        </div>
+        <div class="pk-cta-wrapper">
+            <div class="pk-cta-inner">
+                <div class="pk-404-actions">
+                    <a class="pk-btn-primary" href="https://pickora.shop/">Go to Home</a>
+                    <a class="pk-btn-primary" href="https://pickora.shop/articles/">Read Latest Articles</a>
+                    <a class="pk-btn-primary" href="https://pickora.shop/categories/">Browse Categories</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 <div class="pk-disclosure-footer"><p>Pickora is reader-supported. When you buy through links on our site, we may earn an affiliate commission at no extra cost to you. As an Amazon Associate we earn from qualifying purchases. <a href="/affiliate-disclosure/">Learn more</a>.</p></div>
 <footer class="site-footer wp-block-template-part">
@@ -1255,7 +1348,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 						<div class="wp-block-navigation__responsive-dialog" data-wp-bind--aria-modal="state.ariaModal" data-wp-bind--aria-label="state.ariaLabel" data-wp-bind--role="state.roleAttribute">
 							<button aria-label="Close menu" class="wp-block-navigation__responsive-container-close" data-wp-on--click="actions.closeMenuOnClick"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="m13.06 12 6.47-6.47-1.06-1.06L12 10.94 5.53 4.47 4.47 5.53 10.94 12l-6.47 6.47 1.06 1.06L12 13.06l6.47 6.47 1.06-1.06L13.06 12Z"></path></svg></button>
 							<div class="wp-block-navigation__responsive-container-content" data-wp-watch="callbacks.focusFirstElement" id="modal-2-content">
-								<ul class="wp-block-navigation__container has-text-color has-light-color has-medium-font-size is-responsive is-vertical hostinger-ai-site-navigation wp-block-navigation"><li class="has-medium-font-size wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="https://pickora.shop/"><span class="wp-block-navigation-item__label">Home</span></a></li><li class="has-medium-font-size wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="https://pickora.shop/products/"><span class="wp-block-navigation-item__label">Products</span></a></li><li class="has-medium-font-size wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="https://pickora.shop/articles/"><span class="wp-block-navigation-item__label">Articles</span></a></li><li class="has-medium-font-size wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="https://pickora.shop/categories/"><span class="wp-block-navigation-item__label">Categories</span></a></li><li class="has-medium-font-size wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="https://pickora.shop/about/"><span class="wp-block-navigation-item__label">About</span></a></li></ul>
+								<ul class="wp-block-navigation__container has-text-color has-light-color has-medium-font-size is-responsive is-vertical hostinger-ai-site-navigation wp-block-navigation"><li class="has-medium-font-size wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="https://pickora.shop/"><span class="wp-block-navigation-item__label">Home</span></a></li><li class="has-medium-font-size wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="https://pickora.shop/products/"><span class="wp-block-navigation-item__label">Products</span></a></li><li class="has-medium-font-size wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="https://pickora.shop/articles/"><span class="wp-block-navigation-item__label">Articles</span></a></li><li class="has-medium-font-size wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="https://pickora.shop/categories/"><span class="wp-block-navigation-item__label">Categories</span></a></li><li class="has-medium-font-size wp-block-navigation-item current-menu-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="https://pickora.shop/about/" aria-current="page"><span class="wp-block-navigation-item__label">About</span></a></li></ul>
 								
 							</div>
 						</div>
@@ -1314,17 +1407,28 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
                     <button type="submit" class="hostinger-reach-block-submit has-light-color has-color-3-background-color has-text-color has-background has-link-color">
                         Subscribe                    </button>
                 </div>
-</form>
+
+                <div class="reach-subscription-message" style="display: none;">
+                    <div class="reach-subscription-message__icon" style="display: none;">
+                        <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21.0455 5.95463C21.4848 6.39397 21.4848 7.10628 21.0455 7.54562L11.5076 17.0835C10.9511 17.64 10.0489 17.64 9.49237 17.0835L5.2045 12.7956C4.76517 12.3563 4.76517 11.644 5.2045 11.2046C5.64384 10.7653 6.35616 10.7653 6.7955 11.2046L10.5 14.9091L19.4545 5.95463C19.8938 5.51529 20.6062 5.51529 21.0455 5.95463Z" fill="#18181A"></path>
+                        </svg>
+                    </div>
+                    <div class="reach-subscription-message__text">
+                        Subscription form is not available at the moment                    </div>
+                </div>
+            </form>
         </div>
         </div>
 </div>
 
 
 
-
-</div>
+<div class="wp-block-group alignwide is-content-justification-center is-layout-flex wp-container-core-group-is-layout-da6cc66d wp-block-group-is-layout-flex" style="margin-top:var(--wp--preset--spacing--60);padding-top:0;padding-right:0;padding-bottom:0;padding-left:0">
 <div class="pk-footer-bottom"><nav class="pk-footer-legal" aria-label="Legal"><a href="/privacy-policy/">Privacy Policy</a><span class="pk-sep" aria-hidden="true">•</span><a href="/affiliate-disclosure/">Affiliate Disclosure</a><span class="pk-sep" aria-hidden="true">•</span><a href="/terms-of-service/">Terms of Service</a><span class="pk-sep" aria-hidden="true">•</span><a href="/contact/">Contact</a></nav><p class="pk-footer-copyright">© 2026 Pickora Shop. All rights reserved.</p></div>
 
+</div>
+</div>
 </footer>
 </div>
 <script type="speculationrules">
@@ -1377,4 +1481,4 @@ const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(
 <script src="/assets/js/pickora-consent.js" defer></script>
 <script src="/assets/js/pickora-analytics.js" defer></script>
 </body>
-</html><!-- Page cached by LiteSpeed Cache 7.8.1 on 2026-07-05 16:00:59 -->
+</html>
