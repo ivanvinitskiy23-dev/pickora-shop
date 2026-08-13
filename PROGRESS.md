@@ -51,7 +51,7 @@
 
 ### Phase 4: Cleanup & infra
 - [x] 4.1 Dead WP plugins removed; Elementor/Site Kit/Reach slimmed to referenced CSS/JS only (`wp-content` **~58.7 MB**, plugins **0.15 MB**)
-- [ ] 4.2 Cloudflare Pages `_headers` (security + cache)
+- [x] 4.2 Cloudflare Pages / Netlify `_headers` (security + 1y cache for uploads/css/js)
 - [ ] 4.3 Optional: migrate hosting GitHub Pages → Cloudflare Pages (plan.html §1.5)
 
 ---
@@ -70,7 +70,7 @@
 | `robots.txt`, `sitemap.xml` | **present** (17 URLs; orphans omitted) |
 | `404.html` | **present** (noindex; Home / Articles / Categories links) |
 | Favicon tag `/favicon.ico` | **20/20** HTML files (physical `.ico` still to be uploaded by owner) |
-| `_headers` | **missing** |
+| `_headers` | **present** (HSTS, CSP, XFO, nosniff, referrer, permissions + cache) |
 | Uploads images | **728** files, **40.02 MB** (0 >250 KB) |
 | `wp-content` total | **~58.7 MB** (plugins 0.15 MB, themes 18.53 MB) |
 | CNAME | `pickora.shop` present |
@@ -87,12 +87,15 @@ Indexable pages have conversational meta descriptions (Flesch 60–70, 140–160
 4. ~~**2.5–2.6** 404.html + noindex orphans~~ **done** (GSC submit = owner)  
 5. **1.5** freeze visual QA (phone 390 / tablet 768 / desktop 1280)  
 6. ~~**3.1–3.4** related posts, crumbs, inline links, review copy~~ **done**
-7. ~~**4.1** dead WP plugins~~ **done** — **4.2** `_headers` still open  
+7. ~~**4.1** dead WP plugins~~ **done** — ~~**4.2** `_headers`~~ **done**  
 8. Only then plan.html Phase 5–6 (new articles, then traffic)
 
 ---
 
 ## Change Log
+
+### 2026-08-13 — Block C 4.2: `_headers`
+- Root `_headers` for Cloudflare Pages / Netlify: HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, CSP (GA4 + Google Fonts), 1-year immutable cache for `/wp-content/uploads/*`, `/*.css`, `/*.js`. GitHub Pages will ignore this file until a host switch (4.3).
 
 ### 2026-08-13 — Block C: image weight + plugin cleanup
 - Recompressed 59 uploads to WebP q~82 (cap 250 KB). Uploads 58.9 → 40.0 MB; **0** files over 250 KB.
