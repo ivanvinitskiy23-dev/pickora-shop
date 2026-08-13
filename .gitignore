@@ -1,0 +1,11 @@
+# WordPress plugin sources not needed on the static site
+wp-content/plugins/updraftplus/
+wp-content/plugins/really-simple-ssl/
+wp-content/plugins/wpforms-lite/
+wp-content/plugins/akismet/
+wp-content/plugins/litespeed-cache/
+wp-content/plugins/hostinger-easy-onboarding/
+wp-content/plugins/hostinger-ai-assistant/
+wp-content/plugins/simply-static/
+wp-content/plugins/hostinger-affiliate-plugin/
+wp-content/plugins/hostinger/

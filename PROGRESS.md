@@ -27,11 +27,11 @@
 
 ### Phase 1: Technical & Performance
 - [x] 1.1 Global overflow reset + `/about/` 320px grid fix
-- [x] 1.2 Image compression + `loading` attributes (75 imgs: 13 eager / 62 lazy / 0 missing)
+- [x] 1.2 Image compression + `loading` attributes (**87** imgs: 13 eager / 74 lazy / 0 missing; all have `width`/`height`)
 - [x] 1.3 Broken Elementor `local-95/132/160/193` CSS **absent**; jquery-migrate removed from site HTML
 - [x] 1.4 WCAG 44×44 tap-target CSS on all pages
 - [ ] 1.5 **UI freeze / visual QA:** mobile overlay nav was rewritten 3 times and still regressed (legal navy leak, articles title, categories empty gap). Needs a one-pass device check at 390 / 768 / 1280 after any CSS inject
-- [ ] 1.6 Two uploads still ≥500KB; review `srcset` still lists 2560w `-scaled` masters
+- [x] 1.6 Uploads recompressed: **0** files >250 KB (was 2 ≥500 KB + dozens 300–500 KB)
 - [ ] 1.7 Confirm LCP on `/products/` (original audit: 23s / 10.45MB) with a fresh throttled run — not re-measured this session
 
 ### Phase 2: SEO & Analytics floor (NEXT — do this before content scale)
@@ -50,7 +50,7 @@
 - [ ] 3.5 Fix social links (see 0.6)
 
 ### Phase 4: Cleanup & infra
-- [ ] 4.1 Reduce unused WP plugin/theme payload (`wp-content` still **~224 MB**)
+- [x] 4.1 Dead WP plugins removed; Elementor/Site Kit/Reach slimmed to referenced CSS/JS only (`wp-content` **~58.7 MB**, plugins **0.15 MB**)
 - [ ] 4.2 Cloudflare Pages `_headers` (security + cache)
 - [ ] 4.3 Optional: migrate hosting GitHub Pages → Cloudflare Pages (plan.html §1.5)
 
@@ -71,8 +71,8 @@
 | `404.html` | **present** (noindex; Home / Articles / Categories links) |
 | Favicon tag `/favicon.ico` | **20/20** HTML files (physical `.ico` still to be uploaded by owner) |
 | `_headers` | **missing** |
-| Uploads images | 728 files, **61.7 MB** (2 still >500KB) |
-| `wp-content` total | **~224 MB** |
+| Uploads images | **728** files, **40.02 MB** (0 >250 KB) |
+| `wp-content` total | **~58.7 MB** (plugins 0.15 MB, themes 18.53 MB) |
 | CNAME | `pickora.shop` present |
 
 Indexable pages have conversational meta descriptions (Flesch 60–70, 140–160 chars) + OG/Twitter. Orphans still have neither.
@@ -87,12 +87,17 @@ Indexable pages have conversational meta descriptions (Flesch 60–70, 140–160
 4. ~~**2.5–2.6** 404.html + noindex orphans~~ **done** (GSC submit = owner)  
 5. **1.5** freeze visual QA (phone 390 / tablet 768 / desktop 1280)  
 6. ~~**3.1–3.4** related posts, crumbs, inline links, review copy~~ **done**
-7. **4.1–4.2** dead assets + `_headers`  
+7. ~~**4.1** dead WP plugins~~ **done** — **4.2** `_headers` still open  
 8. Only then plan.html Phase 5–6 (new articles, then traffic)
 
 ---
 
 ## Change Log
+
+### 2026-08-13 — Block C: image weight + plugin cleanup
+- Recompressed 59 uploads to WebP q~82 (cap 250 KB). Uploads 58.9 → 40.0 MB; **0** files over 250 KB.
+- All 87 `<img>` tags: `loading` + `decoding`; heroes `eager` + `fetchpriority=high`; `width`/`height` on every tag (emoji 72, suggest 55, categories popup 1200×1600).
+- Removed 10 unused WP plugins; slimmed Elementor / Site Kit / Hostinger Reach to the CSS/JS still linked from HTML. Plugins 136 MB → 0.15 MB. `wp-content` ~224 → ~59 MB.
 
 ### 2026-08-13 — Review header air + crumbs via Articles
 - `.pk-review-hero` / `main`: non-collapsing `padding-top: 32px` so crumbs do not stick to the sticky nav.

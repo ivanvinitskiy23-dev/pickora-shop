@@ -1314,7 +1314,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const highlightedTitle = art.title.replace(regex, '<span class="pk-highlight">$1</span>');
 
                 item.innerHTML = `
-                    <img class="pk-suggest-img" src="${art.img}" loading="eager" fetchpriority="high" decoding="async" onerror="this.style.display='none'">
+                    <img class="pk-suggest-img" src="${art.img}" loading="eager" fetchpriority="high" decoding="async" onerror="this.style.display='none'" width="55" height="55">
                     <div class="pk-suggest-info">
                         <span>${art.tag}</span>
                         <h4>${highlightedTitle}</h4>
