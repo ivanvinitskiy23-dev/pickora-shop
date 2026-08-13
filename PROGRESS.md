@@ -44,7 +44,7 @@
 
 ### Phase 3: UX, Linking & Content
 - [x] 3.1 Related Posts (`.pk-related` Keep reading) on **4/4** review articles, before `.pk-disclosure-footer`
-- [x] 3.2 Visible breadcrumbs (`Home › Category › Article`) on **4/4** reviews + BreadcrumbList schema
+- [x] 3.2 Visible breadcrumbs (`Home › Articles › Article`) on **4/4** reviews + matching BreadcrumbList schema
 - [x] 3.3 Contextual inline links (2–3 per review) to neighbor reviews / hubs
 - [x] 3.4 Review intros/verdicts rewritten (Flesch 60–70) + **Who should skip this** on 4 reviews. Sitewide “premium” still remains on hubs/CSS comments
 - [ ] 3.5 Fix social links (see 0.6)
@@ -93,6 +93,10 @@ Indexable pages have conversational meta descriptions (Flesch 60–70, 140–160
 ---
 
 ## Change Log
+
+### 2026-08-13 — Review header air + crumbs via Articles
+- `.pk-review-hero` / `main`: non-collapsing `padding-top: 32px` so crumbs do not stick to the sticky nav.
+- Visual crumbs + JSON-LD BreadcrumbList: `Home › Articles › [review]` on all 4 reviews.
 
 ### 2026-08-13 — Block B close: white review headers, crumbs, inline links
 - Removed navy gradient hero. Headers are white typography: crumbs, blue category badge, navy H1 with `#2075d2` accent, 17px dek, then cover image.
