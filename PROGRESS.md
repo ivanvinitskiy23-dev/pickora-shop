@@ -1,6 +1,6 @@
 # Pickora.shop Refactoring Progress
 
-**Last calibrated:** 2026-08-14 (MailerLite footer embed on 20/20 HTML; Hostinger Reach removed)  
+**Last calibrated:** 2026-08-14 (native MailerLite HTML/CSS/JS footer form on 20/20 HTML)  
 **Rule:** checkboxes reflect files on disk, not chat claims. A task stays `[ ]` until the artifact exists and is wired.
 
 ## Phase Status
@@ -23,7 +23,7 @@
 - [x] 0.4 Cookie banner + Consent Mode v2 (`pickora-consent.js`) + GA4 `G-Q4SCHBR4QM` + `pickora-analytics.js` (`affiliate_click`) on **19/19**
 - [ ] 0.5 FTC residual: soften unproven claims (`100 hours of testing`, named testimonials like `Marcus V.`)
 - [ ] 0.6 Replace placeholder social URLs (`facebook.com/`, `instagram.com/`, `twitter.com/`, `tiktok.com/`) or hide icons
-- [x] 0.7 MailerLite Universal script in `<head>` on **20/20** site HTML; footer embed `data-form="s8S43W"` + scoped CSS on **20/20**; Hostinger Reach markup/CSS/JS **removed** from all pages. Header embed still optional/pending.
+- [x] 0.7 MailerLite footer: native HTML/CSS/JS form `#mlb2-44833402` + dark-footer overrides on **20/20** HTML; Hostinger Reach removed; Universal script still in `<head>`. Header embed optional/pending.
 
 ### Phase 1: Technical & Performance
 - [x] 1.1 Global overflow reset + `/about/` 320px grid fix
@@ -95,6 +95,11 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-08-14 — Native MailerLite HTML/CSS/JS footer form
+- Replaced `ml-embedded` iframe stub with full MailerLite native snippet (`#mlb2-44833402`, `webforms.min.js`) in footer on **20/20** HTML files.
+- Added `assets/snippets/mailerlite-footer-native.html` as canonical snippet source + `#pk-ml-footer-dark` overrides for `#15223B` footer (transparent wrapper, `#2075d2` button, light success text).
+- Removed legacy `#pk-mailerlite-footer-css` from `<head>` (superseded by native ML styles + dark overrides).
 
 ### 2026-08-14 — MailerLite footer embed + legacy form removal
 - Replaced Hostinger Reach footer form (`#ai-theme-footer-form`, subscription CSS/JS) with clean MailerLite embed (`<div class="ml-embedded" data-form="s8S43W">`) wrapped in `.pk-ml-footer` on **20/20** HTML files.
