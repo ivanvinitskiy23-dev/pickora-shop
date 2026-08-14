@@ -115,44 +115,69 @@ header.site-header .hostinger-ai-site-navigation.wp-block-navigation {
         padding: 12px 0 0;
     }
 
-    /* Dense photo mosaic — fully packed, no empty cells */
+    /* Compact photo strip — one wide premium line, auto-scrolls */
     .pk-about-mosaic {
-        display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        grid-template-rows: repeat(3, minmax(140px, 18vw));
-        gap: 10px;
-        margin: 0 0 40px;
+        margin: 0 0 36px;
     }
 
-    .pk-about-mosaic figure {
-        margin: 0;
+    .pk-about-photo-wrap {
         position: relative;
         overflow: hidden;
-        border-radius: 16px;
-        background: #e2e8f0;
-        min-height: 0;
+        border-radius: 18px;
+        background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+        border: 1px solid #e2e8f0;
+        padding: 10px 0;
+        mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+        -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
     }
 
-    .pk-about-mosaic img {
+    .pk-about-photo-track {
+        display: flex;
+        width: max-content;
+        gap: 10px;
+        padding: 0 10px;
+        animation: pkAboutPhotoStrip 48s linear infinite;
+    }
+
+    .pk-about-photo-wrap:hover .pk-about-photo-track {
+        animation-play-state: paused;
+    }
+
+    .pk-about-photo-track figure {
+        margin: 0;
+        flex: 0 0 auto;
+        width: clamp(148px, 16vw, 196px);
+        height: clamp(96px, 11vw, 128px);
+        overflow: hidden;
+        border-radius: 12px;
+        background: #e2e8f0;
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+        transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .pk-about-photo-track figure:hover {
+        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.14);
+    }
+
+    .pk-about-photo-track img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
-        transform: scale(1.02);
-        transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .pk-about-mosaic figure:hover img {
-        transform: scale(1.08);
+    .pk-about-photo-hint {
+        margin: 8px auto 0 !important;
+        text-align: center;
+        font-size: 12px !important;
+        color: #94a3b8 !important;
     }
 
-    /* Row1-2 left tall + 2x2 right; row3 full-width strip — zero holes */
-    .pk-m-a { grid-area: 1 / 1 / 3 / 7; }
-    .pk-m-b { grid-area: 1 / 7 / 2 / 10; }
-    .pk-m-c { grid-area: 1 / 10 / 2 / 13; }
-    .pk-m-d { grid-area: 2 / 7 / 3 / 10; }
-    .pk-m-e { grid-area: 2 / 10 / 3 / 13; }
-    .pk-m-f { grid-area: 3 / 1 / 4 / 13; }
+    @keyframes pkAboutPhotoStrip {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+    }
 
     /* How we work */
     .pk-about-band {
@@ -399,40 +424,32 @@ header.site-header .hostinger-ai-site-navigation.wp-block-navigation {
     @media (prefers-reduced-motion: reduce) {
         .pk-about-pillar,
         .pk-about-cta::after,
-        .pk-about-mosaic img,
+        .pk-about-photo-track,
         .pk-about-marquee {
             animation: none !important;
             transition: none !important;
         }
+        .pk-about-photo-wrap,
         .pk-about-marquee-wrap {
             overflow-x: auto;
             mask-image: none;
             -webkit-mask-image: none;
         }
+        .pk-about-photo-track,
         .pk-about-marquee { transform: none; }
     }
 
     @media (max-width: 900px) {
-        .pk-about-mosaic {
-            grid-template-rows: repeat(3, minmax(110px, 22vw));
-        }
         .pk-about-pillars { grid-template-columns: 1fr 1fr; }
         .pk-about-pillars .pk-about-pillar:last-child { grid-column: 1 / -1; }
     }
 
     @media (max-width: 680px) {
         .pk-about-v5 { padding: 8px 16px 36px; }
-        .pk-about-mosaic {
-            grid-template-columns: repeat(6, 1fr);
-            grid-template-rows: repeat(4, minmax(100px, 28vw));
-            gap: 8px;
+        .pk-about-photo-track figure {
+            width: 140px;
+            height: 92px;
         }
-        .pk-m-a { grid-area: 1 / 1 / 3 / 7; }
-        .pk-m-b { grid-area: 3 / 1 / 4 / 4; }
-        .pk-m-c { grid-area: 3 / 4 / 4 / 7; }
-        .pk-m-d { grid-area: 4 / 1 / 5 / 4; }
-        .pk-m-e { grid-area: 4 / 4 / 5 / 7; }
-        .pk-m-f { display: none; }
         .pk-about-pillars { grid-template-columns: 1fr; }
         .pk-about-pillars .pk-about-pillar:last-child { grid-column: auto; }
         .pk-about-cta {
@@ -1127,12 +1144,36 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
             </section>
 
             <section class="pk-about-mosaic" aria-label="Product photography from Pickora reviews">
-                <figure class="pk-m-a"><img src="/wp-content/uploads/2026/06/A_premium_commercial_lifestyle_product_202606301559-1024x572.webp" alt="Premium lifestyle product setup" width="1024" height="572" loading="eager" fetchpriority="high" decoding="async"></figure>
-                <figure class="pk-m-b"><img src="/wp-content/uploads/2026/06/Espresso_machine_and_latte_mug_202606281727-1024x572.webp" alt="Espresso machine and latte" width="1024" height="572" loading="lazy" decoding="async"></figure>
-                <figure class="pk-m-c"><img src="/wp-content/uploads/2026/06/Air_fryer_with_sweet_potato_202606281752-1024x572.webp" alt="Air fryer on kitchen counter" width="1024" height="572" loading="lazy" decoding="async"></figure>
-                <figure class="pk-m-d"><img src="/wp-content/uploads/2026/06/Minimalist_smart_pet_feeder_202606282002-1024x572.webp" alt="Smart pet feeder" width="1024" height="572" loading="lazy" decoding="async"></figure>
-                <figure class="pk-m-e"><img src="/wp-content/uploads/2026/06/Water_bottle_on_fitness_mat_202606281918-1024x572.webp" alt="Fitness bottle on yoga mat" width="1024" height="572" loading="lazy" decoding="async"></figure>
-                <figure class="pk-m-f"><img src="/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261942-2-1024x572.webp" alt="Studio product photography" width="1024" height="572" loading="lazy" decoding="async"></figure>
+                <div class="pk-about-photo-wrap" role="region" aria-label="Scrolling product photos">
+                    <div class="pk-about-photo-track">
+                        <figure><img src="/wp-content/uploads/2026/06/A_premium_commercial_lifestyle_product_202606301559-530x250.webp" alt="Premium lifestyle product setup" width="530" height="250" loading="eager" decoding="async"></figure>
+                        <figure><img src="/wp-content/uploads/2026/06/Espresso_machine_and_latte_mug_202606281727-530x250.webp" alt="Espresso machine and latte" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure><img src="/wp-content/uploads/2026/06/Air_fryer_with_sweet_potato_202606281752-530x250.webp" alt="Air fryer on kitchen counter" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure><img src="/wp-content/uploads/2026/06/Minimalist_smart_pet_feeder_202606282002-530x250.webp" alt="Smart pet feeder" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure><img src="/wp-content/uploads/2026/06/Water_bottle_on_fitness_mat_202606281918-530x250.webp" alt="Fitness bottle on yoga mat" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure><img src="/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261942-2-530x250.webp" alt="Studio product photography" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure><img src="/wp-content/uploads/2026/06/Black_wireless_earbuds_in_charging_202606131603-530x250.webp" alt="Wireless earbuds in case" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure><img src="/wp-content/uploads/2026/06/A_modern_robot_vacuum_cleaner_202606131525-530x250.webp" alt="Modern robot vacuum" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure><img src="/wp-content/uploads/2026/06/A_smart_pet_camera_on_202606131525-530x250.webp" alt="Smart pet camera" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure><img src="/wp-content/uploads/2026/06/Fitness_and_health_products_show-_202606122059-530x250.webp" alt="Fitness and health products" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure><img src="/wp-content/uploads/2026/06/Tech_products_on_wooden_table_202606161829-530x250.webp" alt="Tech products on wood table" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure><img src="/wp-content/uploads/2026/06/Home_kitchen_appliances_showcase-_202606122059-530x250.webp" alt="Home kitchen appliances" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <!-- duplicate set for seamless loop -->
+                        <figure aria-hidden="true"><img src="/wp-content/uploads/2026/06/A_premium_commercial_lifestyle_product_202606301559-530x250.webp" alt="" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure aria-hidden="true"><img src="/wp-content/uploads/2026/06/Espresso_machine_and_latte_mug_202606281727-530x250.webp" alt="" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure aria-hidden="true"><img src="/wp-content/uploads/2026/06/Air_fryer_with_sweet_potato_202606281752-530x250.webp" alt="" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure aria-hidden="true"><img src="/wp-content/uploads/2026/06/Minimalist_smart_pet_feeder_202606282002-530x250.webp" alt="" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure aria-hidden="true"><img src="/wp-content/uploads/2026/06/Water_bottle_on_fitness_mat_202606281918-530x250.webp" alt="" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure aria-hidden="true"><img src="/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261942-2-530x250.webp" alt="" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure aria-hidden="true"><img src="/wp-content/uploads/2026/06/Black_wireless_earbuds_in_charging_202606131603-530x250.webp" alt="" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure aria-hidden="true"><img src="/wp-content/uploads/2026/06/A_modern_robot_vacuum_cleaner_202606131525-530x250.webp" alt="" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure aria-hidden="true"><img src="/wp-content/uploads/2026/06/A_smart_pet_camera_on_202606131525-530x250.webp" alt="" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure aria-hidden="true"><img src="/wp-content/uploads/2026/06/Fitness_and_health_products_show-_202606122059-530x250.webp" alt="" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure aria-hidden="true"><img src="/wp-content/uploads/2026/06/Tech_products_on_wooden_table_202606161829-530x250.webp" alt="" width="530" height="250" loading="lazy" decoding="async"></figure>
+                        <figure aria-hidden="true"><img src="/wp-content/uploads/2026/06/Home_kitchen_appliances_showcase-_202606122059-530x250.webp" alt="" width="530" height="250" loading="lazy" decoding="async"></figure>
+                    </div>
+                </div>
+                <p class="pk-about-photo-hint">Hover to pause · more shots keep scrolling in</p>
             </section>
 
             <section class="pk-about-band" aria-label="How we work">
