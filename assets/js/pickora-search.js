@@ -1,8 +1,53 @@
 /**
- * Pickora client-side search — articles (autocomplete + navigate) & products (Enter → scroll).
+ * Pickora client-side search — articles & products (autocomplete → navigate to review/page).
  */
 (function () {
   'use strict';
+
+  var PRODUCT_CATALOG = [
+    {
+      title: 'Air Fryers',
+      tag: 'Kitchen Tech',
+      keywords: 'air fryer air fryers ninja kitchen budget cooking aerogrill',
+      url: 'https://pickora.shop/best-air-fryers-of-2026-which-one-should-you-buy/',
+      img: 'https://pickora.shop/wp-content/uploads/2026/07/A_modern_black_air_fryer_202606131522-scaled.webp'
+    },
+    {
+      title: 'Robot Vacuums',
+      tag: 'Smart Home',
+      keywords: 'robot vacuum vacuums vacuum cleaner mop smart home cleaning',
+      url: 'https://pickora.shop/best-robot-vacuums-2026-top-8-models-tested-honest-reviews/',
+      img: 'https://pickora.shop/wp-content/uploads/2026/07/A_modern_robot_vacuum_cleaner_202606131525-scaled.webp'
+    },
+    {
+      title: 'Wireless Earbuds',
+      tag: 'Audio',
+      keywords: 'wireless earbuds earbud headphones audio anc earphones',
+      url: 'https://pickora.shop/best-wireless-earbuds-2026-top-7-models-tested-honest-reviews/',
+      img: 'https://pickora.shop/wp-content/uploads/2026/07/Black_wireless_earbuds_in_charging_202606131603-scaled.webp'
+    },
+    {
+      title: 'Pet Cameras',
+      tag: 'Pet Tech',
+      keywords: 'pet camera cameras dog cat furbo monitor smart pet',
+      url: 'https://pickora.shop/best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews/',
+      img: 'https://pickora.shop/wp-content/uploads/2026/07/A_smart_pet_camera_on_202606131525-scaled.webp'
+    },
+    {
+      title: 'Coffee Machines',
+      tag: 'Home & Kitchen',
+      keywords: 'coffee machine espresso maker brew kitchen cafe',
+      url: 'https://pickora.shop/home-kitchen/',
+      img: 'https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_modern_202606231450-scaled.webp'
+    },
+    {
+      title: 'Keyboards & Tech Gadgets',
+      tag: 'Consumer Electronics',
+      keywords: 'keyboard keychron laptop tablet headphones gadgets electronics',
+      url: 'https://pickora.shop/consumer-electronics/',
+      img: 'https://pickora.shop/wp-content/uploads/2026/06/Tech_gadgets_on_desk_202606231445.webp'
+    }
+  ];
 
   function appendHighlightedTitle(h4, title, query) {
     h4.textContent = '';
@@ -10,9 +55,9 @@
       h4.textContent = title;
       return;
     }
-    const lower = title.toLowerCase();
-    const q = query.toLowerCase();
-    const idx = lower.indexOf(q);
+    var lower = title.toLowerCase();
+    var q = query.toLowerCase();
+    var idx = lower.indexOf(q);
     if (idx === -1) {
       h4.textContent = title;
       return;
@@ -20,7 +65,7 @@
     if (idx > 0) {
       h4.appendChild(document.createTextNode(title.slice(0, idx)));
     }
-    const mark = document.createElement('mark');
+    var mark = document.createElement('mark');
     mark.className = 'pk-highlight';
     mark.textContent = title.slice(idx, idx + q.length);
     h4.appendChild(mark);
@@ -30,105 +75,104 @@
   }
 
   function collectArticles(config) {
-    const root = document.querySelector(config.source);
+    var root = document.querySelector(config.source);
     if (!root) return [];
     return Array.from(root.querySelectorAll('article')).map(function (el) {
-      const titleEl = el.querySelector(config.titleSelector);
-      const linkEl = el.querySelector('a[href]');
-      const imgEl = el.querySelector('img');
-      const tagEl = el.querySelector(config.tagSelector || '.pk-card-tag, .pk-rev-category, span');
-      const title = titleEl ? titleEl.textContent.trim() : '';
+      var titleEl = el.querySelector(config.titleSelector);
+      var linkEl = el.querySelector('a[href]');
+      var imgEl = el.querySelector('img');
+      var tagEl = el.querySelector(config.tagSelector || '.pk-card-tag, .pk-rev-category');
+      var title = titleEl ? titleEl.textContent.trim() : '';
       if (!title) return null;
       return {
         title: title,
         url: linkEl ? linkEl.href : '#',
         img: imgEl ? imgEl.src : '',
-        tag: tagEl ? tagEl.textContent.trim() : 'Article',
-        element: el
+        tag: tagEl ? tagEl.textContent.trim() : 'Article'
       };
     }).filter(Boolean);
   }
 
-  function collectProducts(config) {
-    const items = [];
-    document.querySelectorAll(config.source + ' [data-pk-product]').forEach(function (el) {
-      const titleEl = el.querySelector(config.titleSelector || 'h3');
-      const title = titleEl ? titleEl.textContent.trim() : '';
-      const keywords = (el.getAttribute('data-pk-product-keywords') || '').toLowerCase();
-      if (!title) return;
-      items.push({
-        title: title,
-        keywords: keywords,
-        tag: el.getAttribute('data-pk-product-tag') || 'Product',
-        element: el
-      });
+  function matchesText(haystack, query) {
+    var q = query.toLowerCase().trim();
+    if (!q) return false;
+    var text = haystack.toLowerCase();
+    if (text.indexOf(q) !== -1) return true;
+    return q.split(/\s+/).every(function (word) {
+      return word.length >= 2 && text.indexOf(word) !== -1;
     });
-    return items;
   }
 
   function matchesArticle(item, query) {
-    return item.title.toLowerCase().includes(query.toLowerCase());
+    return matchesText(item.title, query);
   }
 
   function matchesProduct(item, query) {
-    const q = query.toLowerCase().trim();
-    if (!q) return false;
-    const haystack = (item.title + ' ' + item.keywords).toLowerCase();
-    if (haystack.includes(q)) return true;
-    return q.split(/\s+/).every(function (word) {
-      return word.length >= 2 && haystack.includes(word);
-    });
-  }
-
-  function rankProductMatch(item, query) {
-    const q = query.toLowerCase().trim();
-    const title = item.title.toLowerCase();
-    const keywords = item.keywords;
-    if (title === q) return 100;
-    if (title.startsWith(q)) return 90;
-    if (title.includes(q)) return 75;
-    if (keywords.includes(q)) return 60;
-    const words = q.split(/\s+/).filter(function (w) { return w.length >= 2; });
-    if (words.length && words.every(function (w) { return keywords.includes(w) || title.includes(w); })) {
-      return 50;
-    }
-    return 0;
-  }
-
-  function scrollToProduct(el) {
-    if (!el) return;
-    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    el.classList.add('pk-search-flash');
-    window.setTimeout(function () {
-      el.classList.remove('pk-search-flash');
-    }, 2200);
+    return matchesText(item.title + ' ' + item.keywords, query);
   }
 
   function setDropdownOpen(root, open) {
     root.classList.toggle('is-open', open);
   }
 
-  function initArticleSearch(root, config, input, dropdown, clearBtn) {
-    let activeIndex = -1;
+  function initSearch(root) {
+    var mode = root.getAttribute('data-pk-search-mode') || 'articles';
+    var config = {
+      source: root.getAttribute('data-pk-search-source') || '#pk-grid-feed',
+      titleSelector: root.getAttribute('data-pk-search-title') || '.pk-card-title, .pk-rev-title',
+      tagSelector: root.getAttribute('data-pk-search-tag') || '.pk-card-tag, .pk-rev-category'
+    };
+
+    var input = root.querySelector('#pk-realtime-search');
+    var dropdown = root.querySelector('#pk-search-suggestions');
+    var clearBtn = root.querySelector('#pk-search-clear');
+    if (!input || !dropdown || !clearBtn) return;
+
+    var activeIndex = -1;
+    var emptyLabel = mode === 'products' ? 'No products found…' : 'No guides found…';
+
+    function getItems() {
+      return mode === 'products' ? PRODUCT_CATALOG : collectArticles(config);
+    }
+
+    function getMatches(query) {
+      var matcher = mode === 'products' ? matchesProduct : matchesArticle;
+      return getItems().filter(function (item) {
+        return matcher(item, query);
+      });
+    }
+
+    function hideDropdown() {
+      dropdown.style.display = 'none';
+      setDropdownOpen(root, false);
+      activeIndex = -1;
+    }
+
+    function updateActive(items) {
+      items.forEach(function (el, i) {
+        el.classList.toggle('is-active', i === activeIndex);
+      });
+    }
 
     function renderDropdown(matches, query) {
       dropdown.innerHTML = '';
       activeIndex = -1;
+
       if (!matches.length) {
-        dropdown.innerHTML = '<div class="pk-suggest-empty">No guides found…</div>';
+        dropdown.innerHTML = '<div class="pk-suggest-empty">' + emptyLabel + '</div>';
         dropdown.style.display = 'block';
         setDropdownOpen(root, true);
         return;
       }
 
       matches.slice(0, 6).forEach(function (item, index) {
-        const btn = document.createElement('button');
+        var btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'pk-suggest-item';
         btn.setAttribute('role', 'option');
 
         if (item.img) {
-          const img = document.createElement('img');
+          var img = document.createElement('img');
           img.className = 'pk-suggest-img';
           img.src = item.img;
           img.alt = '';
@@ -140,11 +184,11 @@
           btn.appendChild(img);
         }
 
-        const info = document.createElement('div');
+        var info = document.createElement('div');
         info.className = 'pk-suggest-info';
-        const tag = document.createElement('span');
+        var tag = document.createElement('span');
         tag.textContent = item.tag;
-        const h4 = document.createElement('h4');
+        var h4 = document.createElement('h4');
         appendHighlightedTitle(h4, item.title, query);
         info.appendChild(tag);
         info.appendChild(h4);
@@ -161,23 +205,13 @@
 
         dropdown.appendChild(btn);
       });
+
       dropdown.style.display = 'block';
       setDropdownOpen(root, true);
     }
 
-    function updateActive(items) {
-      items.forEach(function (el, i) {
-        el.classList.toggle('is-active', i === activeIndex);
-      });
-    }
-
-    function hideDropdown() {
-      dropdown.style.display = 'none';
-      setDropdownOpen(root, false);
-    }
-
     input.addEventListener('input', function () {
-      const query = this.value.trim();
+      var query = this.value.trim();
       clearBtn.style.display = query.length > 0 ? 'flex' : 'none';
 
       if (query.length < 2) {
@@ -186,14 +220,11 @@
         return;
       }
 
-      const matches = collectArticles(config).filter(function (item) {
-        return matchesArticle(item, query);
-      });
-      renderDropdown(matches, query);
+      renderDropdown(getMatches(query), query);
     });
 
     input.addEventListener('keydown', function (e) {
-      const items = dropdown.querySelectorAll('.pk-suggest-item');
+      var items = dropdown.querySelectorAll('.pk-suggest-item');
       if (e.key === 'ArrowDown' && dropdown.style.display === 'block' && items.length) {
         e.preventDefault();
         activeIndex = Math.min(activeIndex + 1, items.length - 1);
@@ -211,6 +242,15 @@
         } else if (dropdown.style.display === 'block' && items.length === 1) {
           e.preventDefault();
           items[0].click();
+        } else {
+          var query = input.value.trim();
+          if (query.length >= 2) {
+            var matches = getMatches(query);
+            if (matches.length) {
+              e.preventDefault();
+              window.location.href = matches[0].url;
+            }
+          }
         }
       } else if (e.key === 'Escape') {
         hideDropdown();
@@ -231,68 +271,7 @@
     });
   }
 
-  function initProductSearch(root, config, input, clearBtn) {
-    function runProductSearch() {
-      const query = input.value.trim();
-      if (query.length < 2) return false;
-
-      const ranked = collectProducts(config)
-        .map(function (item) {
-          return { item: item, score: rankProductMatch(item, query) };
-        })
-        .filter(function (entry) { return entry.score > 0; })
-        .sort(function (a, b) { return b.score - a.score; });
-
-      if (!ranked.length) return false;
-      scrollToProduct(ranked[0].item.element);
-      return true;
-    }
-
-    input.addEventListener('input', function () {
-      clearBtn.style.display = this.value.trim().length > 0 ? 'flex' : 'none';
-    });
-
-    input.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        runProductSearch();
-      } else if (e.key === 'Escape') {
-        input.value = '';
-        clearBtn.style.display = 'none';
-        input.blur();
-      }
-    });
-
-    clearBtn.addEventListener('click', function () {
-      input.value = '';
-      input.focus();
-      clearBtn.style.display = 'none';
-    });
-  }
-
-  function initWidget(root) {
-    const mode = root.getAttribute('data-pk-search-mode') || 'articles';
-    const config = {
-      source: root.getAttribute('data-pk-search-source') || '#pk-grid-feed',
-      titleSelector: root.getAttribute('data-pk-search-title') || '.pk-card-title, .pk-rev-title, h3',
-      tagSelector: root.getAttribute('data-pk-search-tag') || '.pk-card-tag, .pk-rev-category'
-    };
-
-    const input = root.querySelector('#pk-realtime-search');
-    const dropdown = root.querySelector('#pk-search-suggestions');
-    const clearBtn = root.querySelector('#pk-search-clear');
-    if (!input || !clearBtn) return;
-
-    if (mode === 'products') {
-      initProductSearch(root, config, input, clearBtn);
-      return;
-    }
-
-    if (!dropdown) return;
-    initArticleSearch(root, config, input, dropdown, clearBtn);
-  }
-
   document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('#pk-search-system[data-pk-search-mode]').forEach(initWidget);
+    document.querySelectorAll('#pk-search-system[data-pk-search-mode]').forEach(initSearch);
   });
 })();

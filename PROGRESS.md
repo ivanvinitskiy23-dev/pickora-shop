@@ -96,6 +96,11 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 
 ## Change Log
 
+### 2026-08-14 — Search: product redirect, cleanup, z-index layering
+- `/products/`: removed Featured Products block; single search input; dropdown → redirect to review/hub URLs (no page scroll).
+- Product catalog in `pickora-search.js`: Air Fryers, Robot Vacuums, Earbuds, Pet Cameras, Coffee, Keyboards.
+- Z-index: dropdown `9999` (above cards/badges, below sticky header `10000`); `margin-top: 32px` on search widget.
+
 ### 2026-08-14 — Search z-index + products Enter-scroll
 - Articles/home autocomplete dropdown: `z-index: 999999` (container `999998`) so badges never overlap results.
 - `/products/`: removed autocomplete dropdown; Enter runs keyword match + smooth `scrollIntoView` to product/category card.

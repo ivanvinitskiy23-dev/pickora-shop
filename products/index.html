@@ -1014,82 +1014,26 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
         </p>
     </div>
 
-<div id="pk-search-system" data-pk-search-mode="products" data-pk-search-source="#pk-products-page" data-pk-search-title="h3">
+<div id="pk-search-system" data-pk-search-mode="products">
   <div class="pk-search-outer-container">
     <div class="pk-search-field-group">
       <div class="pk-search-icon-inside">
         <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="#3A86E1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
       </div>
-      <input type="text" id="pk-realtime-search" placeholder="Type a product and press Enter (vacuum, earbuds, coffee…)" autocomplete="off">
+      <input type="text" id="pk-realtime-search" placeholder="Search products — air fryers, vacuums, earbuds, cameras…" autocomplete="off">
       <button type="button" id="pk-search-clear" aria-label="Clear search">×</button>
     </div>
+    <div id="pk-search-suggestions" class="pk-suggestions-dropdown" role="listbox"></div>
   </div>
 </div>
 <link rel="stylesheet" href="/assets/css/pickora-search.css">
 <script src="/assets/js/pickora-search.js" defer></script>
 
-    <div class="pk-featured-products-wrap">
-        <h2 class="pk-featured-title">Featured <span class="pk-blue-text">Products</span></h2>
-        <p class="pk-featured-sub">Type a keyword above and press Enter to jump to a product card.</p>
-        <div id="pk-product-catalog" class="pk-featured-products-grid">
-            <article class="pk-product-card" id="product-air-fryers" data-pk-product data-pk-product-tag="Kitchen Tech" data-pk-product-keywords="air fryer air fryers ninja kitchen budget cooking">
-                <div class="pk-product-card-inner">
-                    <img src="https://pickora.shop/wp-content/uploads/2026/07/A_modern_black_air_fryer_202606131522-scaled.webp" alt="Air Fryers" width="120" height="120" loading="lazy" decoding="async">
-                    <div class="pk-product-card-body">
-                        <h3>Air Fryers</h3>
-                        <p>Best budget air fryers tested for performance and value in 2026.</p>
-                        <a href="https://pickora.shop/best-air-fryers-of-2026-which-one-should-you-buy/">View review →</a>
-                    </div>
-                </div>
-            </article>
-            <article class="pk-product-card" id="product-robot-vacuums" data-pk-product data-pk-product-tag="Smart Home" data-pk-product-keywords="robot vacuum vacuums cleaning mop smart home">
-                <div class="pk-product-card-inner">
-                    <img src="https://pickora.shop/wp-content/uploads/2026/07/A_modern_robot_vacuum_cleaner_202606131525-scaled.webp" alt="Robot Vacuums" width="120" height="120" loading="lazy" decoding="async">
-                    <div class="pk-product-card-body">
-                        <h3>Robot Vacuums</h3>
-                        <p>Top robot vacuums for effortless floor cleaning and mopping.</p>
-                        <a href="https://pickora.shop/best-robot-vacuums-2026-top-8-models-tested-honest-reviews/">View review →</a>
-                    </div>
-                </div>
-            </article>
-            <article class="pk-product-card" id="product-wireless-earbuds" data-pk-product data-pk-product-tag="Audio" data-pk-product-keywords="wireless earbuds earbud headphones audio anc">
-                <div class="pk-product-card-inner">
-                    <img src="https://pickora.shop/wp-content/uploads/2026/07/Black_wireless_earbuds_in_charging_202606131603-scaled.webp" alt="Wireless Earbuds" width="120" height="120" loading="lazy" decoding="async">
-                    <div class="pk-product-card-body">
-                        <h3>Wireless Earbuds</h3>
-                        <p>Our top picks for sound quality, battery life, and comfort.</p>
-                        <a href="https://pickora.shop/best-wireless-earbuds-2026-top-7-models-tested-honest-reviews/">View review →</a>
-                    </div>
-                </div>
-            </article>
-            <article class="pk-product-card" id="product-pet-cameras" data-pk-product data-pk-product-tag="Pet Tech" data-pk-product-keywords="pet camera cameras dog cat furbo monitor">
-                <div class="pk-product-card-inner">
-                    <img src="https://pickora.shop/wp-content/uploads/2026/07/A_smart_pet_camera_on_202606131525-scaled.webp" alt="Pet Cameras" width="120" height="120" loading="lazy" decoding="async">
-                    <div class="pk-product-card-body">
-                        <h3>Pet Cameras</h3>
-                        <p>Smart cameras to monitor dogs and cats when you are away.</p>
-                        <a href="https://pickora.shop/best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews/">View review →</a>
-                    </div>
-                </div>
-            </article>
-            <article class="pk-product-card" id="product-coffee-machines" data-pk-product data-pk-product-tag="Home &amp; Kitchen" data-pk-product-keywords="coffee machine espresso maker brew kitchen">
-                <div class="pk-product-card-inner">
-                    <img src="https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_modern_202606231450-scaled.webp" alt="Coffee Machines" width="120" height="120" loading="lazy" decoding="async">
-                    <div class="pk-product-card-body">
-                        <h3>Coffee Machines</h3>
-                        <p>Espresso makers and brewers for daily café-quality drinks at home.</p>
-                        <a href="https://pickora.shop/home-kitchen/">Browse kitchen →</a>
-                    </div>
-                </div>
-            </article>
-        </div>
-    </div>
-
     <!-- Categories Grid -->
     <div class="pk-category-grid" id="pk-category-grid">
         
         <!-- Category 1: Consumer Electronics -->
-        <article class="pk-cat-card" id="product-consumer-electronics" data-pk-product data-pk-product-tag="Category" data-pk-product-keywords="consumer electronics laptop tablet headphones keyboard keychron gadgets tech earbuds">
+        <article class="pk-cat-card">
             <a href="https://pickora.shop/consumer-electronics/" class="pk-cat-link">
                 <div class="pk-cat-image">
                     <img src="https://pickora.shop/wp-content/uploads/2026/06/Tech_gadgets_on_desk_202606231445.webp" alt="Consumer Electronics" width="1200" height="896" loading="eager" fetchpriority="high" decoding="async">
@@ -1107,7 +1051,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
         </article>
 
         <!-- Category 2: Home & Kitchen -->
-        <article class="pk-cat-card" id="product-home-kitchen" data-pk-product data-pk-product-tag="Category" data-pk-product-keywords="home kitchen coffee air fryer espresso appliance">
+        <article class="pk-cat-card">
             <a href="https://pickora.shop/home-kitchen/" class="pk-cat-link">
                 <div class="pk-cat-image">
                     <img src="https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_modern_202606231450-scaled.webp" alt="Home &amp; Kitchen" width="1200" height="670" loading="lazy" decoding="async">
@@ -1125,7 +1069,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
         </article>
 
         <!-- Category 3: Fitness & Health -->
-        <article class="pk-cat-card" id="product-fitness-health" data-pk-product data-pk-product-tag="Category" data-pk-product-keywords="fitness health gym wellness tracker oura">
+        <article class="pk-cat-card">
             <a href="https://pickora.shop/fitness-health/" class="pk-cat-link">
                 <div class="pk-cat-image">
                     <img src="https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_modern_202606231456-scaled.webp" alt="Fitness &amp; Health" width="1200" height="670" loading="lazy" decoding="async">
@@ -1143,7 +1087,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
         </article>
 
         <!-- Category 4: Pet Supplies -->
-        <article class="pk-cat-card" id="product-pet-supplies" data-pk-product data-pk-product-tag="Category" data-pk-product-keywords="pet supplies feeder camera dog cat">
+        <article class="pk-cat-card">
             <a href="https://pickora.shop/pet-supplies/" class="pk-cat-link">
                 <div class="pk-cat-image">
                     <img src="https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_premium_202606231533-scaled.webp" alt="Pet Supplies" width="1200" height="896" loading="lazy" decoding="async">
@@ -1342,78 +1286,6 @@ main#wp--skip-link--target {
     }
     .pk-cat-image { aspect-ratio: 4 / 3; }
     .pk-hub-main-title { font-size: 32px !important; }
-}
-
-/* Featured products catalog (product search targets) */
-.pk-featured-products-wrap {
-    max-width: 1240px;
-    margin: 0 auto 48px;
-    padding: 0 20px;
-    box-sizing: border-box;
-}
-.pk-featured-title {
-    font-size: clamp(26px, 4vw, 36px) !important;
-    font-weight: 800 !important;
-    color: var(--pk-dark) !important;
-    margin: 0 0 8px !important;
-    text-align: center;
-}
-.pk-featured-sub {
-    text-align: center;
-    color: var(--pk-text) !important;
-    margin: 0 0 28px !important;
-    font-size: 16px !important;
-}
-.pk-featured-products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-}
-.pk-product-card {
-    background: #fff;
-    border: 1px solid rgba(0,0,0,0.06);
-    border-radius: 20px;
-    overflow: hidden;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-}
-.pk-product-card-inner {
-    display: flex;
-    gap: 16px;
-    padding: 18px;
-    align-items: flex-start;
-}
-.pk-product-card-inner img {
-    width: 88px;
-    height: 88px;
-    object-fit: cover;
-    border-radius: 12px;
-    flex-shrink: 0;
-    background: #f3f4f6;
-}
-.pk-product-card-body h3 {
-    margin: 0 0 6px !important;
-    font-size: 18px !important;
-    font-weight: 800 !important;
-    color: var(--pk-dark) !important;
-}
-.pk-product-card-body p {
-    margin: 0 0 10px !important;
-    font-size: 14px !important;
-    line-height: 1.45 !important;
-    color: var(--pk-text) !important;
-}
-.pk-product-card-body a {
-    font-size: 13px !important;
-    font-weight: 700 !important;
-    color: var(--pk-blue) !important;
-    text-decoration: none !important;
-}
-.pk-product-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(17, 29, 55, 0.08);
-}
-@media (max-width: 767px) {
-    .pk-product-card-inner { flex-direction: column; align-items: center; text-align: center; }
 }
 </style>				</div>
 				</div>
