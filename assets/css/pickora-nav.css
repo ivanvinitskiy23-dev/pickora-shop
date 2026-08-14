@@ -1,5 +1,6 @@
 /**
- * Pickora navigation — 992px breakpoint + left drawer (Variant C).
+ * Pickora navigation — 992px breakpoint + right drawer (Variant C).
+ * Burger is on the right → panel slides from the right.
  * pickora-nav.js portals overlay to <body> and injects brand row.
  */
 :root {
@@ -61,10 +62,23 @@
     .wp-block-navigation__responsive-container-close {
     display: none !important;
   }
+
+  /* Injected drawer brand must never leak into closed header (duplicate "Pickora") */
+  header.site-header
+    .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
+    .pk-nav-drawer-brand,
+  .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
+    .pk-nav-drawer-brand {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+  }
 }
 
 /* =========================================================
-   OPEN — left drawer + dimmed backdrop (≤991px)
+   OPEN — right drawer + dimmed backdrop (≤991px)
    ========================================================= */
 @media (max-width: 991px) {
   html.has-modal-open,
@@ -100,7 +114,7 @@
     display: flex !important;
     flex-direction: row !important;
     align-items: stretch !important;
-    justify-content: flex-start !important;
+    justify-content: flex-end !important;
     overflow: hidden !important;
     box-sizing: border-box !important;
     transform: none !important;
@@ -132,7 +146,7 @@
     border: 0 !important;
     border-radius: 0 !important;
     background: #ffffff !important;
-    box-shadow: 8px 0 32px rgba(15, 23, 42, 0.12) !important;
+    box-shadow: -8px 0 32px rgba(15, 23, 42, 0.12) !important;
     display: flex !important;
     flex-direction: column !important;
     flex: 0 0 var(--pk-nav-drawer-width) !important;
@@ -363,7 +377,7 @@
 
 @keyframes pkNavDrawerIn {
   from {
-    transform: translateX(-12px);
+    transform: translateX(12px);
     opacity: 0.85;
   }
   to {

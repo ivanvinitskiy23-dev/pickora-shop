@@ -96,6 +96,11 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 
 ## Change Log
 
+### 2026-08-14 — Drawer: hide leaked brand + open from right
+- Fixed duplicate **Pickora** next to burger: injected `.pk-nav-drawer-brand` was left in the header after close; now teardown on close + CSS hide when closed.
+- Drawer opens from the **right** (same side as burger) — clearer than left slide.
+- Cache-bust `?v=4`.
+
 ### 2026-08-14 — Nav Variant C: left drawer (phone + tablet)
 - Replaced fullscreen giant-type overlay with **left drawer** (~320px phone / ~360px tablet): logo **Pickora** + X, calm 17–18px links, dimmed backdrop, slide-in.
 - `pickora-nav.js`: portal to `<body>`, inject brand row, `html.pk-nav-open` (burger stays hidden after portal), Escape + backdrop click to close.
