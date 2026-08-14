@@ -786,10 +786,8 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
     		<div class="elementor-element elementor-element-8ddd5ab elementor-widget elementor-widget-html" data-id="8ddd5ab" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
 				<div class="elementor-widget-container">
 					<div class="pickora-hero-section">
-  <!-- Фоновый слой для эффекта масштабирования -->
-  <div class="pickora-hero-bg" style="background-image: url('https://pickora.shop/wp-content/uploads/2026/06/A_premium_commercial_lifestyle_product_202606301559-scaled.webp');"></div>
-  
-  <!-- Контент поверх фона -->
+  <img class="pickora-hero-bg" src="https://pickora.shop/wp-content/uploads/2026/06/A_premium_commercial_lifestyle_product_202606301559-2048x1143.webp" alt="" width="2048" height="1143" fetchpriority="high" decoding="async">
+
   <div class="pickora-hero-content">
     <h1 class="pickora-hero-title">Clear reviews for smarter <span class="pickora-accent-text">buys</span></h1>
     <p class="pickora-hero-subtitle">
@@ -812,25 +810,26 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
   justify-content: flex-start;
   padding: 60px 40px;
   overflow: hidden;
-  border-radius: 16px; /* Закругление углов для вылета из общей сетки */
+  border-radius: 16px;
   box-sizing: border-box;
 }
 
-/* Эффектный оживающий фон */
+/* Sharp full-bleed photo — no scale blur */
 .pickora-hero-bg {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
-  background-size: cover;
-  background-position: center right;
+  object-fit: cover;
+  object-position: center right;
   z-index: 1;
-  transform: scale(1.05);
-  animation: smoothBgScale 2s cubic-bezier(0.12, 1, 0.3, 1) forwards;
+  display: block;
+  transform: none;
+  filter: none;
+  image-rendering: auto;
 }
 
-/* Затемняющий премиальный градиент поверх картинки, чтобы текст читался идеально */
+/* Lighter wash so the photo stays crisp; text still readable */
 .pickora-hero-section::before {
   content: '';
   position: absolute;
@@ -838,11 +837,11 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, rgba(15,23,42,0.82) 0%, rgba(15,23,42,0.45) 55%, rgba(15,23,42,0.15) 100%);
+  background: linear-gradient(95deg, rgba(15,23,42,0.70) 0%, rgba(15,23,42,0.32) 48%, rgba(15,23,42,0.08) 100%);
   z-index: 2;
+  pointer-events: none;
 }
 
-/* Контентная область */
 .pickora-hero-content {
   position: relative;
   z-index: 3;
@@ -854,7 +853,6 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
   animation: heroTextReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Заголовок с наследованием твоего шрифта сайта */
 .pickora-hero-title {
   font-family: inherit;
   font-size: clamp(2.2rem, 3.8vw, 3.2rem);
@@ -863,6 +861,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
   color: #ffffff;
   margin: 0 0 20px 0;
   letter-spacing: -0.03em;
+  text-shadow: 0 1px 18px rgba(15, 23, 42, 0.35);
 }
 
 .pickora-accent-text {
@@ -878,117 +877,65 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
   color: #e2e8f0;
   margin: 0 0 36px 0;
   letter-spacing: -0.01em;
+  text-shadow: 0 1px 12px rgba(15, 23, 42, 0.3);
 }
 
-/* Premium CTA — gradient, glass edge, shimmer */
+/* Option D — glass outline CTA */
 .pickora-hero-btn {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: linear-gradient(135deg, #3b9aef 0%, #2075d2 42%, #1558a8 100%);
-  background-size: 160% 160%;
-  color: #ffffff !important;
-  text-decoration: none !important;
-  padding: 16px 34px;
+  padding: 14px 28px;
   font-family: Montserrat, "Open Sans", sans-serif;
   font-size: 1.05rem;
   font-weight: 700;
   letter-spacing: 0.01em;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #ffffff !important;
+  text-decoration: none !important;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.25) !important;
   overflow: hidden;
-  isolation: isolate;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, background-position 0.45s ease, filter 0.35s ease;
-  box-shadow:
-    0 10px 28px rgba(32, 117, 210, 0.38),
-    0 2px 0 rgba(255, 255, 255, 0.22) inset,
-    0 -2px 0 rgba(15, 35, 70, 0.18) inset !important;
-}
-
-.pickora-hero-btn::before {
-  content: '';
-  position: absolute;
-  inset: 1px;
-  border-radius: inherit;
-  background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.04) 42%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.pickora-hero-btn > * {
-  position: relative;
-  z-index: 1;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), background 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
 }
 
 .pickora-hero-btn .btn-arrow {
   margin-left: 2px;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.pickora-hero-btn::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -55%;
-  width: 28%;
-  height: 100%;
-  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.45) 50%, rgba(255,255,255,0) 100%);
-  transform: skewX(-25deg);
-  animation: buttonShimmer 5.5s infinite ease-in-out;
-  z-index: 2;
-  pointer-events: none;
+  transition: transform 0.28s ease;
 }
 
 .pickora-hero-btn:hover {
-  background-position: 100% 50%;
-  transform: translateY(-3px) scale(1.02);
-  filter: saturate(1.08);
-  box-shadow:
-    0 16px 36px rgba(32, 117, 210, 0.45),
-    0 2px 0 rgba(255, 255, 255, 0.28) inset,
-    0 -2px 0 rgba(15, 35, 70, 0.2) inset !important;
+  background: rgba(32, 117, 210, 0.88);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(32, 117, 210, 0.35) !important;
 }
 
 .pickora-hero-btn:hover .btn-arrow {
-  transform: translateX(6px);
+  transform: translateX(5px);
 }
 
 .pickora-hero-btn:active {
-  transform: translateY(-1px) scale(0.99);
-}
-
-/* АНИМАЦИИ */
-@keyframes smoothBgScale {
-  100% { transform: scale(1); }
+  transform: translateY(0);
 }
 
 @keyframes heroTextReveal {
-  0% { opacity: 0; transform: translateY(40px); filter: blur(4px); }
-  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+  0% { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes buttonShimmer {
-  0% { left: -50%; }
-  15% { left: 120%; }
-  100% { left: 120%; }
-}
-
-/* МОЩНАЯ АДАПТАЦИЯ (Планшеты и Мобилки) */
 @media (max-width: 1024px) {
   .pickora-hero-section {
     min-height: auto;
     padding: 60px 30px;
   }
   .pickora-hero-section::before {
-    background: linear-gradient(180deg, rgba(15,23,42,0.78) 0%, rgba(15,23,42,0.55) 55%, rgba(15,23,42,0.35) 100%);
+    background: linear-gradient(180deg, rgba(15,23,42,0.62) 0%, rgba(15,23,42,0.38) 55%, rgba(15,23,42,0.18) 100%);
   }
   .pickora-hero-content {
     max-width: 100%;
@@ -1000,7 +947,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 @media (max-width: 768px) {
   .pickora-hero-section {
     padding: 48px 20px;
-    border-radius: 0; /* На мобилке убираем углы, чтобы ложилось в экран во всю ширину */
+    border-radius: 0;
   }
   .pickora-hero-title {
     margin-bottom: 16px;
@@ -1009,7 +956,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
     margin-bottom: 28px;
   }
   .pickora-hero-btn {
-    width: 100%; /* Кнопка во всю ширину на мобилке, чтобы было удобно нажимать пальцем */
+    width: 100%;
     max-width: 320px;
   }
 }

@@ -174,6 +174,10 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 - About: replaced stretched hero/cards with compact hat + How we work + dual CTA.
 - Hero candidates: local `_preview-hero-options.html` + WebP in `assets/img/hero/` (A/B/C pending user pick — not applied to home yet).
 
+### 2026-08-14 — Home Option D CTA + sharper hero
+- Browse products → Option D glass outline (fills blue on hover).
+- Hero photo: 2048 WebP `<img>` (was soft 1200 scaled bg), lighter overlay, removed scale/blur animation.
+
 ### 2026-08-14 — About photo strip + hero CTA polish
 - About mosaic → compact auto-scrolling photo strip (12 shots, hover pause; add more figures anytime).
 - Home “Browse products” → gradient pill CTA with glass edge + shimmer.
