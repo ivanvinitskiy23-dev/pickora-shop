@@ -804,7 +804,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 .pickora-hero-section {
   position: relative;
   width: 100%;
-  min-height: 550px;
+  min-height: 680px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -814,14 +814,14 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
   box-sizing: border-box;
 }
 
-/* Sharp full-bleed photo — no scale blur */
+/* Sharp full-bleed photo — framed to show the full product set */
 .pickora-hero-bg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center right;
+  object-position: 75% 52%;
   z-index: 1;
   display: block;
   transform: none;
@@ -931,8 +931,11 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 
 @media (max-width: 1024px) {
   .pickora-hero-section {
-    min-height: auto;
+    min-height: 520px;
     padding: 60px 30px;
+  }
+  .pickora-hero-bg {
+    object-position: 70% 48%;
   }
   .pickora-hero-section::before {
     background: linear-gradient(180deg, rgba(15,23,42,0.62) 0%, rgba(15,23,42,0.38) 55%, rgba(15,23,42,0.18) 100%);
@@ -946,8 +949,12 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 
 @media (max-width: 768px) {
   .pickora-hero-section {
+    min-height: 480px;
     padding: 48px 20px;
     border-radius: 0;
+  }
+  .pickora-hero-bg {
+    object-position: 62% 45%;
   }
   .pickora-hero-title {
     margin-bottom: 16px;
