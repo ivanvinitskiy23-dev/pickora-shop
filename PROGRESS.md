@@ -1,16 +1,16 @@
 # Pickora.shop Refactoring Progress
 
-**Last calibrated:** 2026-08-13 (disk scan of 19 HTML pages vs `report.html` / `plan.html`)  
+**Last calibrated:** 2026-08-13 evening (full-repo audit vs `report.html`; site HTML not edited)  
 **Rule:** checkboxes reflect files on disk, not chat claims. A task stays `[ ]` until the artifact exists and is wired.
 
 ## Phase Status
-- [x] Phase 0: Legal Protection & Amazon Compliance (core 0.1–0.4)
-- [x] Phase 1: Technical & Mobile Performance (core 1.1–1.4) — residual UI/nav risk remains
-- [ ] Phase 2: SEO, Schema.org, & GA4 measurement floor
-- [ ] Phase 3: Interlinking, UX & E-E-A-T Content
-- [ ] Phase 4: Repo Cleanup & Infrastructure
+- [x] Phase 0: Legal Protection & Amazon Compliance (core 0.1–0.4) — 0.5 FTC / 0.6 social / 0.7 form still open
+- [x] Phase 1: Technical & Mobile Performance (core 1.1–1.4, 1.6) — 1.5 visual freeze + 1.7 LCP remeasure still open
+- [x] Phase 2: SEO, Schema.org, & GA4 in-repo floor (2.1–2.6) — GSC submit + physical favicon.ico = owner
+- [ ] Phase 3: Interlinking, UX & E-E-A-T Content — 3.1–3.4 done; 3.5 social still open
+- [ ] Phase 4: Repo Cleanup & Infrastructure — 4.1–4.2 done; 4.3 host switch optional
 - [ ] Phase 5 (plan.html): Content scale 4 → 25–30 articles — **not started, do not start ads**
-- [ ] Phase 6 (plan.html): Promotion / paid traffic — **blocked until Phases 2–3**
+- [ ] Phase 6 (plan.html): Promotion / paid traffic — **blocked until 0.5/0.6/1.5/1.7**
 
 ---
 
@@ -23,7 +23,7 @@
 - [x] 0.4 Cookie banner + Consent Mode v2 (`pickora-consent.js`) + GA4 `G-Q4SCHBR4QM` + `pickora-analytics.js` (`affiliate_click`) on **19/19**
 - [ ] 0.5 FTC residual: soften unproven claims (`100 hours of testing`, named testimonials like `Marcus V.`)
 - [ ] 0.6 Replace placeholder social URLs (`facebook.com/`, `instagram.com/`, `twitter.com/`, `tiktok.com/`) or hide icons
-- [ ] 0.7 Newsletter form still posts to Hostinger Reach / WP — subscribers can be lost (plan.html §1.4)
+- [ ] 0.7 MailerLite Universal script in `<head>` on **20/20** site HTML; footer/header embed + remove Hostinger Reach form still pending
 
 ### Phase 1: Technical & Performance
 - [x] 1.1 Global overflow reset + `/about/` 320px grid fix
@@ -39,7 +39,7 @@
 - [x] 2.2 Meta descriptions + canonical + Open Graph + Twitter Cards on **17/17** indexable pages (orphans excluded; `og:type=article` on 4 reviews)
 - [x] 2.3 JSON-LD Schema.org on **17/17** indexable pages (no `AggregateRating`; no `FAQPage` — reviews have no FAQ block)
 - [x] 2.4 Affiliate click + scroll tracking exists in `assets/js/pickora-analytics.js` (verify in GA4 DebugView)
-- [x] 2.5 Root `404.html` (about chrome + disclosure + footer) + `<link rel="icon" href="/favicon.ico">` on all 19 pages and 404. **GSC/Bing sitemap submit still needs the owner.**
+- [x] 2.5 Root `404.html` (about chrome + disclosure + footer) + `<link rel="icon" href="/favicon.ico">` on all 19 pages and 404. **Physical `favicon.ico` missing. GSC/Bing sitemap submit = owner.**
 - [x] 2.6 `noindex, follow` + canonical → `/articles/` on `/author/ivanvinitskiy23gmail-com/` and `/category/uncategorized/`
 
 ### Phase 3: UX, Linking & Content
@@ -69,13 +69,13 @@
 | Pages with meta description | **17 / 17** indexable (orphans excluded) |
 | `robots.txt`, `sitemap.xml` | **present** (17 URLs; orphans omitted) |
 | `404.html` | **present** (noindex; Home / Articles / Categories links) |
-| Favicon tag `/favicon.ico` | **20/20** HTML files (physical `.ico` still to be uploaded by owner) |
+| Favicon tag `/favicon.ico` | **20/20** HTML files (**physical `.ico` absent**) |
 | `_headers` | **present** (HSTS, CSP, XFO, nosniff, referrer, permissions + cache) |
 | Uploads images | **728** files, **40.02 MB** (0 >250 KB) |
 | `wp-content` total | **~58.7 MB** (plugins 0.15 MB, themes 18.53 MB) |
 | CNAME | `pickora.shop` present |
 
-Indexable pages have conversational meta descriptions (Flesch 60–70, 140–160 chars) + OG/Twitter. Orphans still have neither.
+Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140–160 chars) + OG/Twitter. Orphans: noindex + canonical `/articles/`, no OG (intentional). Full audit: `Планверсия2.html`.
 
 ---
 
@@ -85,14 +85,24 @@ Indexable pages have conversational meta descriptions (Flesch 60–70, 140–160
 2. ~~**2.2** meta + OG on 4 review articles, then remaining pages~~ **done**  
 3. ~~**2.3** JSON-LD on 4 reviews + Organization on home~~ **done**  
 4. ~~**2.5–2.6** 404.html + noindex orphans~~ **done** (GSC submit = owner)  
-5. **1.5** freeze visual QA (phone 390 / tablet 768 / desktop 1280)  
-6. ~~**3.1–3.4** related posts, crumbs, inline links, review copy~~ **done**
-7. ~~**4.1** dead WP plugins~~ **done** — ~~**4.2** `_headers`~~ **done**  
-8. Only then plan.html Phase 5–6 (new articles, then traffic)
+5. **0.6 / 3.5** hide or replace footer social placeholders (`facebook.com/` etc.)  
+6. **0.5** FTC: drop `100 hours of testing` + `Marcus V.`  
+7. **1.5** freeze visual QA (phone 390 / tablet 768 / desktop 1280)  
+8. **1.7** throttled Lighthouse on `/products/` + 4 reviews  
+9. **0.7** replace Hostinger Reach form; owner uploads `favicon.ico` + submits sitemap  
+10. Only then plan.html Phase 5–6 (new articles, then traffic)
 
 ---
 
 ## Change Log
+
+### 2026-08-14 — MailerLite Universal in `<head>`
+- Inserted official MailerLite Universal snippet (`account: 2575871`) before `</head>` on all **20** site HTML files (19 pages + 404). Footer/header form embed not done yet.
+
+### 2026-08-13 — Full-repo audit vs report.html (no site-code edits)
+- Recalibrated this file + rewrote `Планверсия2.html` from a physical scan of 20 HTML, uploads, plugins, JS, robots/sitemap/_headers.
+- PASS: 57/57 Amazon rel, disclosure 20/20, legal pages + sticky CSS, orphans noindex, images ≤250 KB, img attrs 87/87, dead Elementor 404 CSS gone, jquery-migrate gone, SEO floor 17/17, JSON-LD no AggregateRating, white review heroes, `_headers` file present.
+- FAIL / owner: social placeholders 20/20, FTC claims, Hostinger Reach form, no physical favicon.ico, `_headers` inert on GitHub Pages, SearchAction → missing `/search/`, LCP not re-measured, visual freeze 1.5 not device-run.
 
 ### 2026-08-13 — Block C 4.2: `_headers`
 - Root `_headers` for Cloudflare Pages / Netlify: HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, CSP (GA4 + Google Fonts), 1-year immutable cache for `/wp-content/uploads/*`, `/*.css`, `/*.js`. GitHub Pages will ignore this file until a host switch (4.3).
