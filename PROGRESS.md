@@ -174,6 +174,11 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 - About: replaced stretched hero/cards with compact hat + How we work + dual CTA.
 - Hero candidates: local `_preview-hero-options.html` + WebP in `assets/img/hero/` (A/B/C pending user pick — not applied to home yet).
 
+### 2026-08-14 — Hero product-band crop
+- Kept **550px** banner height.
+- New `-hero.webp` crop focused on the equipment mid-band (not empty wall tops).
+- `object-position: 72% center` so espresso + headphones sit in frame.
+
 ### 2026-08-14 — Home hero Option C framing
 - Restored original **550px** hero height (not taller/wider).
 - Crop: Option C `object-position: 85% 58%` (raise + favor right).
