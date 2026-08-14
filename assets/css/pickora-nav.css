@@ -1,0 +1,180 @@
+/**
+ * Pickora sitewide navigation — unified breakpoint at 992px.
+ * ≤991px: burger + fullscreen overlay only (tablet = mobile).
+ * ≥992px: horizontal desktop nav, burger hidden.
+ */
+:root {
+  --pk-nav-desktop: 992px;
+}
+
+/* =========================================================
+   MOBILE + TABLET (≤991px) — closed state
+   Fixes double menu at 768px: hide links until overlay opens.
+   ========================================================= */
+@media (max-width: 991px) {
+  .wp-block-navigation__responsive-container-open {
+    display: flex !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 10px !important;
+    margin: -10px !important;
+  }
+
+  header.site-header .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open) {
+    position: relative !important;
+    width: auto !important;
+    height: auto !important;
+    inset: auto !important;
+    background: transparent !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  header.site-header
+    .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
+    .wp-block-navigation__responsive-container-content {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  header.site-header
+    .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
+    .wp-block-navigation__responsive-container-close,
+  header.site-header
+    .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
+    .wp-block-navigation__responsive-close {
+    display: none !important;
+  }
+}
+
+/* Neutralize legacy inline 769px desktop rules on tablets (769–991px) */
+@media (min-width: 769px) and (max-width: 991px) {
+  .wp-block-navigation__responsive-container-open,
+  .wp-block-navigation__responsive-container-open:not(.always-show) {
+    display: flex !important;
+  }
+
+  .wp-block-navigation__responsive-container-close {
+    display: none !important;
+  }
+
+  header.site-header
+    .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
+    .wp-block-navigation__responsive-container-content,
+  header.site-header .wp-block-navigation__responsive-container-content {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  header.site-header
+    .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
+    .wp-block-navigation__responsive-close,
+  header.site-header
+    .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
+    .wp-block-navigation__responsive-dialog {
+    display: none !important;
+  }
+}
+
+/* =========================================================
+   DESKTOP (≥992px) — horizontal inline nav
+   ========================================================= */
+@media (min-width: 992px) {
+  .wp-block-navigation__responsive-container-open,
+  .wp-block-navigation__responsive-container-close,
+  .wp-block-navigation__responsive-container-open:not(.always-show) {
+    display: none !important;
+  }
+
+  header.site-header .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open) {
+    display: block !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: transparent !important;
+  }
+
+  header.site-header
+    .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
+    .wp-block-navigation__responsive-close,
+  header.site-header
+    .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
+    .wp-block-navigation__responsive-dialog {
+    display: contents !important;
+  }
+
+  header.site-header .wp-block-navigation__responsive-container-content {
+    display: flex !important;
+    visibility: visible !important;
+    position: static !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  header.site-header .wp-block-navigation__container {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 32px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+  }
+
+  header.site-header .wp-block-navigation-item {
+    display: inline-flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  header.site-header .wp-block-navigation-item__content {
+    display: inline-block !important;
+    padding: 4px 0 !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.01em !important;
+    color: #0f172a !important;
+    line-height: 1.2 !important;
+  }
+
+  header.site-header .wp-block-navigation-item__content:hover {
+    color: #2075d2 !important;
+  }
+
+  header.site-header .current-menu-item > .wp-block-navigation-item__content,
+  header.site-header .wp-block-navigation-item__content[aria-current="page"] {
+    color: #2075d2 !important;
+    font-weight: 600 !important;
+  }
+}
+
+/* Overlay panel — no 100vw bleed */
+.wp-block-navigation__responsive-container.is-menu-open,
+.wp-block-navigation__responsive-container.has-modal-open {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Search under overlay only — never suppress page search dropdown */
+.wp-block-navigation__responsive-container.is-menu-open #pk-search-system,
+.wp-block-navigation__responsive-container.has-modal-open #pk-search-system,
+.wp-block-navigation__responsive-container.is-menu-open .pk-search-outer-container,
+.wp-block-navigation__responsive-container.has-modal-open .pk-search-outer-container,
+.wp-block-navigation__responsive-container.is-menu-open input#pk-realtime-search,
+.wp-block-navigation__responsive-container.has-modal-open input#pk-realtime-search {
+  position: relative !important;
+  z-index: 1 !important;
+}

@@ -1,6 +1,6 @@
 # Pickora.shop Refactoring Progress
 
-**Last calibrated:** 2026-08-14 (review rail sizing + sitewide mobile fixes)  
+**Last calibrated:** 2026-08-14 (unified nav breakpoint 992px)  
 **Rule:** checkboxes reflect files on disk, not chat claims. A task stays `[ ]` until the artifact exists and is wired.
 
 ## Phase Status
@@ -95,6 +95,13 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-08-14 — Navigation: unified 992px breakpoint (tablet = burger)
+- New `assets/css/pickora-nav.css` linked on **20/20** HTML pages after inline header styles.
+- **≤991px:** burger only; nav links hidden until overlay opens (fixes double menu + X at 768px iPad).
+- **769–991px:** overrides legacy inline `769px` desktop rules that caused cramped/double nav on tablets.
+- **≥992px:** horizontal desktop nav; burger and close button hidden.
+- Overlay width `100%` (no `100vw` bleed); search z-index scoped to open overlay only.
 
 ### 2026-08-14 — Review rail sizing + sitewide mobile CSS audit
 - `/products/`: **Latest review guides** rail enlarged ~8% (chip 282px, img 62px, title 15px, tag 11px) for readability without bulk.
