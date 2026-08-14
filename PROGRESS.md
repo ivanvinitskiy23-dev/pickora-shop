@@ -1,6 +1,6 @@
 # Pickora.shop Refactoring Progress
 
-**Last calibrated:** 2026-08-14 (unified article/product client search)  
+**Last calibrated:** 2026-08-14 (dynamic product search via DOM indexing)  
 **Rule:** checkboxes reflect files on disk, not chat claims. A task stays `[ ]` until the artifact exists and is wired.
 
 ## Phase Status
@@ -96,9 +96,14 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 
 ## Change Log
 
+### 2026-08-14 — Search: dynamic product index (DOM parsing)
+- Removed hardcoded `PRODUCT_CATALOG` from `pickora-search.js`; `/products/` search now indexes all `article` cards inside `#pk-products-page` at load (titles, descriptions, tags, img alt).
+- Live match on any query text; dropdown shows image + title; click/Enter → redirect to review/category URL or scroll + flash on same-page targets.
+- `/products/`: added **Hands-on Review Guides** grid (4 review cards) as searchable DOM source; `data-pk-search-source="#pk-products-page"` on search widget.
+
 ### 2026-08-14 — Search: product redirect, cleanup, z-index layering
 - `/products/`: removed Featured Products block; single search input; dropdown → redirect to review/hub URLs (no page scroll).
-- Product catalog in `pickora-search.js`: Air Fryers, Robot Vacuums, Earbuds, Pet Cameras, Coffee, Keyboards.
+- ~~Product catalog in `pickora-search.js`~~ superseded by DOM indexing (see entry above).
 - Z-index: dropdown `9999` (above cards/badges, below sticky header `10000`); `margin-top: 32px` on search widget.
 
 ### 2026-08-14 — Search z-index + products Enter-scroll

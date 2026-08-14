@@ -1014,13 +1014,13 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
         </p>
     </div>
 
-<div id="pk-search-system" data-pk-search-mode="products">
+<div id="pk-search-system" data-pk-search-mode="products" data-pk-search-source="#pk-products-page">
   <div class="pk-search-outer-container">
     <div class="pk-search-field-group">
       <div class="pk-search-icon-inside">
         <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="#3A86E1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
       </div>
-      <input type="text" id="pk-realtime-search" placeholder="Search products — air fryers, vacuums, earbuds, cameras…" autocomplete="off">
+      <input type="text" id="pk-realtime-search" placeholder="Search products by name, category, or keyword…" autocomplete="off">
       <button type="button" id="pk-search-clear" aria-label="Clear search">×</button>
     </div>
     <div id="pk-search-suggestions" class="pk-suggestions-dropdown" role="listbox"></div>
@@ -1104,6 +1104,62 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
             </a>
         </article>
 
+    </div>
+
+    <!-- Review guides — indexed by product search (DOM source, not JS catalog) -->
+    <div class="pk-hub-reviews-header">
+        <h2 class="pk-hub-reviews-title">Hands-on Review Guides</h2>
+        <p class="pk-hub-reviews-desc">In-depth comparisons and buying guides from our latest tests.</p>
+    </div>
+    <div class="pk-reviews-grid" id="pk-product-reviews-grid">
+        <article class="pk-rev-card" id="pk-product-air-fryers">
+            <a href="https://pickora.shop/best-air-fryers-of-2026-which-one-should-you-buy/" class="pk-rev-link">
+                <div class="pk-rev-image">
+                    <img src="https://pickora.shop/wp-content/uploads/2026/07/A_modern_black_air_fryer_202606131522-scaled.webp" alt="Best Budget Air Fryers Review 2026" width="1200" height="670" loading="lazy" decoding="async">
+                    <span class="pk-rev-category">Kitchen Tech</span>
+                </div>
+                <div class="pk-rev-content">
+                    <h3 class="pk-rev-title">Best Budget Air Fryers</h3>
+                    <p class="pk-rev-excerpt">Affordable air fryers tested for performance, capacity and value in 2026.</p>
+                </div>
+            </a>
+        </article>
+        <article class="pk-rev-card" id="pk-product-earbuds">
+            <a href="https://pickora.shop/best-wireless-earbuds-2026-top-7-models-tested-honest-reviews/" class="pk-rev-link">
+                <div class="pk-rev-image">
+                    <img src="https://pickora.shop/wp-content/uploads/2026/07/Black_wireless_earbuds_in_charging_202606131603-scaled.webp" alt="Top Wireless Earbuds Review" width="1200" height="670" loading="lazy" decoding="async">
+                    <span class="pk-rev-category">Audio</span>
+                </div>
+                <div class="pk-rev-content">
+                    <h3 class="pk-rev-title">Top Wireless Earbuds</h3>
+                    <p class="pk-rev-excerpt">Our picks for sound quality, battery life and comfort after 100 hours of testing.</p>
+                </div>
+            </a>
+        </article>
+        <article class="pk-rev-card" id="pk-product-vacuums">
+            <a href="https://pickora.shop/best-robot-vacuums-2026-top-8-models-tested-honest-reviews/" class="pk-rev-link">
+                <div class="pk-rev-image">
+                    <img src="https://pickora.shop/wp-content/uploads/2026/07/A_modern_robot_vacuum_cleaner_202606131525-scaled.webp" alt="Best Robot Vacuums Review" width="1200" height="670" loading="lazy" decoding="async">
+                    <span class="pk-rev-category">Smart Home</span>
+                </div>
+                <div class="pk-rev-content">
+                    <h3 class="pk-rev-title">Best Robot Vacuums</h3>
+                    <p class="pk-rev-excerpt">The smartest robot vacuums worth buying this year for effortless cleaning.</p>
+                </div>
+            </a>
+        </article>
+        <article class="pk-rev-card" id="pk-product-pet-cameras">
+            <a href="https://pickora.shop/best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews/" class="pk-rev-link">
+                <div class="pk-rev-image">
+                    <img src="https://pickora.shop/wp-content/uploads/2026/07/A_smart_pet_camera_on_202606131525-scaled.webp" alt="Best Pet Cameras Review" width="1200" height="670" loading="lazy" decoding="async">
+                    <span class="pk-rev-category">Pet Tech</span>
+                </div>
+                <div class="pk-rev-content">
+                    <h3 class="pk-rev-title">Best Pet Cameras</h3>
+                    <p class="pk-rev-excerpt">Monitor your pets remotely with top-rated smart cameras for dogs and cats.</p>
+                </div>
+            </a>
+        </article>
     </div>
 </section>
 
@@ -1286,6 +1342,112 @@ main#wp--skip-link--target {
     }
     .pk-cat-image { aspect-ratio: 4 / 3; }
     .pk-hub-main-title { font-size: 32px !important; }
+}
+
+/* Review guides grid (search-indexed DOM cards) */
+.pk-hub-reviews-header {
+    text-align: center;
+    max-width: 720px;
+    margin: 72px auto 36px;
+    padding: 0 20px;
+}
+
+.pk-hub-reviews-title {
+    margin: 0 0 12px !important;
+    font-size: clamp(26px, 3.5vw, 36px) !important;
+    font-weight: 800 !important;
+    color: var(--pk-dark) !important;
+    letter-spacing: -0.02em;
+}
+
+.pk-hub-reviews-desc {
+    margin: 0 !important;
+    font-size: 17px !important;
+    color: var(--pk-text) !important;
+    line-height: 1.5;
+}
+
+.pk-products-hub .pk-reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    padding: 0 20px 8px;
+}
+
+.pk-products-hub .pk-rev-card {
+    border-radius: 20px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #eef2f7;
+    transition: var(--transition);
+}
+
+.pk-products-hub .pk-rev-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.pk-products-hub .pk-rev-image {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #f3f4f6;
+}
+
+.pk-products-hub .pk-rev-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.pk-products-hub .pk-rev-category {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: #fff;
+    color: var(--pk-dark);
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pk-products-hub .pk-rev-content {
+    padding: 22px 24px 26px;
+}
+
+.pk-products-hub .pk-rev-title {
+    margin: 0 0 8px !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    color: var(--pk-dark) !important;
+    transition: var(--transition);
+}
+
+.pk-products-hub .pk-rev-excerpt {
+    margin: 0 !important;
+    font-size: 15px !important;
+    color: var(--pk-text) !important;
+    line-height: 1.5;
+}
+
+@media (hover: hover) {
+    .pk-products-hub .pk-rev-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 24px 48px rgba(17, 29, 55, 0.08);
+        border-color: var(--pk-blue);
+    }
+    .pk-products-hub .pk-rev-card:hover img { transform: scale(1.06); }
+    .pk-products-hub .pk-rev-card:hover .pk-rev-title { color: var(--pk-blue) !important; }
+}
+
+@media (max-width: 767px) {
+    .pk-products-hub .pk-reviews-grid { grid-template-columns: 1fr; gap: 20px; }
+    .pk-hub-reviews-header { text-align: left; margin-top: 56px; }
 }
 </style>				</div>
 				</div>

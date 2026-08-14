@@ -1,53 +1,8 @@
 /**
- * Pickora client-side search — articles & products (autocomplete → navigate to review/page).
+ * Pickora client-side search — articles & products (autocomplete → navigate or scroll).
  */
 (function () {
   'use strict';
-
-  var PRODUCT_CATALOG = [
-    {
-      title: 'Air Fryers',
-      tag: 'Kitchen Tech',
-      keywords: 'air fryer air fryers ninja kitchen budget cooking aerogrill',
-      url: 'https://pickora.shop/best-air-fryers-of-2026-which-one-should-you-buy/',
-      img: 'https://pickora.shop/wp-content/uploads/2026/07/A_modern_black_air_fryer_202606131522-scaled.webp'
-    },
-    {
-      title: 'Robot Vacuums',
-      tag: 'Smart Home',
-      keywords: 'robot vacuum vacuums vacuum cleaner mop smart home cleaning',
-      url: 'https://pickora.shop/best-robot-vacuums-2026-top-8-models-tested-honest-reviews/',
-      img: 'https://pickora.shop/wp-content/uploads/2026/07/A_modern_robot_vacuum_cleaner_202606131525-scaled.webp'
-    },
-    {
-      title: 'Wireless Earbuds',
-      tag: 'Audio',
-      keywords: 'wireless earbuds earbud headphones audio anc earphones',
-      url: 'https://pickora.shop/best-wireless-earbuds-2026-top-7-models-tested-honest-reviews/',
-      img: 'https://pickora.shop/wp-content/uploads/2026/07/Black_wireless_earbuds_in_charging_202606131603-scaled.webp'
-    },
-    {
-      title: 'Pet Cameras',
-      tag: 'Pet Tech',
-      keywords: 'pet camera cameras dog cat furbo monitor smart pet',
-      url: 'https://pickora.shop/best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews/',
-      img: 'https://pickora.shop/wp-content/uploads/2026/07/A_smart_pet_camera_on_202606131525-scaled.webp'
-    },
-    {
-      title: 'Coffee Machines',
-      tag: 'Home & Kitchen',
-      keywords: 'coffee machine espresso maker brew kitchen cafe',
-      url: 'https://pickora.shop/home-kitchen/',
-      img: 'https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_modern_202606231450-scaled.webp'
-    },
-    {
-      title: 'Keyboards & Tech Gadgets',
-      tag: 'Consumer Electronics',
-      keywords: 'keyboard keychron laptop tablet headphones gadgets electronics',
-      url: 'https://pickora.shop/consumer-electronics/',
-      img: 'https://pickora.shop/wp-content/uploads/2026/06/Tech_gadgets_on_desk_202606231445.webp'
-    }
-  ];
 
   function appendHighlightedTitle(h4, title, query) {
     h4.textContent = '';
@@ -93,6 +48,41 @@
     }).filter(Boolean);
   }
 
+  function collectProducts(config) {
+    var root = document.querySelector(config.source || '#pk-products-page');
+    if (!root) return [];
+
+    return Array.from(root.querySelectorAll('article')).map(function (el) {
+      var titleEl = el.querySelector('h3, h4');
+      if (!titleEl) return null;
+
+      var linkEl = el.querySelector('a[href]');
+      var imgEl = el.querySelector('img');
+      var tagEl = el.querySelector('.pk-cat-badge, .pk-rev-category, .pk-card-tag, [class*="badge"]');
+
+      var descParts = [];
+      el.querySelectorAll('.pk-cat-body p, .pk-rev-excerpt, .pk-product-desc').forEach(function (p) {
+        var text = p.textContent.trim();
+        if (text) descParts.push(text);
+      });
+
+      var title = titleEl.textContent.trim();
+      var desc = descParts.join(' ');
+      var tag = tagEl ? tagEl.textContent.trim() : 'Product';
+      var alt = imgEl ? (imgEl.getAttribute('alt') || '').trim() : '';
+      var searchable = [title, desc, tag, alt].join(' ').replace(/\s+/g, ' ').trim();
+
+      return {
+        title: title,
+        text: searchable,
+        tag: tag,
+        url: linkEl ? linkEl.href : '#',
+        img: imgEl ? imgEl.src : '',
+        element: el
+      };
+    }).filter(Boolean);
+  }
+
   function matchesText(haystack, query) {
     var q = query.toLowerCase().trim();
     if (!q) return false;
@@ -108,7 +98,45 @@
   }
 
   function matchesProduct(item, query) {
-    return matchesText(item.title + ' ' + item.keywords, query);
+    return matchesText(item.text || item.title, query);
+  }
+
+  function isSamePageUrl(url) {
+    try {
+      var target = new URL(url, window.location.href);
+      return target.origin === window.location.origin &&
+        target.pathname === window.location.pathname;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function scrollToProduct(item) {
+    if (!item.element) return;
+    item.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    item.element.classList.add('pk-search-flash');
+    window.setTimeout(function () {
+      item.element.classList.remove('pk-search-flash');
+    }, 1400);
+  }
+
+  function navigateProduct(item) {
+    if (!item.url || item.url === '#') {
+      scrollToProduct(item);
+      return;
+    }
+    if (isSamePageUrl(item.url)) {
+      scrollToProduct(item);
+      try {
+        var hash = new URL(item.url, window.location.href).hash;
+        if (hash) {
+          var anchor = document.querySelector(hash);
+          if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      } catch (e) { /* ignore */ }
+      return;
+    }
+    window.location.href = item.url;
   }
 
   function setDropdownOpen(root, open) {
@@ -118,7 +146,8 @@
   function initSearch(root) {
     var mode = root.getAttribute('data-pk-search-mode') || 'articles';
     var config = {
-      source: root.getAttribute('data-pk-search-source') || '#pk-grid-feed',
+      source: root.getAttribute('data-pk-search-source') ||
+        (mode === 'products' ? '#pk-products-page' : '#pk-grid-feed'),
       titleSelector: root.getAttribute('data-pk-search-title') || '.pk-card-title, .pk-rev-title',
       tagSelector: root.getAttribute('data-pk-search-tag') || '.pk-card-tag, .pk-rev-category'
     };
@@ -130,9 +159,11 @@
 
     var activeIndex = -1;
     var emptyLabel = mode === 'products' ? 'No products found…' : 'No guides found…';
+    var indexedProducts = mode === 'products' ? collectProducts(config) : null;
 
     function getItems() {
-      return mode === 'products' ? PRODUCT_CATALOG : collectArticles(config);
+      if (mode === 'products') return indexedProducts || [];
+      return collectArticles(config);
     }
 
     function getMatches(query) {
@@ -152,6 +183,14 @@
       items.forEach(function (el, i) {
         el.classList.toggle('is-active', i === activeIndex);
       });
+    }
+
+    function goToItem(item) {
+      if (mode === 'products') {
+        navigateProduct(item);
+      } else {
+        window.location.href = item.url;
+      }
     }
 
     function renderDropdown(matches, query) {
@@ -195,7 +234,7 @@
         btn.appendChild(info);
 
         btn.addEventListener('click', function () {
-          window.location.href = item.url;
+          goToItem(item);
         });
 
         btn.addEventListener('mouseenter', function () {
@@ -248,7 +287,7 @@
             var matches = getMatches(query);
             if (matches.length) {
               e.preventDefault();
-              window.location.href = matches[0].url;
+              goToItem(matches[0]);
             }
           }
         }
