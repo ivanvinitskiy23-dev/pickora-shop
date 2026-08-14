@@ -1,10 +1,10 @@
 # Pickora.shop Refactoring Progress
 
-**Last calibrated:** 2026-08-13 evening (full-repo audit vs `report.html`; site HTML not edited)  
+**Last calibrated:** 2026-08-14 (MailerLite footer embed on 20/20 HTML; Hostinger Reach removed)  
 **Rule:** checkboxes reflect files on disk, not chat claims. A task stays `[ ]` until the artifact exists and is wired.
 
 ## Phase Status
-- [x] Phase 0: Legal Protection & Amazon Compliance (core 0.1–0.4) — 0.5 FTC / 0.6 social / 0.7 form still open
+- [x] Phase 0: Legal Protection & Amazon Compliance (core 0.1–0.4, 0.7 footer) — 0.5 FTC / 0.6 social / 0.7 header embed still open
 - [x] Phase 1: Technical & Mobile Performance (core 1.1–1.4, 1.6) — 1.5 visual freeze + 1.7 LCP remeasure still open
 - [x] Phase 2: SEO, Schema.org, & GA4 in-repo floor (2.1–2.6) — GSC submit + physical favicon.ico = owner
 - [ ] Phase 3: Interlinking, UX & E-E-A-T Content — 3.1–3.4 done; 3.5 social still open
@@ -23,7 +23,7 @@
 - [x] 0.4 Cookie banner + Consent Mode v2 (`pickora-consent.js`) + GA4 `G-Q4SCHBR4QM` + `pickora-analytics.js` (`affiliate_click`) on **19/19**
 - [ ] 0.5 FTC residual: soften unproven claims (`100 hours of testing`, named testimonials like `Marcus V.`)
 - [ ] 0.6 Replace placeholder social URLs (`facebook.com/`, `instagram.com/`, `twitter.com/`, `tiktok.com/`) or hide icons
-- [ ] 0.7 MailerLite Universal script in `<head>` on **20/20** site HTML; footer/header embed + remove Hostinger Reach form still pending
+- [x] 0.7 MailerLite Universal script in `<head>` on **20/20** site HTML; footer embed `data-form="s8S43W"` + scoped CSS on **20/20**; Hostinger Reach markup/CSS/JS **removed** from all pages. Header embed still optional/pending.
 
 ### Phase 1: Technical & Performance
 - [x] 1.1 Global overflow reset + `/about/` 320px grid fix
@@ -89,15 +89,20 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 6. **0.5** FTC: drop `100 hours of testing` + `Marcus V.`  
 7. **1.5** freeze visual QA (phone 390 / tablet 768 / desktop 1280)  
 8. **1.7** throttled Lighthouse on `/products/` + 4 reviews  
-9. **0.7** replace Hostinger Reach form; owner uploads `favicon.ico` + submits sitemap  
+9. ~~**0.7** replace Hostinger Reach footer form with MailerLite embed~~ **done** (header embed optional); owner uploads `favicon.ico` + submits sitemap  
 10. Only then plan.html Phase 5–6 (new articles, then traffic)
 
 ---
 
 ## Change Log
 
+### 2026-08-14 — MailerLite footer embed + legacy form removal
+- Replaced Hostinger Reach footer form (`#ai-theme-footer-form`, subscription CSS/JS) with clean MailerLite embed (`<div class="ml-embedded" data-form="s8S43W">`) wrapped in `.pk-ml-footer` on **20/20** HTML files.
+- Added scoped `pk-mailerlite-footer-css` (column layout, static positioning, full-width fields/buttons, dark-footer text, mobile max-width) to prevent overlap with legacy WP input/button styles.
+- **0** `hostinger-reach` references remain in site HTML.
+
 ### 2026-08-14 — MailerLite Universal in `<head>`
-- Inserted official MailerLite Universal snippet (`account: 2575871`) before `</head>` on all **20** site HTML files (19 pages + 404). Footer/header form embed not done yet.
+- Inserted official MailerLite Universal snippet (`account: 2575871`) before `</head>` on all **20** site HTML files (19 pages + 404).
 
 ### 2026-08-13 — Full-repo audit vs report.html (no site-code edits)
 - Recalibrated this file + rewrote `Планверсия2.html` from a physical scan of 20 HTML, uploads, plugins, JS, robots/sitemap/_headers.

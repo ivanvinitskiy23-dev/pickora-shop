@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Сквозной диск-аудит pickora.shop 13 августа 2026 против report.html. Код сайта не менялся.">
+<title>Планверсия2 — сквозной аудит pickora.shop</title>
+<style>
+:root{
+  --bg:#f6f8fb; --panel:#ffffff; --ink:#16202e; --muted:#5b6b80;
+  --line:#e2e8f2; --brand:#2075d2; --brand-dark:#15223B;
+  --ok:#16803c; --warn:#a86400; --bad:#c22e2e;
+  --code-bg:#0f172a; --code-ink:#e2e8f0;
+  --radius:14px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px 100px}
+header.doc{
+  background:linear-gradient(135deg,#15223B 0%,#2075d2 100%);
+  color:#fff;padding:56px 20px 48px;margin-bottom:34px;
+}
+header.doc .inner{max-width:1120px;margin:0 auto}
+header.doc h1{margin:0 0 10px;font-size:clamp(26px,4.4vw,40px);line-height:1.2;letter-spacing:-.02em}
+header.doc p{margin:0;opacity:.93;font-size:clamp(15px,2vw,18px)}
+header.doc .meta{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px}
+header.doc .meta span{
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.26);
+  padding:6px 14px;border-radius:999px;font-size:13.5px;
+}
+main{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+     padding:clamp(22px,4vw,52px);box-shadow:0 6px 28px rgba(16,32,56,.06)}
+h1,h2,h3,h4{line-height:1.28;color:var(--brand-dark);letter-spacing:-.01em}
+h1{font-size:clamp(24px,3.6vw,33px);margin:48px 0 18px;padding-bottom:12px;border-bottom:3px solid var(--brand)}
+h2{font-size:clamp(21px,3vw,27px);margin:44px 0 16px;padding-bottom:9px;border-bottom:2px solid var(--line)}
+h3{font-size:clamp(18px,2.4vw,21px);margin:32px 0 12px}
+h4{font-size:17px;margin:24px 0 10px;color:var(--brand)}
+h1:first-child,h2:first-child{margin-top:0}
+p{margin:0 0 15px}
+a{color:var(--brand);text-decoration:none;border-bottom:1px solid rgba(32,117,210,.32)}
+a:hover{border-bottom-color:var(--brand)}
+ul,ol{margin:0 0 16px;padding-left:26px}
+li{margin-bottom:7px}
+li::marker{color:var(--brand)}
+blockquote{
+  margin:20px 0;padding:16px 22px;background:#f0f6ff;
+  border-left:4px solid var(--brand);border-radius:0 10px 10px 0;color:#243449;
+}
+blockquote p:last-child{margin-bottom:0}
+hr{border:0;border-top:1px solid var(--line);margin:38px 0}
+code{
+  font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  font-size:.885em;background:#eef2f8;color:#123a63;padding:2px 7px;border-radius:5px;
+  border:1px solid #dde5f0;word-break:break-word;
+}
+pre{
+  background:var(--code-bg);color:var(--code-ink);padding:20px 22px;border-radius:11px;
+  overflow-x:auto;margin:0 0 22px;font-size:13.6px;line-height:1.62;
+  border:1px solid #1e293b;
+}
+pre code{background:none;border:0;color:inherit;padding:0;font-size:inherit}
+.table-scroll{overflow-x:auto;margin:0 0 24px;border:1px solid var(--line);border-radius:11px}
+table{border-collapse:collapse;width:100%;font-size:14.6px;background:#fff}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#eef3fa;font-weight:700;color:var(--brand-dark);white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:nth-child(even){background:#fafcfe}
+td strong{color:var(--brand-dark)}
+.toc{background:#f4f8fd;border:1px solid #d8e5f5;border-radius:12px;padding:22px 26px;margin:0 0 34px}
+.toc h2{margin:0 0 12px;font-size:18px;border:0;padding:0}
+.badge{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;padding:3px 8px;border-radius:999px;vertical-align:middle}
+.ok{background:#e7f7ec;color:#16803c}
+.warn{background:#fff4e0;color:#a86400}
+.bad{background:#fdecec;color:#c22e2e}
+.step{border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:0 0 16px;background:#fafcfe}
+.step h4{margin:0 0 8px}
+.step .num{display:inline-block;width:28px;height:28px;line-height:28px;text-align:center;border-radius:50%;background:var(--brand);color:#fff;font-size:13px;font-weight:700;margin-right:8px}
+footer.doc{margin-top:44px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:14px;text-align:center}
+@media (max-width:760px){
+  header.doc{padding:38px 18px 32px}
+  main{padding:20px 16px;border-radius:10px}
+}
+</style>
+</head>
+<body>
+<header class="doc">
+  <div class="inner">
+    <h1>Планверсия2 — сквозной аудит 13 августа 2026</h1>
+    <p>Бескомпромиссная сверка всего репозитория с report.html. Код сайта в этом прогоне не менялся. Источники: 19 index.html + 404.html, uploads, plugins, assets/js, robots, sitemap, _headers, CNAME.</p>
+    <div class="meta">
+      <span>Скан: 13 августа 2026, вечер</span>
+      <span>20 HTML · 57 amzn.to · 0 &gt;250 КБ</span>
+      <span>GitHub Pages · pickora.shop</span>
+      <span>Следующий шаг: соцсети + FTC + visual freeze 390/768/1280</span>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+<main>
+
+<h1>Вердикт</h1>
+<p><strong>Юридическое ядро, SEO-пол, сжатие картинок, чистка плагинов и файл <code>_headers</code> на диске существуют и в основном зелёные.</strong> Это уже не «замороженный слепок без Schema». Платный трафик по-прежнему запрещён.</p>
+<blockquote>
+<p>Критичные дыры, которые ещё могут ударить по Amazon / репутации / CWV: плейсхолдеры соцсетей в футере на всех страницах, FTC-формулировки («100 hours», «Marcus V.»), битая форма Hostinger Reach, нет физического <code>favicon.ico</code>, <code>_headers</code> на GitHub Pages не отдаётся, LCP /products/ не переизмерен, visual freeze меню не прогнан на устройствах.</p>
+</blockquote>
+
+<div class="toc">
+<h2>Оглавление</h2>
+<ol>
+<li><a href="#scan">Метод и инвентарь</a></li>
+<li><a href="#b1">Блок 1 — Affiliate &amp; legal</a></li>
+<li><a href="#b2">Блок 2 — Скорость и инфраструктура</a></li>
+<li><a href="#b3">Блок 3 — SEO, schema, аналитика</a></li>
+<li><a href="#b4">Блок 4 — Визуал и UX</a></li>
+<li><a href="#next">Что делать дальше (очередь)</a></li>
+</ol>
+</div>
+
+<h2 id="scan">1. Метод и инвентарь</h2>
+<p>Просканированы все site HTML (19 <code>index.html</code> + корневой <code>404.html</code> = 20 файлов). Планверсия2 и desktop report/plan в счёт сайта не входят. Каждая Amazon-<code>&lt;a&gt;</code>, каждый <code>&lt;img&gt;</code>, каждый JSON-LD блок, каждый конфиг прочитаны с диска.</p>
+<div class="table-scroll"><table>
+<thead><tr><th>Метрика</th><th>Факт на диске 13.08 вечер</th></tr></thead>
+<tbody>
+<tr><td>HTML страниц сайта</td><td>19 index + 404.html</td></tr>
+<tr><td><code>amzn.to</code> / amazon</td><td>57 / 57 с <code>target="_blank"</code> + полный rel. 0 нарушений</td></tr>
+<tr><td>Disclosure перед <code>&lt;footer&gt;</code></td><td>20 / 20</td></tr>
+<tr><td>Uploads</td><td>728 файлов, 40.02 MB, <strong>0 &gt;250 КБ</strong></td></tr>
+<tr><td><code>&lt;img&gt;</code></td><td>87: 13 eager + fetchpriority, 74 lazy, 0 без width/height, 0 без decoding</td></tr>
+<tr><td>JSON-LD</td><td>18 / 20 (нет на 2 орфанах). 0 AggregateRating</td></tr>
+<tr><td>Meta + OG + Twitter</td><td>17 / 17 индексируемых + 404. Орфаны без OG</td></tr>
+<tr><td><code>wp-content</code></td><td>~58.7 MB (plugins 0.15 MB)</td></tr>
+<tr><td>robots / sitemap / 404 / _headers / CNAME</td><td>все на месте</td></tr>
+<tr><td>Физический <code>favicon.ico</code></td><td>нет (тег есть)</td></tr>
+</tbody>
+</table></div>
+
+<h2 id="b1">2. Блок 1 — Affiliate &amp; legal (Фаза 0)</h2>
+<div class="table-scroll"><table>
+<thead><tr><th>Пункт</th><th>Статус</th><th>Факт</th></tr></thead>
+<tbody>
+<tr><td>Amazon rel + target</td><td><span class="badge ok">PASS</span></td><td>57/57. Нет сырых amazon.com без полного <code>rel="sponsored nofollow noopener noreferrer"</code>.</td></tr>
+<tr><td>Disclosure перед footer</td><td><span class="badge ok">PASS</span></td><td><code>.pk-disclosure-footer</code> стоит перед <code>&lt;footer&gt;</code> на всех 19 страницах и на 404.</td></tr>
+<tr><td>Юр. страницы</td><td><span class="badge ok">PASS</span></td><td>Физически есть <code>/privacy-policy/</code>, <code>/affiliate-disclosure/</code>, <code>/terms-of-service/</code>, <code>/contact/</code>. Sticky: <code>min-height:100vh</code> + <code>footer { margin-top:auto }</code>, <code>html/body</code> фон белый (navy не протекает в контент). Живой скрин «белой полосы» в этом прогоне не снимался.</td></tr>
+<tr><td>Орфаны noindex</td><td><span class="badge ok">PASS</span></td><td><code>/author/ivanvinitskiy23gmail-com/</code> и <code>/category/uncategorized/</code>: <code>noindex, follow</code>, canonical → <code>/articles/</code>. В sitemap их нет.</td></tr>
+<tr><td>Соцсети-заглушки</td><td><span class="badge bad">FAIL / ACTION</span></td><td>Футер на <strong>всех 20 HTML</strong>: <code>href="https://facebook.com/"</code>, instagram.com/, twitter.com/, tiktok.com/ без профиля. JSON-LD sameAs врёт <code>/pickorashop</code>, иконки ведут на корни сетей.</td></tr>
+<tr><td>FTC формулировки</td><td><span class="badge bad">FAIL / ACTION</span></td><td>Home: «100 hours of testing». Products: «Marcus V.».</td></tr>
+<tr><td>Форма подписки</td><td><span class="badge bad">FAIL / ACTION</span></td><td>Hostinger Reach на всех 20 страницах. POST на WP REST на статике = 405/404. <code>_headers</code> form-action разрешает MailerLite, которого нет.</td></tr>
+</tbody>
+</table></div>
+
+<h2 id="b2">3. Блок 2 — Скорость и инфраструктура (Фаза 1 + 4)</h2>
+<div class="table-scroll"><table>
+<thead><tr><th>Пункт</th><th>Статус</th><th>Факт</th></tr></thead>
+<tbody>
+<tr><td>Вес картинок §2.8</td><td><span class="badge ok">PASS</span></td><td>0 файлов &gt;250 КБ. Uploads 40.02 MB.</td></tr>
+<tr><td>img width/height/loading</td><td><span class="badge ok">PASS</span></td><td>87/87. Hero: eager + fetchpriority=high. Остальные lazy + decoding=async.</td></tr>
+<tr><td>Битые Elementor CSS §2.7</td><td><span class="badge ok">PASS</span></td><td><code>local-95/132/160/193</code> в HTML нет. Живые ссылки <code>local-9/10/11/12/261/344/392/417</code> — файлы лежат в <code>uploads/elementor/css/</code>.</td></tr>
+<tr><td>jquery-migrate</td><td><span class="badge ok">PASS</span></td><td>0 упоминаний в site HTML.</td></tr>
+<tr><td>defer в &lt;head&gt; §2.9</td><td><span class="badge ok">PASS</span></td><td>Внешние <code>&lt;script src&gt;</code> в head: 0 без defer/async. jquery.min.js — defer. gtag — async.</td></tr>
+<tr><td>robots.txt</td><td><span class="badge ok">PASS</span></td><td><code>Allow: /</code> + указатель на sitemap. Орфаны не Disallow (закрыты noindex).</td></tr>
+<tr><td>sitemap.xml</td><td><span class="badge ok">PASS</span></td><td>17 канонических URL. author + uncategorized отсутствуют.</td></tr>
+<tr><td>404.html</td><td><span class="badge ok">PASS</span></td><td>Корневой, noindex follow, disclosure + footer, ссылки Home / Articles / Categories.</td></tr>
+<tr><td>_headers файл</td><td><span class="badge ok">PASS</span></td><td>Точная копия report.html §7.4: HSTS, nosniff, XFO, referrer, permissions, CSP (GA4 + fonts), cache 1y uploads/css/js.</td></tr>
+<tr><td>_headers в проде</td><td><span class="badge warn">FAIL / ACTION</span></td><td>GitHub Pages файл игнорирует. Заголовки появятся только после Cloudflare/Netlify (4.3).</td></tr>
+<tr><td>favicon.ico файл</td><td><span class="badge warn">FAIL / ACTION</span></td><td>Тег <code>/favicon.ico</code> на 20/20 HTML. Физического файла в корне нет.</td></tr>
+<tr><td>Мёртвые плагины 4.1</td><td><span class="badge ok">PASS</span></td><td>10 плагинов удалены; Elementor/Site Kit/Reach урезаны до связанных CSS/JS. plugins 0.15 MB.</td></tr>
+<tr><td>LCP /products/ §2.8</td><td><span class="badge warn">FAIL / ACTION</span></td><td>Аудит был 23s / 10.45 MB. Сжатие сделано. Свежий throttled Lighthouse в этой сессии не гонялся.</td></tr>
+</tbody>
+</table></div>
+
+<h2 id="b3">4. Блок 3 — SEO, микроразметка, аналитика (Фаза 2)</h2>
+<div class="table-scroll"><table>
+<thead><tr><th>Пункт</th><th>Статус</th><th>Факт</th></tr></thead>
+<tbody>
+<tr><td>Meta description 17 индексируемых</td><td><span class="badge ok">PASS</span></td><td>Все 140–160 симв. Flesch 60.7–68.9. Запрещённых hype-слов в description нет. Canonical на каждой.</td></tr>
+<tr><td>Meta на орфанах</td><td><span class="badge ok">PASS</span></td><td>Пустой description ожидаем: noindex + canonical на /articles/.</td></tr>
+<tr><td>OG + Twitter 17 + 404</td><td><span class="badge ok">PASS</span></td><td>og:title/description/image/type/url + twitter:card summary_large_image. Reviews: og:type=article.</td></tr>
+<tr><td>OG на орфанах</td><td><span class="badge warn">FAIL / ACTION</span></td><td>Нет OG/Twitter на author и uncategorized. Не критично (noindex), но чеклист «все страницы» формально красный.</td></tr>
+<tr><td>JSON-LD индексируемые</td><td><span class="badge ok">PASS</span></td><td>Home: Organization + WebSite/SearchAction. Reviews: Article + BreadcrumbList + ItemList/Product/Review/Rating. Хабы: CollectionPage + BreadcrumbList. Legal: WebPage. About/Contact: AboutPage/ContactPage. 0 AggregateRating. FAQPage нет — FAQ-блока в HTML обзоров нет (правильно).</td></tr>
+<tr><td>SearchAction target</td><td><span class="badge warn">FAIL / ACTION</span></td><td><code>https://pickora.shop/search/?q={search_term_string}</code> — отдельной /search/ страницы в репо нет.</td></tr>
+<tr><td>Consent Mode v2</td><td><span class="badge ok">PASS</span></td><td>EU/UK/CH default <code>analytics_storage: denied</code>. Остальной мир: analytics granted, ads denied. Баннер + restore из localStorage. <code>pickora-consent.js</code> на 20/20.</td></tr>
+<tr><td>GA4 + affiliate_click</td><td><span class="badge ok">PASS</span></td><td><code>G-Q4SCHBR4QM</code> + <code>pickora-analytics.js</code> на 20/20. События <code>affiliate_click</code> и <code>select_item</code> + scroll depth. DebugView владельцем не подтверждён.</td></tr>
+</tbody>
+</table></div>
+
+<h2 id="b4">5. Блок 4 — Визуал и UX (Блоки A/B)</h2>
+<div class="table-scroll"><table>
+<thead><tr><th>Пункт</th><th>Статус</th><th>Факт</th></tr></thead>
+<tbody>
+<tr><td>Шапки 4 обзоров</td><td><span class="badge ok">PASS</span></td><td><code>.pk-review-hero { background: transparent }</code>. Нет navy/gradient-коробок. Крошки <code>Home › Articles › [title]</code> + тот же BreadcrumbList. Бейдж категории (Home &amp; Kitchen / Electronics / Pet Supplies) остаётся меткой, не крошкой. padding-top 32px на main + hero.</td></tr>
+<tr><td>Related + skip</td><td><span class="badge ok">PASS</span></td><td><code>.pk-related</code> и «Who should skip this» на 4/4, перед disclosure.</td></tr>
+<tr><td>Мобильное меню (код)</td><td><span class="badge ok">PASS</span></td><td>Overlay full viewport, колонка <code>flex-start</code>, close pill top-right, z-index 999999. Поиск принудительно z-index:1 под меню. Бургер скрыт <code>@media (min-width:769px)</code>.</td></tr>
+<tr><td>Visual freeze 1.5</td><td><span class="badge warn">FAIL / ACTION</span></td><td>Код выглядит собранным, но 390 / 768 / 1280 в этом аудите не прогонялись в браузере. Исторически меню ломалось 3 раза.</td></tr>
+<tr><td>«premium» в коде</td><td><span class="badge warn">FAIL / ACTION</span></td><td>В meta нет. В обзорах — CSS-комментарии + имена файлов картинок. На хабах (consumer-electronics 12, fitness 11, pet 8) слово ещё в видимом/alt-контенте.</td></tr>
+</tbody>
+</table></div>
+
+<h2 id="next">6. Очередь до трафика</h2>
+<div class="step">
+<h4><span class="num">1</span> Сейчас — репутация, без CSS-ломания меню</h4>
+<ol>
+<li>Спрятать или заменить 4 соц-иконки (0.6 / 3.5).</li>
+<li>Срезать «100 hours of testing» и «Marcus V.» (0.5).</li>
+<li>Залить физический <code>favicon.ico</code>.</li>
+</ol>
+</div>
+<div class="step">
+<h4><span class="num">2</span> Visual freeze 1.5</h4>
+<p>Один проход 390 / 768 / 1280: home, 1 обзор, 1 legal, articles, categories. Overlay, sticky footer, поиск vs меню. Без этого не трогать глобальный CSS.</p>
+</div>
+<div class="step">
+<h4><span class="num">3</span> Подтвердить скорость</h4>
+<p>Throttled Lighthouse на <code>/products/</code> + 4 обзора. Цель report.html: LCP &lt; 2.5s, вес страницы разумный. Пока не зелёный — не ads.</p>
+</div>
+<div class="step">
+<h4><span class="num">4</span> Форма + хостинг</h4>
+<ol>
+<li>Убрать Hostinger Reach. MailerLite/Kit (0.7).</li>
+<li>Опционально 4.3: Cloudflare Pages, чтобы <code>_headers</code> начал работать.</li>
+<li>Владелец: отправить sitemap в GSC/Bing.</li>
+</ol>
+</div>
+<div class="step">
+<h4><span class="num">5</span> Только потом plan.html Фаза 5–6</h4>
+<p>4 → 25–30 статей кластерами. Платный трафик закрыт, пока шаги 1–3 зелёные.</p>
+</div>
+
+<footer class="doc">Аудит 13 августа 2026. Код сайта не изменялся. Этот файл — живая калибровка, не продовый URL.</footer>
+</main>
+</div>
+</body>
+</html>
