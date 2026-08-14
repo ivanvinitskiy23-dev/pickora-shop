@@ -1,6 +1,6 @@
 # Pickora.shop Refactoring Progress
 
-**Last calibrated:** 2026-08-14 (premium fullscreen nav overlay + portal JS)  
+**Last calibrated:** 2026-08-14 (nav Variant C left drawer)  
 **Rule:** checkboxes reflect files on disk, not chat claims. A task stays `[ ]` until the artifact exists and is wired.
 
 ## Phase Status
@@ -95,6 +95,13 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-08-14 — Nav Variant C: left drawer (phone + tablet)
+- Replaced fullscreen giant-type overlay with **left drawer** (~320px phone / ~360px tablet): logo **Pickora** + X, calm 17–18px links, dimmed backdrop, slide-in.
+- `pickora-nav.js`: portal to `<body>`, inject brand row, `html.pk-nav-open` (burger stays hidden after portal), Escape + backdrop click to close.
+- Stripped conflicting inline “MOBILE OVERLAY” fullscreen CSS from **20/20** pages; cache-bust `?v=3`.
+- Footer burger hidden (always show footer link list) — prevents second broken modal.
+- QA: **412** drawer+logo+17px; **768/820** drawer 360+18px; **1280** horizontal nav, no burger; Escape closes.
 
 ### 2026-08-14 — Nav overlay v2 (visual fix after live QA)
 - User screenshots showed WP modal card (phone) / sparse tiny links (iPad) despite prior deploy — CSS fought inline `background:transparent` + WP dialog constraints; tablet layout still looked empty.
