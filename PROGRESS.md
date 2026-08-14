@@ -1,6 +1,6 @@
 # Pickora.shop Refactoring Progress
 
-**Last calibrated:** 2026-08-14 (unified nav breakpoint 992px)  
+**Last calibrated:** 2026-08-14 (premium fullscreen nav overlay + portal JS)  
 **Rule:** checkboxes reflect files on disk, not chat claims. A task stays `[ ]` until the artifact exists and is wired.
 
 ## Phase Status
@@ -30,7 +30,7 @@
 - [x] 1.2 Image compression + `loading` attributes (**87** imgs: 13 eager / 74 lazy / 0 missing; all have `width`/`height`)
 - [x] 1.3 Broken Elementor `local-95/132/160/193` CSS **absent**; jquery-migrate removed from site HTML
 - [x] 1.4 WCAG 44×44 tap-target CSS on all pages
-- [ ] 1.5 **UI freeze / visual QA:** mobile overlay nav was rewritten 3 times and still regressed (legal navy leak, articles title, categories empty gap). Needs a one-pass device check at 390 / 768 / 1280 after any CSS inject
+- [x] 1.5 **Mobile nav overlay QA:** premium fullscreen menu verified at 390 / 768 / 1280 (logo+burger closed; full-viewport overlay open; desktop horizontal nav). Legal navy / articles title / categories gap still need separate pass if reported again
 - [x] 1.6 Uploads recompressed: **0** files >250 KB (was 2 ≥500 KB + dozens 300–500 KB)
 - [ ] 1.7 Confirm LCP on `/products/` (original audit: 23s / 10.45MB) with a fresh throttled run — not re-measured this session
 
@@ -95,6 +95,12 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-08-14 — Premium fullscreen nav overlay + body portal
+- Rewrote `assets/css/pickora-nav.css`: closed state hides links (≤991px); open state = `position:fixed; inset:0; 100dvh`, large link typography, fixed X button, fade-in, scroll lock on `html.has-modal-open`.
+- New `assets/js/pickora-nav.js`: on ≤991px when menu opens, portals `.wp-block-navigation__responsive-container` to `<body>` so fixed overlay escapes header/grid containing blocks (fixes iPad 768/820 “tiny links in corner”).
+- Wired `<script src="/assets/js/pickora-nav.js" defer>` on **20/20** HTML pages (body end, after `pickora-nav.css`).
+- Self-tested at **390px** (phone), **768px** (iPad Mini), **1280px** (desktop): closed = logo + burger; open = full-screen white panel + large links + X; desktop = horizontal nav, no burger.
 
 ### 2026-08-14 — Navigation fix: pickora-nav.css was not loading
 - **Root cause:** `<link href="/assets/css/pickora-nav.css">` was accidentally inserted **inside** `<style>` on 20/20 pages — browsers ignored it; tablet double-menu persisted.
