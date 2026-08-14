@@ -289,17 +289,18 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
 .pk-disclosure-footer {
   max-width: 1140px !important;
   width: 100% !important;
-  margin: 28px auto 8px !important;
+  margin: 40px auto 24px !important;
   padding: 0 20px !important;
-  text-align: left !important;
+  text-align: center !important;
   color: #64748b !important;
   font-size: 13px !important;
-  line-height: 1.55 !important;
+  line-height: 1.5 !important;
+  white-space: nowrap;
   box-sizing: border-box !important;
 }
 .pk-disclosure-footer--inline {
-  max-width: none !important;
-  margin: 28px 0 8px !important;
+  max-width: 1140px !important;
+  margin: 40px auto 24px !important;
   padding: 0 20px !important;
 }
 .pk-disclosure-footer,
@@ -308,12 +309,20 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
 }
 .pk-disclosure-footer p {
   margin: 0 !important;
-  max-width: 720px;
-  white-space: normal;
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
 }
 .pk-disclosure-footer a {
   color: #2075d2 !important;
   text-decoration: underline;
+  white-space: nowrap;
+}
+@media (max-width: 900px) {
+  .pk-disclosure-footer,
+  .pk-disclosure-footer p {
+    white-space: normal;
+  }
 }
 </style>
 

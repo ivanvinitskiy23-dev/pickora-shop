@@ -174,6 +174,10 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 - About: replaced stretched hero/cards with compact hat + How we work + dual CTA.
 - Hero candidates: local `_preview-hero-options.html` + WebP in `assets/img/hero/` (A/B/C pending user pick — not applied to home yet).
 
+### 2026-08-14 — Products disclosure center + About V5
+- Products: Amazon Associates disclosure under guides restored to **centered** sitewide style (matches reviews).
+- About V5: compact centered hat, dense 6-photo mosaic (existing WebP), 3 how-we-work pillars, 6 reader feedback cards, compact dual-CTA bar with subtle shine/hover motion (`prefers-reduced-motion` respected).
+
 ### 2026-08-14 — Hero Option A (current photo), center hats, home spacing
 - Home hero: Option A dark wash + new copy on **existing** lifestyle photo; CTA “Browse products”.
 - Popular Categories: restored original two-column style; block centered (`justify-content: center`; mobile stacked + centered).
