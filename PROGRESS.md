@@ -1,6 +1,6 @@
 # Pickora.shop Refactoring Progress
 
-**Last calibrated:** 2026-08-14 (native MailerLite HTML/CSS/JS footer form on 20/20 HTML)  
+**Last calibrated:** 2026-08-14 (site-wide contact email → `Pickora@proton.me`)  
 **Rule:** checkboxes reflect files on disk, not chat claims. A task stays `[ ]` until the artifact exists and is wired.
 
 ## Phase Status
@@ -95,6 +95,10 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-08-14 — Site-wide contact email update
+- Replaced `admin@pickora.shop` → `Pickora@proton.me` in **45** places across **20/20** HTML files (footer, `/contact/`, legal pages, JSON-LD Organization `email`, meta/OG descriptions, all `mailto:` links).
+- **0** remaining `admin@pickora.shop` references in repo.
 
 ### 2026-08-14 — Native MailerLite HTML/CSS/JS footer form
 - Replaced `ml-embedded` iframe stub with full MailerLite native snippet (`#mlb2-44833402`, `webforms.min.js`) in footer on **20/20** HTML files.
