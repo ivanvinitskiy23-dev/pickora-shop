@@ -96,6 +96,12 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 
 ## Change Log
 
+### 2026-08-14 — Navigation fix: pickora-nav.css was not loading
+- **Root cause:** `<link href="/assets/css/pickora-nav.css">` was accidentally inserted **inside** `<style>` on 20/20 pages — browsers ignored it; tablet double-menu persisted.
+- Fixed: link moved **after** `</style>`; duplicate load at body end (with `pickora-mobile-fixes.css`).
+- Inline legacy breakpoints updated `769px` → `992px` in `pk-tap-targets` + `pk-mobile-menu` blocks.
+- `pickora-nav.css` strengthened: hide `.wp-block-navigation__container` when closed; restore on overlay open.
+
 ### 2026-08-14 — Navigation: unified 992px breakpoint (tablet = burger)
 - New `assets/css/pickora-nav.css` linked on **20/20** HTML pages after inline header styles.
 - **≤991px:** burger only; nav links hidden until overlay opens (fixes double menu + X at 768px iPad).

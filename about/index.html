@@ -20,7 +20,7 @@ html, body { max-width: 100%; overflow-x: clip; }
 </style>
 <style id="pk-tap-targets-inline-css">
 /* Touch targets — mobile only; do not force burger/close visible on desktop */
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .wp-block-navigation__responsive-container-open,
   .wp-block-navigation__responsive-container-close {
     min-width: 44px !important;
@@ -48,7 +48,7 @@ html, body { max-width: 100%; overflow-x: clip; }
 }
 
 /* Hide mobile nav icons on desktop */
-@media (min-width: 769px) {
+@media (min-width: 992px) {
   .wp-block-navigation__responsive-container-open,
   .wp-block-navigation__responsive-container-close,
   .wp-block-navigation__responsive-container-open:not(.always-show) {
@@ -759,7 +759,7 @@ header.site-header .hostinger-ai-site-navigation.wp-block-navigation {
 }
 
 /* --- Desktop nav: one clean horizontal row --- */
-@media (min-width: 769px) {
+@media (min-width: 992px) {
   header.site-header .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open) {
     display: block !important;
     position: static !important;
@@ -1235,8 +1235,8 @@ footer.site-footer {
 footer.site-footer > .wp-block-group.has-color-2-background-color {
   background-color: #15223B !important;
 }
-<link rel="stylesheet" href="/assets/css/pickora-nav.css">
 </style>
+<link rel="stylesheet" href="/assets/css/pickora-nav.css">
 
 <script type="application/ld+json">
 {
@@ -2205,6 +2205,7 @@ const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(
 <!-- pk-analytics-body -->
 
 <script src="/assets/js/pickora-consent.js" defer></script>
+<link rel="stylesheet" href="/assets/css/pickora-nav.css">
 <link rel="stylesheet" href="/assets/css/pickora-mobile-fixes.css">
 <script src="/assets/js/pickora-analytics.js" defer></script>
 </body>

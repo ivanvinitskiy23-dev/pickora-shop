@@ -9,10 +9,9 @@
 
 /* =========================================================
    MOBILE + TABLET (≤991px) — closed state
-   Fixes double menu at 768px: hide links until overlay opens.
    ========================================================= */
 @media (max-width: 991px) {
-  .wp-block-navigation__responsive-container-open {
+  header.site-header .wp-block-navigation__responsive-container-open {
     display: flex !important;
     min-width: 44px !important;
     min-height: 44px !important;
@@ -20,6 +19,16 @@
     justify-content: center !important;
     padding: 10px !important;
     margin: -10px !important;
+  }
+
+  /* Hide burger when overlay is open */
+  header.site-header
+    .wp-block-navigation__responsive-container.is-menu-open
+    ~ .wp-block-navigation__responsive-container-open,
+  header.site-header
+    .wp-block-navigation__responsive-container.has-modal-open
+    ~ .wp-block-navigation__responsive-container-open {
+    display: none !important;
   }
 
   header.site-header .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open) {
@@ -34,13 +43,22 @@
 
   header.site-header
     .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
-    .wp-block-navigation__responsive-container-content {
+    .wp-block-navigation__responsive-container-content,
+  header.site-header
+    .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
+    .wp-block-navigation__container,
+  header.site-header
+    .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
+    ul.wp-block-navigation__container {
     display: none !important;
     visibility: hidden !important;
     height: 0 !important;
+    max-height: 0 !important;
     overflow: hidden !important;
     padding: 0 !important;
     margin: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
   }
 
   header.site-header
@@ -48,25 +66,29 @@
     .wp-block-navigation__responsive-container-close,
   header.site-header
     .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
-    .wp-block-navigation__responsive-close {
+    .wp-block-navigation__responsive-close,
+  header.site-header .wp-block-navigation__responsive-container-close:not(.is-menu-open) {
     display: none !important;
   }
 }
 
-/* Neutralize legacy inline 769px desktop rules on tablets (769–991px) */
+/* Override legacy inline @media (min-width: 769px) on tablets */
 @media (min-width: 769px) and (max-width: 991px) {
-  .wp-block-navigation__responsive-container-open,
+  header.site-header .wp-block-navigation__responsive-container-open,
   .wp-block-navigation__responsive-container-open:not(.always-show) {
     display: flex !important;
   }
 
-  .wp-block-navigation__responsive-container-close {
+  header.site-header .wp-block-navigation__responsive-container-close {
     display: none !important;
   }
 
   header.site-header
     .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
     .wp-block-navigation__responsive-container-content,
+  header.site-header
+    .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
+    .wp-block-navigation__container,
   header.site-header .wp-block-navigation__responsive-container-content {
     display: none !important;
     visibility: hidden !important;
@@ -86,8 +108,8 @@
    DESKTOP (≥992px) — horizontal inline nav
    ========================================================= */
 @media (min-width: 992px) {
-  .wp-block-navigation__responsive-container-open,
-  .wp-block-navigation__responsive-container-close,
+  header.site-header .wp-block-navigation__responsive-container-open,
+  header.site-header .wp-block-navigation__responsive-container-close,
   .wp-block-navigation__responsive-container-open:not(.always-show) {
     display: none !important;
   }
@@ -117,6 +139,8 @@
     padding: 0 !important;
     height: auto !important;
     overflow: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
   }
 
   header.site-header .wp-block-navigation__container {
@@ -161,6 +185,36 @@
   }
 }
 
+/* Overlay open — restore panel layout */
+@media (max-width: 991px) {
+  header.site-header
+    .wp-block-navigation__responsive-container.is-menu-open
+    .wp-block-navigation__responsive-container-content,
+  header.site-header
+    .wp-block-navigation__responsive-container.has-modal-open
+    .wp-block-navigation__responsive-container-content,
+  .wp-block-navigation__responsive-container.is-menu-open
+    .wp-block-navigation__responsive-container-content,
+  .wp-block-navigation__responsive-container.has-modal-open
+    .wp-block-navigation__responsive-container-content {
+    display: flex !important;
+    visibility: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    overflow: visible !important;
+  }
+
+  .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__container,
+  .wp-block-navigation__responsive-container.has-modal-open .wp-block-navigation__container {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+}
+
 /* Overlay panel — no 100vw bleed */
 .wp-block-navigation__responsive-container.is-menu-open,
 .wp-block-navigation__responsive-container.has-modal-open {
@@ -168,7 +222,7 @@
   max-width: 100% !important;
 }
 
-/* Search under overlay only — never suppress page search dropdown */
+/* Search under overlay only */
 .wp-block-navigation__responsive-container.is-menu-open #pk-search-system,
 .wp-block-navigation__responsive-container.has-modal-open #pk-search-system,
 .wp-block-navigation__responsive-container.is-menu-open .pk-search-outer-container,
