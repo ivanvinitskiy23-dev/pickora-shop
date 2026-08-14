@@ -1,6 +1,6 @@
 # Pickora.shop Refactoring Progress
 
-**Last calibrated:** 2026-08-14 (site-wide contact email → `Pickora@proton.me`)  
+**Last calibrated:** 2026-08-14 (unified article/product client search)  
 **Rule:** checkboxes reflect files on disk, not chat claims. A task stays `[ ]` until the artifact exists and is wired.
 
 ## Phase Status
@@ -95,6 +95,12 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-08-14 — Article & product search split
+- Extracted shared client search to `assets/js/pickora-search.js` + `assets/css/pickora-search.css`.
+- **Articles** (`/articles/`, home Latest Reviews): title-only search, fixed DOM-based highlight (no broken words), navigate to article on select.
+- **Products** (`/products/`): same UI, searches featured products + category cards by title/keywords, smooth-scroll + flash highlight on select.
+- Added Featured Products catalog section on `/products/` with anchor IDs for scroll targets.
 
 ### 2026-08-14 — Site-wide contact email update
 - Replaced `admin@pickora.shop` → `Pickora@proton.me` in **45** places across **20/20** HTML files (footer, `/contact/`, legal pages, JSON-LD Organization `email`, meta/OG descriptions, all `mailto:` links).

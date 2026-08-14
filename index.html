@@ -1613,6 +1613,21 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
         <p class="pk-rev-main-desc">Explore our latest hands-on reviews, product comparisons, and buying guides</p>
     </div>
 
+    <div id="pk-search-system" data-pk-search-mode="articles" data-pk-search-source=".pk-reviews-grid" data-pk-search-title=".pk-rev-title" data-pk-search-tag=".pk-rev-category">
+  <div class="pk-search-outer-container">
+    <div class="pk-search-field-group">
+      <div class="pk-search-icon-inside">
+        <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="#3A86E1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </div>
+      <input type="text" id="pk-realtime-search" placeholder="Search reviews by title..." autocomplete="off">
+      <button type="button" id="pk-search-clear" aria-label="Clear search">×</button>
+    </div>
+    <div id="pk-search-suggestions" class="pk-suggestions-dropdown" role="listbox"></div>
+  </div>
+</div>
+<link rel="stylesheet" href="/assets/css/pickora-search.css">
+<script src="/assets/js/pickora-search.js" defer></script>
+
     <!-- Сетка обзоров -->
     <div class="pk-reviews-grid">
         
