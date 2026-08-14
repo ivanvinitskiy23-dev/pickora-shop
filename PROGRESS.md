@@ -96,6 +96,10 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 
 ## Change Log
 
+### 2026-08-14 — Compact cookie banner + drawer always right
+- Cookie `#pk-consent`: removed `flex:1 1 320px` (caused huge empty blue block on phone/tablet); compact bar ≤991px (~94px tall), side-by-side Reject/Accept.
+- Drawer panel `position:fixed; right:0` so home/categories/about all open from the **right** (same side as burger). Cache `nav?v=5`, `consent?v=2`.
+
 ### 2026-08-14 — Drawer: hide leaked brand + open from right
 - Fixed duplicate **Pickora** next to burger: injected `.pk-nav-drawer-brand` was left in the header after close; now teardown on close + CSS hide when closed.
 - Drawer opens from the **right** (same side as burger) — clearer than left slide.
