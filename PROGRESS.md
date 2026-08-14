@@ -1,6 +1,6 @@
 # Pickora.shop Refactoring Progress
 
-**Last calibrated:** 2026-08-14 (nav Variant C left drawer)  
+**Last calibrated:** 2026-08-14 (unified page hats)  
 **Rule:** checkboxes reflect files on disk, not chat claims. A task stays `[ ]` until the artifact exists and is wired.
 
 ## Phase Status
@@ -166,6 +166,12 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 - **Articles** (`/articles/`, home Latest Reviews): title-only search, fixed DOM-based highlight (no broken words), navigate to article on select.
 - **Products** (`/products/`): same UI, searches featured products + category cards by title/keywords, smooth-scroll + flash highlight on select.
 - Added Featured Products catalog section on `/products/` with anchor IDs for scroll targets.
+
+### 2026-08-14 — Unified page hats (Flesch 60–70)
+- Added shared `assets/css/pickora-hats.css` (`#2075d2` accent, Montserrat title + short dek).
+- **4 category hubs:** left hat with blue accent word in H1, **no blue-dot eyebrow**; short deks scored ~Flesch 60–70.
+- Products / Articles / Categories + home **Latest Reviews**: same hat language (eyebrow + accent + dek); hub blues unified to `#2075d2`.
+- Home Popular Categories dek + accent, Why Trust / FAQ blue token aligned to `#2075d2`.
 
 ### 2026-08-14 — Site-wide contact email update
 - Replaced `admin@pickora.shop` → `Pickora@proton.me` in **45** places across **20/20** HTML files (footer, `/contact/`, legal pages, JSON-LD Organization `email`, meta/OG descriptions, all `mailto:` links).

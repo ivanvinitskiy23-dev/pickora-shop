@@ -690,6 +690,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 }
 </style>
 <link rel="stylesheet" href="/assets/css/pickora-nav.css?v=5">
+<link rel="stylesheet" href="/assets/css/pickora-hats.css?v=1">
 
 <script type="application/ld+json">
 {
@@ -1001,7 +1002,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
     
     <div class="pk-header-right">
         <p class="pk-main-desc">
-            Browse our most popular product categories and find the best recommendations for your needs.
+            Browse popular product categories and find clear recommendations for your needs. Each board leads to tested picks you can trust.
         </p>
         <div class="pk-header-status">
             <span class="pk-dot"></span> 
@@ -1015,7 +1016,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 .pk-modern-header {
     --text-main: #111111; /* Оригинальный черный */
     --text-muted: #666666; /* Оригинальный серый */
-    --accent-color: #000000; /* Акцент (можно заменить на ваш бренд-цвет) */
+    --accent-color: #2075d2; /* Brand accent */
     
     display: flex;
     align-items: center;
@@ -1052,8 +1053,8 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 }
 
 .pk-accent {
-    color: var(--text-muted); /* Тонкий эффект для интереса */
-    font-weight: 300;
+    color: var(--accent-color);
+    font-weight: 800;
 }
 
 /* РАЗДЕЛИТЕЛЬ */
@@ -1382,9 +1383,10 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 				<div class="elementor-widget-container">
 					<section class="pk-reviews-section">
     <!-- Заголовок блока -->
-    <div class="pk-reviews-header">
-        <h2 class="pk-rev-main-title">Latest Reviews</h2>
-        <p class="pk-rev-main-desc">Explore our latest hands-on reviews, product comparisons, and buying guides</p>
+    <div class="pk-reviews-header pk-section-hat">
+        <div class="pk-page-hat-eyebrow"><span class="pk-page-hat-dot"></span> Pickora Reviews</div>
+        <h2 class="pk-page-hat-title">Latest <span class="pk-page-hat-accent">Reviews</span></h2>
+        <p class="pk-page-hat-dek">Read our newest reviews, product comparisons, and buying guides. Clear notes help you choose gear for everyday life.</p>
     </div>
 
     <div id="pk-search-system" data-pk-search-mode="articles" data-pk-search-source=".pk-reviews-grid" data-pk-search-title=".pk-rev-title" data-pk-search-tag=".pk-rev-category">
@@ -1979,7 +1981,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 </section>
 
 <style>
-:root { --pk-blue: #3A86E1; --pk-dark: #111; }
+:root { --pk-blue: #2075d2; --pk-dark: #111; }
 .pk-best-overall-v2 { padding: 40px 0; }
 .pk-best-container { 
     max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; 
