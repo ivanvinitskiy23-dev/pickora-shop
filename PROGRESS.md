@@ -1,6 +1,6 @@
 # Pickora.shop Refactoring Progress
 
-**Last calibrated:** 2026-08-14 (dynamic product search via DOM indexing)  
+**Last calibrated:** 2026-08-14 (cross-hub product search + review rail)  
 **Rule:** checkboxes reflect files on disk, not chat claims. A task stays `[ ]` until the artifact exists and is wired.
 
 ## Phase Status
@@ -95,6 +95,12 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-08-14 — Products search: cross-hub index + minimal review rail
+- **Search fix:** `/products/` search now auto-fetches all 4 category hub pages (`/consumer-electronics/`, `/home-kitchen/`, `/fitness-health/`, `/pet-supplies/`) and indexes every `.pickora-final-card` (~20 products) plus local category cards. Hub URLs read from `#pk-category-grid` — new categories auto-included when added to grid.
+- **Deep links:** `assets/js/pickora-product-anchors.js` assigns `#pk-prod-{slug}` IDs on hub pages; search results link directly to the product block.
+- **UI:** Removed bulky 2×2 “Hands-on Review Guides” grid; replaced with compact horizontal scroll rail fed automatically from `/articles/` (new articles appear without editing `/products/`).
+- **Z-index:** Scoped mobile-nav `z-index: 1` override so it no longer suppresses the products search dropdown.
 
 ### 2026-08-14 — Search: dynamic product index (DOM parsing)
 - Removed hardcoded `PRODUCT_CATALOG` from `pickora-search.js`; `/products/` search now indexes all `article` cards inside `#pk-products-page` at load (titles, descriptions, tags, img alt).
