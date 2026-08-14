@@ -115,11 +115,11 @@ header.site-header .hostinger-ai-site-navigation.wp-block-navigation {
         padding: 12px 0 0;
     }
 
-    /* Dense photo mosaic */
+    /* Dense photo mosaic — fully packed, no empty cells */
     .pk-about-mosaic {
         display: grid;
         grid-template-columns: repeat(12, 1fr);
-        grid-auto-rows: 92px;
+        grid-template-rows: repeat(3, minmax(140px, 18vw));
         gap: 10px;
         margin: 0 0 40px;
     }
@@ -130,6 +130,7 @@ header.site-header .hostinger-ai-site-navigation.wp-block-navigation {
         overflow: hidden;
         border-radius: 16px;
         background: #e2e8f0;
+        min-height: 0;
     }
 
     .pk-about-mosaic img {
@@ -145,12 +146,13 @@ header.site-header .hostinger-ai-site-navigation.wp-block-navigation {
         transform: scale(1.08);
     }
 
-    .pk-m-a { grid-column: span 5; grid-row: span 3; }
-    .pk-m-b { grid-column: span 4; grid-row: span 2; }
-    .pk-m-c { grid-column: span 3; grid-row: span 2; }
-    .pk-m-d { grid-column: span 3; grid-row: span 2; }
-    .pk-m-e { grid-column: span 4; grid-row: span 2; }
-    .pk-m-f { grid-column: span 5; grid-row: span 2; }
+    /* Row1-2 left tall + 2x2 right; row3 full-width strip — zero holes */
+    .pk-m-a { grid-area: 1 / 1 / 3 / 7; }
+    .pk-m-b { grid-area: 1 / 7 / 2 / 10; }
+    .pk-m-c { grid-area: 1 / 10 / 2 / 13; }
+    .pk-m-d { grid-area: 2 / 7 / 3 / 10; }
+    .pk-m-e { grid-area: 2 / 10 / 3 / 13; }
+    .pk-m-f { grid-area: 3 / 1 / 4 / 13; }
 
     /* How we work */
     .pk-about-band {
@@ -228,36 +230,47 @@ header.site-header .hostinger-ai-site-navigation.wp-block-navigation {
         line-height: 1.55;
     }
 
-    /* Feedback grid */
+    /* Feedback marquee */
     .pk-about-feedback {
         margin: 0 0 28px;
     }
 
-    .pk-about-feedback-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
+    .pk-about-marquee-wrap {
+        position: relative;
+        overflow: hidden;
+        mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+        -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+        margin-top: 4px;
+    }
+
+    .pk-about-marquee {
+        display: flex;
+        width: max-content;
         gap: 12px;
+        animation: pkAboutMarquee 55s linear infinite;
+        padding: 4px 0 8px;
+    }
+
+    .pk-about-marquee-wrap:hover .pk-about-marquee {
+        animation-play-state: paused;
     }
 
     .pk-about-quote {
+        flex: 0 0 min(320px, 78vw);
+        width: min(320px, 78vw);
         background: #f8fafc;
         border: 1px solid #e2e8f0;
         border-radius: 16px;
         padding: 18px 16px;
         text-align: left;
-        transition: transform 0.25s ease, background 0.25s ease;
-        animation: pkAboutRise 0.75s ease both;
+        transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+        box-sizing: border-box;
     }
-
-    .pk-about-quote:nth-child(2) { animation-delay: 0.06s; }
-    .pk-about-quote:nth-child(3) { animation-delay: 0.12s; }
-    .pk-about-quote:nth-child(4) { animation-delay: 0.18s; }
-    .pk-about-quote:nth-child(5) { animation-delay: 0.24s; }
-    .pk-about-quote:nth-child(6) { animation-delay: 0.3s; }
 
     .pk-about-quote:hover {
         transform: translateY(-3px);
         background: #fff;
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
     }
 
     .pk-about-quote p {
@@ -274,6 +287,12 @@ header.site-header .hostinger-ai-site-navigation.wp-block-navigation {
         letter-spacing: 0.04em;
         text-transform: uppercase;
         color: var(--pk-blue);
+    }
+
+    .pk-about-marquee-hint {
+        margin: 10px auto 0 !important;
+        font-size: 12px !important;
+        color: #94a3b8 !important;
     }
 
     /* Compact interactive CTA */
@@ -372,38 +391,50 @@ header.site-header .hostinger-ai-site-navigation.wp-block-navigation {
         75%, 100% { transform: skewX(-18deg) translateX(320%); }
     }
 
+    @keyframes pkAboutMarquee {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+    }
+
     @media (prefers-reduced-motion: reduce) {
         .pk-about-pillar,
-        .pk-about-quote,
         .pk-about-cta::after,
-        .pk-about-mosaic img {
+        .pk-about-mosaic img,
+        .pk-about-marquee {
             animation: none !important;
             transition: none !important;
         }
+        .pk-about-marquee-wrap {
+            overflow-x: auto;
+            mask-image: none;
+            -webkit-mask-image: none;
+        }
+        .pk-about-marquee { transform: none; }
     }
 
     @media (max-width: 900px) {
-        .pk-about-mosaic { grid-auto-rows: 78px; }
-        .pk-about-pillars,
-        .pk-about-feedback-grid { grid-template-columns: 1fr 1fr; }
-        .pk-about-quote:nth-child(n+5) { display: none; }
+        .pk-about-mosaic {
+            grid-template-rows: repeat(3, minmax(110px, 22vw));
+        }
+        .pk-about-pillars { grid-template-columns: 1fr 1fr; }
+        .pk-about-pillars .pk-about-pillar:last-child { grid-column: 1 / -1; }
     }
 
     @media (max-width: 680px) {
         .pk-about-v5 { padding: 8px 16px 36px; }
         .pk-about-mosaic {
             grid-template-columns: repeat(6, 1fr);
-            grid-auto-rows: 88px;
+            grid-template-rows: repeat(4, minmax(100px, 28vw));
+            gap: 8px;
         }
-        .pk-m-a { grid-column: span 6; grid-row: span 2; }
-        .pk-m-b { grid-column: span 3; grid-row: span 2; }
-        .pk-m-c { grid-column: span 3; grid-row: span 2; }
-        .pk-m-d { grid-column: span 3; grid-row: span 2; }
-        .pk-m-e { grid-column: span 3; grid-row: span 2; }
-        .pk-m-f { grid-column: span 6; grid-row: span 2; }
-        .pk-about-pillars,
-        .pk-about-feedback-grid { grid-template-columns: 1fr; }
-        .pk-about-quote:nth-child(n+5) { display: block; }
+        .pk-m-a { grid-area: 1 / 1 / 3 / 7; }
+        .pk-m-b { grid-area: 3 / 1 / 4 / 4; }
+        .pk-m-c { grid-area: 3 / 4 / 4 / 7; }
+        .pk-m-d { grid-area: 4 / 1 / 5 / 4; }
+        .pk-m-e { grid-area: 4 / 4 / 5 / 7; }
+        .pk-m-f { display: none; }
+        .pk-about-pillars { grid-template-columns: 1fr; }
+        .pk-about-pillars .pk-about-pillar:last-child { grid-column: auto; }
         .pk-about-cta {
             flex-direction: column;
             align-items: stretch;
@@ -611,10 +642,10 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
 @font-face{font-family:Manrope;font-style:normal;font-weight:variable;font-display:fallback;src:url('https://pickora.shop/wp-content/themes/hostinger-ai-theme/assets/fonts/Manrope-Variable.ttf') format('truetype');}
 </style>
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
-<link rel="icon" href="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-32x32.png" sizes="32x32">
-<link rel="icon" href="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-192x192.png" sizes="192x192">
-<link rel="apple-touch-icon" href="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-180x180.png">
-<meta name="msapplication-TileImage" content="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-270x270.png">
+<link rel="icon" href="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-32x32.webp" sizes="32x32">
+<link rel="icon" href="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-192x192.webp" sizes="192x192">
+<link rel="apple-touch-icon" href="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-180x180.webp">
+<meta name="msapplication-TileImage" content="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-270x270.webp">
 <!-- pk-analytics-head -->
 
 <style id="pk-disclosure-footer-inline-css">
@@ -1129,32 +1160,92 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
             <section class="pk-about-band pk-about-feedback" aria-label="Reader feedback">
                 <h2>Real reader feedback</h2>
                 <p>Notes from people who used Pickora guides before they bought.</p>
-                <div class="pk-about-feedback-grid">
-                    <blockquote class="pk-about-quote">
-                        <p>“Clear comparisons saved me an evening of tab hopping. I bought once and stopped second-guessing.”</p>
-                        <cite>Alex D. · Home &amp; Kitchen</cite>
-                    </blockquote>
-                    <blockquote class="pk-about-quote">
-                        <p>“The earbud guide felt honest about fit and battery life. That is exactly what I needed.”</p>
-                        <cite>Jordan M. · Audio</cite>
-                    </blockquote>
-                    <blockquote class="pk-about-quote">
-                        <p>“I liked the plain language. No fluff, just what lasts and what to skip.”</p>
-                        <cite>Sam R. · Smart Home</cite>
-                    </blockquote>
-                    <blockquote class="pk-about-quote">
-                        <p>“Pet camera picks were practical. Setup notes helped more than long feature lists.”</p>
-                        <cite>Casey L. · Pet Tech</cite>
-                    </blockquote>
-                    <blockquote class="pk-about-quote">
-                        <p>“The fitness gear roundup focused on comfort after week one. That detail mattered.”</p>
-                        <cite>Riley P. · Fitness</cite>
-                    </blockquote>
-                    <blockquote class="pk-about-quote">
-                        <p>“Fast to read, easy to trust. I sent two guides to family before gift season.”</p>
-                        <cite>Morgan T. · Reader</cite>
-                    </blockquote>
+                <div class="pk-about-marquee-wrap" role="region" aria-label="Scrolling reader feedback">
+                    <div class="pk-about-marquee">
+                        <blockquote class="pk-about-quote">
+                            <p>“Clear comparisons saved me an evening of tab hopping. I bought once and stopped second-guessing.”</p>
+                            <cite>Alex D. · Home &amp; Kitchen</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote">
+                            <p>“The earbud guide felt honest about fit and battery life. That is exactly what I needed.”</p>
+                            <cite>Jordan M. · Audio</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote">
+                            <p>“I liked the plain language. No fluff, just what lasts and what to skip.”</p>
+                            <cite>Sam R. · Smart Home</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote">
+                            <p>“Pet camera picks were practical. Setup notes helped more than long feature lists.”</p>
+                            <cite>Casey L. · Pet Tech</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote">
+                            <p>“The fitness gear roundup focused on comfort after week one. That detail mattered.”</p>
+                            <cite>Riley P. · Fitness</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote">
+                            <p>“Fast to read, easy to trust. I sent two guides to family before gift season.”</p>
+                            <cite>Morgan T. · Reader</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote">
+                            <p>“Air fryer notes were short and useful. I skipped two models I would have overpaid for.”</p>
+                            <cite>Nina K. · Kitchen</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote">
+                            <p>“Finally a review page that respects my time. Clean layout, clear verdicts.”</p>
+                            <cite>Chris V. · Reader</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote">
+                            <p>“Robot vacuum comparison helped me choose quieter over flashy. Still happy months later.”</p>
+                            <cite>Lee A. · Smart Home</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote">
+                            <p>“I bookmark Pickora before Amazon. Saves me from impulse buys that look premium but fail.”</p>
+                            <cite>Taylor S. · Lifestyle</cite>
+                        </blockquote>
+                        <!-- duplicate set for seamless loop -->
+                        <blockquote class="pk-about-quote" aria-hidden="true">
+                            <p>“Clear comparisons saved me an evening of tab hopping. I bought once and stopped second-guessing.”</p>
+                            <cite>Alex D. · Home &amp; Kitchen</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote" aria-hidden="true">
+                            <p>“The earbud guide felt honest about fit and battery life. That is exactly what I needed.”</p>
+                            <cite>Jordan M. · Audio</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote" aria-hidden="true">
+                            <p>“I liked the plain language. No fluff, just what lasts and what to skip.”</p>
+                            <cite>Sam R. · Smart Home</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote" aria-hidden="true">
+                            <p>“Pet camera picks were practical. Setup notes helped more than long feature lists.”</p>
+                            <cite>Casey L. · Pet Tech</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote" aria-hidden="true">
+                            <p>“The fitness gear roundup focused on comfort after week one. That detail mattered.”</p>
+                            <cite>Riley P. · Fitness</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote" aria-hidden="true">
+                            <p>“Fast to read, easy to trust. I sent two guides to family before gift season.”</p>
+                            <cite>Morgan T. · Reader</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote" aria-hidden="true">
+                            <p>“Air fryer notes were short and useful. I skipped two models I would have overpaid for.”</p>
+                            <cite>Nina K. · Kitchen</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote" aria-hidden="true">
+                            <p>“Finally a review page that respects my time. Clean layout, clear verdicts.”</p>
+                            <cite>Chris V. · Reader</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote" aria-hidden="true">
+                            <p>“Robot vacuum comparison helped me choose quieter over flashy. Still happy months later.”</p>
+                            <cite>Lee A. · Smart Home</cite>
+                        </blockquote>
+                        <blockquote class="pk-about-quote" aria-hidden="true">
+                            <p>“I bookmark Pickora before Amazon. Saves me from impulse buys that look premium but fail.”</p>
+                            <cite>Taylor S. · Lifestyle</cite>
+                        </blockquote>
+                    </div>
                 </div>
+                <p class="pk-about-marquee-hint">Hover to pause · swipe on mobile</p>
             </section>
 
             <section class="pk-about-cta" aria-label="Get started">

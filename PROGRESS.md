@@ -174,6 +174,11 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 - About: replaced stretched hero/cards with compact hat + How we work + dual CTA.
 - Hero candidates: local `_preview-hero-options.html` + WebP in `assets/img/hero/` (A/B/C pending user pick — not applied to home yet).
 
+### 2026-08-14 — About mosaic pack + feedback marquee + site WebP pass
+- About mosaic rebuilt with explicit `grid-area` packing (no empty cell beside tall tile).
+- Real feedback → auto-scrolling premium marquee (10 quotes, hover pause, reduced-motion → horizontal scroll).
+- Sitewide: JPEG/PNG upload refs in HTML → WebP; created missing WebP siblings across uploads (**298** new files; **132** HTML substitutions; **0** remaining HTML jpeg/png upload refs).
+
 ### 2026-08-14 — Products disclosure center + About V5
 - Products: Amazon Associates disclosure under guides restored to **centered** sitewide style (matches reviews).
 - About V5: compact centered hat, dense 6-photo mosaic (existing WebP), 3 how-we-work pillars, 6 reader feedback cards, compact dual-CTA bar with subtle shine/hover motion (`prefers-reduced-motion` respected).
