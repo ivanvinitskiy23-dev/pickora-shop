@@ -96,6 +96,11 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 
 ## Change Log
 
+### 2026-08-14 — Nav overlay v2 (visual fix after live QA)
+- User screenshots showed WP modal card (phone) / sparse tiny links (iPad) despite prior deploy — CSS fought inline `background:transparent` + WP dialog constraints; tablet layout still looked empty.
+- Strengthened `pickora-nav.css`: `html.has-modal-open` specificity, kill WP dialog/max-width/backdrop, **vertically centered** link column, larger type (`clamp 26–40px`), cache-bust `?v=2` on CSS/JS.
+- Removed `background: transparent !important` from inline overlay link kill-rules on **20/20** pages so active/hover pills can show.
+
 ### 2026-08-14 — Premium fullscreen nav overlay + body portal
 - Rewrote `assets/css/pickora-nav.css`: closed state hides links (≤991px); open state = `position:fixed; inset:0; 100dvh`, large link typography, fixed X button, fade-in, scroll lock on `html.has-modal-open`.
 - New `assets/js/pickora-nav.js`: on ≤991px when menu opens, portals `.wp-block-navigation__responsive-container` to `<body>` so fixed overlay escapes header/grid containing blocks (fixes iPad 768/820 “tiny links in corner”).
