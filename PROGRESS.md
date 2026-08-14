@@ -96,6 +96,10 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 
 ## Change Log
 
+### 2026-08-14 — Search z-index + products Enter-scroll
+- Articles/home autocomplete dropdown: `z-index: 999999` (container `999998`) so badges never overlap results.
+- `/products/`: removed autocomplete dropdown; Enter runs keyword match + smooth `scrollIntoView` to product/category card.
+
 ### 2026-08-14 — Article & product search split
 - Extracted shared client search to `assets/js/pickora-search.js` + `assets/css/pickora-search.css`.
 - **Articles** (`/articles/`, home Latest Reviews): title-only search, fixed DOM-based highlight (no broken words), navigate to article on select.
