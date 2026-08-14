@@ -1,6 +1,6 @@
 /**
- * Shared page / section hats (eyebrow + H1 accent + short dek).
- * Accent blue matches review heroes: #2075d2
+ * Shared page / section hats — always centered.
+ * Accent blue: #2075d2
  * Category hubs: omit .pk-page-hat-eyebrow (no blue dot).
  */
 :root {
@@ -9,41 +9,27 @@
   --pk-hat-muted: #475569;
 }
 
-.pk-page-hat {
+.pk-page-hat,
+.pk-page-hat--center,
+.pk-section-hat {
   box-sizing: border-box;
   width: 100%;
   max-width: 760px;
   margin: 24px auto 8px;
   padding: 32px 24px 8px;
   background: transparent;
-  text-align: left;
-}
-
-.pk-page-hat--center {
-  max-width: 720px;
   text-align: center;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.pk-page-hat--center .pk-page-hat-dek {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.pk-page-hat--center .pk-page-hat-eyebrow {
-  justify-content: center;
 }
 
 .pk-page-hat-inner {
   max-width: 720px;
-  margin: 0;
+  margin: 0 auto;
 }
 
 .pk-page-hat-eyebrow {
   display: inline-flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 8px;
   margin: 0 0 14px;
   font-size: 12px;
@@ -79,7 +65,7 @@
 }
 
 .pk-page-hat-dek {
-  margin: 0 0 8px;
+  margin: 0 auto 8px;
   max-width: 640px;
   font-size: 17px;
   line-height: 1.65;
@@ -87,17 +73,13 @@
   font-family: "Open Sans", system-ui, sans-serif;
 }
 
-/* Compact section hat (home Latest Reviews, etc.) */
 .pk-section-hat {
-  box-sizing: border-box;
-  text-align: center;
   margin: 0 auto 40px;
   padding: 0 20px;
   max-width: 720px;
 }
 
 .pk-section-hat .pk-page-hat-eyebrow {
-  justify-content: center;
   margin-bottom: 12px;
 }
 
@@ -107,28 +89,20 @@
 }
 
 .pk-section-hat .pk-page-hat-dek {
-  margin: 0 auto;
   font-size: 17px;
   max-width: 560px;
 }
 
 @media (max-width: 768px) {
-  .pk-page-hat {
+  .pk-page-hat,
+  .pk-page-hat--center,
+  .pk-section-hat {
     padding: 24px 20px 4px;
     margin-top: 12px;
+    text-align: center;
   }
 
   .pk-section-hat {
-    text-align: left;
     margin-bottom: 28px;
-  }
-
-  .pk-section-hat .pk-page-hat-eyebrow {
-    justify-content: flex-start;
-  }
-
-  .pk-section-hat .pk-page-hat-dek {
-    margin-left: 0;
-    margin-right: 0;
   }
 }

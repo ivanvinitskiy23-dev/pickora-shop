@@ -167,6 +167,21 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 - **Products** (`/products/`): same UI, searches featured products + category cards by title/keywords, smooth-scroll + flash highlight on select.
 - Added Featured Products catalog section on `/products/` with anchor IDs for scroll targets.
 
+### 2026-08-14 — Home spacing, Products disclosure, Categories align, About denser
+- Home: Popular Categories header centered; Latest Reviews top padding increased (~+80%).
+- Products: affiliate disclosure moved under Latest review guides (removed pre-footer copy on this page).
+- Categories (+ shared hats): mobile hat left-aligned like Products/Articles.
+- About: replaced stretched hero/cards with compact hat + How we work + dual CTA.
+- Hero candidates: local `_preview-hero-options.html` + WebP in `assets/img/hero/` (A/B/C pending user pick — not applied to home yet).
+
+### 2026-08-14 — Hero Option A (current photo), center hats, home spacing
+- Home hero: Option A dark wash + new copy on **existing** lifestyle photo; CTA “Browse products”.
+- Popular Categories: restored original two-column style; block centered (`justify-content: center`; mobile stacked + centered).
+- Latest Reviews: more top space; header stays centered (no left mobile override).
+- Sitewide hats (`pickora-hats.css?v=2`): all page/section titles centered on every breakpoint.
+- Products: disclosure under Latest review guides (unchanged this pass).
+- About: left for later (restored previous layout; no redesign in this ship).
+
 ### 2026-08-14 — Unified page hats (Flesch 60–70)
 - Added shared `assets/css/pickora-hats.css` (`#2075d2` accent, Montserrat title + short dek).
 - **4 category hubs:** left hat with blue accent word in H1, **no blue-dot eyebrow**; short deks scored ~Flesch 60–70.
