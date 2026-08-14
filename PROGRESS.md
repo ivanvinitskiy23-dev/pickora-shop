@@ -1,6 +1,6 @@
 # Pickora.shop Refactoring Progress
 
-**Last calibrated:** 2026-08-14 (cross-hub product search + review rail)  
+**Last calibrated:** 2026-08-14 (review rail sizing + sitewide mobile fixes)  
 **Rule:** checkboxes reflect files on disk, not chat claims. A task stays `[ ]` until the artifact exists and is wired.
 
 ## Phase Status
@@ -95,6 +95,11 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-08-14 — Review rail sizing + sitewide mobile CSS audit
+- `/products/`: **Latest review guides** rail enlarged ~8% (chip 282px, img 62px, title 15px, tag 11px) for readability without bulk.
+- New `assets/css/pickora-mobile-fixes.css` linked on **20/20** HTML pages: search dropdown z-index above sticky header, footer column stack @781px, hub product card text wrap @767px, categories popup z-index + mobile product rows, nav overlay `100%` width (no `100vw` bleed).
+- `pickora-search.css`: dropdown z-index `10001` when open.
 
 ### 2026-08-14 — Products search: cross-hub index + minimal review rail
 - **Search fix:** `/products/` search now auto-fetches all 4 category hub pages (`/consumer-electronics/`, `/home-kitchen/`, `/fitness-health/`, `/pet-supplies/`) and indexes every `.pickora-final-card` (~20 products) plus local category cards. Hub URLs read from `#pk-category-grid` — new categories auto-included when added to grid.

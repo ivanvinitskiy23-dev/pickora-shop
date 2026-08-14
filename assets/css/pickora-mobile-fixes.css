@@ -1,0 +1,71 @@
+/* Pickora sitewide mobile layout fixes */
+
+/* Search stacking — override inline mobile-menu z-index:1 on content pages */
+body #pk-search-system,
+body #pk-search-system .pk-search-outer-container {
+  z-index: 9999 !important;
+}
+
+body #pk-search-system:focus-within,
+body #pk-search-system.is-open,
+body #pk-search-system:focus-within .pk-suggestions-dropdown,
+body #pk-search-system.is-open .pk-suggestions-dropdown {
+  z-index: 10001 !important;
+}
+
+/* Mobile nav overlay — avoid 100vw scrollbar bleed */
+@media (max-width: 767px) {
+  .wp-block-navigation__responsive-container.is-menu-open,
+  .wp-block-navigation__responsive-container.has-modal-open {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Footer columns stack on narrow viewports */
+@media (max-width: 781px) {
+  footer.site-footer .wp-block-columns {
+    flex-wrap: wrap !important;
+  }
+
+  footer.site-footer .wp-block-column {
+    flex-basis: 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* Category hub product cards */
+@media (max-width: 767px) {
+  .pickora-final-card {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .pickora-final-list-line {
+    flex-wrap: wrap !important;
+    align-items: flex-start !important;
+  }
+
+  .pickora-final-list-line > span:not(.pickora-final-badge-pro):not(.pickora-final-badge-con) {
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Categories board popup */
+.pickora-popup-overlay {
+  z-index: 1000010 !important;
+}
+
+@media (max-width: 767px) {
+  .pickora-product-item {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .pickora-product-link {
+    white-space: normal !important;
+    text-align: center !important;
+  }
+}

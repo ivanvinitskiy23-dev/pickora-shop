@@ -303,8 +303,8 @@
             img.className = 'pk-reviews-rail-chip-img';
             img.src = resolveUrl(imgEl.getAttribute('src'), source);
             img.alt = '';
-            img.width = 64;
-            img.height = 64;
+          img.width = 62;
+          img.height = 62;
             img.loading = 'lazy';
             img.decoding = 'async';
             chip.appendChild(img);
