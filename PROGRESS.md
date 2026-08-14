@@ -174,6 +174,10 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 - About: replaced stretched hero/cards with compact hat + How we work + dual CTA.
 - Hero candidates: local `_preview-hero-options.html` + WebP in `assets/img/hero/` (A/B/C pending user pick — not applied to home yet).
 
+### 2026-08-14 — Home hero Option C framing
+- Restored original **550px** hero height (not taller/wider).
+- Crop: Option C `object-position: 85% 58%` (raise + favor right).
+
 ### 2026-08-14 — Home Option D CTA + sharper hero
 - Browse products → Option D glass outline (fills blue on hover).
 - Hero photo: 2048 WebP `<img>` (was soft 1200 scaled bg), lighter overlay, removed scale/blur animation.
