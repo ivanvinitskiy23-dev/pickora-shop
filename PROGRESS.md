@@ -12,7 +12,7 @@ Owner decisions locked:
 | Block | Scope | Status |
 |---|---|---|
 | 1 | FTC copy: methodology, 100 hours, fake testimonials, products H1 | done |
-| 2 | `.nojekyll`, branded 404 on unknown URLs, physical `favicon.ico`, dead `/feed/` `/wp-json/` | pending |
+| 2 | `.nojekyll`, branded 404 on unknown URLs, physical `favicon.ico`, dead `/feed/` `/wp-json/` | done |
 | 3 | Hidden extra H1s, review HTML/FAQ, tap targets, `AI menu` labels, MailerLite thank-you a11y | pending |
 | 4 | JSON-LD (drop fake sameAs, FAQPage on home), sitemap lastmod, mobile CSS, cookie offset | pending |
 | 5 | Document the work in this file | pending |
@@ -54,7 +54,7 @@ Owner decisions locked:
 - [x] 2.2 Meta descriptions + canonical + Open Graph + Twitter Cards on **17/17** indexable pages (orphans excluded; `og:type=article` on 4 reviews)
 - [x] 2.3 JSON-LD Schema.org on **17/17** indexable pages (no `AggregateRating`; no `FAQPage` — reviews have no FAQ block)
 - [x] 2.4 Affiliate click + scroll tracking exists in `assets/js/pickora-analytics.js` (verify in GA4 DebugView)
-- [x] 2.5 Root `404.html` (about chrome + disclosure + footer) + `<link rel="icon" href="/favicon.ico">` on all 19 pages and 404. **Physical `favicon.ico` missing. GSC/Bing sitemap submit = owner.**
+- [x] 2.5 Root `404.html` (compact branded page so GitHub Pages serves it on unknown URLs) + physical `favicon.ico` + `.nojekyll`. GSC/Bing sitemap submit = owner.
 - [x] 2.6 `noindex, follow` + canonical → `/articles/` on `/author/ivanvinitskiy23gmail-com/` and `/category/uncategorized/`
 
 ### Phase 3: UX, Linking & Content
@@ -110,6 +110,12 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-08-15 — Block 2 GitHub Pages 404, favicon, dead feeds
+- Added `.nojekyll` so Jekyll cannot break `404.html` on `{{` in leftover WP JS.
+- Replaced oversized WP `404.html` with a compact branded page (unknown URLs must show Pickora, not GitHub).
+- Added physical `/favicon.ico` from the 32×32 site mark.
+- Removed `/feed/`, `/comments/feed/`, and `/wp-json/oembed` tags (all 404 on production).
 
 ### 2026-08-15 — Block 1 FTC / trust copy
 - Home FAQ: research formula, no monthly-rewrite claim; earbuds card no longer says 100 hours of testing.
