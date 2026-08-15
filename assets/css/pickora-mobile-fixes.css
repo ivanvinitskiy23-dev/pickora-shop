@@ -113,3 +113,42 @@ footer.site-footer .wp-block-navigation[aria-label="Legal"] a {
 html.pk-consent-open {
   padding-bottom: 110px;
 }
+
+/* Home hero: stay a full-bleed cover, even inside Elementor flex */
+.pickora-hero-section {
+  position: relative !important;
+  overflow: hidden !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+.pickora-hero-section .pickora-hero-bg {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: cover !important;
+  display: block !important;
+  z-index: 1 !important;
+}
+.pickora-hero-section .pickora-hero-content {
+  position: relative !important;
+  z-index: 3 !important;
+  animation: none !important;
+}
+@media (max-width: 1024px) {
+  .pickora-hero-section {
+    min-height: 520px !important;
+  }
+  .pickora-hero-section .pickora-hero-bg {
+    object-position: center 38% !important;
+  }
+}
+@media (max-width: 768px) {
+  .pickora-hero-section {
+    min-height: 70svh !important;
+    border-radius: 0 !important;
+    padding: 48px 20px !important;
+  }
+}
+

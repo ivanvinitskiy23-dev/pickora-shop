@@ -1,9 +1,7 @@
 /**
- * Pickora mobile/tablet nav — Variant C drawer helpers.
- * - Portal overlay to <body> (fixed escapes header/grid)
- * - Inject brand row (logo + close)
- * - Backdrop click + Escape to close
- * - html.pk-nav-open so burger stays hidden after portal
+ * Pickora mobile/tablet nav — Variant C drawer.
+ * Opens/closes without WordPress Interactivity (view.min.js).
+ * Portals overlay to <body>, injects brand row, Escape + backdrop close.
  */
 (function () {
   'use strict';
@@ -35,7 +33,9 @@
   }
 
   function syncHtmlFlag() {
-    document.documentElement.classList.toggle('pk-nav-open', anyOpen() && isMobileNav());
+    var open = anyOpen() && isMobileNav();
+    document.documentElement.classList.toggle('pk-nav-open', open);
+    document.documentElement.classList.toggle('has-modal-open', open);
   }
 
   function homeHref() {
@@ -95,13 +95,24 @@
     delete container.dataset.pkNavPortaled;
   }
 
+  function setOpen(container, open) {
+    if (!container) return;
+    container.classList.toggle('is-menu-open', open);
+    container.classList.toggle('has-modal-open', open);
+    var openBtn = document.querySelector('header.site-header .wp-block-navigation__responsive-container-open');
+    if (openBtn) {
+      openBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    syncContainer(container);
+  }
+
   function closeContainer(container) {
-    var btn = container.querySelector('.wp-block-navigation__responsive-container-close');
-    if (btn) btn.click();
+    setOpen(container, false);
   }
 
   function syncContainer(container) {
     if (!isMobileNav()) {
+      container.classList.remove('is-menu-open', 'has-modal-open');
       teardownBrand(container);
       restore(container);
       syncHtmlFlag();
@@ -127,7 +138,6 @@
     container.dataset.pkNavBackdropBound = 'true';
     container.addEventListener('click', function (e) {
       if (!isOpen(container) || !isMobileNav()) return;
-      // Click on dimmed backdrop (not inside the white drawer)
       if (e.target === container) {
         closeContainer(container);
       }
@@ -135,11 +145,14 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    var containers = document.querySelectorAll(
-      'header.site-header .wp-block-navigation__responsive-container'
-    );
+    var nav = document.querySelector('header.site-header .wp-block-navigation');
+    if (!nav) return;
 
-    containers.forEach(function (container) {
+    var container = nav.querySelector('.wp-block-navigation__responsive-container');
+    var openBtn = nav.querySelector('.wp-block-navigation__responsive-container-open');
+    var closeBtn = nav.querySelector('.wp-block-navigation__responsive-container-close');
+
+    if (container) {
       bindBackdrop(container);
       new MutationObserver(function () {
         syncContainer(container);
@@ -147,7 +160,25 @@
         attributes: true,
         attributeFilter: ['class']
       });
-    });
+    }
+
+    if (openBtn) {
+      openBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!isMobileNav() || !container) return;
+        setOpen(container, true);
+      });
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!container) return;
+        setOpen(container, false);
+      });
+    }
 
     syncAll();
 
