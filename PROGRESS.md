@@ -119,6 +119,7 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 - LCP: preload + mid-size srcset on products, hubs, and 4 reviews; swap `-scaled.webp` srcs for 768/1100 crops.
 - Restored Categories pin **Urban Explorer EDC** to the tall `-scaled.webp` (the 1100x450 crop was landscape and left a white gap).
 - Burger: `pickora-nav.js` now opens/closes the drawer (WP Interactivity was removed with Elementor JS). Hero cover `position:absolute` + `object-fit:cover` on mobile. CSS no longer deferred via `media=print` (that caused layout jumps). Hero entrance animation removed so first paint is stable.
+- Emergency: WP overlay menu was painting a full-screen white sheet (`.is-menu-open` + `background:#fff`). Overlay is now inert unless `html.pk-nav-open`; dropped `display:contents` on the header dialog.
 - SEO/a11y: disclosure link text “Affiliate disclosure”; contrast `#334155`; catalog card titles H2.
 
 ### 2026-08-15 — 404 restyle to match Pickora chrome

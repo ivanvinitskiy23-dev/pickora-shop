@@ -145,6 +145,11 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.wp-block-navigation__responsive-container').forEach(function (el) {
+      el.classList.remove('is-menu-open', 'has-modal-open');
+    });
+    document.documentElement.classList.remove('has-modal-open', 'pk-nav-open');
+
     var nav = document.querySelector('header.site-header .wp-block-navigation');
     if (!nav) return;
 

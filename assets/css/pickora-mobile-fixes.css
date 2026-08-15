@@ -110,8 +110,17 @@ footer.site-footer .wp-block-navigation[aria-label="Legal"] a {
   -webkit-line-clamp: unset;
 }
 
-html.pk-consent-open {
-  padding-bottom: 110px;
+.hostinger-ai-fade-up,
+.hostinger-elementor-aos {
+  opacity: 1 !important;
+}
+
+/* Never let WP nav overlay cover the page unless the drawer is open */
+html:not(.pk-nav-open) .wp-block-navigation__responsive-container {
+  position: static !important;
+  inset: auto !important;
+  background: transparent !important;
+  z-index: auto !important;
 }
 
 /* Home hero: stay a full-bleed cover, even inside Elementor flex */
