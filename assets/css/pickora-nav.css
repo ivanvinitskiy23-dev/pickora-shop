@@ -13,35 +13,6 @@
   --pk-nav-soft: #f1f5f9;
 }
 
-/* Kill WP's full-viewport white overlay unless we explicitly opened the drawer.
-   Without this, a stray .is-menu-open paints a blank white sheet over the site. */
-html:not(.pk-nav-open) .wp-block-navigation__responsive-container {
-  position: static !important;
-  inset: auto !important;
-  top: auto !important;
-  right: auto !important;
-  bottom: auto !important;
-  left: auto !important;
-  width: auto !important;
-  height: auto !important;
-  max-width: none !important;
-  background: transparent !important;
-  background-color: transparent !important;
-  z-index: auto !important;
-  overflow: visible !important;
-  display: block !important;
-  padding: 0 !important;
-  animation: none !important;
-}
-html:not(.pk-nav-open) .wp-block-navigation__responsive-close,
-html:not(.pk-nav-open) .wp-block-navigation__responsive-dialog {
-  display: block !important;
-  position: static !important;
-  width: auto !important;
-  height: auto !important;
-  max-width: none !important;
-}
-
 /* =========================================================
    CLOSED — mobile & tablet (≤991px)
    ========================================================= */
@@ -122,7 +93,9 @@ html:not(.pk-nav-open) .wp-block-navigation__responsive-dialog {
 
   /* Backdrop: full viewport, page remains slightly visible */
   html.pk-nav-open .wp-block-navigation__responsive-container.is-menu-open,
-  html.pk-nav-open .wp-block-navigation__responsive-container.has-modal-open {
+  html.pk-nav-open .wp-block-navigation__responsive-container.has-modal-open,
+  body > .wp-block-navigation__responsive-container.is-menu-open,
+  body > .wp-block-navigation__responsive-container.has-modal-open {
     position: fixed !important;
     inset: 0 !important;
     width: 100% !important;
@@ -161,7 +134,9 @@ html:not(.pk-nav-open) .wp-block-navigation__responsive-dialog {
 
   /* White drawer panel — fixed to the RIGHT on every page */
   html.pk-nav-open .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-close,
-  html.pk-nav-open .wp-block-navigation__responsive-container.has-modal-open .wp-block-navigation__responsive-close {
+  html.pk-nav-open .wp-block-navigation__responsive-container.has-modal-open .wp-block-navigation__responsive-close,
+  body > .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-close,
+  body > .wp-block-navigation__responsive-container.has-modal-open .wp-block-navigation__responsive-close {
     position: fixed !important;
     top: 0 !important;
     right: 0 !important;
@@ -439,8 +414,7 @@ footer .wp-block-navigation__responsive-container {
 
 footer .wp-block-navigation__responsive-close,
 footer .wp-block-navigation__responsive-dialog {
-  display: block !important;
-  position: static !important;
+  display: contents !important;
 }
 
 footer .wp-block-navigation__responsive-container-content,
@@ -479,10 +453,7 @@ footer .wp-block-navigation__container {
   header.site-header
     .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
     .wp-block-navigation__responsive-dialog {
-    display: block !important;
-    position: static !important;
-    width: auto !important;
-    height: auto !important;
+    display: contents !important;
   }
 
   header.site-header .wp-block-navigation__responsive-container-content {

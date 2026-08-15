@@ -15,8 +15,8 @@ body #pk-search-system.is-open .pk-suggestions-dropdown {
 
 /* Mobile nav overlay — avoid 100vw scrollbar bleed */
 @media (max-width: 767px) {
-  html.pk-nav-open .wp-block-navigation__responsive-container.is-menu-open,
-  html.pk-nav-open .wp-block-navigation__responsive-container.has-modal-open {
+  .wp-block-navigation__responsive-container.is-menu-open,
+  .wp-block-navigation__responsive-container.has-modal-open {
     width: 100% !important;
     max-width: 100% !important;
   }
@@ -110,54 +110,6 @@ footer.site-footer .wp-block-navigation[aria-label="Legal"] a {
   -webkit-line-clamp: unset;
 }
 
-.hostinger-ai-fade-up,
-.hostinger-elementor-aos {
-  opacity: 1 !important;
+html.pk-consent-open {
+  padding-bottom: 110px;
 }
-
-/* Never let WP nav overlay cover the page unless the drawer is open */
-html:not(.pk-nav-open) .wp-block-navigation__responsive-container {
-  position: static !important;
-  inset: auto !important;
-  background: transparent !important;
-  z-index: auto !important;
-}
-
-/* Home hero: stay a full-bleed cover, even inside Elementor flex */
-.pickora-hero-section {
-  position: relative !important;
-  overflow: hidden !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-.pickora-hero-section .pickora-hero-bg {
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  max-width: none !important;
-  object-fit: cover !important;
-  display: block !important;
-  z-index: 1 !important;
-}
-.pickora-hero-section .pickora-hero-content {
-  position: relative !important;
-  z-index: 3 !important;
-  animation: none !important;
-}
-@media (max-width: 1024px) {
-  .pickora-hero-section {
-    min-height: 520px !important;
-  }
-  .pickora-hero-section .pickora-hero-bg {
-    object-position: center 38% !important;
-  }
-}
-@media (max-width: 768px) {
-  .pickora-hero-section {
-    min-height: 70svh !important;
-    border-radius: 0 !important;
-    padding: 48px 20px !important;
-  }
-}
-

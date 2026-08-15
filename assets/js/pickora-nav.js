@@ -1,5 +1,9 @@
 /**
- * Pickora mobile/tablet nav — no MutationObserver, no resize storm.
+ * Pickora mobile/tablet nav — Variant C drawer helpers.
+ * - Portal overlay to <body> (fixed escapes header/grid)
+ * - Inject brand row (logo + close)
+ * - Backdrop click + Escape to close
+ * - html.pk-nav-open so burger stays hidden after portal
  */
 (function () {
   'use strict';
@@ -10,6 +14,30 @@
     return window.matchMedia(MQ).matches;
   }
 
+  function isOpen(container) {
+    return container.classList.contains('is-menu-open') ||
+      container.classList.contains('has-modal-open');
+  }
+
+  function headerContainers() {
+    return document.querySelectorAll(
+      'header.site-header .wp-block-navigation__responsive-container, ' +
+      'body > .wp-block-navigation__responsive-container[data-pk-nav-portaled="true"]'
+    );
+  }
+
+  function anyOpen() {
+    var found = false;
+    headerContainers().forEach(function (c) {
+      if (isOpen(c)) found = true;
+    });
+    return found;
+  }
+
+  function syncHtmlFlag() {
+    document.documentElement.classList.toggle('pk-nav-open', anyOpen() && isMobileNav());
+  }
+
   function homeHref() {
     var a = document.querySelector('header.site-header .wp-block-site-title a, header.site-header .hostinger-ai-site-title a');
     return (a && a.getAttribute('href')) || '/';
@@ -18,7 +46,9 @@
   function ensureBrand(container) {
     var dialog = container.querySelector('.wp-block-navigation__responsive-dialog');
     if (!dialog) return;
+
     var closeBtn = container.querySelector('.wp-block-navigation__responsive-container-close');
+
     var brand = dialog.querySelector('.pk-nav-drawer-brand');
     if (!brand) {
       brand = document.createElement('div');
@@ -26,84 +56,108 @@
       brand.innerHTML = '<a class="pk-nav-drawer-logo" href="' + homeHref() + '">Pickora</a>';
       dialog.insertBefore(brand, dialog.firstChild);
     }
+
     if (closeBtn && closeBtn.parentNode !== brand) {
       brand.appendChild(closeBtn);
     }
   }
 
-  function setOpen(container, openBtn, open) {
-    if (!container) return;
-    if (open && !isMobileNav()) return;
-
-    container.classList.toggle('is-menu-open', open);
-    container.classList.toggle('has-modal-open', open);
-    document.documentElement.classList.toggle('pk-nav-open', open);
-    document.documentElement.classList.toggle('has-modal-open', open);
-
-    if (openBtn) openBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-
-    if (open) {
-      if (container.dataset.pkNavPortaled !== 'true') {
-        container.__pkNavParent = container.parentNode;
-        container.__pkNavNext = container.nextSibling;
-        document.body.appendChild(container);
-        container.dataset.pkNavPortaled = 'true';
-      }
-      ensureBrand(container);
-    } else if (container.dataset.pkNavPortaled === 'true') {
-      var parent = container.__pkNavParent;
-      if (parent) {
-        if (container.__pkNavNext && container.__pkNavNext.parentNode === parent) {
-          parent.insertBefore(container, container.__pkNavNext);
-        } else {
-          parent.appendChild(container);
-        }
-      }
-      delete container.dataset.pkNavPortaled;
+  function teardownBrand(container) {
+    var dialog = container.querySelector('.wp-block-navigation__responsive-dialog');
+    if (!dialog) return;
+    var brand = dialog.querySelector('.pk-nav-drawer-brand');
+    if (!brand) return;
+    var closeBtn = brand.querySelector('.wp-block-navigation__responsive-container-close');
+    if (closeBtn) {
+      dialog.insertBefore(closeBtn, dialog.firstChild);
     }
+    brand.remove();
+  }
+
+  function portal(container) {
+    if (!container || container.dataset.pkNavPortaled === 'true') return;
+    container.__pkNavParent = container.parentNode;
+    container.__pkNavNext = container.nextSibling;
+    document.body.appendChild(container);
+    container.dataset.pkNavPortaled = 'true';
+  }
+
+  function restore(container) {
+    if (!container || container.dataset.pkNavPortaled !== 'true') return;
+    var parent = container.__pkNavParent;
+    if (parent) {
+      if (container.__pkNavNext && container.__pkNavNext.parentNode === parent) {
+        parent.insertBefore(container, container.__pkNavNext);
+      } else {
+        parent.appendChild(container);
+      }
+    }
+    delete container.dataset.pkNavPortaled;
+  }
+
+  function closeContainer(container) {
+    var btn = container.querySelector('.wp-block-navigation__responsive-container-close');
+    if (btn) btn.click();
+  }
+
+  function syncContainer(container) {
+    if (!isMobileNav()) {
+      teardownBrand(container);
+      restore(container);
+      syncHtmlFlag();
+      return;
+    }
+    if (isOpen(container)) {
+      portal(container);
+      ensureBrand(container);
+    } else {
+      teardownBrand(container);
+      restore(container);
+    }
+    syncHtmlFlag();
+  }
+
+  function syncAll() {
+    headerContainers().forEach(syncContainer);
+    syncHtmlFlag();
+  }
+
+  function bindBackdrop(container) {
+    if (container.dataset.pkNavBackdropBound === 'true') return;
+    container.dataset.pkNavBackdropBound = 'true';
+    container.addEventListener('click', function (e) {
+      if (!isOpen(container) || !isMobileNav()) return;
+      // Click on dimmed backdrop (not inside the white drawer)
+      if (e.target === container) {
+        closeContainer(container);
+      }
+    });
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    var nav = document.querySelector('header.site-header .wp-block-navigation');
-    if (!nav) return;
+    var containers = document.querySelectorAll(
+      'header.site-header .wp-block-navigation__responsive-container'
+    );
 
-    var container = nav.querySelector('.wp-block-navigation__responsive-container');
-    var openBtn = nav.querySelector('.wp-block-navigation__responsive-container-open');
-    var closeBtn = nav.querySelector('.wp-block-navigation__responsive-container-close');
-    if (!container) return;
-
-    container.classList.remove('is-menu-open', 'has-modal-open');
-    document.documentElement.classList.remove('pk-nav-open', 'has-modal-open');
-
-    if (openBtn) {
-      openBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        setOpen(container, openBtn, true);
+    containers.forEach(function (container) {
+      bindBackdrop(container);
+      new MutationObserver(function () {
+        syncContainer(container);
+      }).observe(container, {
+        attributes: true,
+        attributeFilter: ['class']
       });
-    }
-
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        setOpen(container, openBtn, false);
-      });
-    }
-
-    container.addEventListener('click', function (e) {
-      if (e.target === container) setOpen(container, openBtn, false);
     });
+
+    syncAll();
+
+    window.addEventListener('resize', syncAll);
 
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') setOpen(container, openBtn, false);
+      if (e.key !== 'Escape' || !anyOpen()) return;
+      headerContainers().forEach(function (c) {
+        if (isOpen(c)) closeContainer(c);
+      });
     });
-
-    var mq = window.matchMedia(MQ);
-    function onMq(e) {
-      if (!e.matches) setOpen(container, openBtn, false);
-    }
-    if (mq.addEventListener) mq.addEventListener('change', onMq);
-    else if (mq.addListener) mq.addListener(onMq);
   });
 })();

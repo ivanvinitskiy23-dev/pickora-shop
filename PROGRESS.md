@@ -1,6 +1,6 @@
 # Pickora.shop Refactoring Progress
 
-**Last calibrated:** 2026-08-15 (blank-screen hang: nav JS + Google Fonts + speculationrules)  
+**Last calibrated:** 2026-08-15 (audit v2 implementation)  
 **Rule:** checkboxes reflect files on disk, not chat claims. A task stays `[ ]` until the artifact exists and is wired.
 
 ## Implementation plan (2026-08-15 → production 10/10)
@@ -16,7 +16,6 @@ Owner decisions locked:
 | 3 | Hidden extra H1s, review HTML/FAQ, tap targets, `AI menu` labels, MailerLite thank-you a11y | done |
 | 4 | JSON-LD (drop fake sameAs, FAQPage on home), sitemap lastmod, mobile CSS, cookie offset | done |
 | 5 | Document the work in this file | done |
-| 6 | PageSpeed: slim fonts, drop GSI/Elementor JS, LCP srcset, disclosure a11y | done |
 | Later | New articles, real social URLs, paid traffic, Lighthouse owner remeasure | parked |
 
 ## Phase Status
@@ -48,7 +47,7 @@ Owner decisions locked:
 - [x] 1.4 WCAG 44×44 tap-target CSS on all pages
 - [x] 1.5 **Mobile nav overlay QA:** premium fullscreen menu verified at 390 / 768 / 1280 (logo+burger closed; full-viewport overlay open; desktop horizontal nav). Legal navy / articles title / categories gap still need separate pass if reported again
 - [x] 1.6 Uploads recompressed: **0** files >250 KB (was 2 ≥500 KB + dozens 300–500 KB)
-- [ ] 1.7 Owner remeasure LCP on `/products/` after 2026-08-15 PageSpeed pass (lab was 8.1s / score 63)
+- [ ] 1.7 Confirm LCP on `/products/` (original audit: 23s / 10.45MB) with a fresh throttled run — not re-measured this session
 
 ### Phase 2: SEO & Analytics floor (NEXT — do this before content scale)
 - [x] 2.1 Create `robots.txt` and `sitemap.xml` (17 indexable URLs; author + uncategorized omitted)
@@ -112,21 +111,8 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 
 ## Change Log
 
-### 2026-08-15 — Blank charcoal screen / infinite tab spinner
-- `pickora-nav.js` no longer uses MutationObserver or resize `syncAll` (that looped with leftover WP menu classes and froze the tab).
-- Overlay CSS only paints when `html.pk-nav-open` (removed `body > .is-menu-open` fallback that covered the page in charcoal).
-- Removed render-blocking Google Fonts CSS (local `@font-face` remains). Removed WP Interactivity importmap/modulepreload and `speculationrules` prefetch of `/*`.
-- MailerLite `webforms.min.js` is `defer` so a blocked CDN cannot hold the document open. Cache-bust nav `?v=8`.
-
-### 2026-08-15 — PageSpeed pass (mobile /products/ 63)
-- Slim Google Fonts to Montserrat 600–800 + Open Sans 400–700; drop Roboto / Roboto Slab full families.
-- Remove Site Kit Google Sign-In, Elementor frontend JS, jQuery/jQuery UI, Hostinger AOS scripts, wp-emoji loader, dead wp-json/xmlrpc tags.
-- Defer Elementor/theme CSS (`media=print` + onload); keep fade elements visible without AOS.
-- LCP: preload + mid-size srcset on products, hubs, and 4 reviews; swap `-scaled.webp` srcs for 768/1100 crops.
-- Restored Categories pin **Urban Explorer EDC** to the tall `-scaled.webp` (the 1100x450 crop was landscape and left a white gap).
-- Burger: `pickora-nav.js` now opens/closes the drawer (WP Interactivity was removed with Elementor JS). Hero cover `position:absolute` + `object-fit:cover` on mobile. CSS no longer deferred via `media=print` (that caused layout jumps). Hero entrance animation removed so first paint is stable.
-- Emergency: WP overlay menu was painting a full-screen white sheet (`.is-menu-open` + `background:#fff`). Overlay is now inert unless `html.pk-nav-open`; dropped `display:contents` on the header dialog.
-- SEO/a11y: disclosure link text “Affiliate disclosure”; contrast `#334155`; catalog card titles H2.
+### 2026-08-15 — Roll back Lighthouse/PageSpeed breakage
+- Restored site files to commit `71381b8` (last good state before the LCP/fonts/JS pass). Live hang came from those follow-up patches; do not re-apply them until the homepage paints and the tab spinner stops.
 
 ### 2026-08-15 — 404 restyle to match Pickora chrome
 - Replaced the generic compact 404 with sticky header, Montserrat hat, collection cards, disclosure, and navy footer (same tokens as the live site). Kept it static so GitHub Pages still serves it on unknown URLs.
