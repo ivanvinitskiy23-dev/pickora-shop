@@ -1,7 +1,22 @@
 # Pickora.shop Refactoring Progress
 
-**Last calibrated:** 2026-08-14 (unified page hats)  
+**Last calibrated:** 2026-08-15 (audit v2 implementation)  
 **Rule:** checkboxes reflect files on disk, not chat claims. A task stays `[ ]` until the artifact exists and is wired.
+
+## Implementation plan (2026-08-15 → production 10/10)
+
+Owner decisions locked:
+- Footer social URLs stay as placeholders until final live links are provided. Do not hide icons. Do not invent `sameAs` profiles.
+- New articles / content scale stay later. Fix the existing site (trust, SEO floor, 404, a11y, mobile) first.
+
+| Block | Scope | Status |
+|---|---|---|
+| 1 | FTC copy: methodology, 100 hours, fake testimonials, products H1 | done |
+| 2 | `.nojekyll`, branded 404 on unknown URLs, physical `favicon.ico`, dead `/feed/` `/wp-json/` | pending |
+| 3 | Hidden extra H1s, review HTML/FAQ, tap targets, `AI menu` labels, MailerLite thank-you a11y | pending |
+| 4 | JSON-LD (drop fake sameAs, FAQPage on home), sitemap lastmod, mobile CSS, cookie offset | pending |
+| 5 | Document the work in this file | pending |
+| Later | New articles, real social URLs, paid traffic, Lighthouse owner remeasure | parked |
 
 ## Phase Status
 - [x] Phase 0: Legal Protection & Amazon Compliance (core 0.1–0.4, 0.7 footer) — 0.5 FTC / 0.6 social / 0.7 header embed still open
@@ -21,7 +36,7 @@
 - [x] 0.2 `.pk-disclosure-footer` before `<footer>` on **19/19** pages
 - [x] 0.3 Privacy Policy, Affiliate Disclosure, Terms, Contact pages exist
 - [x] 0.4 Cookie banner + Consent Mode v2 (`pickora-consent.js`) + GA4 `G-Q4SCHBR4QM` + `pickora-analytics.js` (`affiliate_click`) on **19/19**
-- [ ] 0.5 FTC residual: soften unproven claims (`100 hours of testing`, named testimonials like `Marcus V.`)
+- [x] 0.5 FTC residual: sitewide research formula; dropped `100 hours of testing`; removed fake Verified Buyer marquee on `/products/` and named quotes on `/about/`
 - [ ] 0.6 Replace placeholder social URLs (`facebook.com/`, `instagram.com/`, `twitter.com/`, `tiktok.com/`) or hide icons
 - [x] 0.7 MailerLite footer: native HTML/CSS/JS form `#mlb2-44833402` + dark-footer overrides on **20/20** HTML; Hostinger Reach removed; Universal script still in `<head>`. Header embed optional/pending.
 
@@ -85,8 +100,8 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 2. ~~**2.2** meta + OG on 4 review articles, then remaining pages~~ **done**  
 3. ~~**2.3** JSON-LD on 4 reviews + Organization on home~~ **done**  
 4. ~~**2.5–2.6** 404.html + noindex orphans~~ **done** (GSC submit = owner)  
-5. **0.6 / 3.5** hide or replace footer social placeholders (`facebook.com/` etc.)  
-6. **0.5** FTC: drop `100 hours of testing` + `Marcus V.`  
+5. **0.6 / 3.5** social URLs — **parked** until owner supplies live profile links (stubs stay)  
+6. ~~**0.5** FTC: drop `100 hours of testing` + `Marcus V.`~~ **done 2026-08-15**  
 7. **1.5** freeze visual QA (phone 390 / tablet 768 / desktop 1280)  
 8. **1.7** throttled Lighthouse on `/products/` + 4 reviews  
 9. ~~**0.7** replace Hostinger Reach footer form with MailerLite embed~~ **done** (header embed optional); owner uploads `favicon.ico` + submits sitemap  
@@ -95,6 +110,13 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-08-15 — Block 1 FTC / trust copy
+- Home FAQ: research formula, no monthly-rewrite claim; earbuds card no longer says 100 hours of testing.
+- `/products/`: H1 “Collections by category”; removed fake Verified Buyer marquee; shorter card blurbs.
+- `/about/`: fake named quotes replaced with how-we-write list.
+- Affiliate disclosure: research-only, no implied lab.
+- Air fryers dek + methodology paragraph aligned with research formula.
 
 ### 2026-08-14 — Compact cookie banner + drawer always right
 - Cookie `#pk-consent`: removed `flex:1 1 320px` (caused huge empty blue block on phone/tablet); compact bar ≤991px (~94px tall), side-by-side Reject/Accept.
