@@ -4,68 +4,250 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, follow">
-<title>Page not found – Pickora</title>
+<title>404: Page Not Found – Pickora</title>
 <link rel="canonical" href="https://pickora.shop/">
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-32x32.webp" sizes="32x32">
 <meta name="description" content="This Pickora page is missing. Head home, read the latest reviews, or browse categories.">
+<meta property="og:title" content="404: Page Not Found – Pickora">
+<meta property="og:site_name" content="Pickora">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:600,700,800&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&amp;display=swap">
 <style>
-  *,*::before,*::after{box-sizing:border-box}
-  html,body{margin:0;max-width:100%;overflow-x:clip}
-  body{
-    min-height:100vh;display:flex;flex-direction:column;
-    font:18px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-    color:#15223B;background:#f6f8fb;
-  }
-  header{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:16px 20px;background:#fff;border-bottom:1px solid #e2e8f2;
-  }
-  .logo{color:#2075d2;font-weight:800;text-decoration:none;font-size:22px}
-  nav{display:flex;flex-wrap:wrap;gap:8px}
-  nav a{
-    color:#15223B;text-decoration:none;min-height:44px;padding:10px 12px;
-    display:inline-flex;align-items:center;border-radius:8px;
-  }
-  nav a:hover{background:#eef3fa;color:#2075d2}
-  main{flex:1;max-width:640px;margin:0 auto;padding:64px 20px;text-align:center}
-  h1{font-size:clamp(28px,5vw,40px);margin:0 0 12px;letter-spacing:-.03em}
-  p{color:#475569;margin:0 0 28px}
-  .actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
-  .btn{
-    min-height:44px;padding:12px 20px;border-radius:999px;text-decoration:none;
-    display:inline-flex;align-items:center;font-weight:700;
-  }
-  .btn-main{background:#2075d2;color:#fff}
-  .btn-ghost{border:1px solid #cbd5e1;color:#15223B;background:#fff}
-  footer{
-    padding:20px;text-align:center;font-size:14px;color:#64748b;
-    background:#15223B;color:#cbd5e1;
-  }
-  footer a{color:#6EC1E4}
+@font-face{font-family:Montserrat;font-style:normal;font-weight:400;font-display:swap;src:url("/wp-content/themes/hostinger-ai-theme/assets/fonts/Montserrat-Regular.ttf") format("truetype")}
+@font-face{font-family:"Open Sans";font-style:normal;font-weight:400;font-display:swap;src:url("/wp-content/themes/hostinger-ai-theme/assets/fonts/OpenSans-Variable.ttf") format("truetype")}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;max-width:100%;overflow-x:clip;background:#fff;color:#15223B}
+body{min-height:100vh;display:flex;flex-direction:column;font-family:"Open Sans",system-ui,sans-serif;line-height:1.6}
+a{color:#2075d2}
+.site-header{
+  position:sticky;top:0;z-index:10000;background:#fff;
+  min-height:72px;box-shadow:0 1px 0 rgba(15,23,42,.06)
+}
+.header-inner{
+  max-width:1140px;margin:0 auto;padding:16px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:24px
+}
+.site-title{
+  font-family:Montserrat,sans-serif;font-weight:700;font-size:22px;
+  color:#2075d2;text-decoration:none;letter-spacing:-.02em
+}
+.nav-desktop{display:flex;align-items:center;gap:8px;list-style:none;margin:0;padding:0}
+.nav-desktop a{
+  display:inline-flex;align-items:center;min-height:44px;padding:8px 12px;
+  color:#15223B;text-decoration:none;font-size:15px;font-weight:600
+}
+.nav-desktop a:hover{color:#2075d2}
+.burger{
+  display:none;width:44px;height:44px;border:0;background:transparent;cursor:pointer;padding:10px
+}
+.burger span,.burger span::before,.burger span::after{
+  display:block;width:18px;height:1.5px;background:#15223B;position:relative
+}
+.burger span::before,.burger span::after{content:"";position:absolute;left:0}
+.burger span::before{top:-6px}
+.burger span::after{top:6px}
+.drawer{
+  display:none;position:fixed;inset:0;z-index:1000001;background:rgba(15,23,42,.42)
+}
+.drawer.open{display:flex;justify-content:flex-end}
+.drawer-panel{
+  width:min(320px,86vw);height:100%;background:#fff;padding:20px 22px;
+  box-shadow:-12px 0 40px rgba(15,23,42,.18)
+}
+.drawer-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
+.drawer-close{width:44px;height:44px;border:0;background:transparent;font-size:28px;cursor:pointer;color:#15223B}
+.drawer nav a{
+  display:flex;align-items:center;min-height:48px;padding:8px 4px;
+  color:#0f172a;text-decoration:none;font-size:17px;font-weight:600;border-bottom:1px solid #e8eef5
+}
+main{flex:1}
+.hat{max-width:760px;margin:48px auto 8px;padding:32px 24px 8px;text-align:center}
+.hat-eye{
+  display:inline-flex;align-items:center;gap:8px;margin:0 0 14px;
+  font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:#2075d2
+}
+.hat-dot{width:8px;height:8px;border-radius:50%;background:#2075d2}
+.hat h1{
+  font-family:Montserrat,sans-serif;font-size:clamp(32px,4.6vw,52px);font-weight:800;
+  letter-spacing:-.03em;line-height:1.12;color:#15223B;margin:0 0 16px
+}
+.hat h1 span{color:#2075d2}
+.hat p{margin:0 auto 28px;max-width:560px;font-size:17px;line-height:1.65;color:#475569}
+.actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:48px;padding:12px 24px;border-radius:12px;text-decoration:none;
+  font-family:Montserrat,sans-serif;font-weight:700;font-size:15px
+}
+.btn-main{background:#2075d2;color:#fff !important;box-shadow:0 8px 22px rgba(32,117,210,.28)}
+.btn-main:hover{background:#1a63b3}
+.btn-ghost{background:#fff;color:#15223B !important;border:1.5px solid #d6dee8}
+.btn-ghost:hover{border-color:#2075d2;color:#2075d2 !important}
+.cards{
+  max-width:1140px;margin:36px auto 64px;padding:0 24px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:20px
+}
+.card{
+  display:block;text-decoration:none;color:inherit;border:1px solid #e8eef5;
+  border-radius:16px;overflow:hidden;background:#fff;
+  box-shadow:0 8px 24px rgba(15,23,42,.05)
+}
+.card img{width:100%;height:140px;object-fit:cover;display:block}
+.card-body{padding:16px 16px 18px}
+.card-tag{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#2075d2}
+.card h2{font-family:Montserrat,sans-serif;font-size:18px;margin:6px 0 0;color:#15223B}
+.pk-disclosure-footer{
+  max-width:1140px;width:100%;margin:20px auto 32px;padding:0 20px;
+  text-align:center;color:#64748b;font-size:13px;line-height:1.5
+}
+.pk-disclosure-footer a{color:#2075d2}
+.site-footer{background:#15223B;color:#fff;padding:56px 24px 28px;margin-top:auto}
+.footer-grid{
+  max-width:1140px;margin:0 auto;display:grid;
+  grid-template-columns:repeat(4,1fr);gap:32px
+}
+.site-footer h3{font-family:Montserrat,sans-serif;font-size:18px;margin:0 0 16px;font-weight:700}
+.site-footer a,.site-footer p{color:#fff;text-decoration:none;font-size:15px}
+.site-footer ul{list-style:none;margin:0;padding:0}
+.site-footer li{margin:0 0 10px}
+.socials{display:flex;gap:8px}
+.socials a{
+  width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;
+  color:#fff
+}
+.socials svg{width:22px;height:22px;fill:currentColor}
+.footer-bottom{
+  max-width:1140px;margin:40px auto 0;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);
+  display:flex;flex-wrap:wrap;justify-content:center;gap:10px 16px;text-align:center
+}
+.footer-bottom a{color:#9ec9f0;min-height:44px;display:inline-flex;align-items:center}
+.footer-bottom p{margin:0;color:#94a3b8;font-size:13px;width:100%}
+@media (max-width:991px){
+  .nav-desktop{display:none}
+  .burger{display:inline-flex;align-items:center;justify-content:center}
+  .cards{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:640px){
+  .cards,.footer-grid{grid-template-columns:1fr}
+  .hat{padding:24px 20px 4px;margin-top:12px}
+}
 </style>
 </head>
 <body>
-<header>
-  <a class="logo" href="/">Pickora</a>
-  <nav aria-label="Primary">
-    <a href="/">Home</a>
-    <a href="/articles/">Articles</a>
-    <a href="/categories/">Categories</a>
-    <a href="/products/">Products</a>
-  </nav>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-title" href="https://pickora.shop/">Pickora</a>
+    <nav aria-label="Primary">
+      <ul class="nav-desktop">
+        <li><a href="https://pickora.shop/">Home</a></li>
+        <li><a href="https://pickora.shop/products/">Products</a></li>
+        <li><a href="https://pickora.shop/articles/">Articles</a></li>
+        <li><a href="https://pickora.shop/categories/">Categories</a></li>
+        <li><a href="https://pickora.shop/about/">About</a></li>
+      </ul>
+    </nav>
+    <button class="burger" type="button" aria-label="Open menu" id="pk-open"><span></span></button>
+  </div>
 </header>
-<main>
-  <h1>This page is missing</h1>
-  <p>The review may have moved. Try Home, Articles, or Categories to keep shopping with honest guides.</p>
-  <div class="actions">
-    <a class="btn btn-main" href="/">Back home</a>
-    <a class="btn btn-ghost" href="/articles/">Latest reviews</a>
-    <a class="btn btn-ghost" href="/categories/">Browse categories</a>
+<div class="drawer" id="pk-drawer">
+  <div class="drawer-panel">
+    <div class="drawer-top">
+      <a class="site-title" href="https://pickora.shop/">Pickora</a>
+      <button class="drawer-close" type="button" aria-label="Close menu" id="pk-close">&times;</button>
+    </div>
+    <nav>
+      <a href="https://pickora.shop/">Home</a>
+      <a href="https://pickora.shop/products/">Products</a>
+      <a href="https://pickora.shop/articles/">Articles</a>
+      <a href="https://pickora.shop/categories/">Categories</a>
+      <a href="https://pickora.shop/about/">About</a>
+    </nav>
+  </div>
+</div>
+<main id="content">
+  <section class="hat">
+    <div class="hat-eye"><span class="hat-dot"></span> Error 404</div>
+    <h1>This page is <span>missing</span></h1>
+    <p>The review may have moved. Use the menu or jump into a collection below — same Pickora guides, no dead ends.</p>
+    <div class="actions">
+      <a class="btn btn-main" href="https://pickora.shop/">Back home <span aria-hidden="true">→</span></a>
+      <a class="btn btn-ghost" href="https://pickora.shop/articles/">Latest reviews</a>
+      <a class="btn btn-ghost" href="https://pickora.shop/categories/">Browse categories</a>
+    </div>
+  </section>
+  <div class="cards">
+    <a class="card" href="https://pickora.shop/products/">
+      <img src="https://pickora.shop/wp-content/uploads/2026/06/Tech_gadgets_on_desk_202606231445-1100x450.webp" alt="" width="600" height="140">
+      <div class="card-body"><span class="card-tag">Catalog</span><h2>Products</h2></div>
+    </a>
+    <a class="card" href="https://pickora.shop/articles/">
+      <img src="https://pickora.shop/wp-content/uploads/2026/06/Ultra_realistic_commercial_food_photography_202606141721-1100x450.webp" alt="" width="600" height="140">
+      <div class="card-body"><span class="card-tag">Guides</span><h2>Articles</h2></div>
+    </a>
+    <a class="card" href="https://pickora.shop/home-kitchen/">
+      <img src="https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_modern_202606231450-1100x450.webp" alt="" width="600" height="140">
+      <div class="card-body"><span class="card-tag">Hub</span><h2>Home &amp; Kitchen</h2></div>
+    </a>
+    <a class="card" href="https://pickora.shop/about/">
+      <img src="https://pickora.shop/wp-content/uploads/2026/06/A_premium_commercial_lifestyle_product_202606301559-hero.webp" alt="" width="600" height="140">
+      <div class="card-body"><span class="card-tag">Brand</span><h2>About Pickora</h2></div>
+    </a>
   </div>
 </main>
-<footer>
-  Pickora is reader-supported. As an Amazon Associate we earn from qualifying purchases.
-  <a href="/affiliate-disclosure/">Learn more</a>
+<div class="pk-disclosure-footer"><p>Pickora is reader-supported. When you buy through links on our site, we may earn an affiliate commission at no extra cost to you. As an Amazon Associate we earn from qualifying purchases. <a href="/affiliate-disclosure/">Learn more</a>.</p></div>
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h3>Menu</h3>
+      <ul>
+        <li><a href="https://pickora.shop/">Home</a></li>
+        <li><a href="https://pickora.shop/products/">Products</a></li>
+        <li><a href="https://pickora.shop/articles/">Articles</a></li>
+        <li><a href="https://pickora.shop/categories/">Categories</a></li>
+        <li><a href="https://pickora.shop/about/">About</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Contacts</h3>
+      <p>Pickora@proton.me</p>
+    </div>
+    <div>
+      <h3>Socials</h3>
+      <div class="socials">
+        <a href="https://facebook.com/" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.5 2 2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12c0-5.5-4.5-10-10-10z"></path></svg></a>
+        <a href="https://instagram.com/" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4zm5 4.2A4.8 4.8 0 1 0 16.8 12 4.8 4.8 0 0 0 12 7.2zm6.1-.9a1.1 1.1 0 1 0 1.1 1.1 1.1 1.1 0 0 0-1.1-1.1zM12 9.2A2.8 2.8 0 1 1 9.2 12 2.8 2.8 0 0 1 12 9.2z"></path></svg></a>
+        <a href="https://twitter.com/" aria-label="X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.3 10.5 20.4 3h-1.7l-6.2 6.6L7.6 3H3.2l7.5 10.2L3.2 21h1.7l6.5-7 5.2 7h4.4zm-2.3 2.5-.8-1L5.3 4.2h2.6l4.1 5.8.8 1 6.8 9.7h-2.6z"></path></svg></a>
+        <a href="https://tiktok.com/" aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h2.2a5.6 5.6 0 0 0 3.8 3.5V9a8 8 0 0 1-3.8-1.1v6.3A6.7 6.7 0 1 1 9.4 8.1v2.5a4.2 4.2 0 1 0 3.1 4V3z"></path></svg></a>
+      </div>
+    </div>
+    <div>
+      <h3>Keep reading</h3>
+      <p><a href="https://pickora.shop/articles/">Open the latest buying guides →</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <a href="/privacy-policy/">Privacy Policy</a>
+    <a href="/affiliate-disclosure/">Affiliate Disclosure</a>
+    <a href="/terms-of-service/">Terms of Service</a>
+    <a href="/contact/">Contact</a>
+    <p>© 2026 Pickora Shop. All rights reserved.</p>
+  </div>
 </footer>
+<script src="/assets/js/pickora-consent.js?v=3" defer></script>
+<script>
+(function () {
+  var drawer = document.getElementById("pk-drawer");
+  var openBtn = document.getElementById("pk-open");
+  var closeBtn = document.getElementById("pk-close");
+  function openMenu() { drawer.className = "drawer open"; }
+  function closeMenu() { drawer.className = "drawer"; }
+  openBtn.addEventListener("click", openMenu);
+  closeBtn.addEventListener("click", closeMenu);
+  drawer.addEventListener("click", function (e) { if (e.target === drawer) closeMenu(); });
+})();
+</script>
 </body>
 </html>

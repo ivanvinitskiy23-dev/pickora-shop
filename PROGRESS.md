@@ -54,7 +54,7 @@ Owner decisions locked:
 - [x] 2.2 Meta descriptions + canonical + Open Graph + Twitter Cards on **17/17** indexable pages (orphans excluded; `og:type=article` on 4 reviews)
 - [x] 2.3 JSON-LD Schema.org on **17/17** indexable pages (no `AggregateRating`; no `FAQPage` — reviews have no FAQ block)
 - [x] 2.4 Affiliate click + scroll tracking exists in `assets/js/pickora-analytics.js` (verify in GA4 DebugView)
-- [x] 2.5 Root `404.html` (compact branded page so GitHub Pages serves it on unknown URLs) + physical `favicon.ico` + `.nojekyll`. GSC/Bing sitemap submit = owner.
+- [x] 2.5 Root `404.html` restyled to match site chrome (sticky header, hats, navy footer, disclosure, social stubs). Physical `favicon.ico` + `.nojekyll`. GSC submit = owner.
 - [x] 2.6 `noindex, follow` + canonical → `/articles/` on `/author/ivanvinitskiy23gmail-com/` and `/category/uncategorized/`
 
 ### Phase 3: UX, Linking & Content
@@ -110,6 +110,9 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-08-15 — 404 restyle to match Pickora chrome
+- Replaced the generic compact 404 with sticky header, Montserrat hat, collection cards, disclosure, and navy footer (same tokens as the live site). Kept it static so GitHub Pages still serves it on unknown URLs.
 
 ### 2026-08-15 — Block 4 sitemap, cookie offset, tap CSS
 - `sitemap.xml` lastmod → 2026-08-15.
