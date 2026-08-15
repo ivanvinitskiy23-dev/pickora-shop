@@ -122,9 +122,7 @@ html:not(.pk-nav-open) .wp-block-navigation__responsive-dialog {
 
   /* Backdrop: full viewport, page remains slightly visible */
   html.pk-nav-open .wp-block-navigation__responsive-container.is-menu-open,
-  html.pk-nav-open .wp-block-navigation__responsive-container.has-modal-open,
-  body > .wp-block-navigation__responsive-container.is-menu-open,
-  body > .wp-block-navigation__responsive-container.has-modal-open {
+  html.pk-nav-open .wp-block-navigation__responsive-container.has-modal-open {
     position: fixed !important;
     inset: 0 !important;
     width: 100% !important;
@@ -163,9 +161,7 @@ html:not(.pk-nav-open) .wp-block-navigation__responsive-dialog {
 
   /* White drawer panel — fixed to the RIGHT on every page */
   html.pk-nav-open .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-close,
-  html.pk-nav-open .wp-block-navigation__responsive-container.has-modal-open .wp-block-navigation__responsive-close,
-  body > .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-close,
-  body > .wp-block-navigation__responsive-container.has-modal-open .wp-block-navigation__responsive-close {
+  html.pk-nav-open .wp-block-navigation__responsive-container.has-modal-open .wp-block-navigation__responsive-close {
     position: fixed !important;
     top: 0 !important;
     right: 0 !important;

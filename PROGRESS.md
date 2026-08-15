@@ -1,6 +1,6 @@
 # Pickora.shop Refactoring Progress
 
-**Last calibrated:** 2026-08-15 (audit v2 implementation)  
+**Last calibrated:** 2026-08-15 (blank-screen hang: nav JS + Google Fonts + speculationrules)  
 **Rule:** checkboxes reflect files on disk, not chat claims. A task stays `[ ]` until the artifact exists and is wired.
 
 ## Implementation plan (2026-08-15 → production 10/10)
@@ -111,6 +111,12 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-08-15 — Blank charcoal screen / infinite tab spinner
+- `pickora-nav.js` no longer uses MutationObserver or resize `syncAll` (that looped with leftover WP menu classes and froze the tab).
+- Overlay CSS only paints when `html.pk-nav-open` (removed `body > .is-menu-open` fallback that covered the page in charcoal).
+- Removed render-blocking Google Fonts CSS (local `@font-face` remains). Removed WP Interactivity importmap/modulepreload and `speculationrules` prefetch of `/*`.
+- MailerLite `webforms.min.js` is `defer` so a blocked CDN cannot hold the document open. Cache-bust nav `?v=8`.
 
 ### 2026-08-15 — PageSpeed pass (mobile /products/ 63)
 - Slim Google Fonts to Montserrat 600–800 + Open Sans 400–700; drop Roboto / Roboto Slab full families.

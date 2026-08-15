@@ -15,8 +15,8 @@ body #pk-search-system.is-open .pk-suggestions-dropdown {
 
 /* Mobile nav overlay — avoid 100vw scrollbar bleed */
 @media (max-width: 767px) {
-  .wp-block-navigation__responsive-container.is-menu-open,
-  .wp-block-navigation__responsive-container.has-modal-open {
+  html.pk-nav-open .wp-block-navigation__responsive-container.is-menu-open,
+  html.pk-nav-open .wp-block-navigation__responsive-container.has-modal-open {
     width: 100% !important;
     max-width: 100% !important;
   }
