@@ -117,6 +117,7 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 - Remove Site Kit Google Sign-In, Elementor frontend JS, jQuery/jQuery UI, Hostinger AOS scripts, wp-emoji loader, dead wp-json/xmlrpc tags.
 - Defer Elementor/theme CSS (`media=print` + onload); keep fade elements visible without AOS.
 - LCP: preload + mid-size srcset on products, hubs, and 4 reviews; swap `-scaled.webp` srcs for 768/1100 crops.
+- Restored Categories pin **Urban Explorer EDC** to the tall `-scaled.webp` (the 1100x450 crop was landscape and left a white gap).
 - SEO/a11y: disclosure link text “Affiliate disclosure”; contrast `#334155`; catalog card titles H2.
 
 ### 2026-08-15 — 404 restyle to match Pickora chrome
