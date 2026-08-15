@@ -69,3 +69,47 @@ body #pk-search-system.is-open .pk-suggestions-dropdown {
     text-align: center !important;
   }
 }
+
+/* Footer tap targets — social stubs stay; enlarge the <a>, not only the <li> */
+footer.site-footer .wp-social-link a,
+footer.site-footer .wp-block-social-link-anchor {
+  min-width: 44px !important;
+  min-height: 44px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+footer.site-footer nav[aria-label="Legal"] a,
+footer.site-footer .wp-block-navigation[aria-label="Legal"] a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 4px;
+}
+
+/* Review emoji in headings — WP serves 72px PNGs */
+.entry-content img.emoji {
+  width: 1.15em !important;
+  height: 1.15em !important;
+  margin: 0 0.15em 0 0 !important;
+  vertical-align: -0.15em;
+}
+
+.pk-swipe-hint {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0 0 8px;
+}
+@media (min-width: 768px) {
+  .pk-swipe-hint { display: none; }
+}
+
+/* Product catalog cards: wrap instead of clipping */
+.pk-cat-body p {
+  overflow-wrap: anywhere;
+  -webkit-line-clamp: unset;
+}
+
+html.pk-consent-open {
+  padding-bottom: 110px;
+}

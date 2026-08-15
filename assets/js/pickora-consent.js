@@ -18,7 +18,7 @@
     '#pk-consent a{color:#6EC1E4}' +
     '#pk-consent .pk-actions{display:flex;gap:8px;flex:0 0 auto;flex-wrap:nowrap;' +
     'align-items:center;margin:0}' +
-    '#pk-consent button{min-height:40px;padding:8px 16px;border-radius:8px;border:0;' +
+    '#pk-consent button{min-height:44px;padding:8px 16px;border-radius:8px;border:0;' +
     'cursor:pointer;font-size:14px;font-weight:600;line-height:1.2}' +
     '#pk-accept{background:#2075d2;color:#fff}' +
     '#pk-reject{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.45)}' +
@@ -29,11 +29,12 @@
     'max-width:none;border-radius:12px}' +
     '#pk-consent p{flex:0 0 auto;font-size:13px;line-height:1.4}' +
     '#pk-consent .pk-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}' +
-    '#pk-consent .pk-actions button{width:100%;min-height:42px}' +
+    '#pk-consent .pk-actions button{width:100%;min-height:44px}' +
     '}' +
     '@media(max-width:380px){' +
     '#pk-consent .pk-actions{grid-template-columns:1fr}' +
-    '}';
+    '}' +
+    'html.pk-consent-open{padding-bottom:110px}';
 
   var style = document.createElement('style');
   style.id = 'pk-consent-css';
@@ -53,6 +54,7 @@
       '<button id="pk-accept" type="button">Accept</button>' +
     '</div>';
   document.body.appendChild(box);
+  document.documentElement.classList.add('pk-consent-open');
 
   function decide(granted) {
     var state = {
@@ -63,6 +65,7 @@
     };
     localStorage.setItem(KEY, JSON.stringify(state));
     if (typeof gtag === 'function') gtag('consent', 'update', state);
+    document.documentElement.classList.remove('pk-consent-open');
     box.remove();
   }
 

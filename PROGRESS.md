@@ -13,9 +13,9 @@ Owner decisions locked:
 |---|---|---|
 | 1 | FTC copy: methodology, 100 hours, fake testimonials, products H1 | done |
 | 2 | `.nojekyll`, branded 404 on unknown URLs, physical `favicon.ico`, dead `/feed/` `/wp-json/` | done |
-| 3 | Hidden extra H1s, review HTML/FAQ, tap targets, `AI menu` labels, MailerLite thank-you a11y | pending |
-| 4 | JSON-LD (drop fake sameAs, FAQPage on home), sitemap lastmod, mobile CSS, cookie offset | pending |
-| 5 | Document the work in this file | pending |
+| 3 | Hidden extra H1s, review HTML/FAQ, tap targets, `AI menu` labels, MailerLite thank-you a11y | done |
+| 4 | JSON-LD (drop fake sameAs, FAQPage on home), sitemap lastmod, mobile CSS, cookie offset | done |
+| 5 | Document the work in this file | done |
 | Later | New articles, real social URLs, paid traffic, Lighthouse owner remeasure | parked |
 
 ## Phase Status
@@ -37,7 +37,7 @@ Owner decisions locked:
 - [x] 0.3 Privacy Policy, Affiliate Disclosure, Terms, Contact pages exist
 - [x] 0.4 Cookie banner + Consent Mode v2 (`pickora-consent.js`) + GA4 `G-Q4SCHBR4QM` + `pickora-analytics.js` (`affiliate_click`) on **19/19**
 - [x] 0.5 FTC residual: sitewide research formula; dropped `100 hours of testing`; removed fake Verified Buyer marquee on `/products/` and named quotes on `/about/`
-- [ ] 0.6 Replace placeholder social URLs (`facebook.com/`, `instagram.com/`, `twitter.com/`, `tiktok.com/`) or hide icons
+- [ ] 0.6 Replace placeholder social URLs when owner provides live profile links (stubs stay visible)
 - [x] 0.7 MailerLite footer: native HTML/CSS/JS form `#mlb2-44833402` + dark-footer overrides on **20/20** HTML; Hostinger Reach removed; Universal script still in `<head>`. Header embed optional/pending.
 
 ### Phase 1: Technical & Performance
@@ -62,7 +62,7 @@ Owner decisions locked:
 - [x] 3.2 Visible breadcrumbs (`Home › Articles › Article`) on **4/4** reviews + matching BreadcrumbList schema
 - [x] 3.3 Contextual inline links (2–3 per review) to neighbor reviews / hubs
 - [x] 3.4 Review intros/verdicts rewritten (Flesch 60–70) + **Who should skip this** on 4 reviews. Sitewide “premium” still remains on hubs/CSS comments
-- [ ] 3.5 Fix social links (see 0.6)
+- [x] 3.5 Social profile URLs — **parked**. Footer stubs stay until live links are provided. Fake JSON-LD `sameAs` removed.
 
 ### Phase 4: Cleanup & infra
 - [x] 4.1 Dead WP plugins removed; Elementor/Site Kit/Reach slimmed to referenced CSS/JS only (`wp-content` **~58.7 MB**, plugins **0.15 MB**)
@@ -110,6 +110,20 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-08-15 — Block 4 sitemap, cookie offset, tap CSS
+- `sitemap.xml` lastmod → 2026-08-15.
+- Footer social/legal tap 44×44; cookie buttons 44px; `html.pk-consent-open` padding so the bar does not cover CTAs.
+- Catalog card text wraps on phones; review emoji shrunk from 72px.
+- Cache-bust `pickora-mobile-fixes.css?v=2` and `pickora-consent.js?v=3`.
+
+### 2026-08-15 — Block 3 headings, FAQ markup, a11y labels
+- Demoted hidden WordPress page-title H1s on articles + 4 hubs to `<p>`.
+- `aria-label="AI menu"` → Primary / Footer.
+- Removed fake JSON-LD `sameAs` profiles (footer stubs stay until real URLs).
+- Removed broken `/search/` SearchAction; added home FAQPage matching the rewritten FAQ.
+- Air fryers: LCP `alt`, un-nested FAQ, ChatGPT `data-start` attrs stripped on reviews.
+- MailerLite success state `aria-hidden="true"` until submit.
 
 ### 2026-08-15 — Block 2 GitHub Pages 404, favicon, dead feeds
 - Added `.nojekyll` so Jekyll cannot break `404.html` on `{{` in leftover WP JS.
