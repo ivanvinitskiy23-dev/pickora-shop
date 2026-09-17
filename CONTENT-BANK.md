@@ -12,6 +12,7 @@ Live reviews already on site (do not re-brief):
 - `how-to-choose-a-microwave-2026` — type 2 — Home & Kitchen — **live**
 - `best-coffee-makers-2026` — type 1 — Home & Kitchen — **live**
 - `how-to-choose-an-espresso-machine` — type 2 — Home & Kitchen — **live**
+- `ninja-vs-cosori-air-fryer` — type 3 — Home & Kitchen — **live**
 
 Mix target for the first 50 new ideas: ~40% roundup, ~25% buyer guide, ~15% vs, ~10% single, ~10% problem/mistakes.
 
