@@ -76,10 +76,10 @@ Owner decisions locked:
 - [x] 5.3 Project skill `.cursor/skills/pickora-article/` (`SKILL.md` + `reference.md` + `media.md`)
 - [x] 5.4 Dry-run: `briefs/2026-how-to-choose-a-microwave.md` → `briefs/drafts/2026-how-to-choose-a-microwave-draft.md` (type 2; **not live**; TODO affiliate links)
 - [x] 5.4b Article Agent: `AGENTS.md` + `pickora-publish` skill + `.cursor/rules/pickora-articles.mdc` + `briefs/media-inbox/` + `scripts/place-article-cover.py`
-- [ ] 5.5 Live article count: **7** → target ~50 (owner fills briefs; agent drafts/publishes; 2–4/week)
+- [ ] 5.5 Live article count: **8** → target ~50 (owner fills briefs; agent drafts/publishes; 2–4/week)
 - [x] 5.6 After each live publish: update bank status, `articles/` hub, `sitemap.xml`, related blocks
 
-**Factory counts (2026-09-17):** live reviews/guides **7** (microwave, coffee makers, espresso buyer guide + prior four) · bank open · briefs on disk
+**Factory counts (2026-09-17):** live reviews/guides **8** (Ninja vs Cosori, espresso, coffee makers, microwave + prior four) · bank open · briefs on disk
 
 **Article Agent commands:** see `AGENTS.md` (`черновик` / `обложку` / `выпусти` / `закоммить и запушь`). Covers: owner photo in `briefs/media-inbox/` or Cursor GenerateImage → WebP via `scripts/place-article-cover.py`.
 
@@ -124,6 +124,10 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-09-17 — Ninja vs Cosori air fryer live
+- Live: `/ninja-vs-cosori-air-fryer/` — type 3 rounds (build, capacity, cooking, noise/cleanup, value) for DZ550 vs TurboBlaze.
+- Generated lifestyle cover + product WebPs; microwave-style table; homepage kept at 4 newest cards.
 
 ### 2026-09-17 — Espresso buyer guide live
 - Live: `/how-to-choose-an-espresso-machine/` — criteria-first type 2 + 6 examples (Bambino Plus/Bambino, Gaggia E24, Dedica Duo, Stilosa, Barista Express Impress).

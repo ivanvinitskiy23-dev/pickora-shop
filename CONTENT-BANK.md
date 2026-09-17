@@ -21,7 +21,7 @@ Mix target for the first 50 new ideas: ~40% roundup, ~25% buyer guide, ~15% vs, 
 | 2 | Best microwaves 2026 | best-microwaves-2026 | 1 | Home & Kitchen | P1 | idea | |
 | 3 | Best coffee makers 2026 | best-coffee-makers-2026 | 1 | Home & Kitchen | P1 | live | `briefs/2026-best-coffee-makers.md` |
 | 4 | How to choose an espresso machine | how-to-choose-an-espresso-machine | 2 | Home & Kitchen | P1 | live | `briefs/2026-how-to-choose-an-espresso-machine.md` |
-| 5 | Ninja vs Cosori air fryer | ninja-vs-cosori-air-fryer | 3 | Home & Kitchen | P1 | idea | |
+| 5 | Ninja vs Cosori air fryer | ninja-vs-cosori-air-fryer | 3 | Home & Kitchen | P1 | live | `briefs/2026-ninja-vs-cosori-air-fryer.md` |
 | 6 | Best toaster ovens 2026 | best-toaster-ovens-2026 | 1 | Home & Kitchen | P2 | idea | |
 | 7 | Best blenders for smoothies 2026 | best-blenders-for-smoothies-2026 | 1 | Home & Kitchen | P2 | idea | |
 | 8 | Best stand mixers 2026 | best-stand-mixers-2026 | 1 | Home & Kitchen | P2 | idea | |
