@@ -699,7 +699,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 }
 </style>
 <style id="pk-coffee-layout-fix">
-/* Keep article readable — do not stretch Elementor text full viewport */
+/* Match microwave review width (~1140px), stop full-bleed stretch, keep no empty flex gap */
 main#wp--skip-link--target {
   flex: 0 1 auto !important;
   min-height: 0 !important;
@@ -708,31 +708,25 @@ main#wp--skip-link--target {
 .elementor-95 .elementor-element-ce96bb9.e-con.e-flexbox-base,
 .elementor-widget-text-editor,
 .elementor-95 .elementor-widget-text-editor > .elementor-widget-container {
-  max-width: 800px !important;
+  max-width: 1140px !important;
   width: 100% !important;
   margin-left: auto !important;
   margin-right: auto !important;
   box-sizing: border-box !important;
 }
 .pk-mw-guide {
-  max-width: 760px;
+  max-width: 1140px;
   margin: 0 auto;
-  padding: 0 16px 8px;
+  padding: 0 4px 8px;
   box-sizing: border-box;
 }
-.pk-mw-guide .pk-mw-pick img {
-  max-width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  object-position: center;
-}
 .elementor > .e-con:has(> .e-image-base) {
-  max-width: 960px !important;
+  max-width: 1140px !important;
   margin-left: auto !important;
   margin-right: auto !important;
 }
 .wp-block-group.has-global-padding.is-layout-constrained > .entry-content.alignwide {
-  max-width: 960px !important;
+  max-width: 1140px !important;
   margin-left: auto !important;
   margin-right: auto !important;
 }
@@ -1056,6 +1050,9 @@ main#wp--skip-link--target {
             <p class="pk-review-dek">Seven drip, premium SCA, capsule, and combo machines ranked for taste, carafe type, and daily reliability — from owner research, not a kitchen lab.</p>
         </div>
     </section>
+    </main>
+
+
 
 <div class="wp-block-group has-global-padding is-layout-constrained wp-block-group-is-layout-constrained">
     <div class="wp-block-group alignwide is-layout-flow wp-block-group-is-layout-flow"></div>
@@ -1320,7 +1317,6 @@ main#wp--skip-link--target {
     
     <div style="height:1rem" aria-hidden="true" class="wp-block-spacer"></div>
     </div>
-</main>
 <section class="pk-related" aria-labelledby="pk-related-title">
     <h2 id="pk-related-title">Keep reading</h2>
     <div class="pk-articles-grid">
