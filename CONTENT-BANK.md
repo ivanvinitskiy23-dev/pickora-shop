@@ -13,6 +13,7 @@ Live reviews already on site (do not re-brief):
 - `best-coffee-makers-2026` — type 1 — Home & Kitchen — **live**
 - `how-to-choose-an-espresso-machine` — type 2 — Home & Kitchen — **live**
 - `ninja-vs-cosori-air-fryer` — type 3 — Home & Kitchen — **live**
+- `how-to-choose-wireless-earbuds` — type 2 — Consumer Electronics — **live**
 
 Mix target for the first 50 new ideas: ~40% roundup, ~25% buyer guide, ~15% vs, ~10% single, ~10% problem/mistakes.
 
@@ -36,7 +37,7 @@ Mix target for the first 50 new ideas: ~40% roundup, ~25% buyer guide, ~15% vs, 
 | 16 | Best dishwashers under mid-range 2026 | best-mid-range-dishwashers-2026 | 1 | Home & Kitchen | P3 | idea | |
 | 17 | Best mattress toppers 2026 | best-mattress-toppers-2026 | 1 | Home & Kitchen | P3 | idea | |
 | 18 | Best noise cancelling headphones 2026 | best-noise-cancelling-headphones-2026 | 1 | Consumer Electronics | P1 | idea | |
-| 19 | How to choose wireless earbuds | how-to-choose-wireless-earbuds | 2 | Consumer Electronics | P1 | idea | |
+| 19 | How to choose wireless earbuds | how-to-choose-wireless-earbuds | 2 | Consumer Electronics | P1 | live | `briefs/2026-how-to-choose-wireless-earbuds.md` |
 | 20 | AirPods vs Sony WF earbuds | airpods-vs-sony-wf-earbuds | 3 | Consumer Electronics | P1 | idea | |
 | 21 | Best Bluetooth speakers 2026 | best-bluetooth-speakers-2026 | 1 | Consumer Electronics | P1 | idea | |
 | 22 | Best power banks 2026 | best-power-banks-2026 | 1 | Consumer Electronics | P2 | idea | |
