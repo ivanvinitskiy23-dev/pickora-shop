@@ -699,9 +699,42 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 }
 </style>
 <style id="pk-coffee-layout-fix">
+/* Keep article readable — do not stretch Elementor text full viewport */
 main#wp--skip-link--target {
   flex: 0 1 auto !important;
   min-height: 0 !important;
+}
+.elementor-95,
+.elementor-95 .elementor-element-ce96bb9.e-con.e-flexbox-base,
+.elementor-widget-text-editor,
+.elementor-95 .elementor-widget-text-editor > .elementor-widget-container {
+  max-width: 800px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+}
+.pk-mw-guide {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 16px 8px;
+  box-sizing: border-box;
+}
+.pk-mw-guide .pk-mw-pick img {
+  max-width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: center;
+}
+.elementor > .e-con:has(> .e-image-base) {
+  max-width: 960px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.wp-block-group.has-global-padding.is-layout-constrained > .entry-content.alignwide {
+  max-width: 960px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 </style>
 <link rel="stylesheet" href="/assets/css/pickora-nav.css?v=5">
@@ -1184,7 +1217,7 @@ main#wp--skip-link--target {
 </article>
 
 <article class="pk-mw-pick">
-<img src="https://pickora.shop/wp-content/uploads/2026/09/moccamaster-kbgv.webp" alt="Premium glass-carafe drip coffee maker on a light marble counter" width="1200" height="900" loading="lazy" decoding="async">
+<img src="https://pickora.shop/wp-content/uploads/2026/09/moccamaster-kbgv-v2.webp" alt="Technivorm Moccamaster KBGV Select glass-carafe drip coffee maker on a light wood counter" width="1200" height="900" loading="lazy" decoding="async">
 <span class="pk-mw-badge">Best premium glass</span>
 <h3 class="pk-mw-pick-title">5. Technivorm Moccamaster KBGV Select</h3>
 <p>Same brew idea as the thermal model, but with a glass carafe and hot plate. The Select switch helps half-pot and full-pot batches brew better.</p>
