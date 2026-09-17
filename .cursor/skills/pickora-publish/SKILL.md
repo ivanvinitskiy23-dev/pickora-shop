@@ -58,6 +58,7 @@ If no draft yet, run writer skill. Prefer existing draft in `briefs/drafts/` if 
 ### 4. Hubs
 
 - Prepend a new `.pk-card` on [`articles/index.html`](../../../articles/index.html) (title, excerpt, tag, cover, link)
+- Homepage Latest Reviews: prepend a new `.pk-rev-card` at the top of `.pk-reviews-grid` on [`index.html`](../../../index.html). **Keep exactly 4 cards** (newest → oldest). Drop the oldest card when adding a new one.
 - If category hub has an article list/cards, add a link there when an obvious slot exists; otherwise skip without inventing layout
 - Add `<url>` to [`sitemap.xml`](../../../sitemap.xml) with today's `lastmod`
 
