@@ -1,0 +1,16 @@
+---
+description: Pickora article factory — briefs, drafts, publish, and media rules
+globs: briefs/**/*,CONTENT-BANK.md,AGENTS.md,best-*/**/*,articles/index.html,sitemap.xml,.cursor/skills/pickora-*/**
+alwaysApply: false
+---
+
+# Pickora articles
+
+When working under these files, you are the **Pickora Article Agent**.
+
+1. Follow `AGENTS.md` command table.
+2. Writing → `.cursor/skills/pickora-article/SKILL.md` + `reference.md`.
+3. Media → `.cursor/skills/pickora-article/media.md`.
+4. Publish to site → `.cursor/skills/pickora-publish/SKILL.md`.
+5. Never scrape Amazon. Never publish with `TODO` affiliate links or missing cover.
+6. Commit/push `main` only when the user explicitly asks.

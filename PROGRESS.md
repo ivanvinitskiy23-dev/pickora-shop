@@ -1,6 +1,6 @@
 # Pickora.shop Refactoring Progress
 
-**Last calibrated:** 2026-08-15 (audit v2 implementation)  
+**Last calibrated:** 2026-09-17 (article factory Phase 5 kickoff)  
 **Rule:** checkboxes reflect files on disk, not chat claims. A task stays `[ ]` until the artifact exists and is wired.
 
 ## Implementation plan (2026-08-15 → production 10/10)
@@ -16,7 +16,8 @@ Owner decisions locked:
 | 3 | Hidden extra H1s, review HTML/FAQ, tap targets, `AI menu` labels, MailerLite thank-you a11y | done |
 | 4 | JSON-LD (drop fake sameAs, FAQPage on home), sitemap lastmod, mobile CSS, cookie offset | done |
 | 5 | Document the work in this file | done |
-| Later | New articles, real social URLs, paid traffic, Lighthouse owner remeasure | parked |
+| Later | Real social URLs, paid traffic, Lighthouse owner remeasure | parked |
+| 5b | Article factory: CONTENT-BANK + briefs + pickora-article skill | done (dry-run only; no new live article yet) |
 
 ## Phase Status
 - [x] Phase 0: Legal Protection & Amazon Compliance (core 0.1–0.4, 0.7 footer) — 0.5 FTC / 0.6 social / 0.7 header embed still open
@@ -24,8 +25,8 @@ Owner decisions locked:
 - [x] Phase 2: SEO, Schema.org, & GA4 in-repo floor (2.1–2.6) — GSC submit + physical favicon.ico = owner
 - [ ] Phase 3: Interlinking, UX & E-E-A-T Content — 3.1–3.4 done; 3.5 social still open
 - [ ] Phase 4: Repo Cleanup & Infrastructure — 4.1–4.2 done; 4.3 host switch optional
-- [ ] Phase 5 (plan.html): Content scale 4 → 25–30 articles — **not started, do not start ads**
-- [ ] Phase 6 (plan.html): Promotion / paid traffic — **blocked until 0.5/0.6/1.5/1.7**
+- [ ] Phase 5 (plan.html): Content scale 4 → ~50 articles — **factory ready**; live still **4**; pace 2–4/week; do not start ads
+- [ ] Phase 6 (plan.html): Promotion / paid traffic — **blocked until** social URLs + stable indexing + content volume
 
 ---
 
@@ -69,6 +70,19 @@ Owner decisions locked:
 - [x] 4.2 Cloudflare Pages / Netlify `_headers` (security + 1y cache for uploads/css/js)
 - [ ] 4.3 Optional: migrate hosting GitHub Pages → Cloudflare Pages (plan.html §1.5)
 
+### Phase 5: Content scale (article factory)
+- [x] 5.1 `CONTENT-BANK.md` — **54** topic rows + 4 live reviews noted; mix of types 1–6 across 4 categories
+- [x] 5.2 `briefs/_TEMPLATE.md` research brief form (includes Media)
+- [x] 5.3 Project skill `.cursor/skills/pickora-article/` (`SKILL.md` + `reference.md` + `media.md`)
+- [x] 5.4 Dry-run: `briefs/2026-how-to-choose-a-microwave.md` → `briefs/drafts/2026-how-to-choose-a-microwave-draft.md` (type 2; **not live**; TODO affiliate links)
+- [x] 5.4b Article Agent: `AGENTS.md` + `pickora-publish` skill + `.cursor/rules/pickora-articles.mdc` + `briefs/media-inbox/` + `scripts/place-article-cover.py`
+- [ ] 5.5 Live article count: **5** → target ~50 (owner fills briefs; agent drafts/publishes; 2–4/week)
+- [x] 5.6 After each live publish: update bank status, `articles/` hub, `sitemap.xml`, related blocks (microwave guide done)
+
+**Factory counts (2026-09-17):** live reviews/guides **5** (incl. microwave buyer guide) · bank open · briefs on disk
+
+**Article Agent commands:** see `AGENTS.md` (`черновик` / `обложку` / `выпусти` / `закоммить и запушь`). Covers: owner photo in `briefs/media-inbox/` or Cursor GenerateImage → WebP via `scripts/place-article-cover.py`.
+
 ---
 
 ## Disk facts (2026-08-13 scan)
@@ -110,6 +124,22 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-09-17 — First factory publish: microwave buyer guide
+- Live: `/how-to-choose-a-microwave-2026/` from owner Amazon research (5 models).
+- Covers: generated lifestyle WebPs under `wp-content/uploads/2026/09/`.
+- Honest Toshiba combo safety caveats; Panasonic longevity as default long bet.
+- Hub card + sitemap updated.
+
+### 2026-09-17 — Article Agent + free media path
+- Added `AGENTS.md`, `pickora-publish` skill, `pickora-articles` rule, `briefs/media-inbox/`, and `scripts/place-article-cover.py`.
+- Cover policy: owner photo or Cursor GenerateImage → WebP under `wp-content/uploads/YYYY/MM/{slug}-cover.webp` (no Amazon CDN hotlinks).
+- Commands: draft → cover → publish → commit/push on request.
+
+### 2026-09-17 — Article factory (Phase 5 kickoff)
+- Added `CONTENT-BANK.md` (~50+ mixed-type topics), `briefs/_TEMPLATE.md`, and project skill `pickora-article` (research brief → Pickora draft).
+- Dry-run buyer guide: microwave how-to brief + draft under `briefs/` / `briefs/drafts/` (not published; TODO affiliate links).
+- Pace locked: 2–4 live articles/week; no Amazon scraping; no mass auto-publish.
 
 ### 2026-08-15 — Roll back Lighthouse/PageSpeed breakage
 - Restored site files to commit `71381b8` (last good state before the LCP/fonts/JS pass). Live hang came from those follow-up patches; do not re-apply them until the homepage paints and the tab spinner stops.
