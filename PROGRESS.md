@@ -76,10 +76,10 @@ Owner decisions locked:
 - [x] 5.3 Project skill `.cursor/skills/pickora-article/` (`SKILL.md` + `reference.md` + `media.md`)
 - [x] 5.4 Dry-run: `briefs/2026-how-to-choose-a-microwave.md` → `briefs/drafts/2026-how-to-choose-a-microwave-draft.md` (type 2; **not live**; TODO affiliate links)
 - [x] 5.4b Article Agent: `AGENTS.md` + `pickora-publish` skill + `.cursor/rules/pickora-articles.mdc` + `briefs/media-inbox/` + `scripts/place-article-cover.py`
-- [ ] 5.5 Live article count: **5** → target ~50 (owner fills briefs; agent drafts/publishes; 2–4/week)
-- [x] 5.6 After each live publish: update bank status, `articles/` hub, `sitemap.xml`, related blocks (microwave guide done)
+- [ ] 5.5 Live article count: **6** → target ~50 (owner fills briefs; agent drafts/publishes; 2–4/week)
+- [x] 5.6 After each live publish: update bank status, `articles/` hub, `sitemap.xml`, related blocks (microwave + coffee makers done)
 
-**Factory counts (2026-09-17):** live reviews/guides **5** (incl. microwave buyer guide) · bank open · briefs on disk
+**Factory counts (2026-09-17):** live reviews/guides **6** (incl. microwave buyer guide + coffee makers roundup) · bank open · briefs on disk
 
 **Article Agent commands:** see `AGENTS.md` (`черновик` / `обложку` / `выпусти` / `закоммить и запушь`). Covers: owner photo in `briefs/media-inbox/` or Cursor GenerateImage → WebP via `scripts/place-article-cover.py`.
 
@@ -124,6 +124,11 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-09-17 — Coffee makers roundup live
+- Live: `/best-coffee-makers-2026/` — 7 picks (OXO, Ninja Fresh Brew, Cuisinart, 2× Moccamaster, Vertuo Plus, DualBrew).
+- Generated lifestyle cover + per-product WebPs under `wp-content/uploads/2026/09/`.
+- Homepage Latest Reviews kept at 4 (coffee first); articles hub + sitemap updated.
 
 ### 2026-09-17 — First factory publish: microwave buyer guide
 - Live: `/how-to-choose-a-microwave-2026/` from owner Amazon research (5 models).

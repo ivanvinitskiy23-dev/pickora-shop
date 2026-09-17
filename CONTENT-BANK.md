@@ -9,6 +9,8 @@ Live reviews already on site (do not re-brief):
 - `best-wireless-earbuds-2026-top-7-models-tested-honest-reviews` — type 1 — Consumer Electronics — **live**
 - `best-robot-vacuums-2026-top-8-models-tested-honest-reviews` — type 1 — Home & Kitchen — **live**
 - `best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews` — type 1 — Pet Supplies — **live**
+- `how-to-choose-a-microwave-2026` — type 2 — Home & Kitchen — **live**
+- `best-coffee-makers-2026` — type 1 — Home & Kitchen — **live**
 
 Mix target for the first 50 new ideas: ~40% roundup, ~25% buyer guide, ~15% vs, ~10% single, ~10% problem/mistakes.
 
@@ -16,7 +18,7 @@ Mix target for the first 50 new ideas: ~40% roundup, ~25% buyer guide, ~15% vs, 
 |---|---|---|---|---|---|---|---|
 | 1 | How to choose a microwave in 2026 | how-to-choose-a-microwave-2026 | 2 | Home & Kitchen | P1 | live | `briefs/2026-how-to-choose-a-microwave.md` |
 | 2 | Best microwaves 2026 | best-microwaves-2026 | 1 | Home & Kitchen | P1 | idea | |
-| 3 | Best coffee makers 2026 | best-coffee-makers-2026 | 1 | Home & Kitchen | P1 | idea | |
+| 3 | Best coffee makers 2026 | best-coffee-makers-2026 | 1 | Home & Kitchen | P1 | live | `briefs/2026-best-coffee-makers.md` |
 | 4 | How to choose an espresso machine | how-to-choose-an-espresso-machine | 2 | Home & Kitchen | P1 | idea | |
 | 5 | Ninja vs Cosori air fryer | ninja-vs-cosori-air-fryer | 3 | Home & Kitchen | P1 | idea | |
 | 6 | Best toaster ovens 2026 | best-toaster-ovens-2026 | 1 | Home & Kitchen | P2 | idea | |
