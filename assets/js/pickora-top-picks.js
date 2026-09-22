@@ -71,6 +71,9 @@
       dots.innerHTML = '';
       thumbs.innerHTML = '';
 
+      var n = picks.length || 1;
+      thumbs.style.gridTemplateColumns = 'repeat(' + n + ', minmax(0, 1fr))';
+
       picks.forEach(function (pick, i) {
         var dot = document.createElement('button');
         dot.type = 'button';
@@ -88,7 +91,7 @@
         thumb.innerHTML =
           '<img src="' +
           escapeHtml(pick.image) +
-          '" alt="" width="64" height="48" loading="lazy" decoding="async">';
+          '" alt="" width="160" height="100" loading="lazy" decoding="async">';
         thumb.addEventListener('click', function () {
           show(i, true);
         });
