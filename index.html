@@ -1265,7 +1265,9 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
     overflow: hidden;
     background: #000; /* Цвет фона пока грузится фото */
     aspect-ratio: 1 / 1.2; /* Золотое сечение для вертикальных карточек */
-    transition: transform var(--transition-speed) cubic-bezier(0.2, 1, 0.3, 1);
+    border: 2px solid transparent;
+    box-sizing: border-box;
+    transition: transform var(--transition-speed) cubic-bezier(0.2, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .pk-image-container {
@@ -1320,6 +1322,8 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 @media (hover: hover) {
     .pk-item:hover {
         transform: translateY(-5px);
+        border-color: #2075d2 !important;
+        box-shadow: 0 0 0 2px rgba(32, 117, 210, 0.25), 0 14px 32px rgba(15, 23, 42, 0.18);
     }
     
     .pk-item:hover img {
@@ -1382,7 +1386,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
     color: var(--pk-blue) !important; /* Синий текст ссылки */
 }
 .pk-rev-card:hover {
-    border-color: var(--pk-blue) !important; /* Синяя рамка при наведении */
+    border-color: #2075d2 !important; /* Синяя рамка при наведении */
 }
 </style>				</div>
 				</div>
@@ -1623,8 +1627,8 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 @media (hover: hover) {
     .pk-rev-card:hover {
         transform: translateY(-10px);
-        box-shadow: 0 30px 60px rgba(0,0,0,0.1);
-        border-color: #2075d2;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.1), 0 0 0 1px #2075d2;
+        border-color: #2075d2 !important;
     }
 
     .pk-rev-card:hover img {
