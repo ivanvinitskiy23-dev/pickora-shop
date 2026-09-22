@@ -16,6 +16,7 @@
         image: '/wp-content/uploads/2026/09/top-pick-ninja-dz550.webp',
         imageAlt: 'Ninja Foodi DZ550 dual-basket air fryer with NINJA logo visible',
         pros: ['Dual baskets', 'Family batches', 'Probe cooking'],
+        blurb: 'Our pick when one basket is not enough — cook two sides at once without babysitting the counter.',
         amazonUrl: 'https://amzn.to/4vOr083',
         guideUrl: '/best-air-fryers-of-2026-which-one-should-you-buy/'
       }
@@ -41,6 +42,7 @@
     var tagline = $('.pk-year-tag', root);
     var category = $('.pk-pick-category', root);
     var title = $('.pk-product-title', root);
+    var blurb = $('.pk-pick-blurb', root);
     var pros = $('.pk-check-list', root);
     var amazonBtn = $('.pk-btn-amazon', root);
     var guideBtn = $('.pk-btn-guide', root);
@@ -131,6 +133,7 @@
       if (tagline) tagline.textContent = pick.tagline || '';
       if (category) category.textContent = pick.category || '';
       title.textContent = pick.title;
+      if (blurb) blurb.textContent = pick.blurb || '';
       renderPros(pick.pros);
 
       amazonBtn.href = pick.amazonUrl;

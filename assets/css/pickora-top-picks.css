@@ -147,8 +147,9 @@
 #pk-top-picks .pk-pick-thumb {
   position: relative;
   width: 100% !important;
-  height: 58px !important;
-  max-height: 58px;
+  height: auto !important;
+  aspect-ratio: 4 / 3;
+  max-height: none;
   margin: 0;
   padding: 0;
   border: 2px solid transparent;
@@ -355,7 +356,7 @@
 }
 
 #pk-top-picks .pk-product-title {
-  margin: 0 0 14px !important;
+  margin: 0 0 10px !important;
   font-size: clamp(26px, 3.4vw, 36px) !important;
   font-weight: 800 !important;
   line-height: 1.12 !important;
@@ -363,6 +364,15 @@
   letter-spacing: -0.03em;
   word-break: break-word;
   font-family: Montserrat, sans-serif;
+}
+
+#pk-top-picks .pk-pick-blurb {
+  margin: 0 0 14px !important;
+  max-width: 42em;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--pk-muted);
+  font-weight: 500;
 }
 
 #pk-top-picks .pk-check-list {
@@ -459,9 +469,24 @@
   }
 
   #pk-top-picks .pk-pick-thumb {
-    height: 50px !important;
-    max-height: 50px;
+    aspect-ratio: 4 / 3;
     border-radius: 8px;
+  }
+
+  #pk-top-picks .pk-top-picks-hat {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #pk-top-picks .pk-top-picks-eyebrow {
+    justify-content: center;
+    width: 100%;
+  }
+
+  #pk-top-picks .pk-top-picks-dek {
+    margin-left: auto;
+    margin-right: auto;
   }
 
   #pk-top-picks .pk-best-content {
@@ -490,18 +515,29 @@
   }
 
   #pk-top-picks .pk-top-picks-hat {
-    text-align: left;
+    text-align: center;
     margin-bottom: 14px;
     max-width: none;
   }
 
+  #pk-top-picks .pk-top-picks-eyebrow {
+    justify-content: center;
+    width: 100%;
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+
   #pk-top-picks .pk-top-picks-title {
     font-size: 22px !important;
+    text-align: center;
   }
 
   #pk-top-picks .pk-top-picks-dek {
     font-size: 14px;
-    max-width: none;
+    max-width: 28em;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
   }
 
   #pk-top-picks .pk-best-container {
@@ -529,8 +565,7 @@
   }
 
   #pk-top-picks .pk-pick-thumb {
-    height: 44px !important;
-    max-height: 44px;
+    aspect-ratio: 1 / 1;
     border-radius: 8px;
   }
 
@@ -569,7 +604,12 @@
 
   #pk-top-picks .pk-product-title {
     font-size: 22px !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 8px !important;
+  }
+
+  #pk-top-picks .pk-pick-blurb {
+    font-size: 14px;
+    margin-bottom: 12px !important;
   }
 
   #pk-top-picks .pk-check-list {
