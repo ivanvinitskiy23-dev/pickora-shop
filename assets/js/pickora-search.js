@@ -1,5 +1,6 @@
 /**
  * Pickora client-side search — articles & products (autocomplete → navigate or scroll).
+ * Articles mode indexes the local grid, then merges the full /articles/ catalog.
  * Products mode indexes local DOM + fetches all category hub pages automatically.
  */
 (function () {
@@ -49,23 +50,75 @@
     }
   }
 
+  function parseArticleCard(el, config, baseUrl) {
+    var titleEl = el.querySelector(config.titleSelector || '.pk-card-title, .pk-rev-title, h3, h4');
+    var linkEl = el.querySelector('a[href]');
+    var imgEl = el.querySelector('img');
+    var tagEl = el.querySelector(config.tagSelector || '.pk-card-tag, .pk-rev-category');
+    var title = titleEl ? titleEl.textContent.trim() : '';
+    if (!title) return null;
+
+    var href = linkEl ? linkEl.getAttribute('href') : '';
+    var imgSrc = imgEl ? (imgEl.getAttribute('src') || '') : '';
+
+    return {
+      title: title,
+      url: href ? resolveUrl(href, baseUrl) : '#',
+      img: imgSrc ? resolveUrl(imgSrc, baseUrl) : '',
+      tag: tagEl ? tagEl.textContent.trim() : 'Article'
+    };
+  }
+
+  function collectArticlesFromRoot(root, config, baseUrl) {
+    if (!root) return [];
+    return Array.from(root.querySelectorAll('article'))
+      .map(function (el) {
+        return parseArticleCard(el, config, baseUrl);
+      })
+      .filter(Boolean);
+  }
+
   function collectArticles(config) {
     var root = document.querySelector(config.source);
-    if (!root) return [];
-    return Array.from(root.querySelectorAll('article')).map(function (el) {
-      var titleEl = el.querySelector(config.titleSelector);
-      var linkEl = el.querySelector('a[href]');
-      var imgEl = el.querySelector('img');
-      var tagEl = el.querySelector(config.tagSelector || '.pk-card-tag, .pk-rev-category');
-      var title = titleEl ? titleEl.textContent.trim() : '';
-      if (!title) return null;
-      return {
-        title: title,
-        url: linkEl ? linkEl.href : '#',
-        img: imgEl ? imgEl.src : '',
-        tag: tagEl ? tagEl.textContent.trim() : 'Article'
-      };
-    }).filter(Boolean);
+    return collectArticlesFromRoot(root, config, window.location.href);
+  }
+
+  function dedupeArticles(items) {
+    var seen = {};
+    return items.filter(function (item) {
+      var key = (item.url || '').replace(/\/$/, '') + '|' + (item.title || '').toLowerCase();
+      if (!key || seen[key]) return false;
+      seen[key] = true;
+      return true;
+    });
+  }
+
+  function fetchArticlesCatalog(catalogUrl, config) {
+    var url = catalogUrl.indexOf('/') === 0 || catalogUrl.indexOf('http') === 0
+      ? catalogUrl
+      : '/' + catalogUrl;
+
+    return fetch(url, { credentials: 'same-origin' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('Articles catalog fetch failed: ' + url);
+        return res.text();
+      })
+      .then(function (html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var base = new URL(url, window.location.href).href;
+        var remoteConfig = {
+          titleSelector: '.pk-card-title, .pk-rev-title, h3, h4',
+          tagSelector: '.pk-card-tag, .pk-rev-category'
+        };
+        var root =
+          doc.querySelector('#pk-grid-feed') ||
+          doc.querySelector('.pk-articles-grid') ||
+          doc.querySelector('.pk-reviews-grid');
+        return collectArticlesFromRoot(root, remoteConfig, base);
+      })
+      .catch(function () {
+        return [];
+      });
   }
 
   function cardSearchText(title, desc, tag, alt, extra) {
@@ -359,7 +412,11 @@
     var activeIndex = -1;
     var emptyLabel = mode === 'products' ? 'No products found…' : 'No guides found…';
     var indexedProducts = mode === 'products' ? collectLocalProducts(config) : null;
-    var indexReady = mode !== 'products';
+    var indexedArticles = mode === 'articles' ? collectArticles(config) : null;
+    var catalogUrl = root.getAttribute('data-pk-search-catalog') ||
+      (mode === 'articles' ? '/articles/' : '');
+    var needsArticleCatalog = mode === 'articles' && !!catalogUrl;
+    var indexReady = mode === 'articles' ? !needsArticleCatalog : mode !== 'products';
     var defaultPlaceholder = input.getAttribute('placeholder') || '';
 
     if (mode === 'products') {
@@ -375,9 +432,22 @@
       });
     }
 
+    if (needsArticleCatalog) {
+      root.classList.add('is-indexing');
+      fetchArticlesCatalog(catalogUrl, config).then(function (remoteItems) {
+        indexedArticles = dedupeArticles((indexedArticles || []).concat(remoteItems));
+        indexReady = true;
+        root.classList.remove('is-indexing');
+        var query = input.value.trim();
+        if (query.length >= 2) {
+          renderDropdown(getMatches(query), query);
+        }
+      });
+    }
+
     function getItems() {
       if (mode === 'products') return indexedProducts || [];
-      return collectArticles(config);
+      return indexedArticles || collectArticles(config);
     }
 
     function getMatches(query) {
@@ -413,6 +483,13 @@
 
       if (mode === 'products' && !indexReady && !matches.length) {
         dropdown.innerHTML = '<div class="pk-suggest-empty">Loading product catalog…</div>';
+        dropdown.style.display = 'block';
+        setDropdownOpen(root, true);
+        return;
+      }
+
+      if (mode === 'articles' && needsArticleCatalog && !indexReady && !matches.length) {
+        dropdown.innerHTML = '<div class="pk-suggest-empty">Loading all reviews…</div>';
         dropdown.style.display = 'block';
         setDropdownOpen(root, true);
         return;

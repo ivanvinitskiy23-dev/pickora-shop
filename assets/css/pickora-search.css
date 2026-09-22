@@ -2,7 +2,7 @@
 #pk-search-system {
   width: 100% !important;
   max-width: 580px !important;
-  margin: 32px auto 28px auto !important;
+  margin: 32px auto 52px auto !important;
   position: relative !important;
   /* Above cards/badges, below sticky header (header.site-header = 10000) */
   z-index: 9999 !important;
