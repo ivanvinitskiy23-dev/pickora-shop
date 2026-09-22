@@ -14,6 +14,7 @@ Live reviews already on site (do not re-brief):
 - `how-to-choose-an-espresso-machine` — type 2 — Home & Kitchen — **live**
 - `ninja-vs-cosori-air-fryer` — type 3 — Home & Kitchen — **live**
 - `how-to-choose-wireless-earbuds` — type 2 — Consumer Electronics — **live**
+- `wireless-earbud-buying-mistakes` — type 6 — Consumer Electronics — **live**
 
 Mix target for the first 50 new ideas: ~40% roundup, ~25% buyer guide, ~15% vs, ~10% single, ~10% problem/mistakes.
 
@@ -48,7 +49,7 @@ Mix target for the first 50 new ideas: ~40% roundup, ~25% buyer guide, ~15% vs, 
 | 27 | Best webcams for calls 2026 | best-webcams-2026 | 1 | Consumer Electronics | P2 | idea | |
 | 28 | Best USB-C hubs for laptops 2026 | best-usb-c-hubs-2026 | 1 | Consumer Electronics | P2 | idea | |
 | 29 | Best e-readers 2026 | best-e-readers-2026 | 1 | Consumer Electronics | P3 | idea | |
-| 30 | Wireless earbud buying mistakes | wireless-earbud-buying-mistakes | 6 | Consumer Electronics | P1 | idea | |
+| 30 | Wireless earbud buying mistakes | wireless-earbud-buying-mistakes | 6 | Consumer Electronics | P1 | live | `briefs/2026-wireless-earbud-buying-mistakes.md` |
 | 31 | Best earbuds for the gym | best-earbuds-for-gym | 5 | Consumer Electronics | P1 | idea | |
 | 32 | Is the Sony WH-1000XM worth it | sony-wh-1000xm-worth-it | 4 | Consumer Electronics | P2 | idea | |
 | 33 | Best fitness trackers 2026 | best-fitness-trackers-2026 | 1 | Fitness & Health | P1 | idea | |
