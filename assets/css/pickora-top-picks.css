@@ -60,40 +60,91 @@
   height: 16px;
 }
 
+.pk-pick-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+
 .pk-editor-label {
-  color: var(--pk-blue);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 7px 12px 7px 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #fff8e8 0%, #fff1cc 100%);
+  border: 1px solid rgba(212, 160, 23, 0.28);
+  color: #8a5a00;
   font-weight: 800;
-  font-size: 12px;
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+}
+
+.pk-editor-icon {
+  width: 13px;
+  height: 13px;
+  fill: #d4a017;
+  flex-shrink: 0;
+}
+
+.pk-pick-meta-sep {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  flex-shrink: 0;
+}
+
+.pk-pick-category {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #eef5ff;
+  border: 1px solid rgba(32, 117, 210, 0.18);
+  color: var(--pk-blue);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1;
 }
 
 .pk-year-tag {
-  margin: 0;
-  font-size: 12px;
+  margin: 0 0 6px !important;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #64748b;
+  position: relative;
+  padding-left: 12px;
+}
+
+.pk-year-tag::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.35em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pk-blue);
 }
 
 .pk-product-title {
   font-size: clamp(28px, 3.4vw, 38px) !important;
   font-weight: 800 !important;
-  margin: 10px 0 12px !important;
+  margin: 4px 0 12px !important;
   color: var(--pk-dark) !important;
   line-height: 1.15 !important;
-}
-
-.pk-pick-category {
-  display: inline-block;
-  margin: 0 0 8px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--pk-blue);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
 }
 
 .pk-check-list {
