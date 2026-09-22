@@ -1265,9 +1265,10 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
     overflow: hidden;
     background: #000; /* Цвет фона пока грузится фото */
     aspect-ratio: 1 / 1.2; /* Золотое сечение для вертикальных карточек */
-    border: 2px solid transparent;
+    border: none !important; /* без чёрной рамки в покое; синяя — только на hover */
+    outline: none;
     box-sizing: border-box;
-    transition: transform var(--transition-speed) cubic-bezier(0.2, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: transform var(--transition-speed) cubic-bezier(0.2, 1, 0.3, 1), box-shadow 0.3s ease;
 }
 
 .pk-image-container {
@@ -1322,8 +1323,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 @media (hover: hover) {
     .pk-item:hover {
         transform: translateY(-5px);
-        border-color: #2075d2 !important;
-        box-shadow: 0 0 0 2px rgba(32, 117, 210, 0.25), 0 14px 32px rgba(15, 23, 42, 0.18);
+        box-shadow: 0 0 0 2px #2075d2, 0 14px 32px rgba(15, 23, 42, 0.18);
     }
     
     .pk-item:hover img {
