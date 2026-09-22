@@ -25,6 +25,7 @@ User provides a filled file under `briefs/` (not `_TEMPLATE.md`) and asks for a 
 7. **No AggregateRating** in schema. No fake testimonials.
 8. **Do not scrape Amazon.** Only use the brief.
 9. **Media:** do not hotlink Amazon CDN. Cover required before publish (see media.md).
+10. **Chips / tags:** follow [chips.md](chips.md). Brief must list 1–3 allowed chip slugs. Hub category (4 big buckets) ≠ chip tags. Articles hub card uses `data-categories` + `.pk-card-tags` (multi-tag OK).
 
 ## Workflow
 
@@ -33,7 +34,8 @@ User provides a filled file under `briefs/` (not `_TEMPLATE.md`) and asks for a 
 3. Check **Media** section; if publishing, ensure cover plan exists.
 4. Draft in this order:
    - Suggested `slug/`, `<title>`, meta description, OG title/description
-   - Hero: badge (category), H1 with one blue accent word, dek
+   - **Chips** (1–3 slugs from [chips.md](chips.md)) + hub Category
+   - Hero: badge (hub category), H1 with one blue accent word, dek
    - Body HTML fragment for `.elementor-widget-container` (see reference)
    - FAQ (use brief questions; invent answers only from brief facts)
    - Method note + final verdict
@@ -58,7 +60,7 @@ User provides a filled file under `briefs/` (not `_TEMPLATE.md`) and asks for a 
 
 Unless the user asks for a full `index.html`, deliver:
 
-1. Meta block (title, description, slug)
+1. Meta block (title, description, slug, **hub Category**, **Chips** 1–3)
 2. Hero block (badge, H1 HTML, dek)
 3. Full article body HTML (tables, asides, headings)
 4. FAQ HTML
@@ -71,6 +73,7 @@ Unless the user asks for a full `index.html`, deliver:
 - Topic bank: `CONTENT-BANK.md`
 - Brief template: `briefs/_TEMPLATE.md`
 - Type skeletons: [reference.md](reference.md)
+- **Chips / tags:** [chips.md](chips.md)
 - Media: [media.md](media.md)
 - Publish: [../pickora-publish/SKILL.md](../pickora-publish/SKILL.md)
 - Live pattern: `best-air-fryers-of-2026-which-one-should-you-buy/index.html`

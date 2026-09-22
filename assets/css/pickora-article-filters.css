@@ -1,0 +1,315 @@
+/* Category chips under Articles search — centered, multi-tag aware */
+
+.pk-articles-discover {
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto 20px;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Pull search + chips into one centered stack */
+.pk-articles-discover #pk-search-system {
+  width: 100% !important;
+  max-width: 580px !important;
+  margin: 24px auto 16px !important;
+}
+
+.pk-filter-bar {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.pk-filter-label {
+  margin: 0 0 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+  text-align: center;
+}
+
+.pk-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.pk-filter-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 9px 15px;
+  border: 1.5px solid rgba(17, 29, 55, 0.12);
+  border-radius: 999px;
+  background: #fff;
+  color: #111d37;
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.pk-filter-btn:hover {
+  border-color: #2075d2;
+  color: #2075d2;
+}
+
+.pk-filter-btn:focus-visible {
+  outline: 2px solid #2075d2;
+  outline-offset: 2px;
+}
+
+.pk-filter-btn.is-active {
+  background: #2075d2;
+  border-color: #2075d2;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(32, 117, 210, 0.22);
+}
+
+.pk-filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgba(17, 29, 55, 0.08);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.pk-filter-btn.is-active .pk-filter-count {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+.pk-filter-empty {
+  display: none;
+  width: 100%;
+  max-width: 1140px;
+  margin: 8px auto 24px;
+  padding: 28px 24px;
+  border: 1px dashed rgba(32, 117, 210, 0.35);
+  border-radius: 16px;
+  background: rgba(32, 117, 210, 0.04);
+  text-align: center;
+  color: #475569;
+  font-size: 15px;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.pk-filter-empty.is-visible {
+  display: block;
+}
+
+.pk-filter-empty strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #111d37;
+  font-size: 17px;
+}
+
+.pk-card.is-filter-hidden {
+  display: none !important;
+}
+
+/* Multi tags on cards */
+.pk-card-tags {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: calc(100% - 28px);
+}
+
+.pk-card-media .pk-card-tag {
+  position: static;
+  top: auto;
+  left: auto;
+}
+
+.pk-card-tag--soft {
+  background: rgba(17, 29, 55, 0.72);
+}
+
+/* Shared: horizontal chip rail (tablet + phone — 10+ chips) */
+@media (max-width: 1024px) {
+  .pk-articles-discover {
+    max-width: 100%;
+    padding: 0;
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+
+  .pk-articles-discover #pk-search-system {
+    max-width: none !important;
+    width: calc(100% - 36px) !important;
+    margin: 18px auto 12px !important;
+  }
+
+  .pk-filter-bar {
+    width: 100%;
+  }
+
+  .pk-filter-label {
+    margin: 0 18px 12px;
+    font-size: 11px;
+  }
+
+  .pk-filter-chips {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    padding: 4px 18px 14px;
+    margin: 0;
+  }
+
+  .pk-filter-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pk-filter-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    min-height: 44px;
+    padding: 10px 14px;
+    font-size: 13px;
+    scroll-snap-align: start;
+  }
+
+  .pk-filter-empty {
+    margin: 8px 18px 20px;
+    padding: 22px 18px;
+    width: auto;
+  }
+}
+
+/* Phone refinements */
+@media (max-width: 767px) {
+  .pk-articles-discover {
+    margin-bottom: 12px;
+  }
+
+  .pk-articles-discover #pk-search-system {
+    width: calc(100% - 28px) !important;
+    margin: 14px auto 10px !important;
+  }
+
+  .pk-articles-discover #pk-search-system input#pk-realtime-search {
+    height: 52px !important;
+    font-size: 16px !important; /* iOS zoom lock */
+    padding: 0 46px 0 52px !important;
+  }
+
+  .pk-articles-discover .pk-search-icon-inside {
+    left: 18px !important;
+  }
+
+  .pk-filter-label {
+    margin: 0 14px 10px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+
+  .pk-filter-chips {
+    gap: 8px;
+    padding: 2px 14px 12px;
+    /* Fade edges so swipe is obvious */
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 16px,
+      #000 calc(100% - 16px),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 16px,
+      #000 calc(100% - 16px),
+      transparent 100%
+    );
+  }
+
+  .pk-filter-btn {
+    min-height: 42px;
+    padding: 8px 13px;
+    font-size: 12.5px;
+    gap: 6px;
+  }
+
+  .pk-filter-count {
+    min-width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
+
+  .pk-filter-empty {
+    margin: 6px 14px 16px;
+    padding: 20px 16px;
+    font-size: 14px;
+    border-radius: 14px;
+  }
+
+  .pk-filter-empty strong {
+    font-size: 16px;
+  }
+
+  .pk-card-tags {
+    top: 10px;
+    left: 10px;
+    gap: 4px;
+    max-width: calc(100% - 20px);
+  }
+
+  .pk-card-tag {
+    padding: 4px 9px !important;
+    font-size: 10px !important;
+    border-radius: 6px !important;
+  }
+}
+
+/* Narrow phones */
+@media (max-width: 380px) {
+  .pk-filter-btn {
+    min-height: 40px;
+    padding: 7px 11px;
+    font-size: 12px;
+  }
+
+  .pk-card-tag {
+    padding: 3px 7px !important;
+    font-size: 9px !important;
+  }
+}
+
+/* Prefer reduced motion: drop snap */
+@media (prefers-reduced-motion: reduce) {
+  .pk-filter-chips {
+    scroll-snap-type: none;
+  }
+}

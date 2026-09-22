@@ -27,6 +27,7 @@ Read first: sibling writer [../pickora-article/SKILL.md](../pickora-article/SKIL
 Abort publish if any fail:
 
 - Brief exists and Type 1–6 set
+- Brief lists **1–3 Chips** from [chips.md](../pickora-article/chips.md) (valid slugs only)
 - Every affiliate URL is real (reject `TODO`, `example.com`, empty)
 - Cover path exists on disk **or** user approved generate-cover in this turn
 - Slug is kebab-case and folder does not already exist (unless user said overwrite)
@@ -57,10 +58,14 @@ If no draft yet, run writer skill. Prefer existing draft in `briefs/drafts/` if 
 
 ### 4. Hubs
 
-- Prepend a new `.pk-card` on [`articles/index.html`](../../../articles/index.html) (title, excerpt, tag, cover, link)
+- Prepend a new `.pk-card` on [`articles/index.html`](../../../articles/index.html):
+  - `data-categories` = brief **Chips** (space-separated slugs from [chips.md](../pickora-article/chips.md))
+  - `.pk-card-tags` with 1–3 badges (first primary, rest `pk-card-tag--soft`); labels must match chips.md
+  - title, excerpt, cover, link
 - Homepage Latest Reviews: prepend a new `.pk-rev-card` at the top of `.pk-reviews-grid` on [`index.html`](../../../index.html). **Keep exactly 4 cards** (newest → oldest). Drop the oldest card when adding a new one.
 - If category hub has an article list/cards, add a link there when an obvious slot exists; otherwise skip without inventing layout
 - Add `<url>` to [`sitemap.xml`](../../../sitemap.xml) with today's `lastmod`
+- If publish needs a **new chip slug** not already in `articles/index.html` filter bar + `pickora-article-filters.js`, stop and update [chips.md](../pickora-article/chips.md) first (only when ≥3 bank topics need it)
 
 ### 5. Bank + progress
 

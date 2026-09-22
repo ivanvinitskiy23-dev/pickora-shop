@@ -5,7 +5,7 @@ Use the skeleton that matches the brief **Type number**. Keep chrome classes fro
 Shared blocks (every type):
 
 1. Breadcrumbs: Home › Articles › [short title]
-2. Category badge + H1 + dek
+2. Category hub badge + H1 + dek (hub name on hero; chips go on `/articles/` card — see chips.md)
 3. Intro (2 short paragraphs) + 2–3 `.pk-inline` internal links
 4. `<aside class="pk-skip">` **Who should skip this**
 5. **Our research method** (1 short paragraph from brief)

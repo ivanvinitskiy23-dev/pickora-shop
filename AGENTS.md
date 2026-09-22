@@ -5,8 +5,9 @@ Use this repo chat for **articles only** when you want drafts published to the l
 ## Skills to follow
 
 1. [`.cursor/skills/pickora-article/SKILL.md`](.cursor/skills/pickora-article/SKILL.md) — write from a research brief
-2. [`.cursor/skills/pickora-article/media.md`](.cursor/skills/pickora-article/media.md) — covers and image rules (free)
-3. [`.cursor/skills/pickora-publish/SKILL.md`](.cursor/skills/pickora-publish/SKILL.md) — wire HTML, hubs, sitemap, commit/push
+2. [`.cursor/skills/pickora-article/chips.md`](.cursor/skills/pickora-article/chips.md) — article filter chips / multi-tags
+3. [`.cursor/skills/pickora-article/media.md`](.cursor/skills/pickora-article/media.md) — covers and image rules (free)
+4. [`.cursor/skills/pickora-publish/SKILL.md`](.cursor/skills/pickora-publish/SKILL.md) — wire HTML, hubs, sitemap, commit/push
 
 ## Your commands (say these in chat)
 
@@ -20,7 +21,7 @@ Use this repo chat for **articles only** when you want drafts published to the l
 
 ## Preconditions before `выпусти`
 
-- Filled brief in `briefs/` (not `_TEMPLATE.md`)
+- Filled brief in `briefs/` (not `_TEMPLATE.md`) including **Chips** (1–3 allowed slugs)
 - Real `amzn.to` links (no `TODO`)
 - Cover decided: your photo in `briefs/media-inbox/` **or** `generate cover` **or** path already in brief
 

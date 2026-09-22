@@ -16,6 +16,7 @@ Fill every section that applies. Leave product rows blank only for pure educatio
 - **Slug:**
 - **Category:** Home & Kitchen · Consumer Electronics · Fitness & Health · Pet Supplies
 - **Category hub URL:** (e.g. `/home-kitchen/`)
+- **Chips:** (1–3 slugs from `.cursor/skills/pickora-article/chips.md` — e.g. `audio electronics` or `pets smart-home`)
 - **Priority:** P1 / P2 / P3
 - **Updated month/year:** (e.g. September 2026)
 
