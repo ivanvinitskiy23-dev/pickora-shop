@@ -4,18 +4,20 @@
 **Status values:** `idea` → `brief` → `draft` → `live`  
 **Types:** `1` Roundup · `2` Buyer guide · `3` Vs · `4` Single pick · `5` Problem · `6` Mistakes
 
-Live reviews already on site (do not re-brief):
-- `best-air-fryers-of-2026-which-one-should-you-buy` — type 1 — Home & Kitchen — **live**
-- `best-wireless-earbuds-2026-top-7-models-tested-honest-reviews` — type 1 — Consumer Electronics — **live**
-- `best-robot-vacuums-2026-top-8-models-tested-honest-reviews` — type 1 — Home & Kitchen — **live**
-- `best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews` — type 1 — Pet Supplies — **live**
-- `how-to-choose-a-microwave-2026` — type 2 — Home & Kitchen — **live**
-- `best-coffee-makers-2026` — type 1 — Home & Kitchen — **live**
-- `how-to-choose-an-espresso-machine` — type 2 — Home & Kitchen — **live**
-- `ninja-vs-cosori-air-fryer` — type 3 — Home & Kitchen — **live**
-- `how-to-choose-wireless-earbuds` — type 2 — Consumer Electronics — **live**
-- `wireless-earbud-buying-mistakes` — type 6 — Consumer Electronics — **live**
+Live reviews already on site (do not re-brief) — **all marked live / done**:
+- `best-air-fryers-of-2026-which-one-should-you-buy` — type 1 — Home & Kitchen — **live ✓**
+- `best-wireless-earbuds-2026-top-7-models-tested-honest-reviews` — type 1 — Consumer Electronics — **live ✓**
+- `best-robot-vacuums-2026-top-8-models-tested-honest-reviews` — type 1 — Home & Kitchen — **live ✓**
+- `best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews` — type 1 — Pet Supplies — **live ✓**
+- `how-to-choose-a-microwave-2026` — type 2 — Home & Kitchen — **live ✓**
+- `best-coffee-makers-2026` — type 1 — Home & Kitchen — **live ✓**
+- `how-to-choose-an-espresso-machine` — type 2 — Home & Kitchen — **live ✓**
+- `ninja-vs-cosori-air-fryer` — type 3 — Home & Kitchen — **live ✓**
+- `how-to-choose-wireless-earbuds` — type 2 — Consumer Electronics — **live ✓**
+- `wireless-earbud-buying-mistakes` — type 6 — Consumer Electronics — **live ✓**
+- `best-noise-cancelling-headphones-2026` — type 1 — Consumer Electronics — **live ✓**
 
+**Next in progress:** pick next P1 `idea` from the table below.
 Mix target for the first 50 new ideas: ~40% roundup, ~25% buyer guide, ~15% vs, ~10% single, ~10% problem/mistakes.
 
 | # | Working title | Slug idea | Type | Category | Priority | Status | Brief file |
@@ -37,7 +39,7 @@ Mix target for the first 50 new ideas: ~40% roundup, ~25% buyer guide, ~15% vs, 
 | 15 | How to choose a robot vacuum | how-to-choose-a-robot-vacuum | 2 | Home & Kitchen | P1 | idea | |
 | 16 | Best dishwashers under mid-range 2026 | best-mid-range-dishwashers-2026 | 1 | Home & Kitchen | P3 | idea | |
 | 17 | Best mattress toppers 2026 | best-mattress-toppers-2026 | 1 | Home & Kitchen | P3 | idea | |
-| 18 | Best noise cancelling headphones 2026 | best-noise-cancelling-headphones-2026 | 1 | Consumer Electronics | P1 | idea | |
+| 18 | Best noise cancelling headphones 2026 | best-noise-cancelling-headphones-2026 | 1 | Consumer Electronics | P1 | live | `briefs/2026-best-noise-cancelling-headphones.md` |
 | 19 | How to choose wireless earbuds | how-to-choose-wireless-earbuds | 2 | Consumer Electronics | P1 | live | `briefs/2026-how-to-choose-wireless-earbuds.md` |
 | 20 | AirPods vs Sony WF earbuds | airpods-vs-sony-wf-earbuds | 3 | Consumer Electronics | P1 | idea | |
 | 21 | Best Bluetooth speakers 2026 | best-bluetooth-speakers-2026 | 1 | Consumer Electronics | P1 | idea | |

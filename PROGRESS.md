@@ -76,10 +76,10 @@ Owner decisions locked:
 - [x] 5.3 Project skill `.cursor/skills/pickora-article/` (`SKILL.md` + `reference.md` + `media.md`)
 - [x] 5.4 Dry-run: `briefs/2026-how-to-choose-a-microwave.md` → `briefs/drafts/2026-how-to-choose-a-microwave-draft.md` (type 2; **not live**; TODO affiliate links)
 - [x] 5.4b Article Agent: `AGENTS.md` + `pickora-publish` skill + `.cursor/rules/pickora-articles.mdc` + `briefs/media-inbox/` + `scripts/place-article-cover.py`
-- [ ] 5.5 Live article count: **10** → target ~50 (owner fills briefs; agent drafts/publishes; 2–4/week)
+- [ ] 5.5 Live article count: **11** → target ~50 (owner fills briefs; agent drafts/publishes; 2–4/week)
 - [x] 5.6 After each live publish: update bank status, `articles/` hub, `sitemap.xml`, related blocks
 
-**Factory counts (2026-09-22):** live reviews/guides **10** · bank open · briefs on disk
+**Factory counts (2026-09-22):** live reviews/guides **11** · bank open · briefs on disk
 
 **Article Agent commands:** see `AGENTS.md` (`черновик` / `обложку` / `выпусти` / `закоммить и запушь`). Covers: owner photo in `briefs/media-inbox/` or Cursor GenerateImage → WebP via `scripts/place-article-cover.py`.
 
@@ -124,6 +124,10 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 ---
 
 ## Change Log
+
+### 2026-09-22 — Best noise cancelling headphones 2026 live
+- Live: `/best-noise-cancelling-headphones-2026/` — type 1 with Sony XM6, Bose QC Ultra 2, AirPods Max 2, CH720N, Space One.
+- Lifestyle WebPs from owner refs; microwave-style table; homepage 4 cards; SEO meta/OG/JSON-LD.
 
 ### 2026-09-22 — Wireless earbud buying mistakes live
 - Live: `/wireless-earbud-buying-mistakes/` — type 6 with 7 mistakes + soft CTAs (AirPods Pro 3, Liberty 5 Pro, Bose QC Ultra 2).
