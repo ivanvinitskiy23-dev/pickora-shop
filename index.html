@@ -1605,13 +1605,13 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 .pk-rev-cta {
     font-size: 14px;
     font-weight: 700;
-    color: var(--text-dark);
+    color: #2075d2 !important;
     text-transform: uppercase;
     letter-spacing: 1px;
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: gap 0.3s ease;
+    transition: gap 0.3s ease, color 0.3s ease;
 }
 
 .pk-arrow {
@@ -1624,7 +1624,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
     .pk-rev-card:hover {
         transform: translateY(-10px);
         box-shadow: 0 30px 60px rgba(0,0,0,0.1);
-        border-color: rgba(0,0,0,0.12);
+        border-color: #2075d2;
     }
 
     .pk-rev-card:hover img {
@@ -1632,11 +1632,12 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
     }
 
     .pk-rev-card:hover .pk-rev-title {
-        color: #000;
+        color: #2075d2 !important;
     }
 
     .pk-rev-card:hover .pk-rev-cta {
         gap: 15px;
+        color: #2075d2 !important;
     }
 
     .pk-rev-card:hover .pk-arrow {
