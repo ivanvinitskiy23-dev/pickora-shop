@@ -1695,335 +1695,49 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 <div class="elementor-element elementor-element-c6c96af e-con e-atomic-element e-flexbox-base e-ddb405b " data-id="c6c96af" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="c6c96af">
     		<div class="elementor-element elementor-element-1e6b51e elementor-widget elementor-widget-html" data-id="1e6b51e" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
 				<div class="elementor-widget-container">
-					
-
-<style>
-.pk-best-overall {
-    --primary: #111;
-    --accent-gold: #FFB800;
-    --bg-soft: #F8F9FA;
-    padding: 60px 0;
-    width: 100%;
-}
-
-.pk-best-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 60px;
-    background: #fff;
-    border-radius: 30px;
-    padding: 50px;
-    box-shadow: 0 25px 80px rgba(0,0,0,0.06);
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-}
-
-/* ДЕКОРАТИВНЫЙ ФОН */
-.pk-best-container::before {
-    content: '';
-    position: absolute;
-    top: -100px;
-    right: -100px;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(255,184,0,0.05) 0%, transparent 70%);
-    z-index: 0;
-}
-
-/* ВИЗУАЛ */
-.pk-best-visual {
-    position: relative;
-    z-index: 1;
-}
-
-.pk-image-wrap {
-    position: relative;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-    aspect-ratio: 4 / 3;
-}
-
-.pk-image-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-.pk-image-wrap:hover img {
-    transform: scale(1.05);
-}
-
-.pk-badge-floating {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background: var(--primary);
-    color: #fff;
-    padding: 10px 18px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-.pk-badge-floating svg {
-    width: 18px;
-    height: 18px;
-    color: var(--accent-gold);
-}
-
-/* КОНТЕНТ */
-.pk-best-content {
-    position: relative;
-    z-index: 1;
-}
-
-.pk-editor-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #FFF9E6;
-    color: #856404;
-    padding: 6px 14px;
-    border-radius: 50px;
-    font-size: 13px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 20px;
-}
-
-.pk-year-tag {
-    font-size: 12px;
-    font-weight: 800;
-    color: #999;
-    letter-spacing: 2px;
-    margin: 0 0 10px 0 !important;
-}
-
-.pk-product-title {
-    font-size: clamp(32px, 3.5vw, 48px) !important;
-    font-weight: 900 !important;
-    color: var(--primary) !important;
-    line-height: 1.1 !important;
-    margin-bottom: 15px !important;
-}
-
-.pk-rating-block {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 25px;
-}
-
-.pk-stars {
-    display: flex;
-    gap: 2px;
-}
-
-.pk-stars svg {
-    width: 20px;
-    height: 20px;
-    fill: var(--accent-gold);
-}
-
-.pk-rating-value {
-    font-weight: 700;
-    color: var(--primary);
-    font-size: 16px;
-}
-
-.pk-product-desc {
-    font-size: 17px !important;
-    line-height: 1.6 !important;
-    color: #555 !important;
-    margin-bottom: 25px !important;
-}
-
-.pk-benefits {
-    list-style: none !important;
-    padding: 0 !important;
-    margin: 0 0 35px 0 !important;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.pk-benefits li {
-    background: var(--bg-soft);
-    padding: 8px 16px;
-    border-radius: 50px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--primary);
-    border: 1px solid rgba(0,0,0,0.05);
-}
-
-.pk-check {
-    color: #27ae60;
-    margin-right: 5px;
-    font-weight: 900;
-}
-
-/* КНОПКА */
-.pk-cta-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--primary);
-    color: #fff !important;
-    padding: 18px 35px;
-    border-radius: 15px;
-    text-decoration: none !important;
-    font-weight: 700;
-    font-size: 16px;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-.pk-cta-button svg {
-    width: 20px;
-    height: 20px;
-    transition: transform 0.3s ease;
-}
-
-.pk-cta-button:hover {
-    transform: scale(1.03);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-}
-
-.pk-cta-button:hover svg {
-    transform: translateX(5px);
-}
-
-/* АДАПТИВНОСТЬ: ПЛАНШЕТ */
-@media (max-width: 1024px) {
-    .pk-best-container {
-        grid-template-columns: 1fr;
-        padding: 40px;
-        gap: 40px;
-    }
-    
-    .pk-best-visual {
-        max-width: 600px;
-        margin: 0 auto;
-        width: 100%;
-    }
-}
-
-/* АДАПТИВНОСТЬ: МОБИЛЬНЫЙ */
-@media (max-width: 767px) {
-    .pk-best-overall {
-        padding: 30px 10px;
-    }
-    
-    .pk-best-container {
-        padding: 25px;
-        border-radius: 20px;
-    }
-    
-    .pk-product-title {
-        font-size: 28px !important;
-    }
-    
-    .pk-product-desc {
-        font-size: 15px !important;
-    }
-    
-    .pk-cta-button {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .pk-benefits {
-        flex-direction: column;
-        gap: 8px;
-    }
-    
-    .pk-benefits li {
-        width: 100%;
-    }
-}
-</style>
 
 
-<section class="pk-best-overall-v2">
+<section class="pk-best-overall-v2" id="pk-top-picks" data-pk-top-picks-src="/assets/data/top-picks.json" tabindex="0" aria-roledescription="carousel" aria-label="Editor top picks">
     <div class="pk-best-container">
         <div class="pk-best-visual">
             <div class="pk-image-wrap">
-                <img src="https://pickora.shop/wp-content/uploads/2026/07/Ninja_Air_Fryer_Pro_on_202606131645-scaled.webp" alt="Ninja Air Fryer Pro" width="1200" height="670" loading="lazy" decoding="async">
+                <img class="pk-top-pick-img" src="/wp-content/uploads/2026/09/top-pick-ninja-dz550.webp" alt="Ninja Foodi DZ550 dual-basket air fryer with NINJA logo visible" width="1200" height="900" loading="eager" decoding="async">
                 <div class="pk-badge-floating">
-                    <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15L13.5 11.5L17 10L13.5 8.5L12 5L10.5 8.5L7 10L10.5 11.5L12 15Z" fill="currentColor"></path></svg>
-                    Top Pick
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 15L13.5 11.5L17 10L13.5 8.5L12 5L10.5 8.5L7 10L10.5 11.5L12 15Z" fill="currentColor"></path></svg>
+                    <span class="pk-badge-floating-text">Top Pick</span>
                 </div>
             </div>
+            <div class="pk-pick-thumbs" aria-label="Choose a top pick"></div>
         </div>
         <div class="pk-best-content">
-            <div class="pk-editor-label">🏆 Editor’s Choice</div>
-            <p class="pk-year-tag">BEST OVERALL 2026</p>
-            <h2 class="pk-product-title">Ninja Air Fryer Pro</h2>
-            <div class="pk-rating-block">
-                <div class="pk-stars">
-                    <!-- SVG Звезды -->
-                    <svg viewbox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path></svg>
-                    <svg viewbox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path></svg>
-                    <svg viewbox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path></svg>
-                    <svg viewbox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path></svg>
-                    <svg viewbox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path></svg>
-                </div>
-                <span class="pk-rating-num">4.9/5</span>
-            </div>
+            <div class="pk-editor-label">Editor’s Choice</div>
+            <p class="pk-pick-category">Home &amp; Kitchen</p>
+            <p class="pk-year-tag">Best overall air fryer</p>
+            <h2 class="pk-product-title">Ninja Foodi DZ550</h2>
             <ul class="pk-check-list">
-                <li><span>✓</span> Fast Cooking</li>
-                <li><span>✓</span> Easy to Clean</li>
-                <li><span>✓</span> Energy Efficient</li>
+                <li><span>✓</span> Dual baskets</li>
+                <li><span>✓</span> Family batches</li>
+                <li><span>✓</span> Probe cooking</li>
             </ul>
-            <a href="https://amzn.to/3S5KAy1" class="pk-btn-blue" rel="sponsored nofollow noopener noreferrer" target="_blank">
-                Read Full Review <span>→</span>
-            </a>
+            <div class="pk-pick-actions">
+                <a href="https://amzn.to/4vOr083" class="pk-btn-blue pk-btn-amazon" rel="sponsored nofollow noopener noreferrer" target="_blank">
+                    Check price on Amazon <span>→</span>
+                </a>
+                <a href="/best-air-fryers-of-2026-which-one-should-you-buy/" class="pk-btn-ghost pk-btn-guide">
+                    Read guide
+                </a>
+            </div>
+            <div class="pk-pick-nav">
+                <button type="button" class="pk-pick-arrow pk-pick-prev" aria-label="Previous pick">‹</button>
+                <button type="button" class="pk-pick-arrow pk-pick-next" aria-label="Next pick">›</button>
+                <div class="pk-pick-dots" role="tablist" aria-label="Top picks"></div>
+                <span class="pk-pick-count">1 / 5</span>
+            </div>
         </div>
     </div>
 </section>
-
-<style>
-:root { --pk-blue: #2075d2; --pk-dark: #111; }
-.pk-best-overall-v2 { padding: 40px 0; }
-.pk-best-container { 
-    max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; 
-    background: #fff; padding: 40px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); align-items: center;
-}
-.pk-image-wrap { border-radius: 16px; overflow: hidden; position: relative; aspect-ratio: 4/3; }
-.pk-image-wrap img { width: 100%; height: 100%; object-fit: cover; }
-.pk-badge-floating { 
-    position: absolute; bottom: 15px; right: 15px; background: var(--pk-blue); color: #fff; 
-    padding: 8px 15px; border-radius: 10px; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px;
-}
-.pk-editor-label { color: var(--pk-blue); font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-.pk-product-title { font-size: 38px !important; font-weight: 800 !important; margin: 10px 0 !important; color: var(--pk-dark) !important; }
-.pk-stars svg { width: 18px; fill: #FFB800; }
-.pk-check-list { list-style: none; padding: 0; margin: 20px 0; display: flex; gap: 15px; }
-.pk-check-list li { font-size: 14px; font-weight: 600; color: #555; }
-.pk-check-list span { color: var(--pk-blue); margin-right: 5px; }
-/* Кнопка в цвете логотипа */
-.pk-btn-blue { 
-    display: inline-flex; align-items: center; gap: 10px; background: var(--pk-blue); color: #fff !important; 
-    padding: 16px 32px; border-radius: 12px; text-decoration: none !important; font-weight: 700; transition: 0.3s;
-}
-.pk-btn-blue:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(58, 134, 225, 0.3); }
-
-@media (max-width: 768px) {
-    .pk-best-container { grid-template-columns: 1fr; padding: 20px; }
-    .pk-check-list { flex-direction: column; gap: 5px; }
-}
-</style>				</div>
+<link rel="stylesheet" href="/assets/css/pickora-top-picks.css">
+<script src="/assets/js/pickora-top-picks.js" defer></script>				</div>
 				</div>
 		
 </div>

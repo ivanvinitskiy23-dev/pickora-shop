@@ -1,0 +1,65 @@
+{
+  "updated": "2026-09-22",
+  "picks": [
+    {
+      "id": "ninja-dz550",
+      "title": "Ninja Foodi DZ550",
+      "badge": "Top Pick",
+      "tagline": "Best overall air fryer",
+      "category": "Home & Kitchen",
+      "image": "/wp-content/uploads/2026/09/top-pick-ninja-dz550.webp",
+      "imageAlt": "Ninja Foodi DZ550 dual-basket air fryer with NINJA logo visible",
+      "pros": ["Dual baskets", "Family batches", "Probe cooking"],
+      "amazonUrl": "https://amzn.to/4vOr083",
+      "guideUrl": "/best-air-fryers-of-2026-which-one-should-you-buy/"
+    },
+    {
+      "id": "sony-xm6",
+      "title": "Sony WH-1000XM6",
+      "badge": "Flagship",
+      "tagline": "Best ANC headphones",
+      "category": "Consumer Electronics",
+      "image": "/wp-content/uploads/2026/09/top-pick-sony-xm6.webp",
+      "imageAlt": "Sony WH-1000XM6 headphones with SONY logo on the stem",
+      "pros": ["Class-leading hush", "Solid multipoint", "Long battery"],
+      "amazonUrl": "https://link.amazon/B0j6GjBg9",
+      "guideUrl": "/best-noise-cancelling-headphones-2026/"
+    },
+    {
+      "id": "oxo-brew",
+      "title": "OXO Brew 9-Cup",
+      "badge": "Editor Pick",
+      "tagline": "Best overall drip coffee",
+      "category": "Home & Kitchen",
+      "image": "/wp-content/uploads/2026/09/top-pick-oxo-brew.webp",
+      "imageAlt": "OXO Brew 9-Cup coffee maker with OXO Brew logo visible",
+      "pros": ["Even extraction", "Thermal carafe", "Daily reliability"],
+      "amazonUrl": "https://link.amazon/B09wqVQq0",
+      "guideUrl": "/best-coffee-makers-2026/"
+    },
+    {
+      "id": "roborock-s8",
+      "title": "Roborock S8 Pro Ultra",
+      "badge": "Floor Pick",
+      "tagline": "Best robot vacuum",
+      "category": "Home & Kitchen",
+      "image": "/wp-content/uploads/2026/09/top-pick-roborock.webp",
+      "imageAlt": "Roborock robot vacuum with Roborock logo on top",
+      "pros": ["Self-empty dock", "Vac + mop", "Pet-hair focus"],
+      "amazonUrl": "https://amzn.to/43Efa4h",
+      "guideUrl": "/best-robot-vacuums-2026-top-8-models-tested-honest-reviews/"
+    },
+    {
+      "id": "furbo-360",
+      "title": "Furbo 360 Dog Camera",
+      "badge": "Pet Pick",
+      "tagline": "Best pet camera",
+      "category": "Pet Supplies",
+      "image": "/wp-content/uploads/2026/09/top-pick-furbo-360.webp",
+      "imageAlt": "Furbo 360 dog camera with Furbo logo near the base",
+      "pros": ["Treat tossing", "Bark alerts", "360° tracking"],
+      "amazonUrl": "https://amzn.to/4uCT4KF",
+      "guideUrl": "/best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews/"
+    }
+  ]
+}
