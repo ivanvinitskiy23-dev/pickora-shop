@@ -1,4 +1,12 @@
 User-agent: *
 Allow: /
 
+# WP leftovers from static export — not real pages; CSS/JS still load for visitors
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+Disallow: /wp-content/plugins/
+Disallow: /wp-json/
+Disallow: /xmlrpc.php
+Disallow: /feed/
+
 Sitemap: https://pickora.shop/sitemap.xml
