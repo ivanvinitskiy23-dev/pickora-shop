@@ -1,132 +1,189 @@
 /**
- * Publish Pins draft to GitHub (content/pins.json + categories/index.html).
- * Ports scripts/admin-render/render_pins.py for live site paths.
+ * Pickora Admin API — Pins (categories board) page publish helper
+ *
+ * Exports: publishPinsDraft(env, draft) -> Promise<{ ok, urls, commits, note }>
+ *
+ * Ports render_pins.py logic to JS (no Python subprocess).
+ *
+ * draft shape (from D1 key 'pins'):
+ *   filters: Array<{ id, label }>
+ *   pins:    Array<{ id, category, image, imageAlt, title, boardDesc, popupDesc,
+ *                    products, width, height }>
+ *
+ * Files written to GitHub:
+ *   content/pins.json          — raw draft JSON
+ *   categories/index.html      — filters + board grid + pinData JS replaced in-place
  */
+
 import { getFile, putFile } from "./github.js";
 
-function esc(s) {
-  return String(s ?? "")
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function absUrl(path) {
+  if (!path) return "";
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  if (path.startsWith("/")) return "https://pickora.shop" + path;
+  return path;
+}
+
+function escHtml(str) {
+  return String(str || "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
 
-function sitePath(path) {
-  if (!path) return "";
-  if (/^https?:\/\/pickora\.shop/i.test(path)) {
-    try {
-      return new URL(path).pathname;
-    } catch {
-      /* */
-    }
-  }
-  if (/^https?:\/\//i.test(path)) return path;
-  return path.startsWith("/") ? path : `/${path}`;
-}
+// ---------------------------------------------------------------------------
+// buildBoardPin — mirrors render_pins.py board_pin()
+// ---------------------------------------------------------------------------
 
-function boardPin(pin, eager) {
+export function buildBoardPin(pin, eager = false) {
   const loading = eager
     ? 'loading="eager" fetchpriority="high"'
     : 'loading="lazy"';
-  return `    <div class="pickora-board-pin" data-category="${esc(
-    pin.category
-  )}" onclick="openPin(${Number(pin.id)})">
-      <img src="${esc(sitePath(pin.image))}" alt="${esc(
-    pin.imageAlt || pin.title
-  )}" width="${pin.width || 896}" height="${pin.height || 1200}" ${loading} decoding="async">
+  const img    = escHtml(absUrl(pin.image || ""));
+  const alt    = escHtml(pin.imageAlt || pin.title || "");
+  const title  = escHtml(pin.title || "");
+  const desc   = escHtml(pin.boardDesc || pin.popupDesc || "");
+  const cat    = escHtml(pin.category || "");
+  const id     = Number(pin.id);
+  const width  = pin.width  || 896;
+  const height = pin.height || 1200;
+
+  return `    <div class="pickora-board-pin" data-category="${cat}" onclick="openPin(${id})">
+      <img src="${img}" alt="${alt}" width="${width}" height="${height}" ${loading} decoding="async">
       <div class="pickora-board-info">
-        <h4 class="pickora-board-title">${esc(pin.title)}</h4>
-        <p class="pickora-board-desc">${esc(pin.boardDesc || pin.popupDesc || "")}</p>
+        <h4 class="pickora-board-title">${title}</h4>
+        <p class="pickora-board-desc">${desc}</p>
       </div>
     </div>`;
 }
 
-function filtersHtml(filters) {
+// ---------------------------------------------------------------------------
+// buildFiltersHtml — mirrors render_pins.py filters_html()
+// ---------------------------------------------------------------------------
+
+export function buildFiltersHtml(filters) {
   return (filters || [])
     .map((f) => {
-      const cls =
-        f.id === "all" ? "pickora-filter-btn active" : "pickora-filter-btn";
-      return `    <button class="${cls}" onclick="filterPins('${esc(
-        f.id
-      )}')">${esc(f.label)}</button>`;
+      const cls = f.id === "all" ? "pickora-filter-btn active" : "pickora-filter-btn";
+      return `    <button class="${cls}" onclick="filterPins('${escHtml(f.id)}')">${escHtml(f.label)}</button>`;
     })
     .join("\n");
 }
 
-function pinDataJs(pins) {
+// ---------------------------------------------------------------------------
+// buildPinDataJs — mirrors render_pins.py pin_data_js()
+//
+// Returns a JS object literal string  { 1: {...}, 2: {...} }
+// (numeric keys are unquoted, string values use JSON quoting — valid JS)
+// ---------------------------------------------------------------------------
+
+export function buildPinDataJs(pins) {
   const obj = {};
-  for (const p of pins || []) {
+  for (const p of pins) {
     obj[String(p.id)] = {
-      title: p.title,
-      desc: p.popupDesc || p.boardDesc || "",
-      image: sitePath(p.image).startsWith("http")
-        ? sitePath(p.image)
-        : `https://pickora.shop${sitePath(p.image)}`,
+      title:    p.title || "",
+      desc:     p.popupDesc || p.boardDesc || "",
+      image:    absUrl(p.image || ""),
       products: p.products || [],
     };
   }
-  return JSON.stringify(obj, null, 2);
+  // 2-space JSON, then strip quotes around pure-numeric keys
+  let raw = JSON.stringify(obj, null, 2);
+  raw = raw.replace(/"(\d+)":/g, "$1:");
+  return raw;
 }
 
-export async function publishPinsDraft(env, draft) {
-  if (!Array.isArray(draft?.pins)) throw new Error("pins_required");
-  const commits = [];
-  const urls = [];
+// ---------------------------------------------------------------------------
+// publishPinsDraft
+// ---------------------------------------------------------------------------
 
-  const jsonPath = "content/pins.json";
+/**
+ * Full publish flow for the pins draft:
+ *   1. Write content/pins.json
+ *   2. Patch categories/index.html  (filters + board grid + pinData JS)
+ *
+ * @param {object} env   - Worker env (GITHUB_TOKEN, GITHUB_REPO, GITHUB_BRANCH)
+ * @param {object} draft - Pins draft from D1 (key 'pins')
+ * @returns {Promise<{ ok, urls, commits, note }>}
+ */
+export async function publishPinsDraft(env, draft) {
+  const pins = draft.pins;
+  if (!Array.isArray(pins)) {
+    throw new Error("draft.pins must be an array");
+  }
+
+  const commits = [];
+  const urls    = [];
+
+  // ── 1. content/pins.json ──────────────────────────────────────────────
+  const jsonPath    = "content/pins.json";
   const existingJson = await getFile(env, jsonPath);
-  const jsonResult = await putFile(
-    env,
-    jsonPath,
-    JSON.stringify(draft, null, 2) + "\n",
-    "publish(pins): content/pins.json",
+  const jsonResult   = await putFile(
+    env, jsonPath,
+    JSON.stringify(draft, null, 2),
+    "publish(pins): update content/pins.json",
     existingJson?.sha
   );
-  commits.push(jsonResult.commit?.sha);
+  commits.push(jsonResult.commit.sha);
   urls.push(jsonPath);
 
-  const pagePath = "categories/index.html";
-  const page = await getFile(env, pagePath);
-  if (!page) throw new Error("categories/index.html missing on GitHub");
+  // ── 2. categories/index.html ──────────────────────────────────────────
+  const catPath = "categories/index.html";
+  const catFile = await getFile(env, catPath);
+  if (!catFile) throw new Error("categories/index.html missing on GitHub");
 
-  let html = page.content;
-  const filt = filtersHtml(draft.filters || []);
-  const filtRe =
-    /(<div class="pickora-filters">\s*)[\s\S]*?(<\/div>\s*\n\s*<div class="pickora-board-grid")/;
-  if (!filtRe.test(html)) throw new Error("filters block not found");
-  html = html.replace(filtRe, `$1\n${filt}\n  $2`);
+  let html = catFile.content;
 
-  const board = (draft.pins || [])
-    .map((p, i) => boardPin(p, i === 0))
-    .join("\n\n");
-  const boardRe =
-    /(<div class="pickora-board-grid" id="pins-grid">\s*)[\s\S]*?(<\/div>\s*<\/div>\s*\n\s*<div class="pickora-popup-overlay")/;
-  if (!boardRe.test(html)) throw new Error("pins grid not found");
-  html = html.replace(boardRe, `$1\n${board}\n\n  $2`);
-
-  const js = pinDataJs(draft.pins);
-  const pinDataRe = /const pinData = \{[\s\S]*?\n  \};/;
-  if (!pinDataRe.test(html)) throw new Error("pinData JS object not found");
-  html = html.replace(pinDataRe, `const pinData = ${js};`);
-
-  if (html !== page.content) {
-    const r = await putFile(
-      env,
-      pagePath,
-      html,
-      "publish(pins): update Categories board",
-      page.sha
-    );
-    commits.push(r.commit?.sha);
+  // ── 2a. Replace filter buttons ────────────────────────────────────────
+  const filtersHtml = buildFiltersHtml(draft.filters || []);
+  const filtersRe   = /(<div class="pickora-filters">\s*)[\s\S]*?(<\/div>\s*\n\s*<div class="pickora-board-grid")/;
+  if (!filtersRe.test(html)) {
+    throw new Error("pickora-filters block not found in categories/index.html");
   }
-  urls.push("https://pickora.shop/categories/");
+  html = html.replace(filtersRe, (_, g1, g2) => g1 + "\n" + filtersHtml + "\n  " + g2);
+
+  // ── 2b. Replace board pins ────────────────────────────────────────────
+  const board  = pins.map((p, i) => buildBoardPin(p, i === 0)).join("\n\n");
+  const gridRe = /(<div class="pickora-board-grid" id="pins-grid">\s*)[\s\S]*?(<\/div>\s*<\/div>\s*\n\s*<div class="pickora-popup-overlay")/;
+  if (!gridRe.test(html)) {
+    throw new Error("pickora-board-grid#pins-grid not found in categories/index.html");
+  }
+  html = html.replace(gridRe, (_, g1, g2) => g1 + "\n" + board + "\n\n  " + g2);
+
+  // ── 2c. Replace pinData JS object ─────────────────────────────────────
+  const pinDataJs  = buildPinDataJs(pins);
+  // Strategy mirrors Python: capture inner of "const pinData = {…\n  };"
+  // group 2 starts with the newline so replacement matches Python's \1\n{inner}\n  \2
+  const innerRe = /(const pinData = \{)[\s\S]*?(\n  \};)/;
+  if (innerRe.test(html)) {
+    // pinDataJs = "{ … }" — strip outer braces to get inner content
+    const inner = pinDataJs.slice(1, -1);
+    html = html.replace(innerRe, (_, g1, g2) => g1 + "\n" + inner + "\n  " + g2);
+  } else {
+    // Fallback: replace whole assignment
+    html = html.replace(
+      /const pinData = \{[\s\S]*?\n  \};/,
+      `const pinData = ${pinDataJs};`
+    );
+  }
+
+  const catResult = await putFile(
+    env, catPath, html,
+    `publish(pins): update ${pins.length} pins + filters`,
+    catFile.sha
+  );
+  commits.push(catResult.commit.sha);
+  urls.push(catPath);
 
   return {
-    ok: true,
-    module: "pins",
-    commits: commits.filter(Boolean),
+    ok:   true,
     urls,
-    note: "Pins JSON + categories board published.",
+    commits,
+    note: `${pins.length} pins + ${(draft.filters || []).length} filters published to categories/index.html.`,
   };
 }

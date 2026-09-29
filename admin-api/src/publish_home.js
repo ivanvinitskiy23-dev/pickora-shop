@@ -1,65 +1,76 @@
 /**
- * Publish Home draft to GitHub Pages (content/home.json + index.html + top-picks.json).
- * Ports scripts/admin-render/render_home.py (live paths, not lab).
+ * Pickora Admin API — Home page publish helper
+ *
+ * Exports: publishHomeDraft(env, draft) -> Promise<{ ok, urls, commits, note }>
+ *
+ * Ports render_home.py logic to JS (no Python subprocess).
+ *
+ * draft shape (from D1 key 'home'):
+ *   latestReviews: Array<{ url, image, imageAlt, category, title, excerpt, badge }>  — exactly 4
+ *   topPicks: { updated, picks: Array<{ image, imageAlt, category, tagline, title,
+ *               blurb, pros, amazonUrl, guideUrl }> }
+ *
+ * Files written to GitHub:
+ *   content/home.json          — raw draft JSON
+ *   index.html                 — reviews grid + top-pick shell updated in-place
+ *   assets/data/top-picks.json — carousel JSON for the js carousel widget
  */
+
 import { getFile, putFile } from "./github.js";
 
+// Marker preserved after the 4 cards (mirrors Python KEEP_COMMENT)
 const KEEP_COMMENT =
   "        <!-- Keep exactly 4 cards: newest first. Drop the oldest when publishing a new guide. -->";
 
-function esc(s) {
-  return String(s ?? "")
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function absUrl(path) {
+  if (!path) return "";
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  if (path.startsWith("/")) return "https://pickora.shop" + path;
+  return path;
+}
+
+function escHtml(str) {
+  return String(str || "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
 
-function absUrl(path) {
-  if (!path) return "";
-  if (/^https?:\/\//i.test(path)) return path;
-  return path.startsWith("/") ? `https://pickora.shop${path}` : `https://pickora.shop/${path}`;
-}
+// ---------------------------------------------------------------------------
+// buildRevCard — mirrors render_home.py render_review_card()
+// ---------------------------------------------------------------------------
 
-function sitePath(path) {
-  if (!path) return "";
-  if (/^https?:\/\/pickora\.shop/i.test(path)) {
-    try {
-      return new URL(path).pathname;
-    } catch {
-      /* fall */
-    }
-  }
-  if (/^https?:\/\//i.test(path)) return path;
-  return path.startsWith("/") ? path : `/${path}`;
-}
+export function buildRevCard(item) {
+  const url     = escHtml(absUrl(item.url || ""));
+  const img     = escHtml(absUrl(item.image || ""));
+  const cat     = escHtml(item.category || "");
+  const title   = escHtml(item.title || "");
+  const excerpt = escHtml(item.excerpt || "");
+  const alt     = escHtml(item.imageAlt || item.title || "");
+  const badge   = item.badge || "none";
 
-function renderReviewCard(item) {
-  const url = sitePath(item.url);
-  const img = sitePath(item.image);
-  const cat = esc(item.category);
-  const title = esc(item.title);
-  const excerpt = esc(item.excerpt);
-  const alt = esc(item.imageAlt || item.title);
-  const badge = item.badge || "none";
   let badgeHtml = "";
   if (badge && badge !== "none") {
-    const label =
-      {
-        updated: "Updated",
-        "must-read": "Must read",
-        "editors-pick": "Editor's pick",
-        hot: "Hot",
-        new: "New",
-      }[badge] || badge;
-    badgeHtml = `\n                    <span class="pk-rev-badge" data-badge="${esc(
-      badge
-    )}">${esc(label)}</span>`;
+    const label = {
+      updated:      "Updated",
+      "must-read":  "Must read",
+      "editors-pick": "Editor's pick",
+      hot:          "Hot",
+      new:          "New",
+    }[badge] || badge;
+    badgeHtml =
+      `\n                    <span class="pk-rev-badge" data-badge="${escHtml(badge)}">${escHtml(label)}</span>`;
   }
+
   return `        <article class="pk-rev-card">
-            <a href="${esc(url)}" class="pk-rev-link">
+            <a href="${url}" class="pk-rev-link">
                 <div class="pk-rev-image">
-                    <img src="${esc(img)}" alt="${alt}" width="1200" height="670" loading="lazy" decoding="async">${badgeHtml}
+                    <img src="${img}" alt="${alt}" width="1200" height="670" loading="lazy" decoding="async">${badgeHtml}
                     <span class="pk-rev-category">${cat}</span>
                 </div>
                 <div class="pk-rev-content">
@@ -73,123 +84,167 @@ function renderReviewCard(item) {
         </article>`;
 }
 
-function patchTopPickShell(html, pick) {
-  let out = html;
-  out = out.replace(
-    /(<img class="pk-top-pick-img" src=")[^"]+(")/,
-    `$1${sitePath(pick.image)}$2`
-  );
-  out = out.replace(
-    /(class="pk-top-pick-img"[^>]*alt=")[^"]*(")/,
-    `$1${esc(pick.imageAlt || pick.title)}$2`
-  );
-  out = out.replace(
-    /(class="pk-pick-category">)[^<]*(<\/span>)/,
-    `$1${esc(pick.category)}$2`
-  );
-  out = out.replace(
-    /(class="pk-year-tag">)[^<]*(<\/p>)/,
-    `$1${esc(pick.tagline)}$2`
-  );
-  // Title / link / excerpt — best-effort from Python's remaining patches if present
-  if (pick.title) {
-    out = out.replace(
-      /(class="pk-top-pick-title"[^>]*>)[\s\S]*?(<\/h2>)/,
-      `$1${esc(pick.title)}$2`
-    );
-  }
-  if (pick.url) {
-    out = out.replace(
-      /(class="pk-top-pick-cta"[^>]*href=")[^"]+(")/,
-      `$1${esc(sitePath(pick.url))}$2`
-    );
-  }
-  return out;
-}
+// ---------------------------------------------------------------------------
+// replaceReviewsGrid — mirrors render_home.py replace_reviews_grid()
+// ---------------------------------------------------------------------------
 
-function replaceReviewsGrid(html, cards) {
-  const pattern = /(<div class="pk-reviews-grid">\s*)[\s\S]*?(<\/div>\s*<\/section>)/;
+export function replaceReviewsGrid(html, cards) {
   const inner = cards + "\n\n" + KEEP_COMMENT + "\n\n    ";
-  if (!pattern.test(html)) {
-    throw new Error("pk-reviews-grid marker not found in index.html");
+  const re    = /(<div class="pk-reviews-grid">\s*)[\s\S]*?(<\/div>\s*<\/section>)/;
+  const result = html.replace(re, (_, g1, g2) => g1 + "\n" + inner + g2);
+  if (result === html) {
+    throw new Error(
+      'Could not find pk-reviews-grid … </div></section> in index.html. ' +
+      'Page may be corrupt — re-seed from live index.html.'
+    );
   }
-  const newHtml = html.replace(pattern, `$1\n${inner}$2`);
-  if (!newHtml.includes(".pk-rev-card {") || !newHtml.includes(".pk-reviews-grid {")) {
-    throw new Error("Reviews style block missing after home patch — abort");
-  }
-  return newHtml;
+  return result;
 }
 
-export async function publishHomeDraft(env, draft) {
-  const reviews = draft?.latestReviews;
-  if (!Array.isArray(reviews) || reviews.length !== 4) {
-    throw new Error("latestReviews_must_be_4");
-  }
-  const commits = [];
-  const urls = [];
+// ---------------------------------------------------------------------------
+// patchTopPickShell — mirrors render_home.py patch_top_pick_shell()
+//
+// Only the first pick (index 0) is used to update the static HTML shell.
+// All picks are written to assets/data/top-picks.json for the JS carousel.
+// ---------------------------------------------------------------------------
 
-  // 1) content/home.json
-  const jsonPath = "content/home.json";
+export function patchTopPickShell(html, pick) {
+  const img      = escHtml(absUrl(pick.image || ""));
+  const alt      = escHtml(pick.imageAlt || pick.title || "");
+  const cat      = escHtml(pick.category || "");
+  const tagline  = escHtml(pick.tagline || "");
+  const title    = escHtml(pick.title || "");
+  const blurb    = escHtml(pick.blurb || "");
+  const amazon   = escHtml(pick.amazonUrl || "#");
+  const guide    = escHtml(pick.guideUrl || "#");
+
+  const pros = (pick.pros || [])
+    .map((p) => `                    <li><span>✓</span> ${escHtml(p)}</li>`)
+    .join("\n");
+
+  html = html.replace(
+    /(<img class="pk-top-pick-img" src=")[^"]+(")/, `$1${img}$2`
+  );
+  html = html.replace(
+    /(class="pk-top-pick-img"[^>]*alt=")[^"]*(")/,  `$1${alt}$2`
+  );
+  html = html.replace(
+    /(class="pk-pick-category">)[^<]*(<\/span>)/,   `$1${cat}$2`
+  );
+  html = html.replace(
+    /(class="pk-year-tag">)[^<]*(<\/p>)/,           `$1${tagline}$2`
+  );
+  html = html.replace(
+    /(class="pk-product-title">)[^<]*(<\/h3>)/,     `$1${title}$2`
+  );
+  html = html.replace(
+    /(class="pk-pick-blurb">)[^<]*(<\/p>)/,         `$1${blurb}$2`
+  );
+  html = html.replace(
+    /(<ul class="pk-check-list">)[\s\S]*?(<\/ul>)/,
+    `$1\n${pros}\n                $2`
+  );
+  html = html.replace(
+    /(class="pk-btn-blue pk-btn-amazon"[^>]*href=")[^"]+(")/, `$1${amazon}$2`
+  );
+  html = html.replace(
+    /(class="pk-btn-ghost pk-btn-guide"[^>]*href=")[^"]+(")/, `$1${guide}$2`
+  );
+
+  return html;
+}
+
+// ---------------------------------------------------------------------------
+// publishHomeDraft
+// ---------------------------------------------------------------------------
+
+/**
+ * Full publish flow for the home draft:
+ *   1. Write content/home.json
+ *   2. Patch index.html  (reviews grid + top-pick shell)
+ *   3. Write assets/data/top-picks.json
+ *
+ * @param {object} env   - Worker env (GITHUB_TOKEN, GITHUB_REPO, GITHUB_BRANCH)
+ * @param {object} draft - Home draft from D1 (key 'home')
+ * @returns {Promise<{ ok, urls, commits, note }>}
+ */
+export async function publishHomeDraft(env, draft) {
+  const reviews = draft.latestReviews;
+  if (!Array.isArray(reviews) || reviews.length !== 4) {
+    throw new Error(
+      `latestReviews must be exactly 4 items, got ${
+        Array.isArray(reviews) ? reviews.length : "non-array"
+      }`
+    );
+  }
+
+  const today   = todayISO();
+  const commits = [];
+  const urls    = [];
+
+  // ── 1. content/home.json ────────────────────────────────────────────────
+  const jsonPath    = "content/home.json";
   const existingJson = await getFile(env, jsonPath);
-  const jsonResult = await putFile(
-    env,
-    jsonPath,
-    JSON.stringify(draft, null, 2) + "\n",
-    "publish(home): content/home.json",
+  const jsonResult   = await putFile(
+    env, jsonPath,
+    JSON.stringify(draft, null, 2),
+    "publish(home): update content/home.json",
     existingJson?.sha
   );
-  commits.push(jsonResult.commit?.sha);
+  commits.push(jsonResult.commit.sha);
   urls.push(jsonPath);
 
-  // 2) index.html — reviews + first top pick shell
-  const homePath = "index.html";
-  const homeFile = await getFile(env, homePath);
-  if (!homeFile) throw new Error("index.html missing on GitHub");
-  const cards = reviews.map(renderReviewCard).join("\n\n");
-  let html = replaceReviewsGrid(homeFile.content, cards);
-  const first = draft.topPicks?.picks?.[0];
-  if (first) html = patchTopPickShell(html, first);
-  // Ensure live top-picks src (not lab path)
-  html = html.replace(
-    /data-pk-top-picks-src="[^"]+"/,
-    'data-pk-top-picks-src="/assets/data/top-picks.json"'
-  );
-  if (html !== homeFile.content) {
-    const homeResult = await putFile(
-      env,
-      homePath,
-      html,
-      "publish(home): update Latest Reviews",
-      homeFile.sha
-    );
-    commits.push(homeResult.commit?.sha);
-  }
-  urls.push("https://pickora.shop/");
+  // ── 2. index.html ─────────────────────────────────────────────────────
+  const homePage = await getFile(env, "index.html");
+  if (!homePage) throw new Error("index.html missing on GitHub");
 
-  // 3) assets/data/top-picks.json
+  const cards      = reviews.map((r) => buildRevCard(r)).join("\n\n");
+  let updatedHome  = replaceReviewsGrid(homePage.content, cards);
+
+  if (draft.topPicks?.picks?.length > 0) {
+    updatedHome = patchTopPickShell(updatedHome, draft.topPicks.picks[0]);
+  }
+
+  const homeResult = await putFile(
+    env, "index.html",
+    updatedHome,
+    "publish(home): update reviews grid + top-pick shell",
+    homePage.sha
+  );
+  commits.push(homeResult.commit.sha);
+  urls.push("index.html");
+
+  // ── 3. assets/data/top-picks.json ─────────────────────────────────────
   if (draft.topPicks) {
-    const tpPath = "assets/data/top-picks.json";
-    const payload = {
-      updated: draft.topPicks.updated,
-      picks: draft.topPicks.picks,
+    const tpPath    = "assets/data/top-picks.json";
+    const tpExisting = await getFile(env, tpPath);
+    const tpPayload  = {
+      updated: draft.topPicks.updated || today,
+      picks:   draft.topPicks.picks,
     };
-    const existingTp = await getFile(env, tpPath);
     const tpResult = await putFile(
-      env,
-      tpPath,
-      JSON.stringify(payload, null, 2) + "\n",
-      "publish(home): top-picks.json",
-      existingTp?.sha
+      env, tpPath,
+      JSON.stringify(tpPayload, null, 2) + "\n",
+      "publish(home): update top-picks.json",
+      tpExisting?.sha
     );
-    commits.push(tpResult.commit?.sha);
+    commits.push(tpResult.commit.sha);
     urls.push(tpPath);
   }
 
   return {
-    ok: true,
-    module: "home",
-    commits: commits.filter(Boolean),
+    ok:   true,
     urls,
-    note: "Home JSON + index.html reviews + top-picks published.",
+    commits,
+    note: "Reviews grid + top-pick shell patched in index.html; " +
+          "content/home.json and assets/data/top-picks.json updated.",
   };
+}
+
+// ---------------------------------------------------------------------------
+// Internal helpers
+// ---------------------------------------------------------------------------
+
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
 }

@@ -39,11 +39,13 @@ CREATE TABLE IF NOT EXISTS media_files (
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+-- Publish rollback foundation: stores commit SHAs for each successful publish.
+-- Global last-5 policy enforced by the API after each insert.
 CREATE TABLE IF NOT EXISTS publish_snapshots (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  module TEXT NOT NULL,
-  detail TEXT,
-  commit_shas TEXT NOT NULL,
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  module     TEXT NOT NULL,               -- 'article' | 'home' | 'pins' | 'products'
+  detail     TEXT,                        -- slug for article, 'home'/'pins'/'products' for others
+  commit_shas TEXT NOT NULL DEFAULT '[]', -- JSON array of GitHub commit SHAs
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   created_by TEXT
 );

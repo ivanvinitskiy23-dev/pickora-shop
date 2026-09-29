@@ -3,10 +3,10 @@
  * Auth + cloud drafts (D1) + media + publish to GitHub Pages.
  */
 import { publishArticleDraft } from "./publish_article.js";
-import { validateArticleDraft } from "./seo_gate.js";
-import { publishHomeDraft } from "./publish_home.js";
-import { publishPinsDraft } from "./publish_pins.js";
+import { publishHomeDraft }    from "./publish_home.js";
+import { publishPinsDraft }    from "./publish_pins.js";
 import { publishProductsDraft } from "./publish_products.js";
+import { validateArticleDraft } from "./seo_gate.js";
 
 const SESSION_TTL_SEC = 60 * 60 * 12;
 const RAW_CONTENT =
