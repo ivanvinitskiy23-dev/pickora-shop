@@ -205,18 +205,26 @@
         box.innerHTML = `<p class="hint">${escapeHtml(t("snapshotsEmpty"))}</p>`;
         return;
       }
+      const repo = "ivanvinitskiy23-dev/pickora-shop";
       box.innerHTML = rows
         .map((s) => {
-          const shas = (s.commit_shas || []).slice(0, 3).join(", ");
+          const shas = (s.commit_shas || []).slice(0, 3);
+          const shaLinks = shas
+            .map(
+              (sha) =>
+                `<a href="https://github.com/${repo}/commit/${escapeHtml(sha)}" target="_blank" rel="noopener" style="font-size:0.8rem;color:#888;margin-right:6px">${escapeHtml(sha.slice(0, 7))}</a>`
+            )
+            .join("");
           return `<div class="review-card panel" style="margin-bottom:8px">
             <div class="review-card-head">
               <h3>#${s.id} · ${escapeHtml(s.module)}</h3>
               <span class="pill">${escapeHtml(s.created_at || "")}</span>
             </div>
-            <p class="hint">${escapeHtml(shas || "—")}</p>
-            <button type="button" class="btn btn-primary btn-sm" data-rollback-id="${
+            <p class="hint" style="margin-bottom:4px">${escapeHtml(s.detail || "—")}</p>
+            ${shaLinks ? `<p style="margin-bottom:8px">${shaLinks}</p>` : ""}
+            <button type="button" class="btn btn-ghost btn-sm" data-rollback-id="${
               s.id
-            }" style="width:auto;margin-top:8px">${escapeHtml(
+            }" style="width:auto;margin-top:4px">${escapeHtml(
             t("btnRollback")
           )}</button>
           </div>`;
@@ -272,58 +280,86 @@
 
   /* —— Status digest —— */
   async function loadStatus() {
-    setPill("#status-status", t("loading"), null);
-    const res = await fetch(window.PK_AUTH.API + "/api/status", {
-      headers: authHeaders(),
-      credentials: "include",
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "status_failed");
     const box = $("#status-content");
-    if (!box) return;
-    const d = data.drafts || {};
-    const counts = data.articleStatusCounts || {};
-    const countLines = Object.keys(counts)
-      .map((k) => `<li><strong>${escapeHtml(k)}</strong>: ${counts[k]}</li>`)
-      .join("");
-    const audit = (data.audit || [])
-      .map(
-        (a) =>
-          `<li>${escapeHtml(a.action)} · ${escapeHtml(a.detail || "")} · ${escapeHtml(
-            a.created_at || ""
-          )}</li>`
-      )
-      .join("");
-    const snaps = (data.snapshots || [])
-      .map(
-        (s) =>
-          `<li>#${s.id} ${escapeHtml(s.module)} · ${escapeHtml(s.created_at || "")}</li>`
-      )
-      .join("");
-    box.innerHTML = `
-      <div class="panel">
-        <h3>${escapeHtml(t("statusModulesTitle"))}</h3>
-        <ul class="list-plain">
-          <li>Home: ${d.home ? escapeHtml(d.home.updatedAt || "yes") : "—"}</li>
-          <li>Pins: ${d.pins ? escapeHtml(d.pins.updatedAt || "yes") : "—"}</li>
-          <li>Products: ${d.products ? escapeHtml(d.products.updatedAt || "yes") : "—"}</li>
-        </ul>
-        <h3 style="margin-top:12px">${escapeHtml(t("statusArticlesTitle"))}</h3>
-        <ul class="list-plain">
-          <li>${escapeHtml(t("statusDraft"))}: ${(d.articles || []).length}</li>
-          ${countLines}
-        </ul>
-        <p class="hint">Media: ${data.mediaCount || 0}</p>
-      </div>
-      <div class="panel" style="margin-top:14px">
-        <h3>${escapeHtml(t("auditTitle"))}</h3>
-        <ul class="list-plain">${audit || `<li>${escapeHtml(t("auditEmpty"))}</li>`}</ul>
-      </div>
-      <div class="panel" style="margin-top:14px">
-        <h3>Snapshots</h3>
-        <ul class="list-plain">${snaps || `<li>${escapeHtml(t("snapshotsEmpty"))}</li>`}</ul>
-      </div>`;
-    setPill("#status-status", t("statusOk"), "ok");
+    setPill("#status-status", t("loading"), null);
+    try {
+      const res = await fetch(window.PK_AUTH.API + "/api/status", {
+        headers: authHeaders(),
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "status_failed");
+      if (!box) return;
+
+      const ac = data.articleCounts || {};
+      const md = data.moduleDrafts || {};
+
+      const countsHtml = `
+        <div class="review-card panel" style="margin-bottom:12px">
+          <h3 style="margin-bottom:10px">${escapeHtml(t("statusArticlesTitle"))}</h3>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <span class="pill ok">${escapeHtml(t("statusPublished"))}: ${ac.published || 0}</span>
+            <span class="pill">${escapeHtml(t("statusSeoReady"))}: ${ac.seo_ready || 0}</span>
+            <span class="pill warn">${escapeHtml(t("statusDraft"))}: ${ac.draft || 0}</span>
+          </div>
+          <p class="hint" style="margin-top:8px">${escapeHtml(t("articlesTitle"))}: ${data.totalArticles || 0}</p>
+        </div>`;
+
+      const modsHtml = `
+        <div class="review-card panel" style="margin-bottom:12px">
+          <h3 style="margin-bottom:10px">${escapeHtml(t("statusModulesTitle"))}</h3>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            ${["home", "pins", "products"]
+              .map(
+                (k) =>
+                  `<span class="pill ${md[k] ? "ok" : ""}">${k}: ${md[k] ? "✓" : "—"}</span>`
+              )
+              .join("")}
+          </div>
+        </div>`;
+
+      const auditHtml = `
+        <div class="panel" style="margin-bottom:12px">
+          <h3>${escapeHtml(t("auditTitle"))}</h3>
+          <ul class="list-plain">${
+            (data.recentAudit || []).length
+              ? data.recentAudit
+                  .map(
+                    (e) =>
+                      `<li><strong>${escapeHtml(e.action)}</strong> · ${escapeHtml(
+                        e.detail || ""
+                      )} · ${escapeHtml(e.user_login)} · <span class="hint">${escapeHtml(
+                        e.created_at
+                      )}</span></li>`
+                  )
+                  .join("")
+              : `<li class="hint">${escapeHtml(t("auditEmpty"))}</li>`
+          }</ul>
+        </div>`;
+
+      const snapHtml = `
+        <div class="panel">
+          <h3>${escapeHtml(t("rollbackTitle"))}</h3>
+          <ul class="list-plain">${
+            (data.recentSnapshots || []).length
+              ? data.recentSnapshots
+                  .map(
+                    (s) =>
+                      `<li><strong>#${s.id} ${escapeHtml(s.module)}</strong> · ${escapeHtml(
+                        s.detail || ""
+                      )} · <span class="hint">${escapeHtml(s.created_at)}</span></li>`
+                  )
+                  .join("")
+              : `<li class="hint">${escapeHtml(t("snapshotsEmpty"))}</li>`
+          }</ul>
+        </div>`;
+
+      box.innerHTML = countsHtml + modsHtml + auditHtml + snapHtml;
+      setPill("#status-status", t("statusOk"), "ok");
+    } catch (err) {
+      if (box) box.innerHTML = `<p class="hint">${escapeHtml(err.message)}</p>`;
+      setPill("#status-status", err.message, "warn");
+    }
   }
 
   /* —— Media gallery —— */
