@@ -406,7 +406,7 @@ window.PK_I18N = {
     teamInviting: "Creating…",
     teamInviteOk: "Invited: {login}",
     teamInviteFail: "Error: {err}",
-    teamRemoveConfirm: "Remove admin "{login}"?",
+    teamRemoveConfirm: 'Remove admin "{login}"?',
     teamRemoveOk: "Removed: {login}",
     teamRemoveFail: "Remove failed: {err}",
     btnRemove: "Remove",

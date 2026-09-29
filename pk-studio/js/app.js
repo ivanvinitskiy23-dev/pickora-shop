@@ -1066,6 +1066,10 @@
   }
 
   document.addEventListener("DOMContentLoaded", async () => {
+    // Never keep credentials in the URL (broken JS used to submit form as GET)
+    if (location.search) {
+      history.replaceState(null, "", location.pathname + location.hash);
+    }
     applyI18n();
     bind();
     window.PK_ARTICLES?.bind();
