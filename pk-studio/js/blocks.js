@@ -24,13 +24,13 @@ window.PK_BLOCKS = (function () {
   const CATALOG = [
     { type: "intro", labelKey: "blockIntro", icon: "¶" },
     { type: "heading", labelKey: "blockHeading", icon: "H" },
-    { type: "richtext", labelKey: "blockRichtext", icon: "✎" },
-    { type: "image", labelKey: "blockImage", icon: "▣" },
-    { type: "table", labelKey: "blockTable", icon: "▦" },
-    { type: "product", labelKey: "blockProduct", icon: "★" },
-    { type: "cta", labelKey: "blockCta", icon: "↗" },
+    { type: "richtext", labelKey: "blockRichtext", icon: "≡" },
+    { type: "image", labelKey: "blockImage", icon: "▢" },
+    { type: "table", labelKey: "blockTable", icon: "▤" },
+    { type: "product", labelKey: "blockProduct", icon: "◧" },
+    { type: "cta", labelKey: "blockCta", icon: "→" },
     { type: "faq", labelKey: "blockFaq", icon: "?" },
-    { type: "verdict", labelKey: "blockVerdict", icon: "✓" },
+    { type: "verdict", labelKey: "blockVerdict", icon: "◆" },
     { type: "html", labelKey: "blockHtml", icon: "</>" },
   ];
 
@@ -407,18 +407,33 @@ window.PK_BLOCKS = (function () {
     }
 
     function linksEditor(links) {
+      const del = esc(t("btnDeletePin"));
       const rows = (links && links.length ? links : [{ label: "", url: "" }])
         .map(
-          (l, i) => `<div class="block-link-row" data-link-row>
-          <input data-f="llabel" placeholder="Amazon" value="${esc(l.label || "")}">
-          <input data-f="lurl" placeholder="https://amzn.to/…" value="${esc(l.url || "")}">
-          <button type="button" class="btn btn-ghost btn-sm" data-link-del="${i}">×</button>
+          (l, i) => `<div class="buy-row" data-link-row>
+          <input class="buy-store" data-f="llabel" placeholder="Amazon" value="${esc(l.label || "")}">
+          <input class="buy-url" data-f="lurl" placeholder="https://amzn.to/…" value="${esc(l.url || "")}">
+          <button type="button" class="block-tool block-tool-del" data-link-del="${i}" title="${del}" aria-label="${del}">×</button>
         </div>`
         )
         .join("");
-      return `<div class="block-links">${rows}
+      return `<div class="buy-links">
+        <span class="block-legend">${esc(t("blockBuyLinks"))}</span>
+        <div class="buy-rows">${rows}</div>
         <button type="button" class="btn btn-ghost btn-sm" data-link-add>+ ${esc(t("blockAddLink"))}</button>
       </div>`;
+    }
+
+    function dropzone(src, big) {
+      return `<label class="pk-drop${big ? " pk-drop-lg" : ""}${src ? " has-img" : ""}">
+        <input type="file" accept="image/*" data-upload hidden>
+        ${src ? `<img src="${esc(src)}" alt="">` : ""}
+        <span class="pk-drop-face">
+          <span class="pk-drop-mark" aria-hidden="true">+</span>
+          <span class="pk-drop-title">${esc(t("btnUploadImage"))}</span>
+          <span class="pk-drop-hint">${esc(t("blockDropHint"))}</span>
+        </span>
+      </label>`;
     }
 
     function bodyFor(b) {
@@ -426,26 +441,21 @@ window.PK_BLOCKS = (function () {
         case "intro":
         case "richtext":
         case "verdict":
-          return `<div class="field"><label>${esc(t("blockText"))}</label>
-            <textarea data-f="text" rows="4">${esc(b.text || "")}</textarea></div>`;
+          return `<div class="block-prose">
+            <textarea class="prose-input" data-f="text" rows="5" placeholder="${esc(t("blockText"))}…">${esc(b.text || "")}</textarea>
+          </div>`;
         case "heading":
-          return `<div class="field-row">
-            <div class="field"><label>H</label>
-              <select data-f="level"><option value="2" ${b.level !== 3 ? "selected" : ""}>H2</option>
-              <option value="3" ${b.level === 3 ? "selected" : ""}>H3</option></select></div>
-            <div class="field grow"><label>${esc(t("blockText"))}</label>
-              <input data-f="text" value="${esc(b.text || "")}"></div>
+          return `<div class="block-head-edit">
+            <select class="level-pick" data-f="level" aria-label="H">
+              <option value="2" ${b.level !== 3 ? "selected" : ""}>H2</option>
+              <option value="3" ${b.level === 3 ? "selected" : ""}>H3</option>
+            </select>
+            <input class="heading-input" data-f="text" value="${esc(b.text || "")}" placeholder="${esc(t("blockText"))}…">
           </div>`;
         case "image":
-          return `<div class="block-image-row">
-            <div class="block-thumb">${
-              b.src
-                ? `<img src="${esc(b.src)}" alt="">`
-                : `<div class="review-thumb-empty">${esc(t("noImage"))}</div>`
-            }</div>
-            <div class="review-fields">
-              <label class="btn btn-ghost btn-sm upload-btn">${esc(t("btnUploadImage"))}
-                <input type="file" accept="image/*" data-upload hidden></label>
+          return `<div class="media-edit">
+            ${dropzone(b.src)}
+            <div class="media-fields">
               <div class="field"><label>URL</label><input data-f="src" value="${esc(b.src || "")}"></div>
               <div class="field"><label>Alt</label><input data-f="alt" value="${esc(b.alt || "")}"></div>
               <div class="field"><label>${esc(t("blockCaption"))}</label><input data-f="caption" value="${esc(b.caption || "")}"></div>
@@ -454,88 +464,112 @@ window.PK_BLOCKS = (function () {
         case "table": {
           const headers = b.headers || [];
           const rows = b.rows || [];
-          return `<div class="block-table-edit">
-            <div class="block-table-head">${headers
-              .map((h, i) => `<input data-th value="${esc(h)}" placeholder="Col ${i + 1}">`)
-              .join("")}
-              <button type="button" class="btn btn-ghost btn-sm" data-col-add>+col</button>
+          const del = esc(t("btnDeletePin"));
+          return `<div class="tbl-edit" style="--cols:${Math.max(headers.length, 1)}">
+            <div class="tbl-grid">
+              <div class="tbl-head">${headers
+                .map((h, i) => `<input data-th value="${esc(h)}" placeholder="Col ${i + 1}">`)
+                .join("")}<span class="tbl-sp"></span></div>
+              ${rows
+                .map(
+                  (row, ri) =>
+                    `<div class="tbl-row" data-row>${headers
+                      .map(
+                        (_, ci) =>
+                          `<input data-td value="${esc((row && row[ci]) || "")}">`
+                      )
+                      .join("")}
+                      <button type="button" class="block-tool block-tool-del" data-row-del="${ri}" title="${del}" aria-label="${del}">×</button>
+                    </div>`
+                )
+                .join("")}
             </div>
-            ${rows
-              .map(
-                (row, ri) =>
-                  `<div class="block-table-row" data-row>${headers
-                    .map(
-                      (_, ci) =>
-                        `<input data-td value="${esc((row && row[ci]) || "")}">`
-                    )
-                    .join("")}
-                    <button type="button" class="btn btn-ghost btn-sm" data-row-del="${ri}">×</button>
-                  </div>`
-              )
-              .join("")}
-            <button type="button" class="btn btn-ghost btn-sm" data-row-add>+ ${esc(t("blockAddRow"))}</button>
+            <div class="tbl-tools">
+              <button type="button" class="btn btn-ghost btn-sm" data-row-add>+ ${esc(t("blockAddRow"))}</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-col-add>+ Col</button>
+            </div>
           </div>`;
         }
         case "product":
-          return `<div class="block-product">
-            <div class="block-image-row">
-              <div class="block-thumb">${
-                b.image
-                  ? `<img src="${esc(b.image)}" alt="">`
-                  : `<div class="review-thumb-empty">${esc(t("noImage"))}</div>`
-              }</div>
-              <div class="review-fields">
-                <label class="btn btn-ghost btn-sm upload-btn">${esc(t("btnUploadImage"))}
-                  <input type="file" accept="image/*" data-upload hidden></label>
-                <div class="field"><label>URL</label><input data-f="image" value="${esc(b.image || "")}"></div>
-                <div class="field"><label>Alt</label><input data-f="imageAlt" value="${esc(b.imageAlt || "")}"></div>
+          return `<div class="prod-edit">
+            <div class="prod-media">
+              ${dropzone(b.image, true)}
+              <div class="field"><label>URL</label><input data-f="image" value="${esc(b.image || "")}"></div>
+              <div class="field"><label>Alt</label><input data-f="imageAlt" value="${esc(b.imageAlt || "")}"></div>
+            </div>
+            <div class="prod-fields">
+              <div class="field-row">
+                <div class="field grow"><label>${esc(t("labelTitle"))}</label><input data-f="title" value="${esc(b.title || "")}"></div>
+                <div class="field"><label>${esc(t("blockRole"))}</label><input data-f="role" placeholder="Best overall" value="${esc(b.role || "")}"></div>
               </div>
+              <div class="field"><label>${esc(t("labelExcerpt"))}</label><textarea data-f="description" rows="3">${esc(b.description || "")}</textarea></div>
+              <div class="pc-grid">
+                <div class="pc-col pc-pro">
+                  <span class="block-legend"><span class="pc-mark" aria-hidden="true">+</span>${esc(t("labelPros"))}</span>
+                  <textarea data-f="pros" rows="4">${esc((b.pros || []).join("\n"))}</textarea>
+                </div>
+                <div class="pc-col pc-con">
+                  <span class="block-legend"><span class="pc-mark" aria-hidden="true">−</span>${esc(t("labelCons"))}</span>
+                  <textarea data-f="cons" rows="4">${esc((b.cons || []).join("\n"))}</textarea>
+                </div>
+              </div>
+              <div class="field"><label>${esc(t("labelVerdict"))}</label><textarea data-f="verdict" rows="2">${esc(b.verdict || "")}</textarea></div>
+              ${linksEditor(b.links)}
             </div>
-            <div class="field-row">
-              <div class="field grow"><label>${esc(t("labelTitle"))}</label><input data-f="title" value="${esc(b.title || "")}"></div>
-              <div class="field"><label>${esc(t("blockRole"))}</label><input data-f="role" placeholder="Best overall" value="${esc(b.role || "")}"></div>
-            </div>
-            <div class="field"><label>${esc(t("labelExcerpt"))}</label><textarea data-f="description" rows="3">${esc(b.description || "")}</textarea></div>
-            <div class="field-row">
-              <div class="field grow"><label>${esc(t("labelPros"))}</label><textarea data-f="pros" rows="3">${esc((b.pros || []).join("\n"))}</textarea></div>
-              <div class="field grow"><label>${esc(t("labelCons"))}</label><textarea data-f="cons" rows="3">${esc((b.cons || []).join("\n"))}</textarea></div>
-            </div>
-            <div class="field"><label>${esc(t("labelVerdict"))}</label><textarea data-f="verdict" rows="2">${esc(b.verdict || "")}</textarea></div>
-            <label class="field-label">${esc(t("blockBuyLinks"))}</label>
-            ${linksEditor(b.links)}
           </div>`;
         case "cta":
-          return `<div class="field"><label>${esc(t("blockCtaTitle"))}</label><input data-f="title" value="${esc(b.title || "")}"></div>
-            <label class="field-label">${esc(t("blockBuyLinks"))}</label>
-            ${linksEditor(b.links)}`;
-        case "faq":
-          return `<div class="block-faq">${(b.items || [])
-            .map(
-              (it, i) => `<div class="block-faq-row" data-faq-row>
-              <div class="field"><label>Q${i + 1}</label><input data-f="q" value="${esc(it.q || "")}"></div>
-              <div class="field"><label>A</label><textarea data-f="a" rows="2">${esc(it.a || "")}</textarea></div>
-              <button type="button" class="btn btn-ghost btn-sm" data-faq-del="${i}">×</button>
+          return `<div class="cta-edit">
+            <div class="field"><label>${esc(t("blockCtaTitle"))}</label><input data-f="title" value="${esc(b.title || "")}"></div>
+            ${linksEditor(b.links)}
+          </div>`;
+        case "faq": {
+          const del = esc(t("btnDeletePin"));
+          return `<div class="faq-edit">
+            ${(b.items || [])
+              .map(
+                (it, i) => `<div class="faq-row" data-faq-row>
+              <span class="faq-num" aria-hidden="true">${i + 1}</span>
+              <div class="faq-fields">
+                <input class="faq-q" data-f="q" value="${esc(it.q || "")}" placeholder="Q${i + 1}">
+                <textarea class="faq-a" data-f="a" rows="2" placeholder="A">${esc(it.a || "")}</textarea>
+              </div>
+              <button type="button" class="block-tool block-tool-del" data-faq-del="${i}" title="${del}" aria-label="${del}">×</button>
             </div>`
-            )
-            .join("")}
+              )
+              .join("")}
             <button type="button" class="btn btn-ghost btn-sm" data-faq-add>+ FAQ</button>
           </div>`;
+        }
         case "html":
-          return `<div class="field"><label>HTML</label><textarea data-f="html" rows="6" class="mono">${esc(b.html || "")}</textarea></div>`;
+          return `<div class="html-edit">
+            <span class="block-legend">HTML</span>
+            <textarea data-f="html" rows="8" class="mono">${esc(b.html || "")}</textarea>
+          </div>`;
         default:
           return "";
       }
     }
 
-    function catalogBar(afterIndex) {
-      return `<div class="block-add-bar" data-after="${afterIndex}">
-        <span class="block-add-label">${esc(t("blockAdd"))}</span>
-        ${CATALOG.map(
-          (c) =>
-            `<button type="button" class="btn btn-ghost btn-sm" data-add-type="${c.type}" data-after="${afterIndex}">${esc(
-              c.icon
-            )} ${esc(t(c.labelKey))}</button>`
-        ).join("")}
+    /** Type picker: a compact popover sheet, opened from one "+" affordance. */
+    function catalogBar(afterIndex, variant) {
+      const main = variant === "main";
+      const addLabel = esc(t("blockAdd"));
+      const items = CATALOG.map(
+        (c) => `<button type="button" class="pick-item" data-add-type="${c.type}" data-after="${afterIndex}">
+            <span class="pick-mark" aria-hidden="true">${esc(c.icon)}</span>
+            <span class="pick-name">${esc(t(c.labelKey))}</span>
+          </button>`
+      ).join("");
+      return `<div class="block-seam${main ? " block-seam-main" : ""}" data-after="${afterIndex}">
+        <details class="block-insert">
+          <summary class="${main ? "block-insert-cta" : "block-seam-btn"}" title="${addLabel}" aria-label="${addLabel}">${
+            main ? "+ " + addLabel : "+"
+          }</summary>
+          <div class="block-picker">
+            <span class="block-picker-title">${esc(t("blockPickType"))}</span>
+            <div class="block-picker-grid">${items}</div>
+          </div>
+        </details>
       </div>`;
     }
 
@@ -545,26 +579,51 @@ window.PK_BLOCKS = (function () {
         const c = CATALOG.find((x) => x.type === type);
         return c ? t(c.labelKey) : type;
       };
+      const typeMark = (type) => {
+        const c = CATALOG.find((x) => x.type === type);
+        return c ? c.icon : "•";
+      };
+      const up = esc(t("blockMoveUp"));
+      const down = esc(t("blockMoveDown"));
+      const del = esc(t("btnDeletePin"));
       container.innerHTML =
-        `<div class="blocks-canvas">` +
-        list
-          .map(
-            (b, i) => `<div class="block-card" data-block-id="${esc(b.id)}" data-block-type="${esc(b.type)}">
-            <div class="block-card-head">
-              <strong>${esc(typeLabel(b.type))}</strong>
-              <div class="block-card-actions">
-                <button type="button" class="btn btn-ghost btn-sm" data-up="${i}" ${i === 0 ? "disabled" : ""}>↑</button>
-                <button type="button" class="btn btn-ghost btn-sm" data-down="${i}" ${i === list.length - 1 ? "disabled" : ""}>↓</button>
-                <button type="button" class="btn btn-ghost btn-sm" data-del="${i}">${esc(t("btnDeletePin"))}</button>
+        `<div class="blocks-canvas"><div class="blocks-doc">` +
+        (list.length
+          ? list
+              .map(
+                (b, i) => `<article class="block-row" data-block-id="${esc(b.id)}" data-block-type="${esc(b.type)}">
+            <header class="block-bar">
+              <span class="block-seq">${String(i + 1).padStart(2, "0")}</span>
+              <span class="block-mark" aria-hidden="true">${esc(typeMark(b.type))}</span>
+              <span class="block-kind">${esc(typeLabel(b.type))}</span>
+              <div class="block-tools">
+                <button type="button" class="block-tool" data-up="${i}" title="${up}" aria-label="${up}" ${i === 0 ? "disabled" : ""}>↑</button>
+                <button type="button" class="block-tool" data-down="${i}" title="${down}" aria-label="${down}" ${i === list.length - 1 ? "disabled" : ""}>↓</button>
+                <button type="button" class="block-tool block-tool-del" data-del="${i}" title="${del}" aria-label="${del}">×</button>
               </div>
-            </div>
-            <div class="block-card-body">${bodyFor(b)}</div>
-          </div>
+            </header>
+            <div class="block-body">${bodyFor(b)}</div>
+          </article>
           ${catalogBar(i)}`
-          )
-          .join("") +
-        (list.length ? "" : catalogBar(-1)) +
+              )
+              .join("")
+          : `<div class="blocks-empty">
+              <span class="blocks-empty-mark" aria-hidden="true">+</span>
+              <p>${esc(t("blockPickType"))}</p>
+            </div>`) +
+        `</div>` +
+        catalogBar(list.length ? list.length - 1 : -1, "main") +
         `</div>`;
+
+      /* only one picker open at a time */
+      container.querySelectorAll("details.block-insert").forEach((d) => {
+        d.addEventListener("toggle", () => {
+          if (!d.open) return;
+          container.querySelectorAll("details.block-insert[open]").forEach((other) => {
+            if (other !== d) other.open = false;
+          });
+        });
+      });
 
       container.querySelectorAll("[data-up]").forEach((btn) => {
         btn.addEventListener("click", () => {
