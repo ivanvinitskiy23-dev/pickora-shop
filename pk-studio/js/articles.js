@@ -1,4 +1,4 @@
-/** Pickora Studio — Articles wizard (Phase 3) */
+/** Pickora Studio — Articles wizard with block constructor */
 (function () {
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -6,10 +6,11 @@
   let liveArticles = [];
   let drafts = [];
   let current = null;
-  let lang = () => localStorage.getItem("pk_studio_lang") || "ru";
+  let blocksApi = null;
 
   function t(key) {
-    const pack = window.PK_I18N[lang()] || window.PK_I18N.ru;
+    const lang = localStorage.getItem("pk_studio_lang") || "ru";
+    const pack = window.PK_I18N[lang] || window.PK_I18N.ru;
     return pack[key] || window.PK_I18N.en[key] || key;
   }
 
@@ -28,10 +29,11 @@
   }
 
   function emptyDraft() {
+    const type = 2;
     return {
       slug: "",
       status: "draft",
-      type: 2,
+      type,
       title: "",
       metaDescription: "",
       h1: "",
@@ -42,9 +44,10 @@
       coverImage: "",
       coverAlt: "",
       canonical: "",
-      affiliateLinks: [""],
+      affiliateLinks: [],
       internalLinks: ["/articles/", "/home-kitchen/"],
       bodyHtml: "",
+      blocks: window.PK_BLOCKS.starterBlocks(type),
       faq: [],
       updatedAt: null,
       seoReadyAt: null,
@@ -90,14 +93,24 @@
       </div>`;
   }
 
+  function syncBlocksEditor(blocks) {
+    const host = $("#art-blocks");
+    if (!host || !window.PK_BLOCKS) return;
+    blocksApi = window.PK_BLOCKS.renderEditor(host, blocks || [], (next) => {
+      if (!current) current = emptyDraft();
+      current.blocks = next;
+      current.bodyHtml = window.PK_BLOCKS.compileBlocksToHtml(next);
+      current.affiliateLinks = window.PK_BLOCKS.collectAffiliateLinks(next, []);
+      if ($("#art-affiliate")) {
+        $("#art-affiliate").value = (current.affiliateLinks || []).join("\n");
+      }
+    });
+  }
+
   function readForm() {
     if (!current) current = emptyDraft();
     const chipsRaw = ($("#art-chips")?.value || "")
       .split(/[\s,]+/)
-      .map((x) => x.trim())
-      .filter(Boolean);
-    const aff = ($("#art-affiliate")?.value || "")
-      .split("\n")
       .map((x) => x.trim())
       .filter(Boolean);
     const intl = ($("#art-internal")?.value || "")
@@ -105,6 +118,15 @@
       .map((x) => x.trim())
       .filter(Boolean);
     const slug = ($("#art-slug")?.value || "").trim().toLowerCase();
+    const blocks = blocksApi?.getBlocks?.() || current.blocks || [];
+    const bodyHtml = window.PK_BLOCKS.compileBlocksToHtml(blocks);
+    const affiliateLinks = window.PK_BLOCKS.collectAffiliateLinks(
+      blocks,
+      ($("#art-affiliate")?.value || "")
+        .split("\n")
+        .map((x) => x.trim())
+        .filter(Boolean)
+    );
     current = {
       ...current,
       slug,
@@ -119,9 +141,10 @@
       coverImage: ($("#art-cover")?.value || "").trim(),
       coverAlt: ($("#art-cover-alt")?.value || "").trim(),
       canonical: slug ? `https://pickora.shop/${slug}/` : "",
-      affiliateLinks: aff,
+      affiliateLinks,
       internalLinks: intl,
-      bodyHtml: $("#art-body")?.value || "",
+      blocks,
+      bodyHtml,
       status: current.status || "draft",
     };
     return current;
@@ -129,6 +152,7 @@
 
   function fillForm(d) {
     current = { ...emptyDraft(), ...d };
+    current.blocks = window.PK_BLOCKS.ensureBlocks(current);
     $("#art-slug").value = current.slug || "";
     $("#art-type").value = String(current.type || 2);
     $("#art-title").value = current.title || "";
@@ -142,7 +166,6 @@
     $("#art-cover-alt").value = current.coverAlt || "";
     $("#art-affiliate").value = (current.affiliateLinks || []).join("\n");
     $("#art-internal").value = (current.internalLinks || []).join("\n");
-    $("#art-body").value = current.bodyHtml || "";
     $("#art-status-pill").textContent = current.status || "draft";
     renderGate(null);
     const thumb = $("#art-cover-preview");
@@ -153,6 +176,7 @@
         thumb.innerHTML = `<div class="review-thumb-empty">${escapeAttr(t("noImage"))}</div>`;
       }
     }
+    syncBlocksEditor(current.blocks);
   }
 
   function renderLists() {
@@ -321,6 +345,21 @@
       const f = $("#art-cover-file").files?.[0];
       if (f) uploadCover(f);
       $("#art-cover-file").value = "";
+    });
+    $("#art-type")?.addEventListener("change", () => {
+      if (!current) return;
+      const nextType = Number($("#art-type").value || 2);
+      const hasContent = (current.blocks || []).some((b) => {
+        if (b.type === "product") return !!(b.title || b.image || b.description);
+        if (b.type === "html") return !!(b.html || "").trim();
+        if (b.type === "table") return (b.rows || []).some((r) => (r || []).some(Boolean));
+        return !!(b.text || "").trim();
+      });
+      if (!hasContent || confirm(t("blockResetStarter"))) {
+        current.type = nextType;
+        current.blocks = window.PK_BLOCKS.starterBlocks(nextType);
+        syncBlocksEditor(current.blocks);
+      }
     });
   }
 

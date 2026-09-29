@@ -335,6 +335,139 @@ ${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }, null, 2)
  * @param {object} draft - Published article draft
  * @returns {string} Complete HTML document
  */
+/**
+ * Compile Studio block constructor JSON → article body HTML.
+ * Mirrors pk-studio/js/blocks.js compileBlocksToHtml.
+ */
+export function compileBlocksToHtml(blocks) {
+  if (!Array.isArray(blocks) || !blocks.length) return "";
+
+  const esc = escHtml;
+  const paragraphs = (text) =>
+    String(text || "")
+      .split(/\n{2,}/)
+      .map((p) => p.trim())
+      .filter(Boolean)
+      .map((p) => `<p>${esc(p).replace(/\n/g, "<br>")}</p>`)
+      .join("\n");
+  const listHtml = (items, tag) => {
+    const lis = (items || [])
+      .map((x) => String(x || "").trim())
+      .filter(Boolean)
+      .map((x) => `<li>${esc(x)}</li>`)
+      .join("");
+    return lis ? `<${tag}>${lis}</${tag}>` : "";
+  };
+
+  return blocks
+    .map((b) => {
+      if (!b || !b.type) return "";
+      switch (b.type) {
+        case "intro":
+          return `<div class="pk-block pk-block-intro">${paragraphs(b.text)}</div>`;
+        case "heading": {
+          const lv = b.level === 3 ? 3 : 2;
+          return `<h${lv} class="pk-block-h">${esc(b.text)}</h${lv}>`;
+        }
+        case "richtext":
+          return `<div class="pk-block pk-block-text">${paragraphs(b.text)}</div>`;
+        case "image":
+          if (!b.src) return "";
+          return `<figure class="pk-block pk-block-image">
+  <img src="${escAttr(b.src)}" alt="${escAttr(b.alt || "")}" loading="lazy">
+  ${b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : ""}
+</figure>`;
+        case "table": {
+          const headers = Array.isArray(b.headers) ? b.headers : [];
+          const rows = Array.isArray(b.rows) ? b.rows : [];
+          if (!headers.length) return "";
+          const thead = `<tr>${headers.map((h) => `<th>${esc(h)}</th>`).join("")}</tr>`;
+          const tbody = rows
+            .map(
+              (row) =>
+                `<tr>${headers
+                  .map((_, i) => `<td>${esc((row && row[i]) || "")}</td>`)
+                  .join("")}</tr>`
+            )
+            .join("\n");
+          return `<div class="pk-block pk-block-table"><table><thead>${thead}</thead><tbody>${tbody}</tbody></table></div>`;
+        }
+        case "product": {
+          const links = (b.links || [])
+            .filter((l) => l && String(l.url || "").trim())
+            .map(
+              (l) =>
+                `<a class="pk-aff-btn" href="${escAttr(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
+                  l.label || "Buy"
+                )}</a>`
+            )
+            .join("\n");
+          return `<article class="pk-block pk-product-card">
+  ${
+    b.image
+      ? `<div class="pk-product-media"><img src="${escAttr(b.image)}" alt="${escAttr(
+          b.imageAlt || b.title || ""
+        )}" loading="lazy"></div>`
+      : ""
+  }
+  <div class="pk-product-body">
+    ${b.role ? `<span class="pk-aff-card-role">${esc(b.role)}</span>` : ""}
+    <h3>${esc(b.title || "Product")}</h3>
+    ${paragraphs(b.description)}
+    ${listHtml(b.pros, "ul")}
+    ${
+      b.cons && b.cons.filter(Boolean).length
+        ? `<p><strong>Skip if:</strong></p>${listHtml(b.cons, "ul")}`
+        : ""
+    }
+    ${b.verdict ? `<div class="pk-verdict">${paragraphs(b.verdict)}</div>` : ""}
+    ${links ? `<div class="pk-product-ctas">${links}</div>` : ""}
+  </div>
+</article>`;
+        }
+        case "cta": {
+          const links = (b.links || [])
+            .filter((l) => l && String(l.url || "").trim())
+            .map(
+              (l) =>
+                `<a class="pk-aff-btn" href="${escAttr(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
+                  l.label || "Buy"
+                )}</a>`
+            )
+            .join("\n");
+          if (!links) return "";
+          return `<div class="pk-block pk-block-cta">
+  ${b.title ? `<p class="pk-cta-title">${esc(b.title)}</p>` : ""}
+  <div class="pk-product-ctas">${links}</div>
+</div>`;
+        }
+        case "faq": {
+          const items = (b.items || []).filter((it) => it && (it.q || it.a));
+          if (!items.length) return "";
+          return `<div class="pk-faq-section pk-block">
+  <h2>Frequently Asked Questions</h2>
+  ${items
+    .map(
+      (it) => `  <div class="pk-faq-item">
+    <p class="pk-faq-q">${esc(it.q || "")}</p>
+    <div class="pk-faq-a">${paragraphs(it.a)}</div>
+  </div>`
+    )
+    .join("\n")}
+</div>`;
+        }
+        case "verdict":
+          return `<div class="pk-block pk-verdict pk-block-verdict">${paragraphs(b.text)}</div>`;
+        case "html":
+          return String(b.html || "");
+        default:
+          return "";
+      }
+    })
+    .filter(Boolean)
+    .join("\n\n");
+}
+
 export function buildArticlePage(draft) {
   const slug        = String(draft.slug || "");
   const canonical   = String(draft.canonical || `https://pickora.shop/${slug}/`);
@@ -348,13 +481,20 @@ export function buildArticlePage(draft) {
   const chips       = (Array.isArray(draft.chips) ? draft.chips : []).filter((c) => CHIP_LABELS[c]).slice(0, 3);
   const hubCategory = String(draft.hubCategory || "Articles");
   const hubUrl      = String(draft.hubUrl     || "https://pickora.shop/articles/");
-  const bodyHtml    = String(draft.bodyHtml   || "");
+  const hasBlocks   = Array.isArray(draft.blocks) && draft.blocks.length > 0;
+  const bodyHtml    = hasBlocks
+    ? compileBlocksToHtml(draft.blocks)
+    : String(draft.bodyHtml || "");
+  const hasBlockProducts = hasBlocks && draft.blocks.some((b) => b && (b.type === "product" || b.type === "cta"));
+  const hasBlockFaq = hasBlocks && draft.blocks.some((b) => b && b.type === "faq");
   const pubDate     = String(draft.publishedAt || todayISO()).slice(0, 10);
   const year        = new Date().getFullYear();
 
   const jsonLd          = _buildArticleJsonLd(draft, canonical, pubDate);
-  const affiliateSection = _buildAffiliateSectionHtml(draft.affiliateLinks);
-  const faqSection       = _buildFaqSectionHtml(draft.faq);
+  const affiliateSection = hasBlockProducts
+    ? ""
+    : _buildAffiliateSectionHtml(draft.affiliateLinks);
+  const faqSection       = hasBlockFaq ? "" : _buildFaqSectionHtml(draft.faq);
 
   const coverHtml = coverImage
     ? `<div class="pk-article-cover-wrap">
@@ -638,6 +778,31 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
 }
 .pk-aff-btn:hover { background: #1a63b5; }
 @media (max-width: 600px) { .pk-aff-card { flex-direction: column; align-items: stretch; } }
+
+/* ── Block constructor product cards ── */
+.pk-product-card {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 22px;
+  max-width: 1140px;
+  margin: 28px auto;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fff;
+  box-sizing: border-box;
+}
+.pk-product-media img { width: 100%; height: auto; border-radius: 10px; display: block; }
+.pk-product-body h3 { margin: 0 0 10px; font-size: 1.25rem; color: #15223B; }
+.pk-product-ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.pk-block-table { max-width: 1140px; margin: 24px auto; padding: 0 20px; box-sizing: border-box; }
+.pk-block-image { max-width: 960px; margin: 24px auto; padding: 0 20px; }
+.pk-block-image img { width: 100%; height: auto; border-radius: 12px; }
+.pk-block-cta { max-width: 760px; margin: 24px auto; padding: 16px 20px; text-align: center; }
+.pk-cta-title { font-weight: 700; margin: 0 0 12px; }
+@media (max-width: 700px) {
+  .pk-product-card { grid-template-columns: 1fr; }
+}
 
 /* ── FAQ section ── */
 .pk-faq-section { max-width: 760px; margin: 40px auto 8px; padding: 0 24px; box-sizing: border-box; }

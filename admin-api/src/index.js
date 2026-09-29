@@ -2,7 +2,7 @@
  * Pickora Admin API — Cloudflare Worker
  * Auth + cloud drafts (D1) + media + publish to GitHub Pages.
  */
-import { publishArticleDraft } from "./publish_article.js";
+import { publishArticleDraft, compileBlocksToHtml } from "./publish_article.js";
 import { publishHomeDraft }    from "./publish_home.js";
 import { publishPinsDraft }    from "./publish_pins.js";
 import { publishProductsDraft } from "./publish_products.js";
@@ -261,6 +261,21 @@ async function saveArticleDraft(env, payload, user) {
     updatedAt: new Date().toISOString(),
     status: payload.status || "draft",
   };
+  if (Array.isArray(draft.blocks) && draft.blocks.length) {
+    draft.bodyHtml = compileBlocksToHtml(draft.blocks);
+    // Collect amzn links from product/cta blocks into affiliateLinks
+    const fromBlocks = [];
+    draft.blocks.forEach((b) => {
+      if (b && (b.type === "product" || b.type === "cta")) {
+        (b.links || []).forEach((l) => {
+          const u = String(l?.url || "").trim();
+          if (u && !fromBlocks.includes(u)) fromBlocks.push(u);
+        });
+      }
+    });
+    const existing = Array.isArray(draft.affiliateLinks) ? draft.affiliateLinks : [];
+    draft.affiliateLinks = [...new Set([...existing, ...fromBlocks].map((u) => String(u).trim()).filter(Boolean))];
+  }
   if (draft.status === "seo_ready") {
     const gate = validateArticleDraft(draft);
     if (!gate.ok) {

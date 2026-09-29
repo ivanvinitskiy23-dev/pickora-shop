@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/pk-studio/css/studio.css?v=20260929u">
+  <link rel="stylesheet" href="/pk-studio/css/studio.css?v=20260929b">
 </head>
 <body>
   
@@ -176,7 +176,8 @@
           <h2 data-i18n="articlesWizardTitle">Черновик статьи</h2>
           <p><span class="pill" id="art-status-pill">draft</span></p>
         </div>
-        <div class="panel">
+
+        <div class="panel art-meta-panel">
           <div class="review-card-body">
             <div class="review-thumb-col">
               <div class="review-thumb" id="art-cover-preview"></div>
@@ -215,18 +216,26 @@
               </div>
               <div class="field"><label>Hub URL</label><input id="art-hub-url" placeholder="/home-kitchen/"></div>
               <div class="field"><label data-i18n="labelChips">Chips (1–3)</label><input id="art-chips" placeholder="kitchen cleaning"></div>
-              <div class="field"><label data-i18n="labelAmazon">Affiliate links</label><textarea id="art-affiliate" rows="3" placeholder="https://amzn.to/…"></textarea></div>
               <div class="field"><label data-i18n="labelInternal">Internal links</label><textarea id="art-internal" rows="2"></textarea></div>
-              <div class="field"><label data-i18n="labelBody">Body HTML</label><textarea id="art-body" rows="10"></textarea></div>
+              <div class="field pk-hidden"><label data-i18n="labelAmazon">Affiliate links</label><textarea id="art-affiliate" rows="3" placeholder="https://amzn.to/…"></textarea></div>
             </div>
           </div>
-          <div id="articles-gate"></div>
-          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-            <button type="button" class="btn btn-primary" id="btn-article-save" style="width:auto;padding-inline:22px" data-i18n="btnSaveDraft">Сохранить черновик</button>
-            <button type="button" class="btn btn-ghost" id="btn-article-gate" style="width:auto" data-i18n="btnRunSeoGate">Проверить SEO-шлюз</button>
-            <button type="button" class="btn btn-primary" id="btn-article-seo-ready" style="width:auto;padding-inline:22px" data-i18n="btnMarkSeoReady">SEO ready</button>
-            <button type="button" class="btn btn-ghost" id="btn-article-cancel" style="width:auto" data-i18n="btnCancel">Назад к списку</button>
+        </div>
+
+        <div class="art-blocks-section">
+          <div class="dash-hero" style="margin-bottom:12px;padding-bottom:12px">
+            <h3 data-i18n="blocksTitle">Конструктор статьи</h3>
+            <p class="hint" data-i18n="blocksDek">Собирайте блоки: вступление, таблица, карточки товаров с фото и кнопками Amazon / Walmart, FAQ, вердикт.</p>
           </div>
+          <div id="art-blocks" class="blocks-host"></div>
+        </div>
+
+        <div id="articles-gate"></div>
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+          <button type="button" class="btn btn-primary" id="btn-article-save" style="width:auto;padding-inline:22px" data-i18n="btnSaveDraft">Сохранить черновик</button>
+          <button type="button" class="btn btn-ghost" id="btn-article-gate" style="width:auto" data-i18n="btnRunSeoGate">Проверить SEO-шлюз</button>
+          <button type="button" class="btn btn-primary" id="btn-article-seo-ready" style="width:auto;padding-inline:22px" data-i18n="btnMarkSeoReady">SEO ready</button>
+          <button type="button" class="btn btn-ghost" id="btn-article-cancel" style="width:auto" data-i18n="btnCancel">Назад к списку</button>
         </div>
       </div>
       </section>
@@ -362,12 +371,13 @@
     </div>
   </div>
 
-  <script src="/pk-studio/js/i18n.js?v=20260929u"></script>
-  <script src="/pk-studio/js/seo-gate.js?v=20260929u"></script>
-  <script src="/pk-studio/js/auth.js?v=20260929u"></script>
-  <script src="/pk-studio/js/media.js?v=20260929u"></script>
-  <script src="/pk-studio/js/articles.js?v=20260929u"></script>
-  <script src="/pk-studio/js/ops.js?v=20260929u"></script>
-  <script src="/pk-studio/js/app.js?v=20260929u"></script>
+  <script src="/pk-studio/js/i18n.js?v=20260929b"></script>
+  <script src="/pk-studio/js/seo-gate.js?v=20260929b"></script>
+  <script src="/pk-studio/js/auth.js?v=20260929b"></script>
+  <script src="/pk-studio/js/media.js?v=20260929b"></script>
+  <script src="/pk-studio/js/blocks.js?v=20260929b"></script>
+  <script src="/pk-studio/js/articles.js?v=20260929b"></script>
+  <script src="/pk-studio/js/ops.js?v=20260929b"></script>
+  <script src="/pk-studio/js/app.js?v=20260929b"></script>
 </body>
 </html>

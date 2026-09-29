@@ -98,7 +98,18 @@
       });
     }
 
-    const links = Array.isArray(d.affiliateLinks) ? d.affiliateLinks : [];
+    const linksFromField = Array.isArray(d.affiliateLinks) ? d.affiliateLinks : [];
+    let linksFromBlocks = [];
+    if (Array.isArray(d.blocks) && d.blocks.length) {
+      d.blocks.forEach((b) => {
+        if (b && (b.type === "product" || b.type === "cta")) {
+          (b.links || []).forEach((l) => {
+            if (l && l.url) linksFromBlocks.push(String(l.url).trim());
+          });
+        }
+      });
+    }
+    const links = [...linksFromField, ...linksFromBlocks];
     const goodAff = links.filter(
       (u) => /^https:\/\/amzn\.to\/[A-Za-z0-9]+/.test(String(u || "").trim())
     );
@@ -117,12 +128,43 @@
       });
     }
 
-    const body = String(d.bodyHtml || "");
+    let body = String(d.bodyHtml || "");
+    if (Array.isArray(d.blocks) && d.blocks.length && root.PK_BLOCKS) {
+      body = root.PK_BLOCKS.compileBlocksToHtml(d.blocks);
+    } else if (Array.isArray(d.blocks) && d.blocks.length) {
+      // Worker / no PK_BLOCKS: approximate from plain fields
+      body = d.blocks
+        .map((b) => {
+          if (!b) return "";
+          if (b.type === "html") return String(b.html || "");
+          if (b.type === "product") {
+            return [b.title, b.description, b.verdict, ...(b.pros || [])].join(" ");
+          }
+          if (b.type === "faq") {
+            return (b.items || []).map((i) => `${i.q || ""} ${i.a || ""}`).join(" ");
+          }
+          if (b.type === "table") {
+            return [...(b.headers || []), ...(b.rows || []).flat()].join(" ");
+          }
+          return String(b.text || b.html || "");
+        })
+        .join("\n");
+    }
     if (body.replace(/<[^>]+>/g, " ").trim().length < 400) {
       blockers.push({
         id: "body",
-        label: "Body HTML too short (need a real draft)",
+        label: "Article content too short (add intro + product cards)",
       });
+    }
+
+    if (Array.isArray(d.blocks) && d.blocks.length) {
+      const products = d.blocks.filter((b) => b && b.type === "product");
+      if (products.length < 1) {
+        warnings.push({
+          id: "no_product_block",
+          label: "Add at least one Product card block for a stronger guide",
+        });
+      }
     }
 
     const hay = [title, meta, body, String(d.dek || ""), String(d.h1 || "")].join(
