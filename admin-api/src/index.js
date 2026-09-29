@@ -3,6 +3,7 @@
  * Auth + cloud drafts (D1) + media + publish to GitHub Pages.
  */
 import { publishArticleDraft } from "./publish_article.js";
+import { validateArticleDraft } from "./seo_gate.js";
 
 const SESSION_TTL_SEC = 60 * 60 * 12;
 const RAW_CONTENT =
@@ -66,7 +67,7 @@ export default {
 
       if (url.pathname === "/api/articles/validate" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
-        return cors(json(validateArticleDraftLite(await readJson(request))), request);
+        return cors(json(validateArticleDraft(await readJson(request))), request);
       }
 
       if (url.pathname === "/api/publish/article" && request.method === "POST") {
@@ -215,13 +216,9 @@ async function saveArticleDraft(env, payload, user) {
     status: payload.status || "draft",
   };
   if (draft.status === "seo_ready") {
-    // Soft server-side re-check of critical fields
-    const chips = Array.isArray(draft.chips) ? draft.chips : [];
-    const aff = (draft.affiliateLinks || []).filter((u) =>
-      /^https:\/\/amzn\.to\/[A-Za-z0-9]+/.test(String(u || ""))
-    );
-    if (!draft.coverImage || chips.length < 1 || aff.length < 1) {
-      return json({ error: "seo_gate_failed", hint: "Run SEO gate in Studio first" }, 400);
+    const gate = validateArticleDraft(draft);
+    if (!gate.ok) {
+      return json({ error: "seo_gate_failed", blockers: gate.blockers, warnings: gate.warnings }, 400);
     }
     draft.seoReadyAt = draft.seoReadyAt || new Date().toISOString();
   }
@@ -468,6 +465,13 @@ async function handlePublishArticle(env, body, user) {
       400
     );
   }
+  const gate = validateArticleDraft(draft);
+  if (!gate.ok) {
+    return json(
+      { error: "seo_gate_failed", blockers: gate.blockers, warnings: gate.warnings },
+      400
+    );
+  }
   try {
     const result = await publishArticleDraft(env, draft);
     draft.status = "published";
@@ -641,38 +645,6 @@ function slugify(name) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 60);
-}
-
-function validateArticleDraftLite(d) {
-  const blockers = [];
-  const warnings = [];
-  const draft = d || {};
-  const slug = String(draft.slug || "").trim();
-  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
-    blockers.push({ id: "slug", label: "Slug must be kebab-case" });
-  }
-  const title = String(draft.title || "").trim();
-  if (title.length < 25 || title.length > 70) {
-    blockers.push({ id: "title_len", label: "Title 25–70 chars" });
-  }
-  const meta = String(draft.metaDescription || "").trim();
-  if (meta.length < 110 || meta.length > 170) {
-    blockers.push({ id: "meta_len", label: "Meta 110–170 chars" });
-  }
-  const chips = Array.isArray(draft.chips) ? draft.chips : [];
-  if (chips.length < 1 || chips.length > 3) {
-    blockers.push({ id: "chips_count", label: "1–3 chips required" });
-  }
-  if (!draft.coverImage) blockers.push({ id: "cover", label: "Cover required" });
-  const aff = (draft.affiliateLinks || []).filter((u) =>
-    /^https:\/\/amzn\.to\/[A-Za-z0-9]+/.test(String(u || ""))
-  );
-  if (!aff.length) blockers.push({ id: "affiliate", label: "Need real amzn.to link" });
-  const body = String(draft.bodyHtml || "");
-  if (/AggregateRating/i.test(body) || /TODO/i.test(body)) {
-    blockers.push({ id: "banned", label: "Banned pattern in body" });
-  }
-  return { ok: blockers.length === 0, blockers, warnings };
 }
 
 function stripTags(s) {
