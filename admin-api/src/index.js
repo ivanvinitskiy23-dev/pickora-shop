@@ -412,7 +412,11 @@ async function handleMediaUpload(request, env, user) {
   const preferred = String(body.preferredName || "").trim();
   if (!dataB64) return json({ error: "missing_data" }, 400);
 
-  const raw = dataB64.includes(",") ? dataB64.split(",", 1)[1] : dataB64;
+  // JS String.split(sep, limit) does NOT mean "maxsplit" like Python —
+  // split(",", 1) returns only the first segment, so [1] is undefined.
+  const comma = dataB64.indexOf(",");
+  const raw = comma >= 0 ? dataB64.slice(comma + 1) : dataB64;
+  if (!raw) return json({ error: "missing_data" }, 400);
   // D1 max row ~1MB; base64 expands ~4/3 → keep under ~700k chars
   if (raw.length > 900_000) {
     return json(
