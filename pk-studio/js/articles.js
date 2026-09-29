@@ -289,31 +289,14 @@
   async function uploadCover(file) {
     setStatus(t("uploading"));
     try {
-      const dataUrl = await new Promise((resolve, reject) => {
-        const r = new FileReader();
-        r.onload = () => resolve(r.result);
-        r.onerror = reject;
-        r.readAsDataURL(file);
-      });
       const preferred = (readForm().slug || "article") + "-cover";
-      const res = await fetch(window.PK_AUTH.API + "/api/media/upload", {
-        method: "POST",
-        headers: authHeaders(),
-        credentials: "include",
-        body: JSON.stringify({
-          filename: file.name,
-          data: dataUrl,
-          preferredName: preferred,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "upload_failed");
-      $("#art-cover").value = data.path;
-      readForm();
+      const data = await window.PK_MEDIA.upload(file, preferred);
+      current = { ...current, ...readForm(), coverImage: data.path };
+      if (!current.coverAlt) current.coverAlt = current.title || file.name;
       fillForm(current);
       setStatus(t("uploadOk"), "ok");
-    } catch {
-      setStatus(t("uploadFail"), "warn");
+    } catch (err) {
+      setStatus(window.PK_MEDIA.errorMessage(err, t), "warn");
     }
   }
 

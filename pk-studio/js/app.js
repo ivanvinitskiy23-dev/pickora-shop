@@ -155,20 +155,7 @@
   }
 
   async function uploadImage(file, preferredName) {
-    const dataUrl = await fileToDataUrl(file);
-    const res = await fetch(window.PK_AUTH.API + "/api/media/upload", {
-      method: "POST",
-      headers: authHeaders(),
-      credentials: "include",
-      body: JSON.stringify({
-        filename: file.name,
-        data: dataUrl,
-        preferredName,
-      }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.detail || data.error || "upload_failed");
-    return data;
+    return window.PK_MEDIA.upload(file, preferredName);
   }
 
   /* —— Home —— */
@@ -306,8 +293,8 @@
       );
       renderHomeEditor();
       setStatus(status, t("uploadOk"), "ok");
-    } catch {
-      setStatus(status, t("uploadFail"), "warn");
+    } catch (err) {
+      setStatus(status, window.PK_MEDIA.errorMessage(err, t), "warn");
     }
   }
 
@@ -489,8 +476,8 @@
       if (data.height) pinsData.pins[index].height = data.height;
       renderPinsEditor();
       setStatus(status, t("uploadOk"), "ok");
-    } catch {
-      setStatus(status, t("uploadFail"), "warn");
+    } catch (err) {
+      setStatus(status, window.PK_MEDIA.errorMessage(err, t), "warn");
     }
   }
 
@@ -849,8 +836,8 @@
       if (data.height) productsData.hubCategories[index].height = data.height;
       renderProductsEditor();
       setStatus(status, t("uploadOk"), "ok");
-    } catch {
-      setStatus(status, t("uploadFail"), "warn");
+    } catch (err) {
+      setStatus(status, window.PK_MEDIA.errorMessage(err, t), "warn");
     }
   }
 
@@ -866,8 +853,8 @@
       hub._open = true;
       renderProductsEditor();
       setStatus(status, t("uploadOk"), "ok");
-    } catch {
-      setStatus(status, t("uploadFail"), "warn");
+    } catch (err) {
+      setStatus(status, window.PK_MEDIA.errorMessage(err, t), "warn");
     }
   }
 

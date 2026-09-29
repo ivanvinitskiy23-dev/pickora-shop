@@ -413,9 +413,15 @@ async function handleMediaUpload(request, env, user) {
   if (!dataB64) return json({ error: "missing_data" }, 400);
 
   const raw = dataB64.includes(",") ? dataB64.split(",", 1)[1] : dataB64;
-  // ~1.4MB decoded limit for D1 row comfort
-  if (raw.length > 1_800_000) {
-    return json({ error: "file_too_large", hint: "Max ~1.2MB for cloud upload" }, 400);
+  // D1 max row ~1MB; base64 expands ~4/3 → keep under ~700k chars
+  if (raw.length > 900_000) {
+    return json(
+      {
+        error: "file_too_large",
+        hint: "Max ~650KB after compress. Studio auto-compresses — try a smaller photo.",
+      },
+      400
+    );
   }
   let bytes;
   try {
@@ -442,24 +448,45 @@ async function handleMediaUpload(request, env, user) {
   }
   const finalKey = `uploads/${yyyy}/${mm}/${base}.${ext}`;
 
-  await env.DB.prepare(
-    `INSERT INTO media_files (key, content_type, data_b64, bytes, uploaded_by)
-     VALUES (?, ?, ?, ?, ?)
-     ON CONFLICT(key) DO UPDATE SET
-       content_type = excluded.content_type,
-       data_b64 = excluded.data_b64,
-       bytes = excluded.bytes,
-       uploaded_by = excluded.uploaded_by`
-  )
-    .bind(finalKey, contentType, raw, bytes.length, user.login)
-    .run();
+  try {
+    await env.DB.prepare(
+      `INSERT INTO media_files (key, content_type, data_b64, bytes, uploaded_by)
+       VALUES (?, ?, ?, ?, ?)
+       ON CONFLICT(key) DO UPDATE SET
+         content_type = excluded.content_type,
+         data_b64 = excluded.data_b64,
+         bytes = excluded.bytes,
+         uploaded_by = excluded.uploaded_by`
+    )
+      .bind(finalKey, contentType, raw, bytes.length, user.login)
+      .run();
+  } catch (err) {
+    const msg = String(err?.message || err);
+    if (/too large|max.*size|SQLITE_TOOBIG|string or blob too big/i.test(msg)) {
+      return json(
+        { error: "file_too_large", detail: msg, hint: "D1 row limit — compress more" },
+        400
+      );
+    }
+    if (/no such table: media_files/i.test(msg)) {
+      return json(
+        { error: "media_table_missing", detail: "Run schema.sql on D1", hint: msg },
+        500
+      );
+    }
+    return json({ error: "media_write_failed", detail: msg }, 500);
+  }
 
   const abs = `https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/${finalKey}`;
-  await env.DB.prepare(
-    `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'media_upload', ?)`
-  )
-    .bind(user.login, finalKey)
-    .run();
+  try {
+    await env.DB.prepare(
+      `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'media_upload', ?)`
+    )
+      .bind(user.login, finalKey)
+      .run();
+  } catch {
+    /* non-fatal */
+  }
 
   return json({
     ok: true,
