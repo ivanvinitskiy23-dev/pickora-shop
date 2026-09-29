@@ -82,6 +82,20 @@
     const cover = String(d.coverImage || "").trim();
     if (!cover || cover.includes("TODO")) {
       blockers.push({ id: "cover", label: "Cover image path required" });
+    } else if (!/\.webp(\?|$)/i.test(cover) && !/\/api\/media\/file\//.test(cover)) {
+      warnings.push({
+        id: "cover_webp",
+        label: "Prefer a .webp cover for live publish",
+      });
+    }
+
+    const canonical = String(d.canonical || "").trim();
+    const expectedCanon = slug ? `https://pickora.shop/${slug}/` : "";
+    if (slug && canonical && canonical !== expectedCanon) {
+      blockers.push({
+        id: "canonical",
+        label: "Canonical must be https://pickora.shop/{slug}/",
+      });
     }
 
     const links = Array.isArray(d.affiliateLinks) ? d.affiliateLinks : [];
