@@ -23,9 +23,83 @@
     if (langBtn) langBtn.textContent = t("langSwitch");
   }
 
+  const VIEW_TITLES = {
+    dash: "navDash",
+    home: "modHome",
+    articles: "modArticles",
+    products: "modProducts",
+    pins: "modPins",
+    media: "modMedia",
+    publish: "modPublish",
+    seo: "modSeo",
+    status: "modStatus",
+    team: "modTeam",
+    panel: "soon",
+  };
+
+  function isLocalHost() {
+    return location.hostname === "127.0.0.1" || location.hostname === "localhost";
+  }
+
+  function closeSidebar() {
+    $("#studio-sidebar")?.classList.remove("open");
+    const bd = $("#sidebar-backdrop");
+    if (bd) {
+      bd.classList.remove("open");
+      bd.hidden = true;
+    }
+  }
+
+  function setActiveNav(view) {
+    $$(".nav-item[data-nav]").forEach((btn) => {
+      const on = btn.getAttribute("data-nav") === view;
+      btn.classList.toggle("active", on);
+      btn.classList.toggle("is-active", on);
+    });
+    const title = $("#topbar-title");
+    if (title) title.textContent = t(VIEW_TITLES[view] || "metaTitle");
+  }
+
   function show(id) {
-    $$("[data-view]").forEach((el) => {
+    if (id === "login") {
+      document.querySelector(".login-screen")?.classList.remove("pk-hidden");
+      $("#studio-app")?.classList.add("pk-hidden");
+      closeSidebar();
+      return;
+    }
+    document.querySelector(".login-screen")?.classList.add("pk-hidden");
+    $("#studio-app")?.classList.remove("pk-hidden");
+    $$(".studio-panel[data-view]").forEach((el) => {
       el.classList.toggle("pk-hidden", el.getAttribute("data-view") !== id);
+    });
+    setActiveNav(id);
+    closeSidebar();
+  }
+
+  function updatePreviewLinks() {
+    const local = isLocalHost();
+    const labRoot = $("#link-open-lab");
+    if (labRoot) labRoot.classList.toggle("pk-hidden", !local);
+
+    const pairs = [
+      ["link-preview-home", "/", "btnOpenLiveHome"],
+      ["link-lab-home", "http://127.0.0.1:8765/admin-lab/site/", "btnOpenLab"],
+      ["link-preview-pins", "/categories/", "btnOpenLivePins"],
+      ["link-lab-pins", "http://127.0.0.1:8765/admin-lab/site/categories/", "btnOpenLabPins"],
+      ["link-preview-products", "/products/", "btnOpenLiveProducts"],
+      ["link-lab-products", "http://127.0.0.1:8765/admin-lab/site/products/", "btnOpenLabProducts"],
+      ["link-lab-articles", "http://127.0.0.1:8765/admin-lab/site/articles/", "btnOpenLabArticles"],
+    ];
+    pairs.forEach(([id, href, key]) => {
+      const a = document.getElementById(id);
+      if (!a) return;
+      if (id.startsWith("link-lab-")) {
+        a.classList.toggle("pk-hidden", !local);
+        a.href = href;
+      } else {
+        a.href = href;
+      }
+      if (key) a.textContent = t(key);
     });
   }
 
@@ -864,9 +938,14 @@
   }
 
   function openModule(name) {
+    if (name === "Dash") {
+      show("dash");
+      return;
+    }
     if (name === "Home") {
       openHome().catch(() => {
-        $("#panel-module-name").textContent = name;
+        const el = $("#panel-module-name");
+        if (el) el.textContent = name;
         show("panel");
       });
       return;
@@ -974,25 +1053,14 @@
       show("login");
       return;
     }
-    $("#who-label").textContent = t("whoPrefix") + " " + me.user.login;
+    const who = $("#who-label");
+    if (who) who.textContent = t("whoPrefix") + " " + me.user.login;
     const modePill = document.querySelector('[data-i18n="statusLocal"]');
     if (modePill && window.PK_AUTH.isCloud?.()) {
       modePill.textContent = t("statusCloud");
       modePill.classList.add("ok");
     }
-    // Preview links: lab only on localhost; live site paths online
-    const local = location.hostname === "127.0.0.1" || location.hostname === "localhost";
-    const map = [
-      ["link-preview-home", local ? "/admin-lab/site/" : "/", "btnOpenLab", "btnOpenLiveHome"],
-      ["link-preview-pins", local ? "/admin-lab/site/categories/" : "/categories/", "btnOpenLabPins", "btnOpenLivePins"],
-      ["link-preview-products", local ? "/admin-lab/site/products/" : "/products/", "btnOpenLabProducts", "btnOpenLiveProducts"],
-    ];
-    map.forEach(([id, href, localKey, liveKey]) => {
-      const a = document.getElementById(id);
-      if (!a) return;
-      a.href = href;
-      a.textContent = t(local ? localKey : liveKey);
-    });
+    updatePreviewLinks();
     show("dash");
   }
 
@@ -1025,12 +1093,16 @@
       lang = lang === "ru" ? "en" : "ru";
       localStorage.setItem("pk_studio_lang", lang);
       applyI18n();
+      updatePreviewLinks();
       const s = window.PK_AUTH.getSession();
       if (s && $("#who-label")) {
         $("#who-label").textContent = t("whoPrefix") + " " + s.login;
       }
-      const view = $$("[data-view]").find((el) => !el.classList.contains("pk-hidden"));
+      const view = $$(".studio-panel[data-view]").find(
+        (el) => !el.classList.contains("pk-hidden")
+      );
       const id = view?.getAttribute("data-view");
+      if (id) setActiveNav(id);
       if (id === "home" && homeData) {
         homeData.latestReviews = readHomeForm();
         renderHomeEditor();
@@ -1045,17 +1117,24 @@
       }
     });
 
-    $("#btn-back-dash")?.addEventListener("click", () => show("dash"));
-    $("#btn-back-from-home")?.addEventListener("click", () => show("dash"));
-    $("#btn-back-from-pins")?.addEventListener("click", () => show("dash"));
-    $("#btn-back-from-products")?.addEventListener("click", () => show("dash"));
-    $("#btn-back-from-articles")?.addEventListener("click", () => show("dash"));
-    $("#btn-back-from-media")?.addEventListener("click", () => show("dash"));
     $("#btn-home-save")?.addEventListener("click", () => saveHome());
     $("#btn-pins-save")?.addEventListener("click", () => savePins());
     $("#btn-products-save")?.addEventListener("click", () => saveProducts());
     $("#btn-pin-add")?.addEventListener("click", () => addPin());
     $("#btn-hub-add")?.addEventListener("click", () => addHubSection());
+
+    $("#btn-sidebar-toggle")?.addEventListener("click", () => {
+      const sb = $("#studio-sidebar");
+      const bd = $("#sidebar-backdrop");
+      if (!sb) return;
+      const open = !sb.classList.contains("open");
+      sb.classList.toggle("open", open);
+      if (bd) {
+        bd.hidden = !open;
+        bd.classList.toggle("open", open);
+      }
+    });
+    $("#sidebar-backdrop")?.addEventListener("click", () => closeSidebar());
 
     $$("[data-module]").forEach((btn) => {
       btn.addEventListener("click", () => {

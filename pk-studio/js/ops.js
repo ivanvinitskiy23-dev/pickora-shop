@@ -37,23 +37,41 @@
     const wrap = $("#publish-list");
     if (!wrap) return;
 
-    const modulesHtml = ["home", "pins", "products"]
-      .map(
-        (mod) => `<div class="review-card panel">
-          <div class="review-card-head">
-            <h3>${escapeHtml(t("pubMod_" + mod))}</h3>
-            <span class="pill">draft→live</span>
-          </div>
-          <p class="hint">${escapeHtml(t("pubModHint_" + mod))}</p>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-            <button type="button" class="btn btn-primary btn-sm" data-publish-mod="${mod}" style="width:auto;padding-inline:18px">${escapeHtml(
-          t("btnPublishNow")
-        )}</button>
-          </div>
-        </div>`
-      )
+    wrap.className = "publish-grid";
+    wrap.style.gridTemplateColumns = "1fr";
+
+    /* ── Module cards ────────────────────────────────────────────── */
+    const modCardsHtml = ["home", "pins", "products"]
+      .map((mod) => {
+        const name = escapeHtml(t("pubMod_" + mod));
+        const hint = escapeHtml(t("pubModHint_" + mod));
+        const cta = escapeHtml(t("btnPublishNow"));
+        return (
+          '<div class="publish-card publish-card__mod">' +
+            '<div class="publish-card__head">' +
+              "<h3>" + name + "</h3>" +
+              '<span class="pill">draft\u2192live</span>' +
+            "</div>" +
+            '<p class="publish-card__hint">' + hint + "</p>" +
+            '<div class="publish-card__actions">' +
+              '<button type="button" class="btn btn-primary btn-sm"' +
+              ' data-publish-mod="' + mod + '">' +
+              cta + "</button>" +
+            "</div>" +
+          "</div>"
+        );
+      })
       .join("");
 
+    const modulesHtml =
+      '<h3 class="ops-section-title">' +
+      escapeHtml(t("publishModulesTitle")) +
+      "</h3>" +
+      '<div class="publish-grid">' +
+      modCardsHtml +
+      "</div>";
+
+    /* ── Article cards (seo_ready + published) ───────────────────── */
     let articlesHtml = "";
     try {
       const res = await fetch(window.PK_AUTH.API + "/api/content/articles", {
@@ -64,58 +82,75 @@
       const ready = (data.drafts || []).filter(
         (d) => d.status === "seo_ready" || d.status === "published"
       );
+
+      const artLabel =
+        '<h3 class="ops-section-title">' +
+        escapeHtml(t("publishArticlesTitle")) +
+        "</h3>";
+
       if (ready.length) {
+        const rowsHtml = ready
+          .map((d) => {
+            const slug = escapeHtml(d.slug);
+            const title = escapeHtml(d.title || d.slug);
+            const st = escapeHtml(d.status || "");
+            const pillCls = d.status === "published" ? "pill ok" : "pill";
+            const cta = escapeHtml(t("btnPublishNow"));
+            return (
+              '<div class="publish-card publish-card__article">' +
+                '<div class="publish-card__head">' +
+                  "<h3>" + title + "</h3>" +
+                  '<span class="' + pillCls + '">' + st + "</span>" +
+                "</div>" +
+                '<p class="publish-card__hint">/' +
+                slug +
+                "/ \u00b7 " +
+                escapeHtml(d.updatedAt || "") +
+                "</p>" +
+                '<div class="publish-card__actions">' +
+                  '<button type="button" class="btn btn-primary btn-sm"' +
+                  ' data-publish-slug="' +
+                  slug +
+                  '">' +
+                  cta +
+                  "</button>" +
+                "</div>" +
+              "</div>"
+            );
+          })
+          .join("");
         articlesHtml =
-          `<h3 style="margin:18px 0 10px">${escapeHtml(t("publishArticlesTitle"))}</h3>` +
-          ready
-            .map((d) => {
-              const slug = escapeHtml(d.slug);
-              const title = escapeHtml(d.title || d.slug);
-              const st = escapeHtml(d.status || "");
-              return `<div class="review-card panel" data-pub-slug="${slug}">
-          <div class="review-card-head">
-            <h3>${title}</h3>
-            <span class="pill">${st}</span>
-          </div>
-          <p class="hint">/${slug}/ · ${escapeHtml(d.updatedAt || "")}</p>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-            <button type="button" class="btn btn-primary btn-sm" data-publish-slug="${slug}" style="width:auto;padding-inline:18px">${escapeHtml(
-                t("btnPublishNow")
-              )}</button>
-          </div>
-        </div>`;
-            })
-            .join("");
+          artLabel + '<div class="publish-grid">' + rowsHtml + "</div>";
       } else {
-        articlesHtml = `<p class="hint" style="margin-top:14px">${escapeHtml(
-          t("publishEmpty")
-        )}</p>`;
+        articlesHtml =
+          artLabel +
+          '<p class="hint">' +
+          escapeHtml(t("publishEmpty")) +
+          "</p>";
       }
+
       setPill(
         "#publish-status",
         t("publishReadyCount").replace("{n}", String(ready.length)),
         "ok"
       );
     } catch (err) {
-      articlesHtml = `<p class="hint">${escapeHtml(err.message)}</p>`;
+      articlesHtml += '<p class="hint">' + escapeHtml(err.message) + "</p>";
       setPill("#publish-status", err.message, "warn");
     }
 
-    wrap.innerHTML =
-      `<h3>${escapeHtml(t("publishModulesTitle"))}</h3>` +
-      modulesHtml +
-      articlesHtml;
+    wrap.innerHTML = modulesHtml + articlesHtml;
 
-    wrap.querySelectorAll("[data-publish-mod]").forEach((btn) => {
+    wrap.querySelectorAll("[data-publish-mod]").forEach((btn) =>
       btn.addEventListener("click", () =>
         publishModule(btn.getAttribute("data-publish-mod"), btn)
-      );
-    });
-    wrap.querySelectorAll("[data-publish-slug]").forEach((btn) => {
+      )
+    );
+    wrap.querySelectorAll("[data-publish-slug]").forEach((btn) =>
       btn.addEventListener("click", () =>
         publishSlug(btn.getAttribute("data-publish-slug"), btn)
-      );
-    });
+      )
+    );
 
     await loadSnapshots();
   }
@@ -144,7 +179,7 @@
       }
       setPill(
         "#publish-status",
-        t("publishModOk").replace("{mod}", mod) + (data.note ? " — " + data.note : ""),
+        t("publishModOk").replace("{mod}", mod) + (data.note ? " \u2014 " + data.note : ""),
         "ok"
       );
       await loadPublish();
@@ -179,7 +214,7 @@
       setPill(
         "#publish-status",
         t("publishOk").replace("{slug}", slug) +
-          (data.note ? " — " + data.note : ""),
+          (data.note ? " \u2014 " + data.note : ""),
         "ok"
       );
       await loadPublish();
@@ -202,41 +237,50 @@
       const data = await res.json();
       const rows = data.snapshots || [];
       if (!rows.length) {
-        box.innerHTML = `<p class="hint">${escapeHtml(t("snapshotsEmpty"))}</p>`;
+        box.innerHTML = '<p class="hint">' + escapeHtml(t("snapshotsEmpty")) + "</p>";
         return;
       }
-      const repo = "ivanvinitskiy23-dev/pickora-shop";
-      box.innerHTML = rows
-        .map((s) => {
-          const shas = (s.commit_shas || []).slice(0, 3);
-          const shaLinks = shas
-            .map(
-              (sha) =>
-                `<a href="https://github.com/${repo}/commit/${escapeHtml(sha)}" target="_blank" rel="noopener" style="font-size:0.8rem;color:#888;margin-right:6px">${escapeHtml(sha.slice(0, 7))}</a>`
-            )
-            .join("");
-          return `<div class="review-card panel" style="margin-bottom:8px">
-            <div class="review-card-head">
-              <h3>#${s.id} · ${escapeHtml(s.module)}</h3>
-              <span class="pill">${escapeHtml(s.created_at || "")}</span>
-            </div>
-            <p class="hint" style="margin-bottom:4px">${escapeHtml(s.detail || "—")}</p>
-            ${shaLinks ? `<p style="margin-bottom:8px">${shaLinks}</p>` : ""}
-            <button type="button" class="btn btn-ghost btn-sm" data-rollback-id="${
-              s.id
-            }" style="width:auto;margin-top:4px">${escapeHtml(
-            t("btnRollback")
-          )}</button>
-          </div>`;
-        })
-        .join("");
+      const cta = escapeHtml(t("btnRollback"));
+      box.innerHTML =
+        '<div class="snapshot-list">' +
+        rows
+          .map((s) => {
+            const label =
+              "#" +
+              s.id +
+              " \u00b7 " +
+              escapeHtml(s.module) +
+              (s.detail ? " \u2014 " + escapeHtml(s.detail) : "");
+            return (
+              '<div class="snapshot-row">' +
+                '<div class="snapshot-row__meta">' +
+                  '<span class="snapshot-row__label">' +
+                  label +
+                  "</span>" +
+                  '<span class="snapshot-row__ts">' +
+                  escapeHtml(s.created_at || "") +
+                  "</span>" +
+                "</div>" +
+                '<div class="snapshot-row__actions">' +
+                  '<button type="button" class="btn btn-primary btn-sm"' +
+                  ' data-rollback-id="' +
+                  s.id +
+                  '">' +
+                  cta +
+                  "</button>" +
+                "</div>" +
+              "</div>"
+            );
+          })
+          .join("") +
+        "</div>";
       box.querySelectorAll("[data-rollback-id]").forEach((btn) => {
         btn.addEventListener("click", () =>
           doRollback(Number(btn.getAttribute("data-rollback-id")), btn)
         );
       });
     } catch (err) {
-      box.innerHTML = `<p class="hint">${escapeHtml(err.message)}</p>`;
+      box.innerHTML = '<p class="hint">' + escapeHtml(err.message) + "</p>";
     }
   }
 
@@ -254,7 +298,7 @@
       });
       const data = await res.json();
       if (!res.ok || data.ok === false) {
-        const links = (data.commits || []).join(" · ");
+        const links = (data.commits || []).join(" \u00b7 ");
         setPill(
           "#publish-status",
           (data.hint || data.detail || data.error || t("rollbackFail")) +
@@ -266,7 +310,7 @@
       setPill(
         "#publish-status",
         t("rollbackOk").replace("{mod}", data.module || "") +
-          (data.note ? " — " + data.note : ""),
+          (data.note ? " \u2014 " + data.note : ""),
         "ok"
       );
       await loadPublish();
@@ -312,7 +356,7 @@
             ${["home", "pins", "products"]
               .map(
                 (k) =>
-                  `<span class="pill ${md[k] ? "ok" : ""}">${k}: ${md[k] ? "✓" : "—"}</span>`
+                  `<span class="pill ${md[k] ? "ok" : ""}">${k}: ${md[k] ? "\u2713" : "\u2014"}</span>`
               )
               .join("")}
           </div>
@@ -326,9 +370,9 @@
               ? data.recentAudit
                   .map(
                     (e) =>
-                      `<li><strong>${escapeHtml(e.action)}</strong> · ${escapeHtml(
+                      `<li><strong>${escapeHtml(e.action)}</strong> \u00b7 ${escapeHtml(
                         e.detail || ""
-                      )} · ${escapeHtml(e.user_login)} · <span class="hint">${escapeHtml(
+                      )} \u00b7 ${escapeHtml(e.user_login)} \u00b7 <span class="hint">${escapeHtml(
                         e.created_at
                       )}</span></li>`
                   )
@@ -345,9 +389,9 @@
               ? data.recentSnapshots
                   .map(
                     (s) =>
-                      `<li><strong>#${s.id} ${escapeHtml(s.module)}</strong> · ${escapeHtml(
+                      `<li><strong>#${s.id} ${escapeHtml(s.module)}</strong> \u00b7 ${escapeHtml(
                         s.detail || ""
-                      )} · <span class="hint">${escapeHtml(s.created_at)}</span></li>`
+                      )} \u00b7 <span class="hint">${escapeHtml(s.created_at)}</span></li>`
                   )
                   .join("")
               : `<li class="hint">${escapeHtml(t("snapshotsEmpty"))}</li>`
@@ -387,7 +431,7 @@
         const kb = Math.round((f.bytes || 0) / 1024);
         return `<div class="media-card panel">
           <div class="media-thumb"><img src="${src}" alt="${key}" loading="lazy"></div>
-          <p class="path-hint">${key} · ${kb} KB</p>
+          <p class="path-hint">${key} \u00b7 ${kb} KB</p>
           <button type="button" class="btn btn-ghost btn-sm" data-media-del="${key}" style="width:auto">${escapeHtml(
           t("btnDeleteMedia")
         )}</button>
@@ -438,16 +482,28 @@
         box.innerHTML = `<p class="hint">${escapeHtml(t("auditEmpty"))}</p>`;
         return;
       }
-      box.innerHTML = `<ul class="list-plain">${rows
-        .map(
-          (e) =>
-            `<li><strong>${escapeHtml(e.action)}</strong> · ${escapeHtml(
-              e.detail || ""
-            )} · ${escapeHtml(e.user_login)} · <span class="hint">${escapeHtml(
-              e.created_at
-            )}</span></li>`
-        )
-        .join("")}</ul>`;
+      box.innerHTML =
+        '<div class="audit-log">' +
+        rows
+          .map(
+            (e) =>
+              '<div class="audit-entry">' +
+                '<span class="audit-ts">' +
+                escapeHtml(e.created_at) +
+                "</span>" +
+                '<div class="audit-msg">' +
+                escapeHtml(e.detail || "") +
+                (e.user_login
+                  ? " \u00b7 " + escapeHtml(e.user_login)
+                  : "") +
+                "</div>" +
+                '<span class="audit-tag">' +
+                escapeHtml(e.action) +
+                "</span>" +
+              "</div>"
+          )
+          .join("") +
+        "</div>";
     } catch (err) {
       box.innerHTML = `<p class="hint">${escapeHtml(err.message)}</p>`;
     }
@@ -513,7 +569,7 @@
     $("#seo-results").innerHTML = rows
       .map(
         (r) =>
-          `<li class="${r.ok ? "gate-ok" : "gate-block"}">${escapeHtml(r.url)} → ${
+          `<li class="${r.ok ? "gate-ok" : "gate-block"}">${escapeHtml(r.url)} \u2192 ${
             r.ok ? "OK" : "FAIL"
           } (${r.status})${r.error ? " " + escapeHtml(r.error) : ""}</li>`
       )

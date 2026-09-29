@@ -5,6 +5,8 @@ admin-lab/secrets/
 !**/.env.example
 admin-api/node_modules/
 admin-api/.wrangler/
+**/__pycache__/
+*.pyc
 
 # WordPress plugin sources not needed on the static site
 wp-content/plugins/updraftplus/
