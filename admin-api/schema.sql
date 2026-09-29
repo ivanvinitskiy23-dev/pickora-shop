@@ -39,13 +39,19 @@ CREATE TABLE IF NOT EXISTS media_files (
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- Publish rollback foundation: stores commit SHAs for each successful publish.
--- Global last-5 policy enforced by the API after each insert.
+-- Publish rollback foundation: stores commit SHAs + draft payload for each successful publish.
+-- Global last-20 policy enforced by the API after each insert; UI shows last 5.
 CREATE TABLE IF NOT EXISTS publish_snapshots (
-  id         INTEGER PRIMARY KEY AUTOINCREMENT,
-  module     TEXT NOT NULL,               -- 'article' | 'home' | 'pins' | 'products'
-  detail     TEXT,                        -- slug for article, 'home'/'pins'/'products' for others
-  commit_shas TEXT NOT NULL DEFAULT '[]', -- JSON array of GitHub commit SHAs
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  created_by TEXT
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  module       TEXT NOT NULL,               -- 'article' | 'home' | 'pins' | 'products'
+  detail       TEXT,                        -- slug for article, 'home'/'pins'/'products' for others
+  commit_shas  TEXT NOT NULL DEFAULT '[]',  -- JSON array of GitHub commit SHAs
+  payload_json TEXT,                        -- draft JSON snapshot for auto-rollback
+  created_at   TEXT NOT NULL DEFAULT (datetime('now')),
+  created_by   TEXT
 );
+
+-- Migration for existing databases (safe to re-run; SQLite ignores duplicate-column errors
+-- when executed via: wrangler d1 execute pickora-admin --remote --file=schema.sql)
+-- Run once manually if the table already exists without payload_json:
+--   ALTER TABLE publish_snapshots ADD COLUMN payload_json TEXT;

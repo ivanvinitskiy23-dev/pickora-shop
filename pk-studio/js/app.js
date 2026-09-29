@@ -935,8 +935,28 @@
       return;
     }
     if (name === "Media") {
-      applyI18n();
-      show("media");
+      window.PK_OPS.openMedia()
+        .then(() => {
+          applyI18n();
+          show("media");
+        })
+        .catch(() => {
+          applyI18n();
+          show("media");
+        });
+      return;
+    }
+    if (name === "Status") {
+      window.PK_OPS.openStatus()
+        .then(() => {
+          applyI18n();
+          show("status");
+        })
+        .catch((err) => {
+          $("#panel-module-name").textContent = name;
+          show("panel");
+          console.warn(err);
+        });
       return;
     }
     $("#panel-module-name").textContent = name;

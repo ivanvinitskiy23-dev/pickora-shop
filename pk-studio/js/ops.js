@@ -214,17 +214,17 @@
               <span class="pill">${escapeHtml(s.created_at || "")}</span>
             </div>
             <p class="hint">${escapeHtml(shas || "—")}</p>
-            <button type="button" class="btn btn-ghost btn-sm" data-rollback-id="${
+            <button type="button" class="btn btn-primary btn-sm" data-rollback-id="${
               s.id
             }" style="width:auto;margin-top:8px">${escapeHtml(
-            t("btnRollbackInfo")
+            t("btnRollback")
           )}</button>
           </div>`;
         })
         .join("");
       box.querySelectorAll("[data-rollback-id]").forEach((btn) => {
         btn.addEventListener("click", () =>
-          rollbackInfo(Number(btn.getAttribute("data-rollback-id")))
+          doRollback(Number(btn.getAttribute("data-rollback-id")), btn)
         );
       });
     } catch (err) {
@@ -232,21 +232,155 @@
     }
   }
 
-  async function rollbackInfo(id) {
-    setPill("#publish-status", t("loading"), null);
-    const res = await fetch(window.PK_AUTH.API + "/api/publish/rollback", {
-      method: "POST",
+  async function doRollback(id, btn) {
+    if (!id) return;
+    if (!confirm(t("confirmRollback"))) return;
+    if (btn) btn.disabled = true;
+    setPill("#publish-status", t("rollbackInProgress"), null);
+    try {
+      const res = await fetch(window.PK_AUTH.API + "/api/publish/rollback", {
+        method: "POST",
+        headers: authHeaders(),
+        credentials: "include",
+        body: JSON.stringify({ id }),
+      });
+      const data = await res.json();
+      if (!res.ok || data.ok === false) {
+        const links = (data.commits || []).join(" · ");
+        setPill(
+          "#publish-status",
+          (data.hint || data.detail || data.error || t("rollbackFail")) +
+            (links ? " " + links : ""),
+          "warn"
+        );
+        return;
+      }
+      setPill(
+        "#publish-status",
+        t("rollbackOk").replace("{mod}", data.module || "") +
+          (data.note ? " — " + data.note : ""),
+        "ok"
+      );
+      await loadPublish();
+      await loadAuditInto("#publish-audit");
+    } catch (err) {
+      setPill("#publish-status", t("rollbackFail") + ": " + err.message, "warn");
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  /* —— Status digest —— */
+  async function loadStatus() {
+    setPill("#status-status", t("loading"), null);
+    const res = await fetch(window.PK_AUTH.API + "/api/status", {
       headers: authHeaders(),
       credentials: "include",
-      body: JSON.stringify({ id }),
     });
     const data = await res.json();
-    const links = (data.commits || []).join(" · ");
-    setPill(
-      "#publish-status",
-      (data.hint || t("rollbackManual")) + (links ? " " + links : ""),
-      "warn"
+    if (!res.ok) throw new Error(data.error || "status_failed");
+    const box = $("#status-content");
+    if (!box) return;
+    const d = data.drafts || {};
+    const counts = data.articleStatusCounts || {};
+    const countLines = Object.keys(counts)
+      .map((k) => `<li><strong>${escapeHtml(k)}</strong>: ${counts[k]}</li>`)
+      .join("");
+    const audit = (data.audit || [])
+      .map(
+        (a) =>
+          `<li>${escapeHtml(a.action)} · ${escapeHtml(a.detail || "")} · ${escapeHtml(
+            a.created_at || ""
+          )}</li>`
+      )
+      .join("");
+    const snaps = (data.snapshots || [])
+      .map(
+        (s) =>
+          `<li>#${s.id} ${escapeHtml(s.module)} · ${escapeHtml(s.created_at || "")}</li>`
+      )
+      .join("");
+    box.innerHTML = `
+      <div class="panel">
+        <h3>${escapeHtml(t("statusModulesTitle"))}</h3>
+        <ul class="list-plain">
+          <li>Home: ${d.home ? escapeHtml(d.home.updatedAt || "yes") : "—"}</li>
+          <li>Pins: ${d.pins ? escapeHtml(d.pins.updatedAt || "yes") : "—"}</li>
+          <li>Products: ${d.products ? escapeHtml(d.products.updatedAt || "yes") : "—"}</li>
+        </ul>
+        <h3 style="margin-top:12px">${escapeHtml(t("statusArticlesTitle"))}</h3>
+        <ul class="list-plain">
+          <li>${escapeHtml(t("statusDraft"))}: ${(d.articles || []).length}</li>
+          ${countLines}
+        </ul>
+        <p class="hint">Media: ${data.mediaCount || 0}</p>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h3>${escapeHtml(t("auditTitle"))}</h3>
+        <ul class="list-plain">${audit || `<li>${escapeHtml(t("auditEmpty"))}</li>`}</ul>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h3>Snapshots</h3>
+        <ul class="list-plain">${snaps || `<li>${escapeHtml(t("snapshotsEmpty"))}</li>`}</ul>
+      </div>`;
+    setPill("#status-status", t("statusOk"), "ok");
+  }
+
+  /* —— Media gallery —— */
+  async function loadMedia() {
+    setPill("#media-status", t("loading"), null);
+    const res = await fetch(window.PK_AUTH.API + "/api/media/list", {
+      headers: authHeaders(),
+      credentials: "include",
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "media_list_failed");
+    const wrap = $("#media-grid");
+    if (!wrap) return;
+    const files = data.files || [];
+    if (!files.length) {
+      wrap.innerHTML = `<p class="hint">${escapeHtml(t("mediaEmpty"))}</p>`;
+      setPill("#media-status", t("mediaEmpty"), "warn");
+      return;
+    }
+    const api = window.PK_AUTH.API;
+    wrap.innerHTML = files
+      .map((f) => {
+        const key = escapeHtml(f.key);
+        const src = api + "/api/media/file/" + encodeURIComponent(f.key);
+        const kb = Math.round((f.bytes || 0) / 1024);
+        return `<div class="media-card panel">
+          <div class="media-thumb"><img src="${src}" alt="${key}" loading="lazy"></div>
+          <p class="path-hint">${key} · ${kb} KB</p>
+          <button type="button" class="btn btn-ghost btn-sm" data-media-del="${key}" style="width:auto">${escapeHtml(
+          t("btnDeleteMedia")
+        )}</button>
+        </div>`;
+      })
+      .join("");
+    wrap.querySelectorAll("[data-media-del]").forEach((btn) => {
+      btn.addEventListener("click", () =>
+        deleteMedia(btn.getAttribute("data-media-del"), btn)
+      );
+    });
+    setPill("#media-status", t("mediaFilesCount") + ": " + files.length, "ok");
+  }
+
+  async function deleteMedia(key, btn) {
+    if (!key || !confirm(t("confirmDeleteMedia"))) return;
+    if (btn) btn.disabled = true;
+    const res = await fetch(
+      window.PK_AUTH.API + "/api/media/file/" + encodeURIComponent(key),
+      { method: "DELETE", headers: authHeaders(), credentials: "include" }
     );
+    const data = await res.json();
+    if (!res.ok) {
+      setPill("#media-status", data.error || t("mediaDeleteFail"), "warn");
+      if (btn) btn.disabled = false;
+      return;
+    }
+    setPill("#media-status", t("mediaDeleteOk"), "ok");
+    await loadMedia();
   }
 
   /* —— Audit —— */
@@ -358,27 +492,126 @@
   }
 
   /* —— Team —— */
+
+  // Determine if current session user is owner (for showing invite panel + remove buttons)
+  function sessionIsOwner() {
+    const s = window.PK_AUTH.getSession();
+    return !!(s?.user?.owner);
+  }
+
   async function loadTeam() {
     setPill("#team-status", t("loading"), null);
-    const res = await fetch(window.PK_AUTH.API + "/api/team", {
-      headers: authHeaders(),
-      credentials: "include",
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      setPill("#team-status", data.error || "team_failed", "warn");
-      return;
+    try {
+      const res = await fetch(window.PK_AUTH.API + "/api/team", {
+        headers: authHeaders(),
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setPill("#team-status", data.error || "team_failed", "warn");
+        return;
+      }
+
+      const isOwner = sessionIsOwner();
+      const list = $("#team-list");
+      if (list) {
+        const admins = data.admins || [];
+        list.innerHTML = admins.length
+          ? admins
+              .map((a) => {
+                const badge = a.is_owner
+                  ? `<span class="pill" style="margin-left:6px">${escapeHtml(t("teamOwnerBadge"))}</span>`
+                  : `<span class="pill" style="margin-left:6px">${escapeHtml(t("teamAdminBadge"))}</span>`;
+                const removeBtn =
+                  isOwner && !a.is_owner
+                    ? ` <button type="button" class="btn btn-ghost btn-sm" data-team-remove="${escapeHtml(
+                        a.login
+                      )}" style="width:auto;padding-inline:10px;margin-left:12px">${escapeHtml(
+                        t("btnRemove")
+                      )}</button>`
+                    : "";
+                return `<li style="display:flex;align-items:center;gap:4px;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.07)">
+                  <strong>${escapeHtml(a.login)}</strong>${badge}
+                  <span class="hint" style="margin-left:6px">${escapeHtml(a.created_at || "")}</span>
+                  ${removeBtn}
+                </li>`;
+              })
+              .join("")
+          : `<li class="hint">${escapeHtml(t("teamOwnerOnly"))}</li>`;
+
+        list.querySelectorAll("[data-team-remove]").forEach((btn) => {
+          btn.addEventListener("click", () => removeAdmin(btn.getAttribute("data-team-remove")));
+        });
+      }
+
+      // Show invite panel only to owner
+      const invitePanel = $("#team-invite-panel");
+      if (invitePanel) invitePanel.classList.toggle("pk-hidden", !isOwner);
+
+      setPill("#team-status", `${(data.admins || []).length} ${t("teamAdminBadge")}(s)`, "ok");
+    } catch (err) {
+      setPill("#team-status", err.message, "warn");
     }
-    const list = $("#team-list");
-    if (list) {
-      list.innerHTML = (data.admins || [])
-        .map(
-          (a) =>
-            `<li><strong>${escapeHtml(a.login)}</strong> · ${escapeHtml(a.role)}</li>`
-        )
-        .join("");
+  }
+
+  async function inviteAdmin(form) {
+    const login = ($("#team-invite-login")?.value || "").trim();
+    const password = $("#team-invite-password")?.value || "";
+    const role = $("#team-invite-role")?.value || "admin";
+    const btn = $("#btn-team-invite");
+    if (btn) btn.disabled = true;
+    setPill("#team-invite-status", t("teamInviting"), null);
+    try {
+      const res = await fetch(window.PK_AUTH.API + "/api/team/invite", {
+        method: "POST",
+        headers: authHeaders(),
+        credentials: "include",
+        body: JSON.stringify({ login, password, role }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setPill(
+          "#team-invite-status",
+          t("teamInviteFail").replace("{err}", data.hint || data.error || "failed"),
+          "warn"
+        );
+        return;
+      }
+      setPill(
+        "#team-invite-status",
+        t("teamInviteOk").replace("{login}", data.login),
+        "ok"
+      );
+      if (form) form.reset();
+      await loadTeam();
+    } catch (err) {
+      setPill("#team-invite-status", t("teamInviteFail").replace("{err}", err.message), "warn");
+    } finally {
+      if (btn) btn.disabled = false;
     }
-    setPill("#team-status", data.note || t("teamOwnerOnly"), "ok");
+  }
+
+  async function removeAdmin(login) {
+    if (!login) return;
+    if (!confirm(t("teamRemoveConfirm").replace("{login}", login))) return;
+    setPill("#team-status", t("loading"), null);
+    try {
+      const res = await fetch(window.PK_AUTH.API + "/api/team/remove", {
+        method: "POST",
+        headers: authHeaders(),
+        credentials: "include",
+        body: JSON.stringify({ login }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setPill("#team-status", t("teamRemoveFail").replace("{err}", data.error || "failed"), "warn");
+        return;
+      }
+      setPill("#team-status", t("teamRemoveOk").replace("{login}", login), "ok");
+      await loadTeam();
+    } catch (err) {
+      setPill("#team-status", t("teamRemoveFail").replace("{err}", err.message), "warn");
+    }
   }
 
   window.PK_OPS = {
@@ -393,6 +626,12 @@
     async openTeam() {
       await loadTeam();
     },
+    async openStatus() {
+      await loadStatus();
+    },
+    async openMedia() {
+      await loadMedia();
+    },
     bind() {
       $("#btn-publish-refresh")?.addEventListener("click", () =>
         loadPublish().catch((e) => setPill("#publish-status", e.message, "warn"))
@@ -406,19 +645,23 @@
       $("#btn-team-refresh")?.addEventListener("click", () =>
         loadTeam().catch((e) => setPill("#team-status", e.message, "warn"))
       );
-      $("#btn-back-from-publish")?.addEventListener("click", () => {
-        document.querySelectorAll("[data-view]").forEach((el) => {
-          el.classList.toggle("pk-hidden", el.getAttribute("data-view") !== "dash");
-        });
+      $("#btn-status-refresh")?.addEventListener("click", () =>
+        loadStatus().catch((e) => setPill("#status-status", e.message, "warn"))
+      );
+      $("#btn-media-refresh")?.addEventListener("click", () =>
+        loadMedia().catch((e) => setPill("#media-status", e.message, "warn"))
+      );
+      $("#team-invite-form")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        inviteAdmin(e.target).catch((err) =>
+          setPill("#team-invite-status", err.message, "warn")
+        );
       });
-      $("#btn-back-from-seo")?.addEventListener("click", () => {
-        document.querySelectorAll("[data-view]").forEach((el) => {
-          el.classList.toggle("pk-hidden", el.getAttribute("data-view") !== "dash");
-        });
-      });
-      $("#btn-back-from-team")?.addEventListener("click", () => {
-        document.querySelectorAll("[data-view]").forEach((el) => {
-          el.classList.toggle("pk-hidden", el.getAttribute("data-view") !== "dash");
+      ["publish", "seo", "team", "status", "media"].forEach((view) => {
+        $(`#btn-back-from-${view}`)?.addEventListener("click", () => {
+          document.querySelectorAll("[data-view]").forEach((el) => {
+            el.classList.toggle("pk-hidden", el.getAttribute("data-view") !== "dash");
+          });
         });
       });
     },

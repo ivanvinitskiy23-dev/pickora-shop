@@ -48,6 +48,11 @@ export default {
       }
 
       if (url.pathname.startsWith("/api/media/file/")) {
+        if (request.method === "DELETE") {
+          const fileUser = await userFromToken(request, env);
+          if (!fileUser) return cors(json({ error: "unauthorized" }, 401), request);
+          return cors(await handleMediaDelete(url.pathname, env, fileUser), request);
+        }
         return cors(await handleMediaGet(url.pathname, env), request);
       }
 
@@ -98,7 +103,22 @@ export default {
 
       if (url.pathname === "/api/publish/rollback" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
-        return cors(await handleRollbackInfo(env, await readJson(request)), request);
+        return cors(await handleRollback(env, await readJson(request), user), request);
+      }
+
+      if (url.pathname === "/api/status" && request.method === "GET") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(await handleStatus(env), request);
+      }
+
+      if (url.pathname === "/api/media/list" && request.method === "GET") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(await handleMediaList(env), request);
+      }
+
+      if (url.pathname.startsWith("/api/media/file/") && request.method === "DELETE") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(await handleMediaDelete(url.pathname, env, user), request);
       }
 
       if (url.pathname === "/api/audit" && request.method === "GET") {
@@ -113,14 +133,19 @@ export default {
 
       if (url.pathname === "/api/team" && request.method === "GET") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
-        return cors(
-          json({
-            owner: env.OWNER_LOGIN,
-            admins: [{ login: env.OWNER_LOGIN, role: "owner" }],
-            note: "Multi-admin invites land in Phase 4 UI; owner-only for now.",
-          }),
-          request
-        );
+        return cors(await handleTeamList(env), request);
+      }
+
+      if (url.pathname === "/api/team/invite" && request.method === "POST") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        if (!requireOwner(user, env)) return cors(json({ error: "forbidden" }, 403), request);
+        return cors(await handleTeamInvite(env, await readJson(request)), request);
+      }
+
+      if (url.pathname === "/api/team/remove" && request.method === "POST") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        if (!requireOwner(user, env)) return cors(json({ error: "forbidden" }, 403), request);
+        return cors(await handleTeamRemove(env, await readJson(request)), request);
       }
 
       if (url.pathname === "/api/media/upload" && request.method === "POST") {
@@ -323,7 +348,7 @@ async function saveDraft(env, key, payload, user) {
     ok: true,
     rendered: false,
     mode: "cloudflare",
-    hint: "Saved cloud draft. Live site HTML updates after Publish (next phase).",
+    hint: "Cloud draft saved. Open Publish in Studio to push live HTML to GitHub Pages.",
   });
 }
 
@@ -468,15 +493,16 @@ async function handleMediaGet(pathname, env) {
   });
 }
 
-async function recordSnapshot(env, module, detail, commits, user) {
+async function recordSnapshot(env, module, detail, commits, user, payloadDraft) {
   const shas = Array.isArray(commits) ? commits.filter(Boolean) : [];
   if (!shas.length) return;
+  const payloadJson = payloadDraft != null ? JSON.stringify(payloadDraft) : null;
   try {
     await env.DB.prepare(
-      `INSERT INTO publish_snapshots (module, detail, commit_shas, created_by)
-       VALUES (?, ?, ?, ?)`
+      `INSERT INTO publish_snapshots (module, detail, commit_shas, created_by, payload_json)
+       VALUES (?, ?, ?, ?, ?)`
     )
-      .bind(module, detail || "", JSON.stringify(shas), user.login)
+      .bind(module, detail || "", JSON.stringify(shas), user.login, payloadJson)
       .run();
     // Keep global last 20 rows (UI shows 5)
     await env.DB.prepare(
@@ -511,7 +537,7 @@ async function handlePublishModule(env, key, user, publisher) {
     )
       .bind(user.login, `publish_${key}`, key)
       .run();
-    await recordSnapshot(env, key, key, result.commits, user);
+    await recordSnapshot(env, key, key, result.commits, user, draft);
     return json(result);
   } catch (err) {
     return json({ error: "publish_failed", detail: String(err?.message || err) }, 500);
@@ -543,29 +569,188 @@ async function handleSnapshotsList(env) {
   }
 }
 
-async function handleRollbackInfo(env, body) {
+async function handleRollback(env, body, user) {
   const id = Number(body.id || 0);
   if (!id) return json({ error: "id_required" }, 400);
-  const row = await env.DB.prepare(
-    `SELECT id, module, detail, commit_shas, created_at FROM publish_snapshots WHERE id = ?`
-  )
-    .bind(id)
-    .first();
-  if (!row) return json({ error: "not_found" }, 404);
-  let shas = [];
+
+  // Fetch snapshot; handle DBs that haven't run the payload_json migration yet
+  let row;
   try {
-    shas = JSON.parse(row.commit_shas);
+    row = await env.DB.prepare(
+      `SELECT id, module, detail, commit_shas, payload_json, created_at FROM publish_snapshots WHERE id = ?`
+    )
+      .bind(id)
+      .first();
   } catch {
-    shas = [];
+    // payload_json column missing — fall back to column-safe query
+    row = await env.DB.prepare(
+      `SELECT id, module, detail, commit_shas, created_at FROM publish_snapshots WHERE id = ?`
+    )
+      .bind(id)
+      .first();
   }
+  if (!row) return json({ error: "not_found" }, 404);
+
   const repo = env.GITHUB_REPO || "ivanvinitskiy23-dev/pickora-shop";
+  let shas = [];
+  try { shas = JSON.parse(row.commit_shas); } catch {}
+
+  // Old snapshots without payload — return manual guidance
+  if (!row.payload_json) {
+    return json({
+      ok: false,
+      error: "no_payload",
+      hint: "This snapshot predates auto-rollback. Use GitHub revert.",
+      commits: shas.map((sha) => `https://github.com/${repo}/commit/${sha}`),
+    });
+  }
+
+  let draft;
+  try { draft = JSON.parse(row.payload_json); } catch {
+    return json({ error: "bad_payload" }, 500);
+  }
+
+  const module = row.module; // 'home' | 'pins' | 'products' | 'article'
+  const draftKey = module === "article" ? `article:${row.detail || ""}` : module;
+
+  // 1. Restore draft to content_drafts
+  await env.DB.prepare(
+    `INSERT INTO content_drafts (key, json, updated_at, updated_by)
+     VALUES (?, ?, datetime('now'), ?)
+     ON CONFLICT(key) DO UPDATE SET
+       json = excluded.json,
+       updated_at = excluded.updated_at,
+       updated_by = excluded.updated_by`
+  )
+    .bind(draftKey, JSON.stringify(draft), user.login)
+    .run();
+
+  // 2. Re-run matching publisher so live site reverts via new GitHub commits
+  const publisherMap = {
+    home: publishHomeDraft,
+    pins: publishPinsDraft,
+    products: publishProductsDraft,
+    article: publishArticleDraft,
+  };
+  const publisher = publisherMap[module];
+  if (!publisher) return json({ error: "unknown_module", module }, 400);
+
+  if (!env.GITHUB_TOKEN) {
+    return json({
+      error: "github_token_missing",
+      hint: "Draft restored to D1 but cannot re-publish without GITHUB_TOKEN",
+    }, 503);
+  }
+
+  let result;
+  try {
+    result = await publisher(env, draft);
+  } catch (err) {
+    return json({ error: "republish_failed", detail: String(err?.message || err) }, 500);
+  }
+
+  // 3. Audit log rollback
+  await env.DB.prepare(
+    `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'rollback', ?)`
+  )
+    .bind(user.login, `${module}:${row.detail || ""}:snapshot_${id}`)
+    .run();
+
+  // 4. Save new snapshot for the rollback publish
+  await recordSnapshot(env, module, row.detail, result.commits || [], user, draft);
+
+  // 5. Return ok + new commits
   return json({
-    ok: false,
-    error: "manual_revert",
-    snapshot: { ...row, commit_shas: shas },
-    hint: `Open https://github.com/${repo}/commits/main and revert the publish commit(s). Auto-rollback lands next.`,
-    commits: shas.map((sha) => `https://github.com/${repo}/commit/${sha}`),
+    ok: true,
+    module,
+    detail: row.detail,
+    commits: result.commits || [],
   });
+}
+
+async function handleStatus(env) {
+  // Article drafts by status
+  let artResults = [];
+  try {
+    const r = await env.DB.prepare(
+      `SELECT json FROM content_drafts WHERE key LIKE 'article:%'`
+    ).all();
+    artResults = r.results || [];
+  } catch {}
+
+  const statusCounts = { draft: 0, seo_ready: 0, published: 0, other: 0 };
+  for (const r of artResults) {
+    try {
+      const d = JSON.parse(r.json);
+      const s = d.status || "draft";
+      if (s in statusCounts) statusCounts[s]++;
+      else statusCounts.other++;
+    } catch {}
+  }
+
+  // Module drafts existence
+  const moduleDrafts = {};
+  for (const k of ["home", "pins", "products"]) {
+    try {
+      const row = await env.DB.prepare(
+        `SELECT key FROM content_drafts WHERE key = ?`
+      ).bind(k).first();
+      moduleDrafts[k] = !!row;
+    } catch { moduleDrafts[k] = false; }
+  }
+
+  // Last 5 audit actions
+  let recentAudit = [];
+  try {
+    const r = await env.DB.prepare(
+      `SELECT id, user_login, action, detail, created_at FROM audit_log ORDER BY id DESC LIMIT 5`
+    ).all();
+    recentAudit = r.results || [];
+  } catch {}
+
+  // Last 5 snapshots
+  let recentSnapshots = [];
+  try {
+    const r = await env.DB.prepare(
+      `SELECT id, module, detail, commit_shas, created_at, created_by FROM publish_snapshots ORDER BY id DESC LIMIT 5`
+    ).all();
+    recentSnapshots = (r.results || []).map((s) => ({
+      ...s,
+      commit_shas: (() => { try { return JSON.parse(s.commit_shas); } catch { return []; } })(),
+    }));
+  } catch {}
+
+  return json({
+    articleCounts: statusCounts,
+    totalArticles: Object.values(statusCounts).reduce((a, b) => a + b, 0),
+    moduleDrafts,
+    recentAudit,
+    recentSnapshots,
+  });
+}
+
+async function handleMediaList(env) {
+  try {
+    const { results } = await env.DB.prepare(
+      `SELECT key, content_type, bytes, uploaded_by, created_at
+       FROM media_files ORDER BY created_at DESC LIMIT 200`
+    ).all();
+    return json({ files: results || [] });
+  } catch (err) {
+    return json({ files: [], error: String(err?.message || err) });
+  }
+}
+
+async function handleMediaDelete(pathname, env, user) {
+  const key = decodeURIComponent(pathname.replace(/^\/api\/media\/file\//, ""));
+  if (!key || key.includes("..")) return json({ error: "bad_key" }, 400);
+  await env.DB.prepare(`DELETE FROM media_files WHERE key = ?`).bind(key).run();
+  await env.DB.prepare(
+    `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'media_delete', ?)`
+  )
+    .bind(user.login, key)
+    .run();
+  return json({ ok: true, key });
 }
 
 async function handlePublishArticle(env, body, user) {
@@ -614,7 +799,7 @@ async function handlePublishArticle(env, body, user) {
     )
       .bind(user.login, slug)
       .run();
-    await recordSnapshot(env, "article", slug, result.commits, user);
+    await recordSnapshot(env, "article", slug, result.commits, user, draft);
     return json(result);
   } catch (err) {
     return json({ error: "publish_failed", detail: String(err?.message || err) }, 500);
@@ -649,6 +834,11 @@ async function handleLinkCheck(body) {
 }
 
 async function handleLogin(request, env) {
+  // MIGRATION NOTE: invited admins store passwords as PBKDF2 hashes (format
+  //   "pbkdf2:sha256:<iters>:<salt_hex>:<derived_hex>").
+  // The owner account continues to use OWNER_LOGIN + OWNER_PASSWORD env secrets;
+  // its password_hash row is the sentinel "secret-backed" (never used for crypto).
+  // To add a new invited admin: POST /api/team/invite (owner-only).
   if (!env.OWNER_LOGIN || !env.OWNER_PASSWORD) {
     return json({ error: "owner_secrets_missing" }, 503);
   }
@@ -657,7 +847,52 @@ async function handleLogin(request, env) {
   const body = await readJson(request);
   const login = String(body.login || "").trim();
   const password = String(body.password || "");
-  if (!timingSafeEqual(login, env.OWNER_LOGIN) || !timingSafeEqual(password, env.OWNER_PASSWORD)) {
+
+  // ── Path 1: Owner via environment secrets ────────────────────────────────
+  if (timingSafeEqual(login, env.OWNER_LOGIN) && timingSafeEqual(password, env.OWNER_PASSWORD)) {
+    const token = cryptoRandomToken();
+    const expires = new Date(Date.now() + SESSION_TTL_SEC * 1000).toISOString();
+
+    await env.DB.prepare(
+      `INSERT INTO users (login, password_hash, role, is_owner)
+       VALUES (?, 'secret-backed', 'admin', 1)
+       ON CONFLICT(login) DO UPDATE SET is_owner = 1`
+    )
+      .bind(env.OWNER_LOGIN)
+      .run();
+
+    const userRow = await env.DB.prepare(`SELECT id FROM users WHERE login = ?`)
+      .bind(env.OWNER_LOGIN)
+      .first();
+
+    await env.DB.prepare(
+      `INSERT INTO sessions (token, user_id, expires_at) VALUES (?, ?, ?)`
+    )
+      .bind(token, userRow.id, expires)
+      .run();
+
+    await env.DB.prepare(
+      `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'login', 'cloudflare')`
+    )
+      .bind(env.OWNER_LOGIN)
+      .run();
+
+    return json({ token, user: { login: env.OWNER_LOGIN, role: "admin", owner: true } });
+  }
+
+  // ── Path 2: Invited admin via D1 users table (PBKDF2 password) ──────────
+  const dbUser = await env.DB.prepare(
+    `SELECT id, login, password_hash, role, is_owner FROM users WHERE login = ?`
+  )
+    .bind(login)
+    .first();
+
+  // Reject sentinel accounts (owner row) from this path
+  if (
+    !dbUser ||
+    dbUser.password_hash === "secret-backed" ||
+    !(await verifyPassword(password, dbUser.password_hash))
+  ) {
     return json({ error: "invalid_credentials" }, 401);
   }
 
@@ -665,33 +900,144 @@ async function handleLogin(request, env) {
   const expires = new Date(Date.now() + SESSION_TTL_SEC * 1000).toISOString();
 
   await env.DB.prepare(
-    `INSERT INTO users (login, password_hash, role, is_owner)
-     VALUES (?, ?, 'admin', 1)
-     ON CONFLICT(login) DO UPDATE SET is_owner = 1`
-  )
-    .bind(env.OWNER_LOGIN, "secret-backed")
-    .run();
-
-  const userRow = await env.DB.prepare(`SELECT id FROM users WHERE login = ?`)
-    .bind(env.OWNER_LOGIN)
-    .first();
-
-  await env.DB.prepare(
     `INSERT INTO sessions (token, user_id, expires_at) VALUES (?, ?, ?)`
   )
-    .bind(token, userRow.id, expires)
+    .bind(token, dbUser.id, expires)
     .run();
 
   await env.DB.prepare(
     `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'login', 'cloudflare')`
   )
-    .bind(env.OWNER_LOGIN)
+    .bind(login)
     .run();
 
   return json({
     token,
-    user: { login: env.OWNER_LOGIN, role: "admin", owner: true },
+    user: { login: dbUser.login, role: dbUser.role || "admin", owner: !!dbUser.is_owner },
   });
+}
+
+/* ── Team management ──────────────────────────────────────────────────── */
+
+async function handleTeamList(env) {
+  const { results } = await env.DB.prepare(
+    `SELECT login, role, is_owner, created_at FROM users ORDER BY is_owner DESC, created_at ASC`
+  ).all();
+  // Never expose password_hash
+  return json({ admins: results || [] });
+}
+
+async function handleTeamInvite(env, body) {
+  const login = String(body.login || "").trim().toLowerCase();
+  const password = String(body.password || "");
+  const role = String(body.role || "admin").trim();
+
+  if (!login || !/^[a-z0-9_.-]{2,32}$/.test(login)) {
+    return json({ error: "invalid_login", hint: "2–32 chars, lowercase a-z 0-9 _ . -" }, 400);
+  }
+  if (password.length < 8) {
+    return json({ error: "password_too_short", hint: "Min 8 characters" }, 400);
+  }
+  if (!["admin"].includes(role)) {
+    return json({ error: "invalid_role", hint: "Allowed roles: admin" }, 400);
+  }
+
+  const existing = await env.DB.prepare(`SELECT login FROM users WHERE login = ?`)
+    .bind(login)
+    .first();
+  if (existing) {
+    return json({ error: "login_taken" }, 409);
+  }
+
+  const hash = await hashPassword(password);
+  await env.DB.prepare(
+    `INSERT INTO users (login, password_hash, role, is_owner) VALUES (?, ?, ?, 0)`
+  )
+    .bind(login, hash, role)
+    .run();
+
+  await env.DB.prepare(
+    `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'team_invite', ?)`
+  )
+    .bind(login, role)
+    .run();
+
+  return json({ ok: true, login, role });
+}
+
+async function handleTeamRemove(env, body) {
+  const login = String(body.login || "").trim();
+  if (!login) return json({ error: "login_required" }, 400);
+
+  // Cannot remove the owner secret account or any is_owner=1 row
+  if (login === env.OWNER_LOGIN) {
+    return json({ error: "cannot_remove_owner_secret" }, 403);
+  }
+  const row = await env.DB.prepare(`SELECT is_owner FROM users WHERE login = ?`)
+    .bind(login)
+    .first();
+  if (!row) return json({ error: "not_found" }, 404);
+  if (row.is_owner) return json({ error: "cannot_remove_owner" }, 403);
+
+  // CASCADE deletes their sessions too
+  await env.DB.prepare(`DELETE FROM users WHERE login = ? AND is_owner = 0`)
+    .bind(login)
+    .run();
+
+  await env.DB.prepare(
+    `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'team_remove', ?)`
+  )
+    .bind(login, login)
+    .run();
+
+  return json({ ok: true, removed: login });
+}
+
+/* ── Password hashing (PBKDF2-SHA-256, 100 000 iterations) ─────────────── */
+// Format stored in users.password_hash: "pbkdf2:sha256:<iters>:<salt_hex>:<derived_hex>"
+
+async function hashPassword(password) {
+  const enc = new TextEncoder();
+  const saltBytes = crypto.getRandomValues(new Uint8Array(16));
+  const salt = [...saltBytes].map((b) => b.toString(16).padStart(2, "0")).join("");
+  const keyMat = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, [
+    "deriveBits",
+  ]);
+  const derived = await crypto.subtle.deriveBits(
+    { name: "PBKDF2", hash: "SHA-256", salt: saltBytes, iterations: 100_000 },
+    keyMat,
+    256
+  );
+  const hex = [...new Uint8Array(derived)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  return `pbkdf2:sha256:100000:${salt}:${hex}`;
+}
+
+async function verifyPassword(password, stored) {
+  if (!stored || !stored.startsWith("pbkdf2:sha256:")) return false;
+  const parts = stored.split(":");
+  if (parts.length !== 5) return false;
+  const [, , iterStr, saltHex, expectedHex] = parts;
+  const iterations = parseInt(iterStr, 10);
+  if (!iterations || isNaN(iterations)) return false;
+  const saltBytes = new Uint8Array(saltHex.match(/.{2}/g).map((h) => parseInt(h, 16)));
+  const enc = new TextEncoder();
+  const keyMat = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, [
+    "deriveBits",
+  ]);
+  const derived = await crypto.subtle.deriveBits(
+    { name: "PBKDF2", hash: "SHA-256", salt: saltBytes, iterations },
+    keyMat,
+    256
+  );
+  const hex = [...new Uint8Array(derived)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  return timingSafeEqual(hex, expectedHex);
+}
+
+/* ── Owner check helper ─────────────────────────────────────────────────── */
+function requireOwner(user, env) {
+  if (!user) return false;
+  // owner if they logged in via OWNER_LOGIN secret OR is_owner flag set in DB
+  return user.owner || user.login === env.OWNER_LOGIN;
 }
 
 async function handleLogout(request, env) {

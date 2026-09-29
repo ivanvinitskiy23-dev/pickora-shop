@@ -51,7 +51,7 @@
       <div class="topbar-actions">
         <span class="who" id="who-label"></span>
         <button type="button" class="lang-toggle" id="btn-lang">EN</button>
-        <button type="button" class="btn btn-ghost btn-sm" id="btn-logout" data-i18n="btnLogout" style="color:#fff;border-color:rgba(255,255,255,.28)">Выйти</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-logout" data-i18n="btnLogout">Выйти</button>
       </div>
     </header>
     <main class="app-main">
@@ -89,7 +89,12 @@
         <button type="button" class="module-card" data-module="Media">
           <div class="module-icon">🖼</div>
           <h3 data-i18n="modMedia">Медиа</h3>
-          <p data-i18n="modMediaDek">WebP + alt</p>
+          <p data-i18n="modMediaDek">Галерея WebP</p>
+        </button>
+        <button type="button" class="module-card" data-module="Status">
+          <div class="module-icon">📊</div>
+          <h3 data-i18n="modStatus">Статус</h3>
+          <p data-i18n="modStatusDek">Digest черновиков и publish</p>
         </button>
         <button type="button" class="module-card" data-module="SEO">
           <div class="module-icon">🔍</div>
@@ -118,7 +123,7 @@
         <span>Pickora Studio · Home</span>
       </div>
       <div class="topbar-actions">
-        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-home" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-home" data-i18n="backDash">← На дашборд</button>
       </div>
     </header>
     <main class="app-main">
@@ -144,7 +149,7 @@
         <span>Pickora Studio · Pins</span>
       </div>
       <div class="topbar-actions">
-        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-pins" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-pins" data-i18n="backDash">← На дашборд</button>
       </div>
     </header>
     <main class="app-main">
@@ -173,7 +178,7 @@
         <span>Pickora Studio · Articles</span>
       </div>
       <div class="topbar-actions">
-        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-articles" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-articles" data-i18n="backDash">← На дашборд</button>
       </div>
     </header>
     <main class="app-main">
@@ -265,7 +270,7 @@
         <span>Pickora Studio · Products</span>
       </div>
       <div class="topbar-actions">
-        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-products" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-products" data-i18n="backDash">← На дашборд</button>
       </div>
     </header>
     <main class="app-main">
@@ -294,7 +299,7 @@
         <span>Pickora Studio · Publish</span>
       </div>
       <div class="topbar-actions">
-        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-publish" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-publish" data-i18n="backDash">← На дашборд</button>
       </div>
     </header>
     <main class="app-main">
@@ -309,8 +314,8 @@
       </div>
       <div id="publish-list" class="module-grid" style="grid-template-columns:1fr"></div>
       <div class="panel" style="margin-top:24px">
-        <h3 data-i18n="rollbackTitle">Rollback</h3>
-        <p class="hint" data-i18n="rollbackDek">Последние 5 publish-снимков (SHA). Кнопка даёт ссылки на revert в GitHub.</p>
+        <h3 data-i18n="rollbackTitle">Rollback ×5</h3>
+        <p class="hint" data-i18n="rollbackDek">Откат восстанавливает черновик из снимка и заново публикует на GitHub.</p>
         <div id="publish-snapshots"></div>
         <div id="publish-audit" style="margin-top:16px"></div>
       </div>
@@ -325,7 +330,7 @@
         <span>Pickora Studio · SEO</span>
       </div>
       <div class="topbar-actions">
-        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-seo" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-seo" data-i18n="backDash">← На дашборд</button>
       </div>
     </header>
     <main class="app-main">
@@ -356,7 +361,7 @@
         <span>Pickora Studio · Team</span>
       </div>
       <div class="topbar-actions">
-        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-team" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-team" data-i18n="backDash">← На дашборд</button>
       </div>
     </header>
     <main class="app-main">
@@ -368,14 +373,33 @@
       <div id="team-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
       <button type="button" class="btn btn-ghost" id="btn-team-refresh" style="width:auto;margin-bottom:14px" data-i18n="btnRefresh">Обновить</button>
       <ul class="list-plain" id="team-list"></ul>
-      <div class="panel" style="margin-top:18px">
-        <h3 data-i18n="teamInviteTitle">Добавить админа</h3>
-        <p class="hint" data-i18n="teamInviteSoon">Пока меняйте OWNER_LOGIN / OWNER_PASSWORD через wrangler secret put. Multi-admin UI — после стабилизации Publish.</p>
+
+      <!-- Invite form — shown only to owner (js shows/hides) -->
+      <div class="panel" id="team-invite-panel" style="margin-top:18px">
+        <h3 data-i18n="teamInviteTitle">Пригласить админа</h3>
+        <div id="team-invite-status" class="pill pk-hidden" style="margin-bottom:10px"></div>
+        <form id="team-invite-form" autocomplete="off" style="display:flex;flex-direction:column;gap:10px;max-width:360px">
+          <label>
+            <span class="field-label" data-i18n="labelInviteLogin">Логин</span>
+            <input type="text" id="team-invite-login" class="field-input" autocomplete="off" required pattern="[a-z0-9_.\-]{2,32}" />
+          </label>
+          <label>
+            <span class="field-label" data-i18n="labelInvitePassword">Пароль</span>
+            <input type="password" id="team-invite-password" class="field-input" autocomplete="new-password" required minlength="8" />
+          </label>
+          <label>
+            <span class="field-label" data-i18n="labelInviteRole">Роль</span>
+            <select id="team-invite-role" class="field-input">
+              <option value="admin">admin</option>
+            </select>
+          </label>
+          <button type="submit" class="btn btn-primary" id="btn-team-invite" style="width:auto;padding-inline:22px" data-i18n="btnInvite">Пригласить</button>
+        </form>
       </div>
     </main>
   </div>
 
-  <!-- MEDIA NOTE -->
+  <!-- MEDIA GALLERY -->
   <div class="app-shell pk-hidden" data-view="media">
     <header class="topbar">
       <div class="topbar-brand">
@@ -383,14 +407,45 @@
         <span>Pickora Studio · Media</span>
       </div>
       <div class="topbar-actions">
-        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-media" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-media" data-i18n="backDash">← На дашборд</button>
       </div>
     </header>
     <main class="app-main">
-      <div class="panel">
+      <div class="dash-hero">
+        <div class="eyebrow">Media</div>
         <h2 data-i18n="mediaTitle">Медиа</h2>
-        <p class="hint" data-i18n="mediaDek">Загрузка WebP уже встроена в Home, Pins, Products и Articles. Отдельная библиотека (галерея + R2) — после включения R2 в Cloudflare.</p>
+        <p data-i18n="mediaDek">Все загруженные файлы (D1). Просмотр и удаление.</p>
       </div>
+      <div id="media-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
+      <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" class="btn btn-ghost" id="btn-media-refresh" style="width:auto" data-i18n="btnRefresh">Обновить</button>
+      </div>
+      <div id="media-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px"></div>
+    </main>
+  </div>
+
+  <!-- STATUS PANEL -->
+  <div class="app-shell pk-hidden" data-view="status">
+    <header class="topbar">
+      <div class="topbar-brand">
+        <span class="mark">P</span>
+        <span>Pickora Studio · Status</span>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-status" data-i18n="backDash">← На дашборд</button>
+      </div>
+    </header>
+    <main class="app-main">
+      <div class="dash-hero">
+        <div class="eyebrow">Status</div>
+        <h2 data-i18n="statusTitle">Статус сайта</h2>
+        <p data-i18n="statusDek">Текущий снапшот системы.</p>
+      </div>
+      <div id="status-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
+      <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" class="btn btn-ghost" id="btn-status-refresh" style="width:auto" data-i18n="btnRefresh">Обновить</button>
+      </div>
+      <div id="status-content"></div>
     </main>
   </div>
 
@@ -403,7 +458,7 @@
       </div>
       <div class="topbar-actions">
         <button type="button" class="lang-toggle" id="btn-lang-panel" onclick="document.getElementById('btn-lang').click()">EN</button>
-        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-dash" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-dash" data-i18n="backDash">← На дашборд</button>
       </div>
     </header>
     <main class="app-main">

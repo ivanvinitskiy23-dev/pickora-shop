@@ -1,56 +1,43 @@
 # Pickora Admin API (Cloudflare Worker)
 
-Публичный сайт остаётся на GitHub Pages. Этот Worker — API Studio: auth, cloud drafts (D1), media, Publish → GitHub.
-
-Studio UI: https://pickora.shop/pk-studio/  
+Studio: https://pickora.shop/pk-studio/  
 API: https://pickora-admin-api.pickara-admin.workers.dev
 
-## Lab (локально)
+GH Pages stays public. Worker = auth, D1 drafts, media (D1), Publish → GitHub.
 
-```powershell
-cd C:\Users\Qwiqly\Documents\pickora-siteV1
-python -m http.server 8765
-# другой терминал
-python scripts\admin-local-api.py
-```
+## Secrets
 
-UI: http://127.0.0.1:8765/pk-studio/
-
-## Deploy Worker
+| Name | Purpose |
+|------|---------|
+| `OWNER_LOGIN` | Owner Studio login |
+| `OWNER_PASSWORD` | Owner password |
+| `GITHUB_TOKEN` | Fine-grained PAT, Contents R/W on `pickora-shop` |
 
 ```powershell
 $env:Path = "C:\Program Files\nodejs;" + $env:Path
 cd C:\Users\Qwiqly\Documents\pickora-siteV1\admin-api
-npm install
-npx.cmd wrangler login
-npx.cmd wrangler d1 execute pickora-admin --remote --file=schema.sql
-npx.cmd wrangler secret put OWNER_LOGIN
-npx.cmd wrangler secret put OWNER_PASSWORD
 npx.cmd wrangler secret put GITHUB_TOKEN
+npx.cmd wrangler d1 execute pickora-admin --remote --file=schema.sql
 npx.cmd wrangler deploy
 ```
 
-### Секреты
+## Publish
 
-| Secret | Значение |
-|--------|----------|
-| `OWNER_LOGIN` | логин Studio (например `qwiqlyowner@pickora`) |
-| `OWNER_PASSWORD` | пароль Studio |
-| `GITHUB_TOKEN` | GitHub PAT с Contents read/write на репо `pickora-shop` |
+| Route | Effect |
+|-------|--------|
+| `POST /api/publish/home` | `content/home.json` + `index.html` + top-picks |
+| `POST /api/publish/pins` | `content/pins.json` + `categories/index.html` |
+| `POST /api/publish/products` | `content/products.json` + hub + category cards |
+| `POST /api/publish/article` | JSON + hub card + sitemap + `{slug}/index.html` |
+| `GET /api/publish/snapshots` | Last publish snapshots |
+| `POST /api/publish/rollback` | Restore draft from snapshot + re-publish |
 
-`GITHUB_REPO` / `GITHUB_BRANCH` заданы в `wrangler.toml` `[vars]`.
+## Other
 
-Health: `/api/health` → `hasGithub: true` после токена.
+- `GET /api/health` — `hasGithub`, `hasOwner`, `hasDb`
+- `GET /api/audit`, `POST /api/links/check`
+- `GET/POST /api/team` — roster / invites (multi-admin)
+- `GET /api/status` — digest counts
+- `GET /api/media/list`, media upload/get/delete
 
-### Publish flow
-
-1. Articles wizard → Save → SEO gate → **SEO ready**
-2. Studio → **Publish** → Выложить на GitHub
-3. Worker пишет: `content/articles/{slug}.json`, карточку в `articles/index.html`, URL в `sitemap.xml`
-4. Полная страница `{slug}/index.html` — в доработке (фон-агент / Cursor publish skill)
-
-Rollback: revert коммита Publish в GitHub → Pages пересоберёт.
-
-Auth: `POST /api/login`, `GET /api/me`, `POST /api/logout`.  
-Publish: `POST /api/publish/article` `{ "slug": "…" }`.  
-Audit: `GET /api/audit`. Links: `POST /api/links/check`.
+Rollback stores draft JSON in `publish_snapshots` and re-runs publish (new GitHub commits).
