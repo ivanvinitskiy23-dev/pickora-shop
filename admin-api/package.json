@@ -1,0 +1,17 @@
+{
+  "name": "pickora-admin-api",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Pickora Studio Cloudflare Worker API",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "d1:create": "wrangler d1 create pickora-admin",
+    "d1:schema": "wrangler d1 execute pickora-admin --remote --file=schema.sql",
+    "whoami": "wrangler whoami"
+  },
+  "devDependencies": {
+    "wrangler": "^4.143.0"
+  }
+}

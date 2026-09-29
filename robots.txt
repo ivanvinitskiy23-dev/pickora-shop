@@ -8,5 +8,10 @@ Disallow: /wp-content/plugins/
 Disallow: /wp-json/
 Disallow: /xmlrpc.php
 Disallow: /feed/
+Disallow: /pk-studio/
+Disallow: /admin-lab/
+Disallow: /admin-api/
+Disallow: /content/
+Disallow: /scripts/
 
 Sitemap: https://pickora.shop/sitemap.xml

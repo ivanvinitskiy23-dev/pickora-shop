@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="googlebot" content="noindex, nofollow">
+  <title>Pickora Studio</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/pk-studio/css/studio.css">
+</head>
+<body>
+  <!-- LOGIN -->
+  <div class="login-screen" data-view="login">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="login-mark" aria-hidden="true">P</div>
+        <div>
+          <h1>Pickora Studio</h1>
+          <p data-i18n="brandSub">Панель управления сайтом</p>
+        </div>
+      </div>
+      <h2 style="font-size:1.15rem;margin-bottom:4px" data-i18n="loginTitle">Вход в Studio</h2>
+      <p class="hint" data-i18n="loginHint">Только для команды Pickora</p>
+      <div id="login-error" class="login-error pk-hidden" role="alert"></div>
+      <form id="login-form" autocomplete="on">
+        <div class="field">
+          <label for="field-login" data-i18n="labelLogin">Логин</label>
+          <input id="field-login" name="login" type="text" required autocomplete="username" value="qwiqlyowner@pickora">
+        </div>
+        <div class="field">
+          <label for="field-password" data-i18n="labelPassword">Пароль</label>
+          <input id="field-password" name="password" type="password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary" data-i18n="btnLogin">Войти</button>
+      </form>
+      <p class="login-foot" data-i18n="footerNote">Скрытый раздел · не индексируется Google</p>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div class="app-shell pk-hidden" data-view="dash">
+    <header class="topbar">
+      <div class="topbar-brand">
+        <span class="mark">P</span>
+        <span>Pickora Studio</span>
+      </div>
+      <div class="topbar-actions">
+        <span class="who" id="who-label"></span>
+        <button type="button" class="lang-toggle" id="btn-lang">EN</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-logout" data-i18n="btnLogout" style="color:#fff;border-color:rgba(255,255,255,.28)">Выйти</button>
+      </div>
+    </header>
+    <main class="app-main">
+      <div class="dash-hero">
+        <div class="eyebrow" data-i18n="dashEyebrow">Кабинет</div>
+        <h2 data-i18n="dashTitle">Что правим на сайте?</h2>
+        <p data-i18n="dashDek">Выберите раздел.</p>
+        <div class="status-row">
+          <span class="pill ok" data-i18n="statusLocal">Режим: LOCAL</span>
+          <span class="pill" data-i18n="statusCf">Cloudflare: готов</span>
+        </div>
+      </div>
+
+      <div class="module-grid">
+        <button type="button" class="module-card" data-module="Home">
+          <div class="module-icon">🏠</div>
+          <h3 data-i18n="modHome">Главная</h3>
+          <p data-i18n="modHomeDek">Latest Reviews и Top picks</p>
+        </button>
+        <button type="button" class="module-card" data-module="Products">
+          <div class="module-icon">🛒</div>
+          <h3 data-i18n="modProducts">Товары</h3>
+          <p data-i18n="modProductsDek">Категории и карточки</p>
+        </button>
+        <button type="button" class="module-card" data-module="Pins">
+          <div class="module-icon">📌</div>
+          <h3 data-i18n="modPins">Pins / Ideas</h3>
+          <p data-i18n="modPinsDek">Доска Categories</p>
+        </button>
+        <button type="button" class="module-card" data-module="Articles">
+          <div class="module-icon">📰</div>
+          <h3 data-i18n="modArticles">Статьи</h3>
+          <p data-i18n="modArticlesDek">Обзоры</p>
+        </button>
+        <button type="button" class="module-card" data-module="Media">
+          <div class="module-icon">🖼</div>
+          <h3 data-i18n="modMedia">Медиа</h3>
+          <p data-i18n="modMediaDek">WebP + alt</p>
+          <span class="soon" data-i18n="soon">Скоро</span>
+        </button>
+        <button type="button" class="module-card" data-module="SEO">
+          <div class="module-icon">🔍</div>
+          <h3 data-i18n="modSeo">SEO и ссылки</h3>
+          <p data-i18n="modSeoDek">Чеклисты</p>
+          <span class="soon" data-i18n="soon">Скоро</span>
+        </button>
+        <button type="button" class="module-card" data-module="Publish">
+          <div class="module-icon">🚀</div>
+          <h3 data-i18n="modPublish">Publish / Rollback</h3>
+          <p data-i18n="modPublishDek">Выложить / откатить</p>
+          <span class="soon" data-i18n="soon">Скоро</span>
+        </button>
+        <button type="button" class="module-card" data-module="Team">
+          <div class="module-icon">👥</div>
+          <h3 data-i18n="modTeam">Команда</h3>
+          <p data-i18n="modTeamDek">Админы</p>
+          <span class="soon" data-i18n="soon">Скоро</span>
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <!-- HOME EDITOR -->
+  <div class="app-shell pk-hidden" data-view="home">
+    <header class="topbar">
+      <div class="topbar-brand">
+        <span class="mark">P</span>
+        <span>Pickora Studio · Home</span>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-home" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+      </div>
+    </header>
+    <main class="app-main">
+      <div class="dash-hero">
+        <div class="eyebrow">Home</div>
+        <h2 data-i18n="homeEditorTitle">Latest Reviews</h2>
+        <p data-i18n="homeEditorDek">Ровно 4 карточки на главной. Newest сверху. После Save пересобирается lab preview.</p>
+      </div>
+      <div id="home-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
+      <div id="home-reviews" class="module-grid" style="grid-template-columns:1fr"></div>
+      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" class="btn btn-primary" id="btn-home-save" style="width:auto;padding-inline:28px" data-i18n="btnSaveHome">Сохранить в lab</button>
+        <a class="btn btn-ghost" href="/admin-lab/site/" target="_blank" rel="noopener" data-i18n="btnOpenLab">Открыть lab Home</a>
+      </div>
+    </main>
+  </div>
+
+  <!-- PINS EDITOR -->
+  <div class="app-shell pk-hidden" data-view="pins">
+    <header class="topbar">
+      <div class="topbar-brand">
+        <span class="mark">P</span>
+        <span>Pickora Studio · Pins</span>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-pins" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+      </div>
+    </header>
+    <main class="app-main">
+      <div class="dash-hero">
+        <div class="eyebrow">Categories</div>
+        <h2 data-i18n="pinsEditorTitle">Pins / Ideas</h2>
+        <p data-i18n="pinsEditorDek">Картинка, фильтр, текст и Amazon-товары. Save пересобирает lab Categories.</p>
+      </div>
+      <div id="pins-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
+      <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button type="button" class="btn btn-primary" id="btn-pin-add" style="width:auto;padding-inline:22px" data-i18n="btnAddPin">+ Добавить pin</button>
+        <a class="btn btn-ghost" href="/admin-lab/site/categories/" target="_blank" rel="noopener" data-i18n="btnOpenLabPins">Открыть lab Pins</a>
+      </div>
+      <div id="pins-list" class="module-grid" style="grid-template-columns:1fr"></div>
+      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" class="btn btn-primary" id="btn-pins-save" style="width:auto;padding-inline:28px" data-i18n="btnSavePins">Сохранить в lab</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- ARTICLES (Phase 3 start: catalog + SEO checklist gate) -->
+  <div class="app-shell pk-hidden" data-view="articles">
+    <header class="topbar">
+      <div class="topbar-brand">
+        <span class="mark">P</span>
+        <span>Pickora Studio · Articles</span>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-articles" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+      </div>
+    </header>
+    <main class="app-main">
+      <div class="dash-hero">
+        <div class="eyebrow">Phase 3</div>
+        <h2 data-i18n="articlesTitle">Статьи на сайте</h2>
+        <p data-i18n="articlesDek">Список live-обзоров. Полный wizard (brief → SEO → publish) подключаем дальше; сейчас можно выбрать статью для Home.</p>
+      </div>
+      <div id="articles-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
+      <div id="articles-list" class="module-grid" style="grid-template-columns:1fr"></div>
+      <div style="margin-top:18px">
+        <a class="btn btn-ghost" href="/admin-lab/site/articles/" target="_blank" rel="noopener" data-i18n="btnOpenLabArticles">Открыть lab Articles</a>
+      </div>
+    </main>
+  </div>
+
+  <!-- PRODUCTS EDITOR -->
+  <div class="app-shell pk-hidden" data-view="products">
+    <header class="topbar">
+      <div class="topbar-brand">
+        <span class="mark">P</span>
+        <span>Pickora Studio · Products</span>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-products" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+      </div>
+    </header>
+    <main class="app-main">
+      <div class="dash-hero">
+        <div class="eyebrow">Products hub</div>
+        <h2 data-i18n="productsEditorTitle">Категории товаров</h2>
+        <p data-i18n="productsEditorDek">Карточки на /products/. Превью + загрузка WebP, путь сам.</p>
+      </div>
+      <div id="products-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
+      <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button type="button" class="btn btn-primary" id="btn-hub-add" style="width:auto;padding-inline:22px" data-i18n="btnAddSection">+ Новый раздел</button>
+        <a class="btn btn-ghost" href="/admin-lab/site/products/" target="_blank" rel="noopener" data-i18n="btnOpenLabProducts">Открыть lab Products</a>
+      </div>
+      <div id="products-list" class="module-grid" style="grid-template-columns:1fr"></div>
+      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" class="btn btn-primary" id="btn-products-save" style="width:auto;padding-inline:28px" data-i18n="btnSaveProducts">Сохранить в lab</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODULE PLACEHOLDER -->
+  <div class="app-shell pk-hidden" data-view="panel">
+    <header class="topbar">
+      <div class="topbar-brand">
+        <span class="mark">P</span>
+        <span>Pickora Studio</span>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="lang-toggle" id="btn-lang-panel" onclick="document.getElementById('btn-lang').click()">EN</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-dash" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+      </div>
+    </header>
+    <main class="app-main">
+      <div class="panel">
+        <div class="panel-head">
+          <h2 id="panel-module-name">Module</h2>
+        </div>
+        <h3 data-i18n="panelSoonTitle">Раздел почти готов</h3>
+        <p class="hint" data-i18n="panelSoonDek"></p>
+        <ul class="list-plain">
+          <li data-i18n="panelSoonList1"></li>
+          <li data-i18n="panelSoonList2"></li>
+          <li data-i18n="panelSoonList3"></li>
+        </ul>
+      </div>
+    </main>
+  </div>
+
+  <script src="/pk-studio/js/i18n.js"></script>
+  <script src="/pk-studio/js/auth.js"></script>
+  <script src="/pk-studio/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "hubs": [
+    {
+      "path": "/",
+      "title": null,
+      "description": null,
+      "note": "Homepage SEO left as-is until hub SEO module; fill when editing."
+    },
+    {
+      "path": "/products/",
+      "title": null,
+      "description": null
+    },
+    {
+      "path": "/categories/",
+      "title": null,
+      "description": null
+    },
+    {
+      "path": "/articles/",
+      "title": null,
+      "description": null
+    }
+  ]
+}

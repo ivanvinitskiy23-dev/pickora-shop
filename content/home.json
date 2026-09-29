@@ -1,0 +1,136 @@
+{
+  "$schema_note": "Latest Reviews = ровно 4 карточки, newest first. topPicks = карусель Reader's selection / Top picks.",
+  "latestReviews": [
+    {
+      "slug": "how-to-choose-an-espresso-machine",
+      "url": "/how-to-choose-an-espresso-machine/",
+      "title": "How to Choose an Espresso Machine",
+      "excerpt": "Grinder, steam style, and portafilter size — plus six honest examples from Bambino Plus to Gaggia and Stilosa.",
+      "category": "Home & Kitchen",
+      "badge": "none",
+      "image": "/wp-content/uploads/2026/09/how-to-choose-an-espresso-machine-cover.webp",
+      "imageAlt": "How to choose an espresso machine"
+    },
+    {
+      "slug": "wireless-earbud-buying-mistakes",
+      "url": "/wireless-earbud-buying-mistakes/",
+      "title": "Wireless Earbud Buying Mistakes",
+      "excerpt": "Seven common mistakes — phone match, tip seal, ANC, calls — with clear fixes.",
+      "category": "Consumer Electronics",
+      "badge": "none",
+      "image": "/wp-content/uploads/2026/09/wireless-earbud-buying-mistakes-cover.webp",
+      "imageAlt": "Wireless earbud buying mistakes"
+    },
+    {
+      "slug": "how-to-choose-wireless-earbuds",
+      "url": "/how-to-choose-wireless-earbuds/",
+      "title": "How to Choose Wireless Earbuds",
+      "excerpt": "Fit, ANC, calls, and phone ecosystem — with five honest examples from Sony to Bose.",
+      "category": "Consumer Electronics",
+      "badge": "none",
+      "image": "/wp-content/uploads/2026/09/how-to-choose-wireless-earbuds-cover.webp",
+      "imageAlt": "How to choose wireless earbuds"
+    },
+    {
+      "slug": "ninja-vs-cosori-air-fryer",
+      "url": "/ninja-vs-cosori-air-fryer/",
+      "title": "Ninja vs Cosori Air Fryer",
+      "excerpt": "DZ550 dual-zone versus TurboBlaze — capacity, noise, cleanup, and who should buy which.",
+      "category": "Home & Kitchen",
+      "badge": "none",
+      "image": "/wp-content/uploads/2026/09/ninja-vs-cosori-air-fryer-cover.webp",
+      "imageAlt": "Ninja vs Cosori air fryer"
+    }
+  ],
+  "topPicks": {
+    "sourceNote": "Mirrors assets/data/top-picks.json — render syncs both lab HTML fallback and that JSON file in lab.",
+    "updated": "2026-09-22",
+    "picks": [
+      {
+        "id": "ninja-dz550",
+        "title": "Ninja Foodi DZ550",
+        "badge": "Top Pick",
+        "tagline": "Best overall air fryer",
+        "category": "Home & Kitchen",
+        "image": "/wp-content/uploads/2026/09/top-pick-ninja-dz550.webp",
+        "imageAlt": "Ninja Foodi DZ550 dual-basket air fryer with NINJA logo visible",
+        "blurb": "Our pick when one basket is not enough — cook two sides at once without babysitting the counter.",
+        "pros": [
+          "Dual baskets",
+          "Family batches",
+          "Probe cooking"
+        ],
+        "amazonUrl": "https://amzn.to/4vOr083",
+        "guideUrl": "/best-air-fryers-of-2026-which-one-should-you-buy/"
+      },
+      {
+        "id": "sony-xm6",
+        "title": "Sony WH-1000XM6",
+        "badge": "Flagship",
+        "tagline": "Best ANC headphones",
+        "category": "Consumer Electronics",
+        "image": "/wp-content/uploads/2026/09/top-pick-sony-xm6.webp",
+        "imageAlt": "Sony WH-1000XM6 headphones with SONY logo on the stem",
+        "blurb": "The safest flagship bet for travel and focus — strong hush, solid multipoint, and a battery that lasts.",
+        "pros": [
+          "Class-leading hush",
+          "Solid multipoint",
+          "Long battery"
+        ],
+        "amazonUrl": "https://link.amazon/B0j6GjBg9",
+        "guideUrl": "/best-noise-cancelling-headphones-2026/"
+      },
+      {
+        "id": "oxo-brew",
+        "title": "OXO Brew 9-Cup",
+        "badge": "Editor Pick",
+        "tagline": "Best overall drip coffee",
+        "category": "Home & Kitchen",
+        "image": "/wp-content/uploads/2026/09/top-pick-oxo-brew.webp",
+        "imageAlt": "OXO Brew 9-Cup coffee maker with OXO Brew logo visible",
+        "blurb": "For daily drip that stays hot and tastes even — a calm, reliable brew station without capsule clutter.",
+        "pros": [
+          "Even extraction",
+          "Thermal carafe",
+          "Daily reliability"
+        ],
+        "amazonUrl": "https://link.amazon/B09wqVQq0",
+        "guideUrl": "/best-coffee-makers-2026/"
+      },
+      {
+        "id": "roborock-s8",
+        "title": "Roborock S8 Pro Ultra",
+        "badge": "Floor Pick",
+        "tagline": "Best robot vacuum",
+        "category": "Home & Kitchen",
+        "image": "/wp-content/uploads/2026/09/top-pick-roborock.webp",
+        "imageAlt": "Roborock robot vacuum with Roborock logo on top",
+        "blurb": "Worth it if you want floors handled between deep cleans — vac, mop, and a dock that empties itself.",
+        "pros": [
+          "Self-empty dock",
+          "Vac + mop",
+          "Pet-hair focus"
+        ],
+        "amazonUrl": "https://amzn.to/43Efa4h",
+        "guideUrl": "/best-robot-vacuums-2026-top-8-models-tested-honest-reviews/"
+      },
+      {
+        "id": "furbo-360",
+        "title": "Furbo 360 Dog Camera",
+        "badge": "Pet Pick",
+        "tagline": "Best pet camera",
+        "category": "Pet Supplies",
+        "image": "/wp-content/uploads/2026/09/top-pick-furbo-360.webp",
+        "imageAlt": "Furbo 360 dog camera with Furbo logo near the base",
+        "blurb": "Best when you want more than a live feed — treat toss and bark alerts keep you connected while away.",
+        "pros": [
+          "Treat tossing",
+          "Bark alerts",
+          "360° tracking"
+        ],
+        "amazonUrl": "https://amzn.to/4uCT4KF",
+        "guideUrl": "/best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews/"
+      }
+    ]
+  }
+}

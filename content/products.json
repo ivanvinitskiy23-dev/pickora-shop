@@ -1,0 +1,400 @@
+{
+  "hubCategories": [
+    {
+      "id": "consumer-electronics",
+      "url": "/consumer-electronics/",
+      "title": "Consumer Electronics",
+      "badge": "Tech",
+      "description": "Keyboards, earbuds, and desk gadgets compared for daily use.",
+      "image": "/wp-content/uploads/2026/06/Tech_gadgets_on_desk_202606231445.webp",
+      "imageAlt": "Consumer Electronics",
+      "width": 1200,
+      "height": 896
+    },
+    {
+      "id": "home-kitchen",
+      "url": "/home-kitchen/",
+      "title": "Home & Kitchen",
+      "badge": "Home",
+      "description": "Coffee machines, air fryers, and kitchen tools worth the counter space.",
+      "image": "/wp-content/uploads/2026/06/Commercial_studio_photography_of_modern_202606231450-scaled.webp",
+      "imageAlt": "Home & Kitchen",
+      "width": 1200,
+      "height": 670
+    },
+    {
+      "id": "fitness-health",
+      "url": "/fitness-health/",
+      "title": "Fitness & Health",
+      "badge": "Wellness",
+      "description": "Home gym gear and trackers ranked by comfort and owner complaints.",
+      "image": "/wp-content/uploads/2026/06/Commercial_studio_photography_of_modern_202606231456-scaled.webp",
+      "imageAlt": "Fitness & Health",
+      "width": 1200,
+      "height": 670
+    },
+    {
+      "id": "pet-supplies",
+      "url": "/pet-supplies/",
+      "title": "Pet Supplies",
+      "badge": "Pets",
+      "description": "Feeders, fountains, and cameras for dogs and cats.",
+      "image": "/wp-content/uploads/2026/06/Commercial_studio_photography_of_premium_202606231533-scaled.webp",
+      "imageAlt": "Pet Supplies",
+      "width": 1200,
+      "height": 896
+    },
+    {
+      "id": "microwave",
+      "url": "/microwave/",
+      "title": "New microwave",
+      "badge": "New",
+      "description": "Mirowave rewews",
+      "image": "",
+      "imageAlt": "microwave",
+      "width": 1200,
+      "height": 670
+    }
+  ],
+  "categoryProducts": {
+    "home-kitchen": [
+      {
+        "id": "home-kitchen-1",
+        "title": "Breville Bambino Plus Espresso Machine",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Espresso_machine_and_latte_mug_202606281727.webp",
+        "imageAlt": "Matte black Breville Bambino Plus espresso machine on a modern white marble kitchen countertop next to a ceramic coffee mug, aesthetic kitchen styling",
+        "description": "The Breville Bambino Plus delivers third-wave specialty coffee at home, bringing professional-grade performance into a compact, kitchen-friendly footprint. With its 54mm portafilter, 19 bars of pressure, and a proprietary ThermoJet heating system that reaches ideal extraction temperature in just 3 seconds, it extracts rich, full-bodied espresso with flawless crema every single time.",
+        "pros": [
+          "3-second heat-up time with ThermoJet system.",
+          "Automatic milk texturing creates true microfoam for latte art.",
+          "Extremely compact design perfect for small counter spaces."
+        ],
+        "cons": [
+          "Mostly plastic internal components despite the steel exterior."
+        ],
+        "verdict": "Pickora’s Verdict: The absolute gold standard for entry-level home espresso. It removes all the guesswork from milk steaming and heating, making barista-quality lattes accessible to everyone without cluttering the kitchen.",
+        "amazonUrl": "https://amzn.to/440gWNu",
+        "ratingStars": 5
+      },
+      {
+        "id": "home-kitchen-2",
+        "title": "Cosori TurboBlaze 6.0-Quart Air Fryer",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Air_fryer_with_sweet_potato_202606281752.webp",
+        "imageAlt": "Matte black Cosori TurboBlaze air fryer on a clean white quartz kitchen countertop next to a small ceramic bowl of organic roasted snacks, cozy interior ambient lighting",
+        "description": "The Cosori TurboBlaze Air Fryer reimagines counter-top cooking with a sleek, matte design and a professional-grade DC motor. This innovative heating technology ensures ultra-fast airflow, delivering perfectly crisp, gold-standard results with up to 85% less oil. With its generous 6-quart capacity and intuitive, dark-mode touch interface, it fits seamlessly into any modern, design-conscious kitchen.",
+        "pros": [
+          "Energy-efficient DC motor cooks up to 46% faster than previous models.",
+          "Sleek, minimalist matte finish that eliminates fingerprint smudges.",
+          "9-in-1 versatile functionality, including dehydrate and proof settings."
+        ],
+        "cons": [
+          "The non-stick crisper plate fits tightly and can be stiff to remove at first."
+        ],
+        "verdict": "Pickora’s Verdict: An absolute masterpiece of kitchen engineering and design. It handles family-sized meals effortlessly while looking like a high-end tech gadget on your counter rather than a bulky appliance.",
+        "amazonUrl": "https://amzn.to/3R9HUz8",
+        "ratingStars": 5
+      },
+      {
+        "id": "home-kitchen-3",
+        "title": "Cosori Electric Gooseneck Kettle (5 Presets)",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Black_kettle_on_kitchen_countertop_202606281801.webp",
+        "imageAlt": "Matte black Cosori electric gooseneck kettle on a minimalist wooden kitchen counter next to a glass coffee server, clean aesthetic styling",
+        "description": "The Cosori Electric Gooseneck Kettle combines precision brewing with a sleek, space-saving design. Engineered with 5 precise one-touch temperature presets, it automatically heats water to the ideal temperature for coffee, green tea, or black tea. With its 100% food-grade stainless steel interior, a powerful 1200W heating element, and a laser-etched gooseneck spout, it offers ultimate control over your pour without compromising on speed or purity.",
+        "pros": [
+          "5 convenient temperature presets optimized for different coffee and tea varieties.",
+          "100% food-grade stainless steel housing, lid, and bottom with zero plastic contact.",
+          "Rapid boil technology (1200W) heats the full 0.8L capacity in just 3-5 minutes."
+        ],
+        "cons": [
+          "The alert beep when the water reaches temperature cannot be muted."
+        ],
+        "verdict": "Pickora’s Verdict:The smart minimalist’s choice. It delivers the high-end pouring precision and temperature control of premium barista kettles at a fraction of the cost, making it an unbeatable addition to any modern coffee corner.",
+        "amazonUrl": "https://amzn.to/4v6m5P9",
+        "ratingStars": 5
+      },
+      {
+        "id": "home-kitchen-4",
+        "title": "Keenstone 4-Slice Digital Smart Toaster",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Stainless_steel_smart_toaster_to-_202606281811.webp",
+        "imageAlt": "Stainless steel Keenstone 4-slice digital smart toaster with glowing touchscreen display on a dark granite kitchen island, futuristic kitchen tech styling",
+        "description": "The Keenstone Digital Smart Toaster brings modern touch-control technology to your morning routine. Featuring an intuitive touchscreen and dual independent control panels, this 4-slice stainless steel powerhouse allows you to toast different items to perfection simultaneously. With a built-in digital countdown timer and specialized single-slot toasting logic, it delivers precise, even browning for everything from thick bagels to delicate waffles.",
+        "pros": [
+          "Intuitive digital touchscreen with a live countdown timer for precise breakfast planning.",
+          "Dual independent control panels allow you to run different shade settings at the same time.",
+          "Smart single-slot function saves energy when you only need to toast a single slice."
+        ],
+        "cons": [
+          "The glossy finish on the touch panel requires regular wiping to clear fingerprint smudges."
+        ],
+        "verdict": "Pickora’s Verdict:A futuristic upgrade for any modern kitchen. If you love tech gadgets and want absolute precision over your morning toast, the responsive touchscreen, clear countdown timer, and versatile dual controls make this model an exceptional, high-utility choice.",
+        "amazonUrl": "https://amzn.to/4f6xs4G",
+        "ratingStars": 5
+      },
+      {
+        "id": "home-kitchen-5",
+        "title": "LifeStraw Home Glass Water Filter Pitcher",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Glass_water_filter_pitcher_empty_202606281821.webp",
+        "imageAlt": "Elegant glass LifeStraw Home water filter pitcher on a bright wooden kitchen table next to a clean drinking glass, soft scandinavian interior design.",
+        "description": "The LifeStraw Home is the only water filter pitcher made from premium, shatter-resistant borosilicate glass that pairs elegant Scandinavian design with industry-leading filtration. Engineered to protect against bacteria, parasites, microplastics, and heavy metals while significantly improving taste, it eliminates visual clutter and single-use plastics, making clean hydration a seamless part of your modern kitchen.",
+        "pros": [
+          "Premium borosilicate glass body completely eliminates plastic-taste and odors.",
+          "Advanced dual-filtration technology removes microplastics, bacteria, and lead.",
+          "Sleek, award-winning minimalist aesthetic looks stunning on any dining table or counter."
+        ],
+        "cons": [
+          "Glass construction makes it heavier than standard plastic pitchers when fully filled."
+        ],
+        "verdict": "Pickora’s Verdict:The ultimate synthesis of health and high design. If you are tired of bulky, ugly plastic water jugs, this elegant glass pitcher elevates your countertop environment while offering commercial-grade water purification.",
+        "amazonUrl": "https://amzn.to/4gI96zl",
+        "ratingStars": 5
+      }
+    ],
+    "consumer-electronics": [
+      {
+        "id": "consumer-electronics-1",
+        "title": "Keychron V1 Mechanical Keyboard",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_the_202606261502-scaled.webp",
+        "imageAlt": "Premium customizable mechanical keyboard on a minimalist desk",
+        "description": "The Keychron V1 is a fully customizable mechanical keyboard ready for any desk setup. With its compact 75% layout, hot-swappable switches, and acoustic silicone pad, it delivers a premium typing feel and sound right out of the box.",
+        "pros": [],
+        "cons": [],
+        "verdict": "Pickora’s Verdict: The absolute best entry point into mechanical keyboards. It offers unbeatable customizability and high-end typing acoustic for its price range.",
+        "amazonUrl": "https://amzn.to/4vsLOCd",
+        "ratingStars": 5
+      },
+      {
+        "id": "consumer-electronics-2",
+        "title": "Logitech MX Master 4 Ergonomic Wireless Mouse",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261757-scaled.webp",
+        "imageAlt": "Premium customizable mechanical keyboard on a minimalist desk",
+        "description": "The ultimate flagship for productivity. The Logitech MX Master 4 features the revolutionary Actions Ring overlay, premium Haptic Sense tracking, and the ultra-fast MagSpeed wheel that scrolls 1,000 lines per second. It is meticulously sculpted for the perfect ergonomic palm grip.",
+        "pros": [],
+        "cons": [],
+        "verdict": "Pickora’s Verdict: The undisputed king of professional workspace mice. While it is a premium investment, its ability to automate repetitive tasks and completely eliminate wrist strain makes it a mandatory tool for any power user.",
+        "amazonUrl": "https://amzn.to/4vDNlFM",
+        "ratingStars": 5
+      },
+      {
+        "id": "consumer-electronics-3",
+        "title": "Sony WH-1000XM5 Wireless Noise Canceling Headphones",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261931-scaled.webp",
+        "imageAlt": "Sony WH-1000XM5 premium wireless noise canceling headphones on a minimalist desk setup",
+        "description": "The ultimate benchmark for wireless audio. Featuring two processors controlling eight microphones, the Sony WH-1000XM5 delivers industry-leading active noise cancellation. With a redesigned lightweight chassis, precise carbon-fiber drivers, and up to 30 hours of battery life, they provide unparalleled comfort and acoustic clarity for any environment.",
+        "pros": [],
+        "cons": [],
+        "verdict": "Pickora’s Verdict: The undisputed king of premium noise-canceling headphones. Whether you are commuting, working in a noisy office, or relaxing at home, the XM5 offers the best combination of silence, smart features, and sound quality on the market.",
+        "amazonUrl": "https://amzn.to/44vKS3Y",
+        "ratingStars": 5
+      },
+      {
+        "id": "consumer-electronics-4",
+        "title": "Phomemo M110 Portable Thermal Label Maker",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261942-2-scaled.webp",
+        "imageAlt": "Phomemo M110 portable smart thermal label maker printer on a minimalist desk workspace",
+        "description": "The ultimate tool for workspace organization. The Phomemo M110 is a compact, Bluetooth-enabled thermal printer that lets you design and print custom labels directly from your smartphone. Using advanced inkless thermal technology, it handles everything from cable labels and shipping tags to storage bin organizers with crisp, smudge-free clarity.",
+        "pros": [],
+        "cons": [],
+        "verdict": "Pickora’s Verdict: An absolute game-changer for anyone obsessed with organizing their desk, cables, or studio space. It is incredibly compact, reliable, and completely eliminates the hassle of expensive ink cartridges. A small device that brings massive order.",
+        "amazonUrl": "https://amzn.to/4xVE7WU",
+        "ratingStars": 5
+      },
+      {
+        "id": "consumer-electronics-5",
+        "title": "Samsung 49″ Odyssey OLED G9 (G95SC) Super Ultrawide Monitor",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261954-scaled.webp",
+        "imageAlt": "Samsung 49-inch Odyssey OLED G9 Super Ultrawide curved monitor on a premium minimalist desk",
+        "description": "A colossal 49-inch curved display that redefines immersion. The Odyssey OLED G9 features a breathtaking 32:9 aspect ratio, equivalent to two QHD monitors side-by-side. With quantum dot technology, true black levels, and a blazingly fast 240Hz refresh rate, it offers unparalleled cinematic visual quality for both professional creative work and high-end gaming.",
+        "pros": [],
+        "cons": [],
+        "verdict": "Pickora’s Verdict: The undisputed flagship of the monitor world. It is expensive, massive, and demanding, but it delivers a visually stunning experience that simply cannot be matched by any standard display. The ultimate productivity and gaming upgrade.",
+        "amazonUrl": "https://amzn.to/4eJiOih",
+        "ratingStars": 5
+      }
+    ],
+    "fitness-health": [
+      {
+        "id": "fitness-health-1",
+        "title": "Oura Ring 4 (Silver)",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Silver_smart_ring_on_tray_202606281909.webp",
+        "imageAlt": "Premium silver Oura Ring 4 smart ring resting on a clean white quartz tray next to a glass of water, minimalist health and wellness concept.",
+        "description": "The Oura Ring 4 reimagines personal health tracking with its completely flush inner sensors and premium titanium design. This next-generation smart ring monitors sleep, daily activity, heart rate, and temperature zones with clinical-grade accuracy. Featuring an advanced AI Advisor for personalized health insights and a specialized focus on holistic recovery, it delivers deep biological data straight to your iOS or Android device without the distraction of a screen.",
+        "pros": [
+          "Up to 8 days of battery life on a single charge with improved power management.",
+          "Sleek, fully recessed internal sensor design for an incredibly comfortable, seamless fit.",
+          "Intuitive AI Advisor providing deeper, conversational context regarding your daily recovery scores."
+        ],
+        "cons": [
+          "Sizing is highly specific; you must use their sizing kit before purchasing the actual ring."
+        ],
+        "verdict": "Pickora’s Verdict:The ultimate zero-distraction wearable. Oura Ring 4 refines everything that made previous generations great, packing a longer-lasting 8-day battery, smart AI insights, and unparalleled comfort into a timeless silver band that feels like jewelry, not a gadget.",
+        "amazonUrl": "https://amzn.to/4eMGx10",
+        "ratingStars": 5
+      },
+      {
+        "id": "fitness-health-2",
+        "title": "LARQ Bottle PureVis Self-Cleaning Water Bottle",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Water_bottle_on_fitness_mat_202606281918.webp",
+        "imageAlt": "Matte white LARQ Bottle PureVis self-cleaning water bottle resting on a cork yoga mat, minimalist fitness and hydration aesthetic.",
+        "description": "The LARQ Bottle PureVis is the world’s first self-cleaning water bottle and water purification system. Utilizing proprietary UV-C LED technology, it actively purifies your drinking water and sanitizes the inner surfaces of the bottle at the touch of a button or automatically every 2 hours. Built from premium, double-walled vacuum-insulated stainless steel, it keeps your water ice-cold for up to 24 hours while looking remarkably sleek in any gym setup.",
+        "pros": [
+          "Powerful UV-C LED technology eliminates 99.99% of bacteria and bio-contaminants.",
+          "Intelligent self-cleaning cycles activate automatically every 2 hours to prevent odors.",
+          "Double-wall insulation keeps beverages cold for 24 hours or hot for up to 12 hours."
+        ],
+        "cons": [
+          "The proprietary USB charging cap must be handled carefully to avoid drop damage."
+        ],
+        "verdict": "Pickora’s Verdict:A brilliant intersection of tech and daily wellness. LARQ solves the age-old problem of musty, hard-to-clean reusable bottles by doing the work for you, wrapped in a beautiful, minimalist aesthetic that encourages you to stay hydrated all day.",
+        "amazonUrl": "https://amzn.to/4vGeOGI",
+        "ratingStars": 5
+      },
+      {
+        "id": "fitness-health-3",
+        "title": "CAP ADJUSTABELL Adjustable Dumbbell Set",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Adjustable_dumbbells_on_concrete-_202606281927.webp",
+        "imageAlt": "Heavy-duty CAP ADJUSTABELL adjustable dumbbells in their black cradles on a modern concrete floor next to a rolled grey exercise mat, aesthetic home fitness space.",
+        "description": "The CAP ADJUSTABELL system brings the rugged reliability of commercial gym equipment into your personal home studio. Engineered with a premium quick-select weight adjustment mechanism, these dumbbells allow you to seamlessly transition between different resistance levels for targeted strength training. With ergonomic multi-grip handle options and a heavy-duty compact design, they maximize your training performance while eliminating heavy equipment clutter.",
+        "pros": [
+          "Premium quick-select dial system ensures rapid, secure weight transitions.",
+          "Ergonomic textured handles offer multiple grip options for ultimate hand comfort and safety.",
+          "Highly durable, heavy-duty build quality mimics the feel of commercial-grade dumbbells."
+        ],
+        "cons": [
+          "The storage trays are wide and require a completely flat surface to align correctly."
+        ],
+        "verdict": "Pickora’s Verdict:Built for those who take home workouts seriously. CAP ADJUSTABELL cuts out the plastic fluff and delivers a premium, heavy-duty weight system that feels incredibly balanced in the hands, saving you valuable floor space without sacrificing durability.",
+        "amazonUrl": "https://amzn.to/4wj6tZy",
+        "ratingStars": 5
+      },
+      {
+        "id": "fitness-health-4",
+        "title": "Wyze Smart Scale X for Body Weight and Composition",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Minimalist_smart_scale_on_floor_202606281934.webp",
+        "imageAlt": "Premium black Wyze Smart Scale X with a glowing digital display on a minimalist bathroom floor tile layout, modern health tech aesthetic.",
+        "description": "The Wyze Smart Scale X provides a comprehensive look at your health by measuring 13 essential body composition metrics, including body fat percentage, lean body mass, metabolic age, and even your standing heart rate. Beyond personal metrics, it features smart specialized modes designed to easily weigh your baby, pets, or luggage. Wrapped in a premium tempered glass top with an invisible digital screen, it pairs via Bluetooth to seamlessly sync your progress with Apple Health, Google Fit, and Fitbit.",
+        "pros": [
+          "Tracks 13 detailed health metrics including visceral fat, muscle mass, and heart rate.",
+          "Convenient specialized modes to accurately track baby and pet weights over time.",
+          "Full-surface ITO coating glass allowing you to step anywhere to get an accurate reading."
+        ],
+        "cons": [
+          "Relies primarily on Bluetooth, meaning your smartphone needs to be close by to sync data instantly."
+        ],
+        "verdict": "Pickora’s Verdict:High-tier smart tracking at an unbeatable value. Wyze Smart Scale X matches the biometric performance of luxury fitness scales while adding unique, lifestyle-focused pet and baby modes, making it an essential and highly functional smart-home addition for the entire household.",
+        "amazonUrl": "https://amzn.to/4vABQ1D",
+        "ratingStars": 5
+      },
+      {
+        "id": "fitness-health-5",
+        "title": "Sharper Image PowerBoost Circuit Massage Gun",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Massage_gun_in_travel_case_202606281946.webp",
+        "imageAlt": "Matte black Sharper Image PowerBoost Circuit massage gun in its open sleek travel case on a concrete gym bench, minimalist wellness aesthetic.",
+        "description": "The Sharper Image PowerBoost Circuit combines high-performance muscle recovery with an ultra-sleek, ergonomic design. Featuring 6 precision speed settings and an advanced brushless motor, this deep tissue percussion massager targets intense muscle knots and relieves tension without the loud mechanical noise. With 4 interchangeable nodes and a premium travel case included, it delivers a customizable, gym-grade recovery experience anywhere you go.",
+        "pros": [
+          "6 versatile speed settings ranging from gentle relaxation to deep tissue percussion.",
+          "Whisper-quiet brushless motor technology provides a distraction-free massage experience.",
+          "Comes with a high-quality hardshell travel case and 4 targeted attachments."
+        ],
+        "cons": [
+          "The handle is slightly wider than average, which may feel bulky for very small hands."
+        ],
+        "verdict": "Pickora’s Verdict:A masterclass in athletic recovery. The Sharper Image PowerBoost Circuit strips away unnecessary aesthetic complexity, replacing it with a clean, industrial design and heavy-hitting industrial performance that redefines post-workout relief.",
+        "amazonUrl": "https://amzn.to/4atORlg",
+        "ratingStars": 5
+      }
+    ],
+    "pet-supplies": [
+      {
+        "id": "pet-supplies-1",
+        "title": "PETKIT YumShare Smart Automatic Pet Feeder with Camera",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Minimalist_smart_pet_feeder_202606282002.webp",
+        "imageAlt": "Minimalist white PETKIT automatic pet feeder with a stainless steel bowl on a light wooden floor, elegant pet-friendly home interior.",
+        "description": "The PETKIT YumShare reinvents pet care by merging automated nutrition with real-time smart monitoring. Featuring a built-in 1080P HD camera with night vision and AI pet recognition, this sleek automatic feeder allows you to watch, record, and talk to your pet through a dedicated app. Engineered with an anti-clogging dual food distribution system and a premium food-grade stainless steel bowl, it ensures your pet is fed precisely on time, every time, while looking incredibly elegant in your home.",
+        "pros": [
+          "1080P HD wide-angle camera with AI tracking to monitor your pet’s eating habits in real-time.",
+          "Triple-fresh lock technology keeps kibble crunchy, moisture-free, and safe from pests.",
+          "Built-in backup battery system ensures feeding schedules run even during power outages."
+        ],
+        "cons": [
+          "Optimized strictly for dry kibble; does not support wet or freeze-dried raw food profiles."
+        ],
+        "verdict": "Pickora’s Verdict:The ultimate peace of mind for modern pet parents. PETKIT seamlessly hides complex automation inside a stunning, minimalist chassis. It completely removes the guilt of staying late at work, letting you stay connected to your pet’s health and happiness with a single tap on your screen.",
+        "amazonUrl": "https://amzn.to/4oTniYm",
+        "ratingStars": 5
+      },
+      {
+        "id": "pet-supplies-2",
+        "title": "PETKIT EVERSWEET SOLO SE Smart Pet Water Fountain",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Pet_water_fountain_minimalist_de-_202606301436.webp",
+        "imageAlt": "Minimalist translucent PETKIT pet water fountain with a gentle water stream on a modern kitchen tile floor, clean pet lifestyle photography.",
+        "description": "The PETKIT EVERSWEET SOLO SE brings high-end fluid dynamics and absolute safety to your pet’s hydration routine. Featuring a groundbreaking wireless water pump, it eliminates submerged electrical cords to provide a 100% safe drinking experience and effortless cleaning. With its multi-layer filtration system that removes hair, debris, and heavy metals, this ultra-quiet fountain mimics natural running streams to encourage healthier drinking habits while maintaining a sleek, low-profile silhouette.",
+        "pros": [
+          "Innovative wireless pump design makes cleaning safe and incredibly simple.",
+          "High-density purification filter eliminates chlorine, heavy metals, and pet hair.",
+          "Roman fountain structure ensures whisper-quiet operation below 25 decibels."
+        ],
+        "cons": [
+          "Requires regular filter replacements every 3–4 weeks to maintain optimal water purity."
+        ],
+        "verdict": "Pickora’s Verdict: A brilliant blend of safety and minimalism. PETKIT solves the worst part of traditional pet fountains—slimy, dangerous submerged wires—by separating the water tank entirely from the power base. It’s elegant, hygienic, and perfectly fits into any modern home layout.",
+        "amazonUrl": "https://amzn.to/4v9SCnp",
+        "ratingStars": 5
+      },
+      {
+        "id": "pet-supplies-3",
+        "title": "Ellenpent Automatic Self-Cleaning Litter Box (90L Large Capacity)",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/An_aesthetic_product_photography_of_202606301447.webp",
+        "imageAlt": "Large white Ellenpent automatic self-cleaning litter box with an open entry door on a light wood floor, modern minimal pet furniture style.",
+        "description": "The Ellenpent Automatic Litter Box is engineered specifically for multi-pet homes and larger feline companions, boasting a massive 90L internal capacity. This smart self-cleaning system automatically sifts waste into a sealed, odor-controlled compartment after your cat steps out. Packed with real-time app tracking for usage patterns, multiple safety sensors to prevent rotation when your pet is near, and coming with 3 rolls of customized garbage bags, it delivers maximum convenience and a fresh home environment.",
+        "pros": [
+          "Massive 90L volume perfectly accommodates large cats and multi-cat households.",
+          "Advanced multi-layer safety sensor array immediately halts rotation for pet security.",
+          "Includes 3 bonus rolls of garbage bags and features seamless Wi-Fi smartphone app controls."
+        ],
+        "cons": [
+          "The deep 90L outer chassis requires a dedicated, spacious floor area in your room."
+        ],
+        "verdict": "Pickora’s Verdict: A heavy-duty automation lifesaver. If you have a larger cat or manage a busy multi-cat household, the Ellenpent Automatic Litter Box offers the massive capacity and advanced app analytics you need to keep your home odor-free without paying a massive luxury premium.",
+        "amazonUrl": "https://amzn.to/4v83Ske",
+        "ratingStars": 5
+      },
+      {
+        "id": "pet-supplies-4",
+        "title": "Tractive GPS Pet Tracker & Health Monitor",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/An_aesthetic_product_photography_of_202606301516.webp",
+        "imageAlt": "Sleek minimalist white Tractive GPS pet tracker attached to a premium tan leather dog collar, resting on a clean wooden table surface.",
+        "description": "The Tractive GPS Pet Tracker offers ultimate peace of mind by allowing you to follow your pet’s every step in real-time. Featuring worldwide location tracking with an unlimited range, this lightweight, 100% waterproof device clips securely onto any standard collar. Beyond live radar tracking, it functions as a comprehensive health monitor, logging your pet’s active minutes, calories burned, and sleep disruption patterns to ensure they stay fit and healthy.",
+        "pros": [
+          "LIVE Tracking mode updates your pet’s exact location every 2-3 seconds.",
+          "Virtual Fence feature alerts your phone instantly if your pet leaves a designated safe zone.",
+          "Up to 10 days of battery life with customizable power-saving Wi-Fi zones."
+        ],
+        "cons": [
+          "Requires a monthly subscription plan to connect to global cellular networks."
+        ],
+        "verdict": "Pickora’s Verdict:An invisible digital leash for the modern adventurer. Tractive masterfully shrinks advanced satellite tracking into a durable, featherlight accessory. It removes the terrifying anxiety of a runaway pet, replacing it with smart, actionable data about their daily wellness and location.",
+        "amazonUrl": "https://amzn.to/4gNbkNR",
+        "ratingStars": 5
+      },
+      {
+        "id": "pet-supplies-5",
+        "title": "Furbo 360° Dog Camera with Treat Tossing",
+        "image": "https://pickora.shop/wp-content/uploads/2026/06/Heartwarming_scene_of_a_dog_202606171925-scaled.webp",
+        "imageAlt": "Sleek white Furbo 360 dog camera with a premium wooden top lid resting on a modern living room side table, high-end pet lifestyle photography.",
+        "description": "The Furbo 360° redefines how you connect with your pet from afar, combining an advanced rotating smart camera with an interactive treat dispenser. Delivering crystal-clear 1080p HD video with automatic pet tracking and color night vision, it ensures your dog is always in frame. With its intelligent real-time barking alerts, two-way audio communication, and a customizable treat-tossing mechanism, it transforms remote pet monitoring into a fun, interactive daily bonding experience.",
+        "pros": [
+          "Smooth 360-degree rotating lens completely eliminates blind spots in your living room.",
+          "Fun, app-controlled remote treat tossing works smoothly with various small kibble shapes.",
+          "Intelligent AI alerts detect barking, pet activity, and even potential home emergencies."
+        ],
+        "cons": [
+          "Advanced cloud-recording and specific AI pet-recognition features require a premium subscription."
+        ],
+        "verdict": "Pickora’s Verdict: The ultimate interactive babysitter for your pet. Furbo 360° completely cures separation anxiety—both yours and your dog’s. While we’ve previously evaluated it alongside competitors in our comprehensive roundup of the best pet cameras, this model stands out on its own. It beautifully disguises a powerful AI security camera inside a sleek, wooden-accented design that feels warm, playful, and incredibly functional.",
+        "amazonUrl": "https://amzn.to/4gIt0u8",
+        "ratingStars": 5
+      }
+    ],
+    "microwave": []
+  }
+}

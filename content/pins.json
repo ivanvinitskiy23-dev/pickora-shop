@@ -1,0 +1,127 @@
+{
+  "filters": [
+    { "id": "all", "label": "All Ideas" },
+    { "id": "work", "label": "Work & Study" },
+    { "id": "kitchen", "label": "Kitchen & Dining" },
+    { "id": "home", "label": "Home & Comfort" },
+    { "id": "travel", "label": "Travel & EDC" },
+    { "id": "beauty", "label": "Self-Care & Beauty" },
+    { "id": "gifts", "label": "Gifts & Gadgets" },
+    { "id": "leisure", "label": "Leisure & Hobby" }
+  ],
+  "pins": [
+    {
+      "id": 1,
+      "category": "work",
+      "title": "Sunlit Simplicity",
+      "boardDesc": "Find your flow in a space defined by light and clarity. Minimalist Apple tech meets the organic warmth of a Japandi-inspired workspace.",
+      "popupDesc": "Find your flow in a space defined by light and clarity. Minimalist Apple tech meets the organic warmth of a Japandi-inspired workspace.",
+      "image": "https://pickora.shop/wp-content/uploads/2026/07/Desk_with_MacBook_and_keyboard_202607011350.webp",
+      "imageAlt": "Minimalist Japandi home office setup featuring an Apple MacBook Pro on an aluminum Rain Design mStand laptop stand, light oak desk with soft morning window shadows, and a Keychron mechanical keyboard",
+      "width": 896,
+      "height": 1200,
+      "products": [
+        { "name": "Apple MacBook Pro (Space Gray)", "url": "https://amzn.to/4xXKw3B" },
+        { "name": "Rain Design mStand Laptop Stand", "url": "https://amzn.to/3SGEAfk" },
+        { "name": "Keychron K3 Ultra-Slim Wireless Mechanical Keyboard", "url": "https://amzn.to/4xUKp9f" }
+      ]
+    },
+    {
+      "id": 2,
+      "category": "kitchen",
+      "title": "The Morning Alchemist",
+      "boardDesc": "Master the art of the slow pour in a sun-drenched sanctuary.",
+      "popupDesc": "Elevate your morning ritual with precision-engineered tools that double as kitchen sculpture. This minimalist setup blends raw concrete textures with high-tech temperature control for a sensory coffee experience.",
+      "image": "https://pickora.shop/wp-content/uploads/2026/07/Digen_image_1782918584661.webp",
+      "imageAlt": "Minimalist coffee setup featuring a Fellow Stagg white electric kettle and Ember smart mug on a light wood counter with morning window shadows.",
+      "width": 2048,
+      "height": 2048,
+      "products": [
+        { "name": "Greater Goods Electric Gooseneck Kettle", "url": "https://amzn.to/4fdWjU9" },
+        { "name": "Ember Temperature Control Smart", "url": "https://amzn.to/4va01TF" },
+        { "name": "Maestri House S2", "url": "https://amzn.to/4vIRTus" }
+      ]
+    },
+    {
+      "id": 3,
+      "category": "work",
+      "title": "Neon Noir Command",
+      "boardDesc": "Embrace the night with a setup built for deep focus and futuristic vibes. A stealthy, all-black battle station illuminated by the glow of the screen.",
+      "popupDesc": "Embrace the night with a setup built for deep focus and futuristic vibes. A stealthy, all-black battle station illuminated by the glow of the screen.",
+      "image": "https://pickora.shop/wp-content/uploads/2026/07/Desk_setup_with_cyan_reflection_202607011648.webp",
+      "imageAlt": "Monitor setup",
+      "width": 896,
+      "height": 1200,
+      "products": [
+        { "name": "Razer Huntsman Mini Analog Keyboard", "url": "https://amzn.to/4gbXtAA" },
+        { "name": "Logitech MX Master 3S Mouse (Graphite)", "url": "https://amzn.to/4gb4B05" },
+        { "name": "BenQ ScreenBar Halo with Wireless Controller", "url": "https://amzn.to/4wm4lAd" }
+      ]
+    },
+    {
+      "id": 4,
+      "category": "travel",
+      "title": "Urban Explorer EDC",
+      "boardDesc": "Premium travel gear and minimalist essentials for life on the move.",
+      "popupDesc": "Never compromise on style or utility. This curated everyday carry collection combines premium water-resistant organization with cutting-edge charging tech.",
+      "image": "https://pickora.shop/wp-content/uploads/2026/06/Aesthetic_flatlay_product_photography_of_202606262059-scaled.webp",
+      "imageAlt": "Travel gear accessories flatlay",
+      "width": 1200,
+      "height": 1608,
+      "products": [
+        { "name": "Bellroy Classic Backpack Plus", "url": "https://amazon.com" },
+        { "name": "The Ridge Minimalist Slim Wallet", "url": "https://amazon.com" },
+        { "name": "Anker MagGo Wireless Power Bank", "url": "https://amazon.com" },
+        { "name": "Fellow Carter Move Travel Mug", "url": "https://amazon.com" }
+      ]
+    },
+    {
+      "id": 5,
+      "category": "work",
+      "title": "The Scholar’s Corner",
+      "boardDesc": "Disconnect from the noise and reconnect with tactile craftsmanship. A warm, inviting desk that blends timeless analog tools with modern tech.",
+      "popupDesc": "Disconnect from the noise and reconnect with tactile craftsmanship. A warm, inviting desk that blends timeless analog tools with modern tech.",
+      "image": "https://pickora.shop/wp-content/uploads/2026/07/Digen_image_1782915940164.webp",
+      "imageAlt": "Cozy dark academia study setup featuring an Azio Retro Classic mechanical keyboard with wood accents on a cognac leather Harber London desk mat, illuminated by a warm brass Edison bulb lamp.",
+      "width": 1728,
+      "height": 2304,
+      "products": [
+        { "name": "Harber London Leather Desk Mat (Cognac)", "url": "https://amzn.to/4wjIRDW" },
+        { "name": "Azio Retro Classic Mechanical Keyboard (Elwood)", "url": "https://amzn.to/3Tdmf9O" },
+        { "name": "Industrial Edison Bulb Desk Lamp (Brass)", "url": "https://amzn.to/4p2YRIi" }
+      ]
+    },
+    {
+      "id": 6,
+      "category": "kitchen",
+      "title": "The Midnight Speakeasy",
+      "boardDesc": "Sophisticated cocktail tech for the modern nocturnal host.",
+      "popupDesc": "Transform your home bar into a moody lounge with shadow-heavy aesthetics and smoke-infused mixology. Precision ice-shaping and premium glassware turn every drink into a cinematic event.",
+      "image": "https://pickora.shop/wp-content/uploads/2026/07/A_moody_cinematic_close-up_of_202607011921.webp",
+      "imageAlt": "Moody home bar scene with a cocktail smoker kit, crystal decanter, and matte black ice tools on dark marble under cinematic lighting.",
+      "width": 896,
+      "height": 1200,
+      "products": [
+        { "name": "Cocktail Smoker Kit", "url": "https://amzn.to/4fdAgNp" },
+        { "name": "Viski Admiral Decanter", "url": "https://amzn.to/4gRAVFr" },
+        { "name": "Ice Ball Press Kit", "url": "https://amzn.to/4eZ1KFr" }
+      ]
+    },
+    {
+      "id": 7,
+      "category": "home",
+      "title": "Plaster & Mohair Hideaway",
+      "boardDesc": "Shelter from the rain in a cavernous, heated reading alcove wrapped in tactile warmth.",
+      "popupDesc": "Designed for the ultimate introvert, this cavernous reading nook is tucked beneath a sweeping architectural staircase. Walls of seamless, bone-colored Tadelakt plaster meet a cool slate flagstone floor, while a plush rust-toned mohair armchair invites you to stay. A sleek, intelligent space heater emits a subtle, radiant warmth, piercing through the moody, diffused daylight of a rainy afternoon.",
+      "image": "https://pickora.shop/wp-content/uploads/2026/07/Sleek_Dyson_Hot_Cool_purifier_standing_on_slate_flagstone_flooring_beside.webp",
+      "imageAlt": "Sleek Dyson Hot+Cool purifier standing on slate flagstone flooring beside a rust-colored mohair armchair, enclosed in curved bone-colored plaster walls during a moody, rainy afternoon.",
+      "width": 896,
+      "height": 1200,
+      "products": [
+        { "name": "Dyson Purifier Hot+Cool Formaldehyde", "url": "https://amzn.to/4f7U97d" },
+        { "name": "Kindle Scribe", "url": "https://amzn.to/3RwqKfg" },
+        { "name": "DREO Space Heater", "url": "https://amzn.to/4w2Q5g6" }
+      ]
+    }
+  ]
+}
