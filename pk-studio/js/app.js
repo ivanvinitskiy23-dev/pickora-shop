@@ -918,6 +918,19 @@
       modePill.textContent = t("statusCloud");
       modePill.classList.add("ok");
     }
+    // Preview links: lab only on localhost; live site paths online
+    const local = location.hostname === "127.0.0.1" || location.hostname === "localhost";
+    const map = [
+      ["link-preview-home", local ? "/admin-lab/site/" : "/", "btnOpenLab", "btnOpenLiveHome"],
+      ["link-preview-pins", local ? "/admin-lab/site/categories/" : "/categories/", "btnOpenLabPins", "btnOpenLivePins"],
+      ["link-preview-products", local ? "/admin-lab/site/products/" : "/products/", "btnOpenLabProducts", "btnOpenLiveProducts"],
+    ];
+    map.forEach(([id, href, localKey, liveKey]) => {
+      const a = document.getElementById(id);
+      if (!a) return;
+      a.href = href;
+      a.textContent = t(local ? localKey : liveKey);
+    });
     show("dash");
   }
 
