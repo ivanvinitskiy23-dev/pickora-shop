@@ -842,9 +842,12 @@ async function handleLogin(request, env) {
   const body = await readJson(request);
   const login = String(body.login || "").trim();
   const password = String(body.password || "");
+  // Secrets sometimes get a trailing newline from `wrangler secret put` paste
+  const ownerLogin = String(env.OWNER_LOGIN || "").trim();
+  const ownerPassword = String(env.OWNER_PASSWORD || "").trim();
 
   // ── Path 1: Owner via environment secrets ────────────────────────────────
-  if (timingSafeEqual(login, env.OWNER_LOGIN) && timingSafeEqual(password, env.OWNER_PASSWORD)) {
+  if (timingSafeEqual(login, ownerLogin) && timingSafeEqual(password, ownerPassword)) {
     const token = cryptoRandomToken();
     const expires = new Date(Date.now() + SESSION_TTL_SEC * 1000).toISOString();
 
@@ -853,12 +856,16 @@ async function handleLogin(request, env) {
        VALUES (?, 'secret-backed', 'admin', 1)
        ON CONFLICT(login) DO UPDATE SET is_owner = 1`
     )
-      .bind(env.OWNER_LOGIN)
+      .bind(ownerLogin)
       .run();
 
     const userRow = await env.DB.prepare(`SELECT id FROM users WHERE login = ?`)
-      .bind(env.OWNER_LOGIN)
+      .bind(ownerLogin)
       .first();
+
+    if (!userRow?.id) {
+      return json({ error: "owner_user_missing" }, 500);
+    }
 
     await env.DB.prepare(
       `INSERT INTO sessions (token, user_id, expires_at) VALUES (?, ?, ?)`
@@ -869,10 +876,10 @@ async function handleLogin(request, env) {
     await env.DB.prepare(
       `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'login', 'cloudflare')`
     )
-      .bind(env.OWNER_LOGIN)
+      .bind(ownerLogin)
       .run();
 
-    return json({ token, user: { login: env.OWNER_LOGIN, role: "admin", owner: true } });
+    return json({ token, user: { login: ownerLogin, role: "admin", owner: true } });
   }
 
   // ── Path 2: Invited admin via D1 users table (PBKDF2 password) ──────────
@@ -1146,7 +1153,7 @@ function cors(res, request) {
     headers.set("Access-Control-Allow-Credentials", "true");
   }
   headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  headers.set("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
   headers.set("Vary", "Origin");
   return new Response(res.body, { status: res.status, headers });
 }
