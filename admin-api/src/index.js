@@ -116,11 +116,6 @@ export default {
         return cors(await handleMediaList(env), request);
       }
 
-      if (url.pathname.startsWith("/api/media/file/") && request.method === "DELETE") {
-        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
-        return cors(await handleMediaDelete(url.pathname, env, user), request);
-      }
-
       if (url.pathname === "/api/audit" && request.method === "GET") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
         return cors(await handleAuditList(env), request);
