@@ -1,7 +1,9 @@
 /**
  * Pickora Admin API — Cloudflare Worker
- * Auth + cloud drafts (D1) + media (R2). Site UI: https://pickora.shop/pk-studio/
+ * Auth + cloud drafts (D1) + media + publish to GitHub Pages.
  */
+import { publishArticleDraft } from "./publish_article.js";
+
 const SESSION_TTL_SEC = 60 * 60 * 12;
 const RAW_CONTENT =
   "https://raw.githubusercontent.com/ivanvinitskiy23-dev/pickora-shop/main/content";
@@ -35,6 +37,7 @@ export default {
             hasDb: !!env.DB,
             hasOwner: !!(env.OWNER_LOGIN && env.OWNER_PASSWORD),
             hasMedia: true,
+            hasGithub: !!env.GITHUB_TOKEN,
           }),
           request
         );
@@ -64,6 +67,33 @@ export default {
       if (url.pathname === "/api/articles/validate" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
         return cors(json(validateArticleDraftLite(await readJson(request))), request);
+      }
+
+      if (url.pathname === "/api/publish/article" && request.method === "POST") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(await handlePublishArticle(env, await readJson(request), user), request);
+      }
+
+      if (url.pathname === "/api/audit" && request.method === "GET") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(await handleAuditList(env), request);
+      }
+
+      if (url.pathname === "/api/links/check" && request.method === "POST") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(await handleLinkCheck(await readJson(request)), request);
+      }
+
+      if (url.pathname === "/api/team" && request.method === "GET") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(
+          json({
+            owner: env.OWNER_LOGIN,
+            admins: [{ login: env.OWNER_LOGIN, role: "owner" }],
+            note: "Multi-admin invites land in Phase 4 UI; owner-only for now.",
+          }),
+          request
+        );
       }
 
       if (url.pathname === "/api/media/upload" && request.method === "POST") {
@@ -154,6 +184,8 @@ async function listArticleDrafts(env) {
       status: meta.status || "draft",
       updatedAt: row.updated_at,
       updatedBy: row.updated_by,
+      affiliateLinks: Array.isArray(meta.affiliateLinks) ? meta.affiliateLinks : [],
+      coverImage: meta.coverImage || "",
     };
   });
   return json({ drafts });
@@ -411,6 +443,78 @@ async function handleMediaGet(pathname, env) {
       "Cache-Control": "public, max-age=86400",
     },
   });
+}
+
+async function handlePublishArticle(env, body, user) {
+  if (!env.GITHUB_TOKEN) {
+    return json(
+      {
+        error: "github_token_missing",
+        hint: "Run: npx.cmd wrangler secret put GITHUB_TOKEN (repo scope for pickora-shop)",
+      },
+      503
+    );
+  }
+  const slug = String(body.slug || "").trim();
+  if (!slug) return json({ error: "slug_required" }, 400);
+  const row = await env.DB.prepare(`SELECT json FROM content_drafts WHERE key = ?`)
+    .bind(`article:${slug}`)
+    .first();
+  if (!row?.json) return json({ error: "draft_not_found" }, 404);
+  const draft = JSON.parse(row.json);
+  if (draft.status !== "seo_ready" && draft.status !== "published") {
+    return json(
+      { error: "not_seo_ready", hint: "Mark SEO ready in Articles wizard first" },
+      400
+    );
+  }
+  try {
+    const result = await publishArticleDraft(env, draft);
+    draft.status = "published";
+    draft.publishedAt = new Date().toISOString();
+    await env.DB.prepare(
+      `INSERT INTO content_drafts (key, json, updated_at, updated_by)
+       VALUES (?, ?, datetime('now'), ?)
+       ON CONFLICT(key) DO UPDATE SET json = excluded.json, updated_at = excluded.updated_at, updated_by = excluded.updated_by`
+    )
+      .bind(`article:${slug}`, JSON.stringify(draft), user.login)
+      .run();
+    await env.DB.prepare(
+      `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'publish_article', ?)`
+    )
+      .bind(user.login, slug)
+      .run();
+    return json(result);
+  } catch (err) {
+    return json({ error: "publish_failed", detail: String(err?.message || err) }, 500);
+  }
+}
+
+async function handleAuditList(env) {
+  const { results } = await env.DB.prepare(
+    `SELECT id, user_login, action, detail, created_at FROM audit_log ORDER BY id DESC LIMIT 50`
+  ).all();
+  return json({ entries: results || [] });
+}
+
+async function handleLinkCheck(body) {
+  const links = Array.isArray(body.links) ? body.links : [];
+  const out = [];
+  for (const raw of links.slice(0, 20)) {
+    const url = String(raw || "").trim();
+    if (!url) continue;
+    try {
+      const res = await fetch(url, {
+        method: "HEAD",
+        redirect: "follow",
+        cf: { cacheTtl: 0 },
+      });
+      out.push({ url, ok: res.ok, status: res.status });
+    } catch (err) {
+      out.push({ url, ok: false, status: 0, error: String(err?.message || err) });
+    }
+  }
+  return json({ results: out });
 }
 
 async function handleLogin(request, env) {

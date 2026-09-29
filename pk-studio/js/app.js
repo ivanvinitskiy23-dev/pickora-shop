@@ -897,6 +897,48 @@
         });
       return;
     }
+    if (name === "Publish") {
+      window.PK_OPS.openPublish()
+        .then(() => {
+          applyI18n();
+          show("publish");
+        })
+        .catch((err) => {
+          $("#panel-module-name").textContent = name;
+          show("panel");
+          console.warn(err);
+        });
+      return;
+    }
+    if (name === "SEO") {
+      window.PK_OPS.openSeo()
+        .then(() => {
+          applyI18n();
+          show("seo");
+        })
+        .catch(() => {
+          $("#panel-module-name").textContent = name;
+          show("panel");
+        });
+      return;
+    }
+    if (name === "Team") {
+      window.PK_OPS.openTeam()
+        .then(() => {
+          applyI18n();
+          show("team");
+        })
+        .catch(() => {
+          $("#panel-module-name").textContent = name;
+          show("panel");
+        });
+      return;
+    }
+    if (name === "Media") {
+      applyI18n();
+      show("media");
+      return;
+    }
     $("#panel-module-name").textContent = name;
     show("panel");
   }
@@ -988,6 +1030,7 @@
     $("#btn-back-from-pins")?.addEventListener("click", () => show("dash"));
     $("#btn-back-from-products")?.addEventListener("click", () => show("dash"));
     $("#btn-back-from-articles")?.addEventListener("click", () => show("dash"));
+    $("#btn-back-from-media")?.addEventListener("click", () => show("dash"));
     $("#btn-home-save")?.addEventListener("click", () => saveHome());
     $("#btn-pins-save")?.addEventListener("click", () => savePins());
     $("#btn-products-save")?.addEventListener("click", () => saveProducts());
@@ -1006,6 +1049,7 @@
     applyI18n();
     bind();
     window.PK_ARTICLES?.bind();
+    window.PK_OPS?.bind();
     await refreshAuth();
   });
 })();

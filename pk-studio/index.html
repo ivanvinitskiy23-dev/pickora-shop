@@ -90,25 +90,21 @@
           <div class="module-icon">🖼</div>
           <h3 data-i18n="modMedia">Медиа</h3>
           <p data-i18n="modMediaDek">WebP + alt</p>
-          <span class="soon" data-i18n="soon">Скоро</span>
         </button>
         <button type="button" class="module-card" data-module="SEO">
           <div class="module-icon">🔍</div>
           <h3 data-i18n="modSeo">SEO и ссылки</h3>
           <p data-i18n="modSeoDek">Чеклисты</p>
-          <span class="soon" data-i18n="soon">Скоро</span>
         </button>
         <button type="button" class="module-card" data-module="Publish">
           <div class="module-icon">🚀</div>
           <h3 data-i18n="modPublish">Publish / Rollback</h3>
           <p data-i18n="modPublishDek">Выложить / откатить</p>
-          <span class="soon" data-i18n="soon">Скоро</span>
         </button>
         <button type="button" class="module-card" data-module="Team">
           <div class="module-icon">👥</div>
           <h3 data-i18n="modTeam">Команда</h3>
           <p data-i18n="modTeamDek">Админы</p>
-          <span class="soon" data-i18n="soon">Скоро</span>
         </button>
       </div>
     </main>
@@ -187,7 +183,7 @@
         <div class="dash-hero">
           <div class="eyebrow">Phase 3</div>
           <h2 data-i18n="articlesTitle">Статьи</h2>
-          <p data-i18n="articlesDek">Черновик → SEO-шлюз → seo_ready. Publish на HTML сайта — следующий шаг.</p>
+          <p data-i18n="articlesDek">Черновик → SEO-шлюз → seo_ready → Publish.</p>
         </div>
         <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
           <button type="button" class="btn btn-primary" id="btn-article-new" style="width:auto;padding-inline:22px" data-i18n="btnNewArticle">+ Новый черновик</button>
@@ -290,6 +286,113 @@
     </main>
   </div>
 
+  <!-- PUBLISH -->
+  <div class="app-shell pk-hidden" data-view="publish">
+    <header class="topbar">
+      <div class="topbar-brand">
+        <span class="mark">P</span>
+        <span>Pickora Studio · Publish</span>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-publish" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+      </div>
+    </header>
+    <main class="app-main">
+      <div class="dash-hero">
+        <div class="eyebrow">Phase 3</div>
+        <h2 data-i18n="publishTitle">Publish</h2>
+        <p data-i18n="publishDek">Только seo_ready черновики. Пишет в GitHub: JSON + карточка Articles + sitemap.</p>
+      </div>
+      <div id="publish-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
+      <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" class="btn btn-primary" id="btn-publish-refresh" style="width:auto;padding-inline:22px" data-i18n="btnRefresh">Обновить</button>
+      </div>
+      <div id="publish-list" class="module-grid" style="grid-template-columns:1fr"></div>
+      <div class="panel" style="margin-top:24px">
+        <h3 data-i18n="rollbackTitle">Rollback</h3>
+        <p class="hint" data-i18n="rollbackDek">Откат = revert коммита в GitHub (Pages пересоберёт). История ниже — audit Studio.</p>
+        <div id="publish-audit"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- SEO / LINKS -->
+  <div class="app-shell pk-hidden" data-view="seo">
+    <header class="topbar">
+      <div class="topbar-brand">
+        <span class="mark">P</span>
+        <span>Pickora Studio · SEO</span>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-seo" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+      </div>
+    </header>
+    <main class="app-main">
+      <div class="dash-hero">
+        <div class="eyebrow">Phase 4</div>
+        <h2 data-i18n="seoOpsTitle">SEO и Amazon-ссылки</h2>
+        <p data-i18n="seoOpsDek">Собираем amzn.to из черновиков статей и Products, проверяем HEAD (до 20).</p>
+      </div>
+      <div id="seo-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
+      <p class="hint"><span data-i18n="seoLinkCountLabel">Ссылок в очереди:</span> <strong id="seo-link-count">0</strong></p>
+      <div style="margin:14px 0;display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" class="btn btn-ghost" id="btn-seo-refresh" style="width:auto" data-i18n="btnRefresh">Обновить</button>
+        <button type="button" class="btn btn-primary" id="btn-seo-check" style="width:auto;padding-inline:22px" data-i18n="btnCheckLinks">Проверить ссылки</button>
+      </div>
+      <ul class="list-plain" id="seo-results"></ul>
+      <div class="panel" style="margin-top:24px">
+        <h3 data-i18n="auditTitle">Audit log</h3>
+        <div id="seo-audit"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- TEAM -->
+  <div class="app-shell pk-hidden" data-view="team">
+    <header class="topbar">
+      <div class="topbar-brand">
+        <span class="mark">P</span>
+        <span>Pickora Studio · Team</span>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-team" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+      </div>
+    </header>
+    <main class="app-main">
+      <div class="dash-hero">
+        <div class="eyebrow">Phase 4</div>
+        <h2 data-i18n="teamTitle">Команда</h2>
+        <p data-i18n="teamDek">Сейчас один owner через Cloudflare secrets. Инвайты админов — следующий шаг.</p>
+      </div>
+      <div id="team-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
+      <button type="button" class="btn btn-ghost" id="btn-team-refresh" style="width:auto;margin-bottom:14px" data-i18n="btnRefresh">Обновить</button>
+      <ul class="list-plain" id="team-list"></ul>
+      <div class="panel" style="margin-top:18px">
+        <h3 data-i18n="teamInviteTitle">Добавить админа</h3>
+        <p class="hint" data-i18n="teamInviteSoon">Пока меняйте OWNER_LOGIN / OWNER_PASSWORD через wrangler secret put. Multi-admin UI — после стабилизации Publish.</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- MEDIA NOTE -->
+  <div class="app-shell pk-hidden" data-view="media">
+    <header class="topbar">
+      <div class="topbar-brand">
+        <span class="mark">P</span>
+        <span>Pickora Studio · Media</span>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-back-from-media" data-i18n="backDash" style="color:#fff;border-color:rgba(255,255,255,.28)">← На дашборд</button>
+      </div>
+    </header>
+    <main class="app-main">
+      <div class="panel">
+        <h2 data-i18n="mediaTitle">Медиа</h2>
+        <p class="hint" data-i18n="mediaDek">Загрузка WebP уже встроена в Home, Pins, Products и Articles. Отдельная библиотека (галерея + R2) — после включения R2 в Cloudflare.</p>
+      </div>
+    </main>
+  </div>
+
   <!-- MODULE PLACEHOLDER -->
   <div class="app-shell pk-hidden" data-view="panel">
     <header class="topbar">
@@ -322,6 +425,7 @@
   <script src="/pk-studio/js/seo-gate.js"></script>
   <script src="/pk-studio/js/auth.js"></script>
   <script src="/pk-studio/js/articles.js"></script>
+  <script src="/pk-studio/js/ops.js"></script>
   <script src="/pk-studio/js/app.js"></script>
 </body>
 </html>

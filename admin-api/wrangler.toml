@@ -9,7 +9,12 @@ binding = "DB"
 database_name = "pickora-admin"
 database_id = "d286a720-ee76-462a-a607-50c55dea49c8"
 
-# Secrets: OWNER_LOGIN, OWNER_PASSWORD
+# Secrets: OWNER_LOGIN, OWNER_PASSWORD, GITHUB_TOKEN
+# Optional vars: GITHUB_REPO (default ivanvinitskiy23-dev/pickora-shop), GITHUB_BRANCH (main)
 # Studio: https://pickora.shop/pk-studio/
 # API: https://pickora-admin-api.pickara-admin.workers.dev
 # R2 media later (enable R2 in Cloudflare dashboard first)
+
+[vars]
+GITHUB_REPO = "ivanvinitskiy23-dev/pickora-shop"
+GITHUB_BRANCH = "main"

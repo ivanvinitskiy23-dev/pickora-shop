@@ -291,6 +291,9 @@ button, input { font: inherit; }
 }
 .module-card h3 { font-size: 1.05rem; margin-bottom: 6px; }
 .module-card p { margin: 0; color: var(--pk-muted); font-size: 0.9rem; }
+.gate-block { color: #b42318; }
+.gate-warn { color: #b54708; }
+.gate-ok { color: #027a48; }
 .module-card .soon {
   display: inline-block;
   margin-top: 10px;
