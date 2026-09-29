@@ -38,3 +38,12 @@ CREATE TABLE IF NOT EXISTS media_files (
   uploaded_by TEXT,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+CREATE TABLE IF NOT EXISTS publish_snapshots (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  module TEXT NOT NULL,
+  detail TEXT,
+  commit_shas TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  created_by TEXT
+);

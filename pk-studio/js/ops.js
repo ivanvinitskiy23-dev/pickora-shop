@@ -34,48 +34,126 @@
   /* —— Publish —— */
   async function loadPublish() {
     setPill("#publish-status", t("loading"), null);
-    const res = await fetch(window.PK_AUTH.API + "/api/content/articles", {
-      headers: authHeaders(),
-      credentials: "include",
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "load_failed");
-    const ready = (data.drafts || []).filter(
-      (d) => d.status === "seo_ready" || d.status === "published"
-    );
     const wrap = $("#publish-list");
     if (!wrap) return;
-    if (!ready.length) {
-      wrap.innerHTML = `<p class="hint">${escapeHtml(t("publishEmpty"))}</p>`;
-      setPill("#publish-status", t("publishEmpty"), "warn");
-      return;
-    }
-    wrap.innerHTML = ready
-      .map((d) => {
-        const slug = escapeHtml(d.slug);
-        const title = escapeHtml(d.title || d.slug);
-        const st = escapeHtml(d.status || "");
-        return `<div class="review-card panel" data-pub-slug="${slug}">
+
+    const modulesHtml = ["home", "pins", "products"]
+      .map(
+        (mod) => `<div class="review-card panel">
+          <div class="review-card-head">
+            <h3>${escapeHtml(t("pubMod_" + mod))}</h3>
+            <span class="pill">draft→live</span>
+          </div>
+          <p class="hint">${escapeHtml(t("pubModHint_" + mod))}</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+            <button type="button" class="btn btn-primary btn-sm" data-publish-mod="${mod}" style="width:auto;padding-inline:18px">${escapeHtml(
+          t("btnPublishNow")
+        )}</button>
+          </div>
+        </div>`
+      )
+      .join("");
+
+    let articlesHtml = "";
+    try {
+      const res = await fetch(window.PK_AUTH.API + "/api/content/articles", {
+        headers: authHeaders(),
+        credentials: "include",
+      });
+      const data = await res.json();
+      const ready = (data.drafts || []).filter(
+        (d) => d.status === "seo_ready" || d.status === "published"
+      );
+      if (ready.length) {
+        articlesHtml =
+          `<h3 style="margin:18px 0 10px">${escapeHtml(t("publishArticlesTitle"))}</h3>` +
+          ready
+            .map((d) => {
+              const slug = escapeHtml(d.slug);
+              const title = escapeHtml(d.title || d.slug);
+              const st = escapeHtml(d.status || "");
+              return `<div class="review-card panel" data-pub-slug="${slug}">
           <div class="review-card-head">
             <h3>${title}</h3>
             <span class="pill">${st}</span>
           </div>
-          <p class="hint">/${slug}/ · ${escapeHtml(d.updatedAt || d.updated_at || "")}</p>
+          <p class="hint">/${slug}/ · ${escapeHtml(d.updatedAt || "")}</p>
           <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
             <button type="button" class="btn btn-primary btn-sm" data-publish-slug="${slug}" style="width:auto;padding-inline:18px">${escapeHtml(
-              t("btnPublishNow")
-            )}</button>
-            <a class="btn btn-ghost btn-sm" href="/articles/" target="_blank" rel="noopener">${escapeHtml(
-              t("btnOpenLabArticles")
-            )}</a>
+                t("btnPublishNow")
+              )}</button>
           </div>
         </div>`;
-      })
-      .join("");
-    wrap.querySelectorAll("[data-publish-slug]").forEach((btn) => {
-      btn.addEventListener("click", () => publishSlug(btn.getAttribute("data-publish-slug"), btn));
+            })
+            .join("");
+      } else {
+        articlesHtml = `<p class="hint" style="margin-top:14px">${escapeHtml(
+          t("publishEmpty")
+        )}</p>`;
+      }
+      setPill(
+        "#publish-status",
+        t("publishReadyCount").replace("{n}", String(ready.length)),
+        "ok"
+      );
+    } catch (err) {
+      articlesHtml = `<p class="hint">${escapeHtml(err.message)}</p>`;
+      setPill("#publish-status", err.message, "warn");
+    }
+
+    wrap.innerHTML =
+      `<h3>${escapeHtml(t("publishModulesTitle"))}</h3>` +
+      modulesHtml +
+      articlesHtml;
+
+    wrap.querySelectorAll("[data-publish-mod]").forEach((btn) => {
+      btn.addEventListener("click", () =>
+        publishModule(btn.getAttribute("data-publish-mod"), btn)
+      );
     });
-    setPill("#publish-status", t("publishReadyCount").replace("{n}", String(ready.length)), "ok");
+    wrap.querySelectorAll("[data-publish-slug]").forEach((btn) => {
+      btn.addEventListener("click", () =>
+        publishSlug(btn.getAttribute("data-publish-slug"), btn)
+      );
+    });
+
+    await loadSnapshots();
+  }
+
+  async function publishModule(mod, btn) {
+    if (!mod) return;
+    if (btn) btn.disabled = true;
+    setPill("#publish-status", t("publishing"), null);
+    try {
+      const res = await fetch(window.PK_AUTH.API + "/api/publish/" + mod, {
+        method: "POST",
+        headers: authHeaders(),
+        credentials: "include",
+        body: "{}",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setPill(
+          "#publish-status",
+          data.error === "github_token_missing"
+            ? t("publishNeedToken")
+            : data.detail || data.error || t("publishFail"),
+          "warn"
+        );
+        return;
+      }
+      setPill(
+        "#publish-status",
+        t("publishModOk").replace("{mod}", mod) + (data.note ? " — " + data.note : ""),
+        "ok"
+      );
+      await loadPublish();
+      await loadAuditInto("#publish-audit");
+    } catch (err) {
+      setPill("#publish-status", t("publishFail") + ": " + err.message, "warn");
+    } finally {
+      if (btn) btn.disabled = false;
+    }
   }
 
   async function publishSlug(slug, btn) {
@@ -111,6 +189,64 @@
     } finally {
       if (btn) btn.disabled = false;
     }
+  }
+
+  async function loadSnapshots() {
+    const box = $("#publish-snapshots");
+    if (!box) return;
+    try {
+      const res = await fetch(window.PK_AUTH.API + "/api/publish/snapshots", {
+        headers: authHeaders(),
+        credentials: "include",
+      });
+      const data = await res.json();
+      const rows = data.snapshots || [];
+      if (!rows.length) {
+        box.innerHTML = `<p class="hint">${escapeHtml(t("snapshotsEmpty"))}</p>`;
+        return;
+      }
+      box.innerHTML = rows
+        .map((s) => {
+          const shas = (s.commit_shas || []).slice(0, 3).join(", ");
+          return `<div class="review-card panel" style="margin-bottom:8px">
+            <div class="review-card-head">
+              <h3>#${s.id} · ${escapeHtml(s.module)}</h3>
+              <span class="pill">${escapeHtml(s.created_at || "")}</span>
+            </div>
+            <p class="hint">${escapeHtml(shas || "—")}</p>
+            <button type="button" class="btn btn-ghost btn-sm" data-rollback-id="${
+              s.id
+            }" style="width:auto;margin-top:8px">${escapeHtml(
+            t("btnRollbackInfo")
+          )}</button>
+          </div>`;
+        })
+        .join("");
+      box.querySelectorAll("[data-rollback-id]").forEach((btn) => {
+        btn.addEventListener("click", () =>
+          rollbackInfo(Number(btn.getAttribute("data-rollback-id")))
+        );
+      });
+    } catch (err) {
+      box.innerHTML = `<p class="hint">${escapeHtml(err.message)}</p>`;
+    }
+  }
+
+  async function rollbackInfo(id) {
+    setPill("#publish-status", t("loading"), null);
+    const res = await fetch(window.PK_AUTH.API + "/api/publish/rollback", {
+      method: "POST",
+      headers: authHeaders(),
+      credentials: "include",
+      body: JSON.stringify({ id }),
+    });
+    const data = await res.json();
+    const links = (data.commits || []).join(" · ");
+    setPill(
+      "#publish-status",
+      (data.hint || t("rollbackManual")) + (links ? " " + links : ""),
+      "warn"
+    );
   }
 
   /* —— Audit —— */

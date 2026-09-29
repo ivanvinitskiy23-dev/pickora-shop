@@ -299,9 +299,9 @@
     </header>
     <main class="app-main">
       <div class="dash-hero">
-        <div class="eyebrow">Phase 3</div>
+        <div class="eyebrow">Phase 5</div>
         <h2 data-i18n="publishTitle">Publish</h2>
-        <p data-i18n="publishDek">Только seo_ready. Пишет в GitHub: JSON + карточка Articles + sitemap + страница /{slug}/.</p>
+        <p data-i18n="publishDek">Home / Pins / Products / Articles → GitHub Pages.</p>
       </div>
       <div id="publish-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
       <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
@@ -310,8 +310,9 @@
       <div id="publish-list" class="module-grid" style="grid-template-columns:1fr"></div>
       <div class="panel" style="margin-top:24px">
         <h3 data-i18n="rollbackTitle">Rollback</h3>
-        <p class="hint" data-i18n="rollbackDek">Откат = revert коммита в GitHub (Pages пересоберёт). История ниже — audit Studio.</p>
-        <div id="publish-audit"></div>
+        <p class="hint" data-i18n="rollbackDek">Последние 5 publish-снимков (SHA). Кнопка даёт ссылки на revert в GitHub.</p>
+        <div id="publish-snapshots"></div>
+        <div id="publish-audit" style="margin-top:16px"></div>
       </div>
     </main>
   </div>

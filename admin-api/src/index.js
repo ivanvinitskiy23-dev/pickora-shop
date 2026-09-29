@@ -4,6 +4,9 @@
  */
 import { publishArticleDraft } from "./publish_article.js";
 import { validateArticleDraft } from "./seo_gate.js";
+import { publishHomeDraft } from "./publish_home.js";
+import { publishPinsDraft } from "./publish_pins.js";
+import { publishProductsDraft } from "./publish_products.js";
 
 const SESSION_TTL_SEC = 60 * 60 * 12;
 const RAW_CONTENT =
@@ -73,6 +76,29 @@ export default {
       if (url.pathname === "/api/publish/article" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
         return cors(await handlePublishArticle(env, await readJson(request), user), request);
+      }
+
+      if (url.pathname === "/api/publish/home" && request.method === "POST") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(await handlePublishModule(env, "home", user, publishHomeDraft), request);
+      }
+      if (url.pathname === "/api/publish/pins" && request.method === "POST") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(await handlePublishModule(env, "pins", user, publishPinsDraft), request);
+      }
+      if (url.pathname === "/api/publish/products" && request.method === "POST") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(await handlePublishModule(env, "products", user, publishProductsDraft), request);
+      }
+
+      if (url.pathname === "/api/publish/snapshots" && request.method === "GET") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(await handleSnapshotsList(env), request);
+      }
+
+      if (url.pathname === "/api/publish/rollback" && request.method === "POST") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(await handleRollbackInfo(env, await readJson(request)), request);
       }
 
       if (url.pathname === "/api/audit" && request.method === "GET") {
@@ -442,6 +468,106 @@ async function handleMediaGet(pathname, env) {
   });
 }
 
+async function recordSnapshot(env, module, detail, commits, user) {
+  const shas = Array.isArray(commits) ? commits.filter(Boolean) : [];
+  if (!shas.length) return;
+  try {
+    await env.DB.prepare(
+      `INSERT INTO publish_snapshots (module, detail, commit_shas, created_by)
+       VALUES (?, ?, ?, ?)`
+    )
+      .bind(module, detail || "", JSON.stringify(shas), user.login)
+      .run();
+    // Keep global last 20 rows (UI shows 5)
+    await env.DB.prepare(
+      `DELETE FROM publish_snapshots WHERE id NOT IN (
+         SELECT id FROM publish_snapshots ORDER BY id DESC LIMIT 20
+       )`
+    ).run();
+  } catch {
+    /* table may not exist yet until schema migrate */
+  }
+}
+
+async function handlePublishModule(env, key, user, publisher) {
+  if (!env.GITHUB_TOKEN) {
+    return json(
+      {
+        error: "github_token_missing",
+        hint: "Run: npx.cmd wrangler secret put GITHUB_TOKEN",
+      },
+      503
+    );
+  }
+  const row = await env.DB.prepare(`SELECT json FROM content_drafts WHERE key = ?`)
+    .bind(key)
+    .first();
+  if (!row?.json) return json({ error: "draft_not_found", key }, 404);
+  const draft = JSON.parse(row.json);
+  try {
+    const result = await publisher(env, draft);
+    await env.DB.prepare(
+      `INSERT INTO audit_log (user_login, action, detail) VALUES (?, ?, ?)`
+    )
+      .bind(user.login, `publish_${key}`, key)
+      .run();
+    await recordSnapshot(env, key, key, result.commits, user);
+    return json(result);
+  } catch (err) {
+    return json({ error: "publish_failed", detail: String(err?.message || err) }, 500);
+  }
+}
+
+async function handleSnapshotsList(env) {
+  try {
+    const { results } = await env.DB.prepare(
+      `SELECT id, module, detail, commit_shas, created_at, created_by
+       FROM publish_snapshots ORDER BY id DESC LIMIT 5`
+    ).all();
+    const snapshots = (results || []).map((r) => ({
+      ...r,
+      commit_shas: (() => {
+        try {
+          return JSON.parse(r.commit_shas);
+        } catch {
+          return [];
+        }
+      })(),
+    }));
+    return json({ snapshots });
+  } catch {
+    return json({
+      snapshots: [],
+      hint: "Run: npx.cmd wrangler d1 execute pickora-admin --remote --file=schema.sql",
+    });
+  }
+}
+
+async function handleRollbackInfo(env, body) {
+  const id = Number(body.id || 0);
+  if (!id) return json({ error: "id_required" }, 400);
+  const row = await env.DB.prepare(
+    `SELECT id, module, detail, commit_shas, created_at FROM publish_snapshots WHERE id = ?`
+  )
+    .bind(id)
+    .first();
+  if (!row) return json({ error: "not_found" }, 404);
+  let shas = [];
+  try {
+    shas = JSON.parse(row.commit_shas);
+  } catch {
+    shas = [];
+  }
+  const repo = env.GITHUB_REPO || "ivanvinitskiy23-dev/pickora-shop";
+  return json({
+    ok: false,
+    error: "manual_revert",
+    snapshot: { ...row, commit_shas: shas },
+    hint: `Open https://github.com/${repo}/commits/main and revert the publish commit(s). Auto-rollback lands next.`,
+    commits: shas.map((sha) => `https://github.com/${repo}/commit/${sha}`),
+  });
+}
+
 async function handlePublishArticle(env, body, user) {
   if (!env.GITHUB_TOKEN) {
     return json(
@@ -488,6 +614,7 @@ async function handlePublishArticle(env, body, user) {
     )
       .bind(user.login, slug)
       .run();
+    await recordSnapshot(env, "article", slug, result.commits, user);
     return json(result);
   } catch (err) {
     return json({ error: "publish_failed", detail: String(err?.message || err) }, 500);
