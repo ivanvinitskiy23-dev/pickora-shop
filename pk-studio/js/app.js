@@ -886,69 +886,19 @@
       return;
     }
     if (name === "Articles") {
-      openArticles().catch(() => {
-        $("#panel-module-name").textContent = name;
-        show("panel");
-      });
+      window.PK_ARTICLES.open()
+        .then(() => {
+          applyI18n();
+          show("articles");
+        })
+        .catch(() => {
+          $("#panel-module-name").textContent = name;
+          show("panel");
+        });
       return;
     }
     $("#panel-module-name").textContent = name;
     show("panel");
-  }
-
-  function renderArticlesList() {
-    const wrap = $("#articles-list");
-    if (!wrap) return;
-    if (!articles.length) {
-      wrap.innerHTML = `<p class="hint">${escapeAttr(t("articlesEmpty"))}</p>`;
-      return;
-    }
-    wrap.innerHTML = articles
-      .map((a) => {
-        return `<div class="review-card panel">
-          <div class="review-card-body">
-            <div class="review-thumb-col">
-              <div class="review-thumb">
-                ${
-                  a.image
-                    ? `<img src="${escapeAttr(imgSrc(a.image))}" alt="${escapeAttr(
-                        a.imageAlt || a.title || ""
-                      )}">`
-                    : `<div class="review-thumb-empty">${escapeAttr(t("noImage"))}</div>`
-                }
-              </div>
-            </div>
-            <div class="review-fields">
-              <div class="review-card-head" style="margin-bottom:8px">
-                <h3 style="margin:0">${escapeAttr(a.title || a.slug)}</h3>
-                <span class="pill ok">live</span>
-              </div>
-              <p class="hint" style="margin:0 0 8px">${escapeAttr(a.excerpt || "")}</p>
-              <p class="path-hint">${escapeAttr(a.category || "")} · ${escapeAttr(
-                a.url || ""
-              )}</p>
-              <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-                <a class="btn btn-ghost btn-sm" href="${escapeAttr(
-                  a.url || "#"
-                )}" target="_blank" rel="noopener">${escapeAttr(t("btnOpenArticle"))}</a>
-              </div>
-            </div>
-          </div>
-        </div>`;
-      })
-      .join("");
-  }
-
-  async function openArticles() {
-    const res = await fetch(window.PK_AUTH.API + "/api/articles", {
-      headers: authHeaders(),
-      credentials: "include",
-    });
-    if (!res.ok) throw new Error("load_failed");
-    articles = (await res.json()).articles || [];
-    renderArticlesList();
-    applyI18n();
-    show("articles");
   }
 
   async function refreshAuth() {
@@ -1042,6 +992,7 @@
   document.addEventListener("DOMContentLoaded", async () => {
     applyI18n();
     bind();
+    window.PK_ARTICLES?.bind();
     await refreshAuth();
   });
 })();

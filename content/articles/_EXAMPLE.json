@@ -1,0 +1,21 @@
+{
+  "slug": "example-article-slug",
+  "status": "draft",
+  "type": 2,
+  "title": "How to Choose an Example Product Without Guesswork",
+  "metaDescription": "Clear buyer notes on fit, skip cases, and honest examples — so you pick the right gear without fake lab claims or filler.",
+  "h1": "How to Choose an <span class=\"pk-blue\">Example</span>",
+  "dek": "Short supporting sentence for the hero.",
+  "hubCategory": "Home & Kitchen",
+  "hubUrl": "/home-kitchen/",
+  "chips": ["kitchen"],
+  "coverImage": "/wp-content/uploads/2026/09/example-cover.webp",
+  "coverAlt": "Example product on a kitchen counter",
+  "canonical": "https://pickora.shop/example-article-slug/",
+  "affiliateLinks": ["https://amzn.to/xxxxxxxx"],
+  "internalLinks": ["/articles/", "/home-kitchen/"],
+  "bodyHtml": "<p>Replace with real article HTML from the brief draft. Research-only voice. No AggregateRating. Affiliate links need target=_blank and rel=sponsored nofollow noopener noreferrer.</p>",
+  "faq": [],
+  "updatedAt": null,
+  "seoReadyAt": null
+}

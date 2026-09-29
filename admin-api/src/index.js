@@ -102,6 +102,26 @@ export default {
         }
       }
 
+      // Article drafts: /api/content/articles and /api/content/articles/:slug
+      if (url.pathname === "/api/content/articles") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        if (request.method === "GET") {
+          return cors(await listArticleDrafts(env), request);
+        }
+        if (request.method === "POST") {
+          return cors(await saveArticleDraft(env, await readJson(request), user), request);
+        }
+      }
+
+      const artMatch = url.pathname.match(/^\/api\/content\/articles\/([^/]+)$/);
+      if (artMatch) {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        const slug = decodeURIComponent(artMatch[1]);
+        if (request.method === "GET") {
+          return cors(await getArticleDraft(env, slug), request);
+        }
+      }
+
       return cors(json({ error: "not_found" }, 404), request);
     } catch (err) {
       return cors(
@@ -111,6 +131,80 @@ export default {
     }
   },
 };
+
+async function listArticleDrafts(env) {
+  const { results } = await env.DB.prepare(
+    `SELECT key, json, updated_at, updated_by FROM content_drafts WHERE key LIKE 'article:%' ORDER BY updated_at DESC`
+  ).all();
+  const drafts = (results || []).map((row) => {
+    let meta = {};
+    try {
+      meta = JSON.parse(row.json);
+    } catch {
+      meta = {};
+    }
+    return {
+      slug: meta.slug || String(row.key).replace(/^article:/, ""),
+      title: meta.title || "",
+      status: meta.status || "draft",
+      updatedAt: row.updated_at,
+      updatedBy: row.updated_by,
+    };
+  });
+  return json({ drafts });
+}
+
+async function getArticleDraft(env, slug) {
+  const key = `article:${slug}`;
+  const row = await env.DB.prepare(`SELECT json FROM content_drafts WHERE key = ?`)
+    .bind(key)
+    .first();
+  if (!row?.json) return json({ error: "not_found" }, 404);
+  return json(JSON.parse(row.json));
+}
+
+async function saveArticleDraft(env, payload, user) {
+  const slug = String(payload?.slug || "")
+    .trim()
+    .toLowerCase();
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+    return json({ error: "invalid_slug" }, 400);
+  }
+  const draft = {
+    ...payload,
+    slug,
+    canonical: `https://pickora.shop/${slug}/`,
+    updatedAt: new Date().toISOString(),
+    status: payload.status || "draft",
+  };
+  if (draft.status === "seo_ready") {
+    // Soft server-side re-check of critical fields
+    const chips = Array.isArray(draft.chips) ? draft.chips : [];
+    const aff = (draft.affiliateLinks || []).filter((u) =>
+      /^https:\/\/amzn\.to\/[A-Za-z0-9]+/.test(String(u || ""))
+    );
+    if (!draft.coverImage || chips.length < 1 || aff.length < 1) {
+      return json({ error: "seo_gate_failed", hint: "Run SEO gate in Studio first" }, 400);
+    }
+    draft.seoReadyAt = draft.seoReadyAt || new Date().toISOString();
+  }
+  await env.DB.prepare(
+    `INSERT INTO content_drafts (key, json, updated_at, updated_by)
+     VALUES (?, ?, datetime('now'), ?)
+     ON CONFLICT(key) DO UPDATE SET
+       json = excluded.json,
+       updated_at = excluded.updated_at,
+       updated_by = excluded.updated_by`
+  )
+    .bind(`article:${slug}`, JSON.stringify(draft), user.login)
+    .run();
+  await env.DB.prepare(
+    `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'save_article', ?)`
+  )
+    .bind(user.login, slug)
+    .run();
+  return json({ ok: true, draft, mode: "cloudflare" });
+}
 
 async function getDraft(env, key, seedUrl) {
   const row = await env.DB.prepare(`SELECT json FROM content_drafts WHERE key = ?`)

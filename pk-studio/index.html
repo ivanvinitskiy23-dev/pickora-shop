@@ -169,7 +169,7 @@
     </main>
   </div>
 
-  <!-- ARTICLES (Phase 3 start: catalog + SEO checklist gate) -->
+  <!-- ARTICLES (Phase 3 wizard + SEO gate) -->
   <div class="app-shell pk-hidden" data-view="articles">
     <header class="topbar">
       <div class="topbar-brand">
@@ -181,15 +181,82 @@
       </div>
     </header>
     <main class="app-main">
-      <div class="dash-hero">
-        <div class="eyebrow">Phase 3</div>
-        <h2 data-i18n="articlesTitle">Статьи на сайте</h2>
-        <p data-i18n="articlesDek">Список live-обзоров. Полный wizard (brief → SEO → publish) подключаем дальше; сейчас можно выбрать статью для Home.</p>
-      </div>
       <div id="articles-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
-      <div id="articles-list" class="module-grid" style="grid-template-columns:1fr"></div>
-      <div style="margin-top:18px">
-        <a class="btn btn-ghost" href="/admin-lab/site/articles/" target="_blank" rel="noopener" data-i18n="btnOpenLabArticles">Открыть lab Articles</a>
+
+      <div id="articles-home">
+        <div class="dash-hero">
+          <div class="eyebrow">Phase 3</div>
+          <h2 data-i18n="articlesTitle">Статьи</h2>
+          <p data-i18n="articlesDek">Черновик → SEO-шлюз → seo_ready. Publish на HTML сайта — следующий шаг.</p>
+        </div>
+        <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
+          <button type="button" class="btn btn-primary" id="btn-article-new" style="width:auto;padding-inline:22px" data-i18n="btnNewArticle">+ Новый черновик</button>
+          <a class="btn btn-ghost" href="/articles/" target="_blank" rel="noopener" data-i18n="btnOpenLabArticles">Live Articles</a>
+        </div>
+        <h3 data-i18n="articlesDraftsTitle">Черновики</h3>
+        <div id="articles-drafts" class="module-grid" style="grid-template-columns:1fr;margin-bottom:24px"></div>
+        <h3 data-i18n="articlesLiveTitle">Уже на сайте</h3>
+        <div id="articles-live" class="module-grid" style="grid-template-columns:1fr"></div>
+      </div>
+
+      <div id="articles-wizard" class="pk-hidden">
+        <div class="dash-hero">
+          <div class="eyebrow">Wizard</div>
+          <h2 data-i18n="articlesWizardTitle">Черновик статьи</h2>
+          <p><span class="pill" id="art-status-pill">draft</span></p>
+        </div>
+        <div class="panel">
+          <div class="review-card-body">
+            <div class="review-thumb-col">
+              <div class="review-thumb" id="art-cover-preview"></div>
+              <label class="btn btn-ghost btn-sm upload-btn">
+                <span data-i18n="btnUploadImage">Загрузить обложку</span>
+                <input type="file" accept="image/*" id="art-cover-file" hidden>
+              </label>
+              <div class="field"><label data-i18n="labelCoverPath">Путь обложки</label>
+                <input id="art-cover"></div>
+              <div class="field"><label data-i18n="labelImageAlt">Alt</label>
+                <input id="art-cover-alt"></div>
+            </div>
+            <div class="review-fields">
+              <div class="field"><label>Slug</label><input id="art-slug" placeholder="how-to-choose-…"></div>
+              <div class="field"><label data-i18n="labelType">Type 1–6</label>
+                <select id="art-type">
+                  <option value="1">1 Roundup</option>
+                  <option value="2">2 Buyer guide</option>
+                  <option value="3">3 Vs</option>
+                  <option value="4">4 Single pick</option>
+                  <option value="5">5 Problem</option>
+                  <option value="6">6 Mistakes</option>
+                </select>
+              </div>
+              <div class="field"><label data-i18n="labelTitle">Title</label><input id="art-title"></div>
+              <div class="field"><label data-i18n="labelMeta">Meta description</label><textarea id="art-meta" rows="3"></textarea></div>
+              <div class="field"><label>H1 HTML</label><input id="art-h1"></div>
+              <div class="field"><label>Dek</label><input id="art-dek"></div>
+              <div class="field"><label data-i18n="labelHub">Hub category</label>
+                <select id="art-hub">
+                  <option value="Home & Kitchen">Home &amp; Kitchen</option>
+                  <option value="Consumer Electronics">Consumer Electronics</option>
+                  <option value="Fitness & Health">Fitness &amp; Health</option>
+                  <option value="Pet Supplies">Pet Supplies</option>
+                </select>
+              </div>
+              <div class="field"><label>Hub URL</label><input id="art-hub-url" placeholder="/home-kitchen/"></div>
+              <div class="field"><label data-i18n="labelChips">Chips (1–3)</label><input id="art-chips" placeholder="kitchen cleaning"></div>
+              <div class="field"><label data-i18n="labelAmazon">Affiliate links</label><textarea id="art-affiliate" rows="3" placeholder="https://amzn.to/…"></textarea></div>
+              <div class="field"><label data-i18n="labelInternal">Internal links</label><textarea id="art-internal" rows="2"></textarea></div>
+              <div class="field"><label data-i18n="labelBody">Body HTML</label><textarea id="art-body" rows="10"></textarea></div>
+            </div>
+          </div>
+          <div id="articles-gate"></div>
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+            <button type="button" class="btn btn-primary" id="btn-article-save" style="width:auto;padding-inline:22px" data-i18n="btnSaveDraft">Сохранить черновик</button>
+            <button type="button" class="btn btn-ghost" id="btn-article-gate" style="width:auto" data-i18n="btnRunSeoGate">Проверить SEO-шлюз</button>
+            <button type="button" class="btn btn-primary" id="btn-article-seo-ready" style="width:auto;padding-inline:22px" data-i18n="btnMarkSeoReady">SEO ready</button>
+            <button type="button" class="btn btn-ghost" id="btn-article-cancel" style="width:auto" data-i18n="btnCancel">Назад к списку</button>
+          </div>
+        </div>
       </div>
     </main>
   </div>
@@ -252,7 +319,9 @@
   </div>
 
   <script src="/pk-studio/js/i18n.js"></script>
+  <script src="/pk-studio/js/seo-gate.js"></script>
   <script src="/pk-studio/js/auth.js"></script>
+  <script src="/pk-studio/js/articles.js"></script>
   <script src="/pk-studio/js/app.js"></script>
 </body>
 </html>

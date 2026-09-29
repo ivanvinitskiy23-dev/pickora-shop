@@ -167,6 +167,40 @@ class Handler(BaseHTTPRequestHandler):
                 return
             return self._send(*json_bytes({"articles": list_articles()}))
 
+        if path == "/api/content/articles":
+            if not self._require_user():
+                return
+            art_dir = ROOT / "content" / "articles"
+            art_dir.mkdir(parents=True, exist_ok=True)
+            drafts = []
+            for p in sorted(art_dir.glob("*.json")):
+                if p.name.startswith("_"):
+                    continue
+                try:
+                    data = json.loads(p.read_text(encoding="utf-8"))
+                except Exception:
+                    continue
+                drafts.append(
+                    {
+                        "slug": data.get("slug") or p.stem,
+                        "title": data.get("title") or "",
+                        "status": data.get("status") or "draft",
+                        "updatedAt": data.get("updatedAt"),
+                    }
+                )
+            return self._send(*json_bytes({"drafts": drafts}))
+
+        if path.startswith("/api/content/articles/"):
+            if not self._require_user():
+                return
+            slug = path.rsplit("/", 1)[-1]
+            fp = ROOT / "content" / "articles" / f"{slug}.json"
+            if not fp.exists():
+                return self._send(*json_bytes({"error": "not_found"}, 404))
+            return self._send(
+                *json_bytes(json.loads(fp.read_text(encoding="utf-8")))
+            )
+
         self._send(*json_bytes({"error": "not_found"}, 404))
 
     def do_POST(self) -> None:
@@ -277,6 +311,26 @@ class Handler(BaseHTTPRequestHandler):
                 encoding="utf-8",
             )
             return self._send(*json_bytes(self._run_render("render_products.py")))
+
+        if path == "/api/content/articles":
+            if not self._require_user():
+                return
+            payload = self._read_json()
+            slug = (payload.get("slug") or "").strip().lower()
+            if not slug or any(c for c in slug if not (c.isalnum() or c == "-")):
+                return self._send(*json_bytes({"error": "invalid_slug"}, 400))
+            art_dir = ROOT / "content" / "articles"
+            art_dir.mkdir(parents=True, exist_ok=True)
+            payload["slug"] = slug
+            payload["canonical"] = f"https://pickora.shop/{slug}/"
+            payload["updatedAt"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            if not payload.get("status"):
+                payload["status"] = "draft"
+            (art_dir / f"{slug}.json").write_text(
+                json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            return self._send(*json_bytes({"ok": True, "draft": payload, "mode": "local"}))
 
         self._send(*json_bytes({"error": "not_found"}, 404))
 
