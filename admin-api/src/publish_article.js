@@ -650,7 +650,6 @@ export function buildArticlePage(draft, options = {}) {
   const dek         = String(draft.dek || "");
   const coverImage  = String(draft.coverImage || "");
   const coverAlt    = String(draft.coverAlt  || title);
-  const chips       = (Array.isArray(draft.chips) ? draft.chips : []).filter((c) => CHIP_LABELS[c]).slice(0, 3);
   const hubCategory = String(draft.hubCategory || "Articles");
   let hubUrl        = String(draft.hubUrl     || "https://pickora.shop/articles/");
   if (hubUrl && !/^https?:\/\//i.test(hubUrl)) {
@@ -682,9 +681,7 @@ export function buildArticlePage(draft, options = {}) {
 `
     : "";
 
-  const chipsHtml = chips
-    .map((c) => `<span class="pk-chip">${escHtml(CHIP_LABELS[c] || c)}</span>`)
-    .join(" ");
+  // Chips stay on hub cards only — never under the article hero on live pages.
 
   const pageTitle = preview ? `[Preview] ${title} – Pickora` : `${title} – Pickora`;
   const robotsMeta = preview
@@ -869,9 +866,9 @@ header.site-header {
 }
 .hostinger-ai-site-title a {
   font-family: Montserrat, sans-serif; font-size: 22px; font-weight: 800;
-  color: #0f172a !important; text-decoration: none; letter-spacing: -0.03em;
+  color: #2075d2 !important; text-decoration: none; letter-spacing: -0.03em;
 }
-.hostinger-ai-site-title a:hover { color: #2075d2; }
+.hostinger-ai-site-title a:hover { color: #15223B !important; }
 
 /* Mobile burger (≤991px) */
 @media (max-width: 991px) {
@@ -941,24 +938,18 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
   color: #15223B !important; margin: 0 0 16px !important;
 }
 .pk-blue-text { color: #2075d2; }
-.pk-review-dek { margin: 0 0 12px; max-width: 640px; font-size: 17px; line-height: 1.65; color: #475569; }
-.pk-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
-.pk-chip {
-  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
-  text-transform: uppercase; color: #2075d2; background: #eef5fc;
-  padding: 4px 10px; border-radius: 999px;
-}
+.pk-review-dek { margin: 0 0 8px; max-width: 640px; font-size: 17px; line-height: 1.65; color: #475569; }
 
-/* ── Cover image ── */
+/* ── Cover image (live alignwide cover ≈ 1140) ── */
 .pk-article-cover-wrap {
   max-width: 1140px; margin: 12px auto 28px;
   border-radius: 16px; overflow: hidden; padding: 0 20px; box-sizing: border-box;
 }
 .pk-article-cover { width: 100%; height: auto; display: block; border-radius: 16px; }
 
-/* ── Article body content ── */
+/* ── Article body: wide like live entry-content.alignwide (tables + product photos) ── */
 .pk-entry-content-wrap { max-width: 1140px; margin: 0 auto; padding: 0 20px; box-sizing: border-box; }
-.entry-content { max-width: 760px; margin: 0 auto; }
+.entry-content { max-width: 1140px; margin: 0 auto; width: 100%; }
 .entry-content h2 {
   font-family: Montserrat, sans-serif; font-size: clamp(20px, 2.4vw, 26px);
   font-weight: 800; color: #15223B; margin-top: 2.2rem; letter-spacing: -0.02em;
@@ -1106,14 +1097,14 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
 .pk-product-ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
 .pk-block-image { max-width: 960px; margin: 24px auto; padding: 0 20px; }
 .pk-block-image img { width: 100%; height: auto; border-radius: 12px; }
-.pk-block-cta { max-width: 760px; margin: 24px auto; padding: 16px 20px; text-align: center; }
+.pk-block-cta { max-width: 900px; margin: 24px auto; padding: 16px 20px; text-align: center; }
 .pk-cta-title { font-weight: 700; margin: 0 0 12px; }
 @media (max-width: 700px) {
   .pk-product-card { grid-template-columns: 1fr; }
 }
 
 /* ── FAQ section ── */
-.pk-faq-section { max-width: 760px; margin: 40px auto 8px; padding: 0 24px; box-sizing: border-box; }
+.pk-faq-section { max-width: 900px; margin: 40px auto 8px; padding: 0 24px; box-sizing: border-box; }
 .pk-faq-section > h2 {
   font-family: Montserrat, sans-serif; font-size: 24px; font-weight: 800;
   color: #15223B; margin: 0 0 20px; letter-spacing: -0.02em;
@@ -1175,10 +1166,20 @@ footer.site-footer { background: #15223B; color: rgba(255,255,255,0.85); padding
   .pk-footer-bottom { flex-direction: column; justify-content: center; text-align: center; gap: 12px; }
   .pk-footer-legal { justify-content: center; }
   .pk-footer-copyright { text-align: center; white-space: normal; }
-  .pk-review-hero { width: 100%; margin: 16px auto 4px; padding: 32px 16px 4px; }
+  .pk-review-hero { width: 100%; max-width: 100%; margin: 16px auto 4px; padding: 28px 16px 4px; }
+  .pk-review-hero-inner { max-width: 100%; }
+  .pk-review-title { font-size: clamp(26px, 7vw, 36px); }
+  .pk-review-dek { font-size: 16px; max-width: 100%; }
   .pk-faq-section, .pk-affiliate-section { padding-left: 16px; padding-right: 16px; }
-  .pk-article-cover-wrap { padding-left: 12px; padding-right: 12px; }
+  .pk-article-cover-wrap { padding-left: 12px; padding-right: 12px; margin: 8px auto 20px; }
   .pk-entry-content-wrap { padding-left: 16px; padding-right: 16px; }
+  .entry-content { max-width: 100%; }
+  .pk-mw-guide, .pk-block-table { max-width: 100%; }
+  .pk-disclosure-footer { padding-left: 16px; padding-right: 16px; }
+}
+@media (max-width: 991px) and (min-width: 769px) {
+  .pk-review-hero { max-width: 920px; padding-left: 24px; padding-right: 24px; }
+  .pk-entry-content-wrap, .pk-article-cover-wrap { padding-left: 24px; padding-right: 24px; }
 }
 
 ${PK_MW_GUIDE_CSS}
@@ -1194,7 +1195,7 @@ ${previewBanner}<a class="skip-link screen-reader-text" id="wp-skip-link" href="
   <div class="wp-block-group hostinger-ai-menu has-color-1-background-color has-background has-global-padding is-layout-constrained wp-block-group-is-layout-constrained">
     <div class="wp-block-group alignwide hostinger-ai-menu-wrapper is-layout-grid wp-block-group-is-layout-grid" style="padding-top:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--50)">
       <div class="wp-block-group is-nowrap is-layout-flex wp-block-group-is-layout-flex">
-        <p class="has-link-color hostinger-ai-site-title wp-block-site-title has-text-color has-large-font-size">
+        <p class="has-link-color hostinger-ai-site-title wp-block-site-title has-text-color has-color-3-color has-large-font-size">
           <a href="https://pickora.shop/" target="_self" rel="home">Pickora</a>
         </p>
       </div>
@@ -1264,7 +1265,6 @@ ${previewBanner}<a class="skip-link screen-reader-text" id="wp-skip-link" href="
       <p class="pk-review-badge"><span class="pk-dot-blue" aria-hidden="true"></span> ${escHtml(hubCategory)}</p>
       <h1 id="pk-review-title" class="pk-review-title">${h1Html}</h1>
       <p class="pk-review-dek">${escHtml(dek)}</p>
-      ${chipsHtml ? `<div class="pk-chips">${chipsHtml}</div>` : ""}
     </div>
   </section>
 </main>

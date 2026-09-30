@@ -15,19 +15,38 @@ export function escAttr(s) {
   return escHtml(s).replace(/'/g, "&#39;");
 }
 
-/** If H1 has no brand blue span, wrap the last 1–3 words. */
+/** Brand-blue accent like live articles (middle keywords, never a lone blue last line). */
 export function ensureBlueH1(h1Html, titleFallback) {
   const raw = String(h1Html || "").trim();
   if (raw && /pk-blue-text/i.test(raw)) return raw;
-  const plain = String(titleFallback || raw.replace(/<[^>]+>/g, "") || "Article").trim();
-  const parts = plain.split(/\s+/).filter(Boolean);
-  if (parts.length <= 1) {
-    return `${escHtml(plain)}`;
+  // Author pasted HTML without blue — keep as-is
+  if (raw && /<[a-z][\s\S]*>/i.test(raw)) return raw;
+
+  const plain = String(
+    (raw ? raw.replace(/<[^>]+>/g, "") : "") || titleFallback || "Article"
+  )
+    .replace(/\s+/g, " ")
+    .trim();
+
+  // "Stainless vs Gooseneck Electric Kettle" → Stainless vs <blue>Gooseneck</blue> Electric Kettle
+  const vs = plain.match(/^(.*?)\s+vs\.?\s+(\S+)(.*)$/i);
+  if (vs) {
+    return `${escHtml(vs[1])} vs <span class="pk-blue-text">${escHtml(vs[2])}</span>${escHtml(vs[3])}`;
   }
-  const n = Math.min(3, Math.max(1, Math.ceil(parts.length * 0.35)));
-  const head = parts.slice(0, -n).join(" ");
-  const tail = parts.slice(-n).join(" ");
-  return `${escHtml(head)} <span class="pk-blue-text">${escHtml(tail)}</span>`;
+
+  const parts = plain.split(" ").filter(Boolean);
+  if (parts.length < 3) return escHtml(plain);
+
+  // Live pattern: "Best <blue>noise cancelling</blue> headphones 2026"
+  const blueCount = parts.length >= 5 ? 2 : 1;
+  const start = 1;
+  const end = Math.min(parts.length - 1, start + blueCount);
+  const before = parts.slice(0, start).join(" ");
+  const mid = parts.slice(start, end).join(" ");
+  const after = parts.slice(end).join(" ");
+  return `${escHtml(before)} <span class="pk-blue-text">${escHtml(mid)}</span>${
+    after ? " " + escHtml(after) : ""
+  }`;
 }
 
 function paragraphs(text) {
@@ -217,7 +236,8 @@ export const PK_MW_GUIDE_CSS = `
   margin: 40px 0;
   padding: 0 0 32px;
   border-bottom: 1px solid #e5e7eb;
-  max-width: 760px;
+  max-width: none;
+  width: 100%;
 }
 .pk-mw-pick:last-of-type { border-bottom: 0; }
 .pk-mw-pick img {
@@ -277,14 +297,14 @@ export const PK_MW_GUIDE_CSS = `
 }
 .pk-mw-verdict p { margin: 0 0 8px; }
 .pk-mw-verdict p:last-child { margin: 0; }
-.pk-swipe-hint { color: #64748b; font-size: 14px; margin: 0 0 8px; max-width: 760px; }
+.pk-swipe-hint { color: #64748b; font-size: 14px; margin: 0 0 8px; max-width: none; }
 .pk-mw-table-wrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   margin: 20px 0 28px;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-  max-width: 960px;
+  max-width: 100%;
 }
 .pk-mw-table {
   width: 100%;
@@ -312,7 +332,7 @@ export const PK_MW_GUIDE_CSS = `
 .pk-table--simple { box-shadow: none; border-radius: 0; }
 .pk-table--simple .pk-mw-table { min-width: 0; }
 .pk-table--simple .pk-mw-table th { background: transparent; border-bottom: 2px solid #cbd5e1; }
-.pk-faq-section { max-width: 760px; margin: 40px auto 8px; }
+.pk-faq-section { max-width: 900px; margin: 40px 0 8px; }
 .pk-faq-section > h2 {
   font-family: Montserrat, sans-serif; font-size: 24px; font-weight: 800;
   color: #15223B; margin: 0 0 16px; letter-spacing: -0.02em;
@@ -346,8 +366,20 @@ export const PK_MW_GUIDE_CSS = `
 .pk-faq-acc[open] > summary::after { content: "−"; }
 .pk-faq-acc .pk-faq-a { padding: 0 0 18px; color: #334155; }
 .pk-faq-acc .pk-faq-a p { margin: 0 0 10px; line-height: 1.65; }
-.pk-block-intro, .pk-block-text { max-width: 760px; }
-.pk-block-cta { max-width: 760px; margin: 24px auto; text-align: center; }
+.pk-block-intro, .pk-block-text { max-width: 900px; }
+.pk-block-cta { max-width: 900px; margin: 24px 0; text-align: center; }
+@media (max-width: 900px) {
+  .pk-mw-pick img { border-radius: 12px; }
+  .pk-mw-table { min-width: 560px; }
+}
+@media (max-width: 600px) {
+  .pk-mw-pick { margin: 28px 0; padding-bottom: 24px; }
+  .pk-mw-pick img { border-radius: 10px; margin-bottom: 14px; }
+  .pk-mw-table { min-width: 480px; font-size: 14px; }
+  .pk-mw-table th, .pk-mw-table td { padding: 10px 8px; }
+  .pk-faq-section { max-width: 100%; }
+  .pk-block-intro, .pk-block-text, .pk-block-cta { max-width: 100%; }
+}
 .pk-cta-title { font-weight: 700; margin: 0 0 12px; }
 .pk-product-ctas { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 .pk-aff-btn {

@@ -2457,6 +2457,9 @@ body.studio-app {
   gap: 4px;
   padding: 6px 8px;
   min-width: 0;
+  background: #fff8f0;
+  border-left: 3px solid #ff9900;
+  border-radius: 6px;
 }
 .tbl-link-cell input {
   width: 100%;
@@ -2471,7 +2474,19 @@ body.studio-app {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.72rem;
   color: #64748b;
-  border-top: 1px dashed var(--pk-line);
+  border-top: 1px dashed #ffcc80;
+}
+.tbl-th-action {
+  color: #c2410c !important;
+  font-weight: 800 !important;
+}
+.block-hint--amazon {
+  color: #9a3412;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-weight: 600;
 }
 
 /* Live article table look (pk-mw-table) — Compare */

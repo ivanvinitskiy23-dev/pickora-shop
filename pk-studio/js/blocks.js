@@ -47,6 +47,24 @@ window.PK_BLOCKS = (function () {
     { type: "html", labelKey: "blockHtml", icon: "</>" },
   ];
 
+  function ensureTableActionCol(b) {
+    if (!b || b.type !== "table") return;
+    b.headers = Array.isArray(b.headers) ? b.headers : ["Model", "Best for", "Price"];
+    b.rows = Array.isArray(b.rows) ? b.rows : [];
+    const hasAction = b.headers.some((h) =>
+      /^(action|amazon|buy|cta)$/i.test(String(h || "").trim())
+    );
+    if (!hasAction) {
+      b.headers.push("Action");
+      b.rows = b.rows.map((r) => {
+        const row = Array.isArray(r) ? [...r] : [];
+        while (row.length < b.headers.length - 1) row.push("");
+        row.push("Amazon →|https://amzn.to/");
+        return row;
+      });
+    }
+  }
+
   function createBlock(type) {
     const id = uid();
     switch (type) {
@@ -534,6 +552,7 @@ window.PK_BLOCKS = (function () {
             </div>
           </div>`;
         case "table": {
+          ensureTableActionCol(b);
           const headers = b.headers || [];
           const rows = b.rows || [];
           const del = esc(t("btnDeletePin"));
@@ -549,11 +568,11 @@ window.PK_BLOCKS = (function () {
             return { label: cell, url: "" };
           };
           return `<div class="tbl-edit tbl-edit--${v}" data-table-variant="${v}" style="--cols:${Math.max(headers.length, 1)}">
+            <p class="block-hint block-hint--amazon">${esc(t("hintTableAmazon"))}</p>
             <p class="block-hint">${esc(t("hintTableVariant_" + v))}</p>
-            <p class="block-hint">${esc(t("hintTableAmazon"))}</p>
             <div class="tbl-grid">
               <div class="tbl-head">${headers
-                .map((h, i) => `<input data-th value="${esc(h)}" placeholder="Col ${i + 1}">`)
+                .map((h, i) => `<input data-th value="${esc(h)}" placeholder="Col ${i + 1}"${isActionCol(h) ? ' class="tbl-th-action"' : ""}>`)
                 .join("")}<span class="tbl-sp"></span></div>
               ${rows
                 .map(
@@ -581,7 +600,7 @@ window.PK_BLOCKS = (function () {
             <div class="tbl-tools">
               <button type="button" class="btn btn-ghost btn-sm" data-row-add>+ ${esc(t("blockAddRow"))}</button>
               <button type="button" class="btn btn-ghost btn-sm" data-col-add>+ Col</button>
-              <button type="button" class="btn btn-ghost btn-sm" data-action-col>+ ${esc(t("blockAddActionCol"))}</button>
+              <button type="button" class="btn btn-primary btn-xs" data-action-col>+ ${esc(t("blockAddActionCol"))}</button>
             </div>
           </div>`;
         }
@@ -881,6 +900,7 @@ window.PK_BLOCKS = (function () {
       },
       setBlocks(next) {
         list = Array.isArray(next) ? next.map((b) => ({ ...b })) : [];
+        list.forEach(ensureTableActionCol);
         paint({ skipDomRead: true });
       },
       refresh() {
