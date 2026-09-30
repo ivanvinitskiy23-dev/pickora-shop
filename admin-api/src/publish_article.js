@@ -468,10 +468,20 @@ export function buildArticlePage(draft, options = {}) {
   padding:4px 8px; border-radius:6px;
 }
 .pk-preview-meta{ margin-left:auto; opacity:.75; font-size:12px; }
-/* Push page + sticky header below the fixed preview bar (do not cover logo/nav) */
+/* Push page + fixed/sticky nav below the preview bar.
+   Live chrome uses position:fixed on .hostinger-ai-menu (top:0) — that is
+   what actually draws logo/nav. Only offsetting header.site-header left the
+   menu under the PREVIEW plaque. */
 body.pk-is-preview { padding-top: var(--pk-preview-banner-h) !important; }
-body.pk-is-preview header.site-header {
+body.pk-is-preview header.site-header,
+body.pk-is-preview header.site-header .hostinger-ai-menu,
+body.pk-is-preview .hostinger-ai-menu {
   top: var(--pk-preview-banner-h) !important;
+}
+body.pk-is-preview #pk-preview-banner { z-index: 100001; }
+body.pk-is-preview header.site-header .hostinger-ai-menu,
+body.pk-is-preview .hostinger-ai-menu {
+  z-index: 100000 !important;
 }
 @media (max-width:700px){
   :root { --pk-preview-banner-h: 72px; }
