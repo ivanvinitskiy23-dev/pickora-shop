@@ -41,23 +41,26 @@ window.PK_MEDIA = (function () {
     });
   }
 
+  function isRealWebp(blob) {
+    return !!(blob && blob.size > 0 && blob.type === "image/webp");
+  }
+
   /**
-   * Resize + JPEG compress so cloud D1 upload stays under the row-size limit.
-   * Returns { blob, dataUrl, filename }.
+   * Resize + compress. Prefer WebP (SEO / site standard); fall back to JPEG.
+   * Returns { blob, dataUrl, filename, bytes }.
    */
   async function compressImage(file) {
     if (!file || !file.type.startsWith("image/")) {
       throw new Error("not_an_image");
     }
-    // Tiny files: still normalize via canvas when possible; skip if already small jpeg/webp/png
     let img;
     try {
       img = await loadImage(file);
     } catch {
-      // HEIC / exotic formats
+      // HEIC / exotic formats — pass through only if already small
       if (file.size <= MAX_BYTES) {
         const dataUrl = await blobToDataUrl(file);
-        return { blob: file, dataUrl, filename: file.name };
+        return { blob: file, dataUrl, filename: file.name, bytes: file.size };
       }
       throw new Error("image_decode_failed");
     }
@@ -78,27 +81,37 @@ window.PK_MEDIA = (function () {
     ctx.fillRect(0, 0, w, h);
     ctx.drawImage(img, 0, 0, w, h);
 
-    let type = "image/jpeg";
-    let quality = 0.82;
-    let blob = await canvasToBlob(canvas, type, quality);
-    if (!blob) {
-      type = "image/png";
-      blob = await canvasToBlob(canvas, type);
+    async function encode(type, startQ) {
+      let quality = startQ;
+      let blob = await canvasToBlob(canvas, type, quality);
+      if (type === "image/webp" && !isRealWebp(blob)) return null;
+      while (blob && blob.size > MAX_BYTES && quality > 0.45) {
+        quality -= 0.08;
+        blob = await canvasToBlob(canvas, type, quality);
+        if (type === "image/webp" && !isRealWebp(blob)) return null;
+      }
+      return blob;
     }
-    while (blob && blob.size > MAX_BYTES && quality > 0.45) {
-      quality -= 0.08;
-      blob = await canvasToBlob(canvas, "image/jpeg", quality);
+
+    let type = "image/webp";
+    let blob = await encode("image/webp", 0.82);
+    if (!blob) {
       type = "image/jpeg";
+      blob = await encode("image/jpeg", 0.82);
     }
     if (!blob || blob.size > MAX_BYTES * 1.15) {
-      // last resort: shrink more
       canvas.width = Math.round(w * 0.7);
       canvas.height = Math.round(h * 0.7);
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      blob = await canvasToBlob(canvas, "image/jpeg", 0.7);
-      type = "image/jpeg";
+      blob = await canvasToBlob(canvas, "image/webp", 0.72);
+      if (isRealWebp(blob)) {
+        type = "image/webp";
+      } else {
+        blob = await canvasToBlob(canvas, "image/jpeg", 0.7);
+        type = "image/jpeg";
+      }
     }
     if (!blob) throw new Error("compress_failed");
     if (blob.size > 700_000) throw new Error("file_too_large");
@@ -106,7 +119,7 @@ window.PK_MEDIA = (function () {
     const base = String(file.name || "cover")
       .replace(/\.[^.]+$/, "")
       .slice(0, 48);
-    const ext = type === "image/png" ? "png" : "jpg";
+    const ext = type === "image/webp" ? "webp" : type === "image/png" ? "png" : "jpg";
     const dataUrl = await blobToDataUrl(blob);
     return {
       blob,

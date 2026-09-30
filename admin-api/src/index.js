@@ -461,7 +461,7 @@ async function handleMediaUpload(request, env, user) {
   } else if (bytes[0] === 0xff && bytes[1] === 0xd8) {
     ext = "jpg";
     contentType = "image/jpeg";
-  } else if (bytes[0] === 0x52 && bytes[1] === 0x49) {
+  } else if (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[8] === 0x57 && bytes[9] === 0x45) {
     ext = "webp";
     contentType = "image/webp";
   }

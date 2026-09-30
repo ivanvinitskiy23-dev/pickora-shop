@@ -211,8 +211,8 @@ window.PK_BLOCKS = (function () {
           .filter((l) => l && String(l.url || "").trim())
           .map(
             (l) =>
-              `<a class="pk-aff-btn pk-aff-btn--${variantOf(b)}" href="${esc(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
-                l.label || "Buy"
+              `<a class="pk-aff-btn pk-aff-btn--amazon" href="${esc(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
+                l.label || "Check on Amazon →"
               )}</a>`
           )
           .join("\n");
@@ -350,14 +350,14 @@ window.PK_BLOCKS = (function () {
       const tmp = list[i];
       list[i] = list[j];
       list[j] = tmp;
-      paint();
+      paint({ skipDomRead: true });
       emit();
     }
 
     function removeAt(i) {
       if (!confirm(t("blockConfirmDelete"))) return;
       list.splice(i, 1);
-      paint();
+      paint({ skipDomRead: true });
       emit();
     }
 
@@ -365,7 +365,7 @@ window.PK_BLOCKS = (function () {
       const b = createBlock(type);
       if (afterIndex == null || afterIndex < 0) list.push(b);
       else list.splice(afterIndex + 1, 0, b);
-      paint();
+      paint({ skipDomRead: true });
       emit();
     }
 
@@ -375,7 +375,7 @@ window.PK_BLOCKS = (function () {
       const copy = JSON.parse(JSON.stringify(src));
       copy.id = uid();
       list.splice(i + 1, 0, copy);
-      paint();
+      paint({ skipDomRead: true });
       emit();
     }
 
@@ -443,17 +443,18 @@ window.PK_BLOCKS = (function () {
 
     function linksEditor(links) {
       const del = esc(t("btnDeletePin"));
-      const rows = (links && links.length ? links : [{ label: "", url: "" }])
+      const rows = (links && links.length ? links : [{ label: "Amazon", url: "" }])
         .map(
           (l, i) => `<div class="buy-row" data-link-row>
           <input class="buy-store" data-f="llabel" placeholder="Amazon" value="${esc(l.label || "")}">
-          <input class="buy-url" data-f="lurl" placeholder="https://amzn.to/…" value="${esc(l.url || "")}">
+          <input class="buy-url" data-f="lurl" placeholder="https://amzn.to/xxxxx" value="${esc(l.url || "")}" inputmode="url" spellcheck="false">
           <button type="button" class="block-tool block-tool-del" data-link-del="${i}" title="${del}" aria-label="${del}">×</button>
         </div>`
         )
         .join("");
       return `<div class="buy-links">
         <span class="block-legend">${esc(t("blockBuyLinks"))}</span>
+        <p class="block-hint">${esc(t("hintBuyLink"))}</p>
         <div class="buy-rows">${rows}</div>
         <button type="button" class="btn btn-ghost btn-sm" data-link-add>+ ${esc(t("blockAddLink"))}</button>
       </div>`;
@@ -500,7 +501,9 @@ window.PK_BLOCKS = (function () {
           const headers = b.headers || [];
           const rows = b.rows || [];
           const del = esc(t("btnDeletePin"));
-          return `<div class="tbl-edit" style="--cols:${Math.max(headers.length, 1)}">
+          const v = variantOf(b);
+          return `<div class="tbl-edit tbl-edit--${v}" data-table-variant="${v}" style="--cols:${Math.max(headers.length, 1)}">
+            <p class="block-hint">${esc(t("hintTableVariant_" + v))}</p>
             <div class="tbl-grid">
               <div class="tbl-head">${headers
                 .map((h, i) => `<input data-th value="${esc(h)}" placeholder="Col ${i + 1}">`)
@@ -526,35 +529,36 @@ window.PK_BLOCKS = (function () {
           </div>`;
         }
         case "product":
-          return `<div class="prod-edit">
+          return `<div class="prod-edit prod-edit--${variantOf(b)}">
             <div class="prod-media">
               ${dropzone(b.image, true)}
-              <div class="field"><label>URL</label><input data-f="image" value="${esc(b.image || "")}"></div>
-              <div class="field"><label>Alt</label><input data-f="imageAlt" value="${esc(b.imageAlt || "")}"></div>
+              <div class="field"><label>URL</label><input data-f="image" value="${esc(b.image || "")}" placeholder="/api/media/file/…"><p class="field-hint">${esc(t("hintBlockImage"))}</p></div>
+              <div class="field"><label>Alt</label><input data-f="imageAlt" value="${esc(b.imageAlt || "")}" placeholder="Product on a kitchen counter"><p class="field-hint">${esc(t("hintImageAlt"))}</p></div>
             </div>
             <div class="prod-fields">
               <div class="field-row">
-                <div class="field grow"><label>${esc(t("labelTitle"))}</label><input data-f="title" value="${esc(b.title || "")}"></div>
-                <div class="field"><label>${esc(t("blockRole"))}</label><input data-f="role" placeholder="Best overall" value="${esc(b.role || "")}"></div>
+                <div class="field grow"><label>${esc(t("labelTitle"))}</label><input data-f="title" value="${esc(b.title || "")}" placeholder="Toshiba OptiChef…"></div>
+                <div class="field"><label>${esc(t("blockRole"))}</label><input data-f="role" placeholder="Best overall · $$" value="${esc(b.role || "")}"><p class="field-hint">${esc(t("hintBlockRole"))}</p></div>
               </div>
-              <div class="field"><label>${esc(t("labelExcerpt"))}</label><textarea data-f="description" rows="3">${esc(b.description || "")}</textarea></div>
+              <div class="field"><label>${esc(t("labelExcerpt"))}</label><textarea data-f="description" rows="3" placeholder="${esc(t("hintProductDesc"))}">${esc(b.description || "")}</textarea></div>
               <div class="pc-grid">
                 <div class="pc-col pc-pro">
                   <span class="block-legend"><span class="pc-mark" aria-hidden="true">+</span>${esc(t("labelPros"))}</span>
-                  <textarea data-f="pros" rows="4">${esc((b.pros || []).join("\n"))}</textarea>
+                  <textarea data-f="pros" rows="4" placeholder="${esc(t("hintPros"))}">${esc((b.pros || []).join("\n"))}</textarea>
                 </div>
                 <div class="pc-col pc-con">
                   <span class="block-legend"><span class="pc-mark" aria-hidden="true">−</span>${esc(t("labelCons"))}</span>
-                  <textarea data-f="cons" rows="4">${esc((b.cons || []).join("\n"))}</textarea>
+                  <textarea data-f="cons" rows="4" placeholder="${esc(t("hintCons"))}">${esc((b.cons || []).join("\n"))}</textarea>
                 </div>
               </div>
-              <div class="field"><label>${esc(t("labelVerdict"))}</label><textarea data-f="verdict" rows="2">${esc(b.verdict || "")}</textarea></div>
+              <div class="field"><label>${esc(t("labelVerdict"))}</label><textarea data-f="verdict" rows="2" placeholder="${esc(t("hintVerdict"))}">${esc(b.verdict || "")}</textarea></div>
               ${linksEditor(b.links)}
             </div>
           </div>`;
         case "cta":
-          return `<div class="cta-edit">
-            <div class="field"><label>${esc(t("blockCtaTitle"))}</label><input data-f="title" value="${esc(b.title || "")}"></div>
+          return `<div class="cta-edit cta-edit--${variantOf(b)}">
+            <div class="field"><label>${esc(t("blockCtaTitle"))}</label><input data-f="title" value="${esc(b.title || "")}" placeholder="Ready to buy?"></div>
+            <div class="cta-style-preview" aria-hidden="true"><span class="pk-aff-btn pk-aff-btn--${variantOf(b)}">${esc(t("blockCtaPreview"))}</span></div>
             ${linksEditor(b.links)}
           </div>`;
         case "faq": {
@@ -627,8 +631,10 @@ window.PK_BLOCKS = (function () {
       </div>`;
     }
 
-    function paint() {
-      readDomIntoList();
+    function paint(opts) {
+      // skipDomRead: after in-memory mutations (add link/row/faq) — do NOT
+      // re-read the stale DOM or the change is wiped before re-render.
+      if (!opts || !opts.skipDomRead) readDomIntoList();
       const typeLabel = (type) => {
         const c = CATALOG.find((x) => x.type === type);
         return c ? t(c.labelKey) : type;
@@ -713,6 +719,9 @@ window.PK_BLOCKS = (function () {
         card.querySelectorAll("input, textarea, select").forEach((el) => {
           el.addEventListener("change", () => {
             readDomIntoList();
+            if (el.matches("[data-f=variant]")) {
+              paint({ skipDomRead: true });
+            }
             emit();
           });
           el.addEventListener("input", () => {
@@ -729,64 +738,68 @@ window.PK_BLOCKS = (function () {
             } else if (b.type === "product") {
               b.image = path;
             }
-            paint();
+            paint({ skipDomRead: true });
             emit();
           });
         }
 
         card.querySelector("[data-link-add]")?.addEventListener("click", () => {
           readDomIntoList();
-          b.links = b.links || [];
-          b.links.push({ label: "", url: "" });
-          paint();
+          b.links = Array.isArray(b.links) ? b.links : [];
+          b.links.push({ label: "Amazon", url: "https://amzn.to/" });
+          paint({ skipDomRead: true });
           emit();
         });
         card.querySelectorAll("[data-link-del]").forEach((btn) => {
           btn.addEventListener("click", () => {
             readDomIntoList();
+            b.links = Array.isArray(b.links) ? b.links : [];
             b.links.splice(Number(btn.getAttribute("data-link-del")), 1);
-            paint();
+            if (!b.links.length) b.links.push({ label: "Amazon", url: "" });
+            paint({ skipDomRead: true });
             emit();
           });
         });
 
         card.querySelector("[data-faq-add]")?.addEventListener("click", () => {
           readDomIntoList();
-          b.items = b.items || [];
+          b.items = Array.isArray(b.items) ? b.items : [];
           b.items.push({ q: "", a: "" });
-          paint();
+          paint({ skipDomRead: true });
           emit();
         });
         card.querySelectorAll("[data-faq-del]").forEach((btn) => {
           btn.addEventListener("click", () => {
             readDomIntoList();
+            b.items = Array.isArray(b.items) ? b.items : [];
             b.items.splice(Number(btn.getAttribute("data-faq-del")), 1);
-            paint();
+            paint({ skipDomRead: true });
             emit();
           });
         });
 
         card.querySelector("[data-row-add]")?.addEventListener("click", () => {
           readDomIntoList();
-          b.rows = b.rows || [];
+          b.rows = Array.isArray(b.rows) ? b.rows : [];
           b.rows.push((b.headers || []).map(() => ""));
-          paint();
+          paint({ skipDomRead: true });
           emit();
         });
         card.querySelectorAll("[data-row-del]").forEach((btn) => {
           btn.addEventListener("click", () => {
             readDomIntoList();
+            b.rows = Array.isArray(b.rows) ? b.rows : [];
             b.rows.splice(Number(btn.getAttribute("data-row-del")), 1);
-            paint();
+            paint({ skipDomRead: true });
             emit();
           });
         });
         card.querySelector("[data-col-add]")?.addEventListener("click", () => {
           readDomIntoList();
-          b.headers = b.headers || [];
+          b.headers = Array.isArray(b.headers) ? b.headers : [];
           b.headers.push("Col");
-          b.rows = (b.rows || []).map((r) => [...r, ""]);
-          paint();
+          b.rows = (b.rows || []).map((r) => [...(r || []), ""]);
+          paint({ skipDomRead: true });
           emit();
         });
       });
@@ -801,7 +814,7 @@ window.PK_BLOCKS = (function () {
       },
       setBlocks(next) {
         list = Array.isArray(next) ? next.map((b) => ({ ...b })) : [];
-        paint();
+        paint({ skipDomRead: true });
       },
       refresh() {
         paint();
