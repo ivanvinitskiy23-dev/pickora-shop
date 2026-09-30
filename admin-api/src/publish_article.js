@@ -693,14 +693,26 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
 
 /* ── Cover image (live alignwide cover ≈ 1140) ── */
 .pk-article-cover-wrap {
-  max-width: 1140px; margin: 12px auto 28px;
+  width: 100%;
+  max-width: 1140px !important;
+  margin: 12px auto 28px;
   border-radius: 16px; overflow: hidden; padding: 0 20px; box-sizing: border-box;
 }
 .pk-article-cover { width: 100%; height: auto; display: block; border-radius: 16px; }
 
 /* ── Article body: wide like live entry-content.alignwide (tables + product photos) ── */
-.pk-entry-content-wrap { max-width: 1140px; margin: 0 auto; padding: 0 20px; box-sizing: border-box; }
-.entry-content { max-width: 1140px; margin: 0 auto; width: 100%; }
+.pk-entry-content-wrap {
+  width: 100%;
+  max-width: 1140px !important;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+.entry-content {
+  max-width: 1140px !important;
+  margin: 0 auto;
+  width: 100%;
+}
 .entry-content h2 {
   font-family: Montserrat, sans-serif; font-size: clamp(20px, 2.4vw, 26px);
   font-weight: 800; color: #15223B; margin-top: 2.2rem; letter-spacing: -0.02em;
@@ -835,7 +847,7 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
   display: grid;
   grid-template-columns: 220px 1fr;
   gap: 22px;
-  max-width: 1140px;
+  max-width: 1140px !important;
   margin: 28px auto;
   padding: 20px;
   border: 1px solid #e2e8f0;
@@ -874,16 +886,14 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
 .pk-disclosure-footer a { color: #2075d2; text-decoration: underline; }
 
 /* ===================================================================
-   Responsive — phone + tablet (match live Pickora breakpoints)
-   Nav hamburger/drawer: pickora-nav.css (≤991) via LIVE_CHROME_HEAD
-   Footer column stack: pickora-mobile-fixes.css (≤781)
+   Responsive helpers (do NOT put max-width:100% on content wrappers
+   outside phone/tablet media queries — that blows desktop to full bleed)
    =================================================================== */
 
-/* Wide tables swipe inside the page; never blow out viewport */
+/* Safe for all widths: allow tables/cards to shrink inside 1140 rail */
 .pk-entry-content-wrap,
 .entry-content {
   min-width: 0;
-  max-width: 100%;
   overflow-x: clip;
 }
 .pk-block-table,
@@ -912,8 +922,6 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
   -webkit-overflow-scrolling: touch;
 }
 .pk-product-card {
-  width: 100%;
-  max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
 }
@@ -922,6 +930,41 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
 .pk-product-body {
   min-width: 0;
   max-width: 100%;
+}
+
+/* Desktop footer rail (WP columns/global styles can fail to constrain in blob preview) */
+footer.site-footer {
+  background-color: #15223B !important;
+}
+footer.site-footer > .wp-block-group.has-color-2-background-color,
+footer.site-footer .has-color-2-background-color {
+  background-color: #15223B !important;
+}
+footer.site-footer .wp-block-columns.alignwide,
+footer.site-footer .wp-block-columns {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-start !important;
+  width: 100% !important;
+  max-width: 1140px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+  gap: 24px !important;
+}
+footer.site-footer .wp-block-columns > .wp-block-column {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+}
+@media (max-width: 781px) {
+  footer.site-footer .wp-block-columns.alignwide,
+  footer.site-footer .wp-block-columns {
+    flex-wrap: wrap !important;
+  }
+  footer.site-footer .wp-block-columns > .wp-block-column {
+    flex-basis: 100% !important;
+    width: 100% !important;
+  }
 }
 
 /* Tablet (hamburger still on ≤991; keep live hero width ~760) */
@@ -946,8 +989,7 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
     grid-template-columns: 160px 1fr;
     gap: 16px;
     padding: 16px;
-    margin-left: 0;
-    margin-right: 0;
+    width: 100%;
     max-width: 100%;
   }
   .pk-product-ctas a,
@@ -975,28 +1017,29 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
   .pk-review-dek { font-size: 16px; max-width: 100%; }
   .pk-crumbs { font-size: 12px; margin-bottom: 14px; }
   .pk-entry-content-wrap,
+  .entry-content,
   .pk-affiliate-section,
   .pk-block-table,
   .pk-block-image,
   .pk-faq-section,
   .pk-disclosure-footer {
+    max-width: 100%;
     padding-left: 16px;
     padding-right: 16px;
   }
   .pk-article-cover-wrap {
+    max-width: 100%;
     padding-left: 12px;
     padding-right: 12px;
     margin: 8px auto 20px;
   }
-  .entry-content { max-width: 100%; }
   .entry-content p { font-size: 16px; }
   .entry-content h2 { font-size: clamp(19px, 5.5vw, 24px); }
   .entry-content h3 { font-size: clamp(16px, 4.5vw, 20px); }
   .pk-mw-guide, .pk-block-table { max-width: 100%; }
   .pk-product-card {
     grid-template-columns: 1fr;
-    margin-left: 0;
-    margin-right: 0;
+    width: 100%;
     max-width: 100%;
   }
   .pk-product-ctas {
@@ -1035,6 +1078,35 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
 }
 
 ${PK_MW_GUIDE_CSS}
+
+/* After guide CSS: keep FAQ/CTA centered on desktop (guide uses margin: 0) */
+.pk-faq-section,
+.pk-block-cta {
+  width: 100% !important;
+  max-width: 900px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+}
+.pk-affiliate-section,
+.pk-block-table,
+.pk-block-image,
+.pk-disclosure-footer {
+  width: 100%;
+  max-width: 1140px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+.wp-site-blocks {
+  align-items: stretch;
+}
+.wp-site-blocks > main,
+.wp-site-blocks > footer.site-footer,
+.wp-site-blocks > header.site-header {
+  width: 100%;
+  max-width: none;
+}
 </style>
 </head>
 
@@ -1061,7 +1133,6 @@ ${LIVE_HEADER_HTML}
       <p class="pk-review-dek">${escHtml(dek)}</p>
     </div>
   </section>
-</main>
 
 <!-- ═══ Cover image ═══ -->
 ${coverHtml}
@@ -1080,6 +1151,7 @@ ${faqSection}
 <div class="pk-disclosure-footer">
   <p>Pickora is reader-supported. When you buy through links on our site, we may earn an affiliate commission at no extra cost to you. As an Amazon Associate we earn from qualifying purchases. <a href="https://pickora.shop/affiliate-disclosure/">Learn more</a>.</p>
 </div>
+</main>
 
 <!-- ═══ Footer (exact live chrome) ═══ -->
 ${buildLiveFooterHtml(year)}
