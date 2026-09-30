@@ -450,41 +450,35 @@ export function buildArticlePage(draft, options = {}) {
   </div>
 </div>
 <style>
-:root { --pk-preview-banner-h: 52px; }
+/* In-flow PREVIEW banner — never covers chrome.
+   Also demote live's position:fixed menu to relative so it stays inside
+   the sticky header instead of painting over the banner at top:0. */
 #pk-preview-banner{
-  position:fixed; top:0; left:0; right:0; z-index:100001;
+  position: relative; z-index: 100001;
   background:#15223B; color:#fff;
-  font-family:Montserrat,"Open Sans",sans-serif;
+  font-family:"Open Sans",Montserrat,sans-serif;
   box-shadow:0 2px 12px rgba(15,23,42,.28);
 }
 .pk-preview-banner-inner{
-  max-width:1140px; margin:0 auto; padding:10px 20px;
-  display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px;
-  font-size:13px; line-height:1.35;
-  min-height:var(--pk-preview-banner-h); box-sizing:border-box;
+  max-width:1140px; margin:0 auto; padding:10px 16px;
+  display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px;
+  font-size:13px; line-height:1.35; box-sizing:border-box;
 }
 #pk-preview-banner strong{
   letter-spacing:.12em; font-size:11px; background:#ff9900; color:#111;
-  padding:4px 8px; border-radius:6px;
+  padding:4px 8px; border-radius:6px; flex:0 0 auto;
 }
 .pk-preview-meta{ margin-left:auto; opacity:.75; font-size:12px; }
-/* Push page + fixed/sticky nav below the preview bar.
-   Live chrome uses position:fixed on .hostinger-ai-menu (top:0) — that is
-   what actually draws logo/nav. Only offsetting header.site-header left the
-   menu under the PREVIEW plaque. */
-body.pk-is-preview { padding-top: var(--pk-preview-banner-h) !important; }
-body.pk-is-preview header.site-header,
 body.pk-is-preview header.site-header .hostinger-ai-menu,
 body.pk-is-preview .hostinger-ai-menu {
-  top: var(--pk-preview-banner-h) !important;
+  position: relative !important;
+  top: auto !important;
 }
-body.pk-is-preview #pk-preview-banner { z-index: 100001; }
-body.pk-is-preview header.site-header .hostinger-ai-menu,
-body.pk-is-preview .hostinger-ai-menu {
-  z-index: 100000 !important;
+body.pk-is-preview header.site-header {
+  top: 0 !important;
 }
 @media (max-width:700px){
-  :root { --pk-preview-banner-h: 72px; }
+  .pk-preview-banner-inner{ padding:8px 12px; font-size:12px; gap:6px 10px; }
   .pk-preview-meta{ margin-left:0; width:100%; }
 }
 </style>
@@ -545,8 +539,8 @@ ${preview ? "<!-- preview: json-ld skipped -->" : jsonLd}
 /* ===================================================================
    Pickora article page — critical inline CSS
    Cloned + trimmed from live article pages (hostinger-ai-theme).
-   External: /assets/css/pickora-nav.css (nav drawer) +
-             /assets/css/pickora-mobile-fixes.css loaded in <body>.
+   External: /assets/css/pickora-nav.css (drawer ≤991) +
+             /assets/css/pickora-mobile-fixes.css via LIVE_CHROME_HEAD.
    =================================================================== */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { max-width: 100%; overflow-x: clip; margin: 0; padding: 0; }
@@ -604,31 +598,33 @@ footer.site-footer p {
   word-wrap: normal !important;
 }
 
-/* Footer socials: one clean icon row like live (override huge WP gap + 44px tap targets) */
+/* Footer socials: one clean icon row; keep 44px tap targets on the <a> */
 footer.site-footer .wp-block-social-links,
 footer.site-footer .wp-container-core-social-links-is-layout-87452e7f {
   display: flex !important;
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   align-items: center !important;
-  gap: 14px !important;
+  gap: 10px !important;
   margin: 4px 0 0 !important;
   padding: 0 !important;
   list-style: none !important;
 }
 footer.site-footer .wp-block-social-links .wp-social-link {
-  min-width: 0 !important;
-  min-height: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
   background: transparent !important;
+  list-style: none !important;
 }
 footer.site-footer .wp-block-social-links .wp-social-link a {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   color: #fff !important;
-  padding: 4px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  padding: 10px !important;
+  box-sizing: border-box !important;
 }
 footer.site-footer .wp-block-social-links .wp-social-link svg {
   width: 22px !important;
@@ -758,7 +754,8 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
 .pk-aff-card-name { font-weight: 700; font-size: 17px; color: #15223B; margin: 0 0 6px; }
 .pk-aff-card-price { font-size: 13px; color: #64748b; margin: 0 0 14px; }
 .pk-aff-btn {
-  display: inline-flex; align-items: center;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; box-sizing: border-box;
   background: #2075d2; color: #fff !important; text-decoration: none !important;
   font-weight: 700; font-size: 14px; padding: 10px 20px; border-radius: 999px;
   transition: background 0.15s;
@@ -832,7 +829,6 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
   gap: 14px;
 }
 .pk-product-card--compact h3 { font-size: 1.05rem; }
-@media (max-width: 600px) { .pk-aff-card { flex-direction: column; align-items: stretch; } }
 
 /* ── Block constructor product cards ── */
 .pk-product-card {
@@ -854,9 +850,6 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
 .pk-block-image img { width: 100%; height: auto; border-radius: 12px; }
 .pk-block-cta { max-width: 900px; margin: 24px auto; padding: 16px 20px; text-align: center; }
 .pk-cta-title { font-weight: 700; margin: 0 0 12px; }
-@media (max-width: 700px) {
-  .pk-product-card { grid-template-columns: 1fr; }
-}
 
 /* ── FAQ section ── */
 .pk-faq-section { max-width: 900px; margin: 40px auto 8px; padding: 0 24px; box-sizing: border-box; }
@@ -880,22 +873,165 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
 .pk-disclosure-footer p { margin: 0; }
 .pk-disclosure-footer a { color: #2075d2; text-decoration: underline; }
 
-/* Footer chrome CSS lives in LIVE_FOOTER_CSS (icons + white ML form) */
-@media (max-width: 768px) {
-  .pk-review-hero { width: 100%; max-width: 100%; margin: 16px auto 4px; padding: 28px 16px 4px; }
-  .pk-review-hero-inner { max-width: 100%; }
-  .pk-review-title { font-size: clamp(26px, 7vw, 36px); }
-  .pk-review-dek { font-size: 16px; max-width: 100%; }
-  .pk-faq-section, .pk-affiliate-section { padding-left: 16px; padding-right: 16px; }
-  .pk-article-cover-wrap { padding-left: 12px; padding-right: 12px; margin: 8px auto 20px; }
-  .pk-entry-content-wrap { padding-left: 16px; padding-right: 16px; }
-  .entry-content { max-width: 100%; }
-  .pk-mw-guide, .pk-block-table { max-width: 100%; }
-  .pk-disclosure-footer { padding-left: 16px; padding-right: 16px; }
+/* ===================================================================
+   Responsive — phone + tablet (match live Pickora breakpoints)
+   Nav hamburger/drawer: pickora-nav.css (≤991) via LIVE_CHROME_HEAD
+   Footer column stack: pickora-mobile-fixes.css (≤781)
+   =================================================================== */
+
+/* Wide tables swipe inside the page; never blow out viewport */
+.pk-entry-content-wrap,
+.entry-content {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
 }
-@media (max-width: 991px) and (min-width: 769px) {
-  .pk-review-hero { max-width: 920px; padding-left: 24px; padding-right: 24px; }
-  .pk-entry-content-wrap, .pk-article-cover-wrap { padding-left: 24px; padding-right: 24px; }
+.pk-block-table,
+.pk-block-table.pk-table--compare,
+.pk-block-table.pk-table--striped,
+.pk-mw-table-wrap,
+.pk-table--compare,
+.pk-table--striped {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  box-sizing: border-box;
+}
+.entry-content table {
+  max-width: 100%;
+}
+.entry-content > table,
+.entry-content table.pk-table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.pk-product-card {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.pk-product-media,
+.pk-product-media img,
+.pk-product-body {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Tablet (hamburger still on ≤991; keep live hero width ~760) */
+@media (max-width: 991px) {
+  .pk-review-hero {
+    max-width: 760px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .pk-entry-content-wrap,
+  .pk-article-cover-wrap,
+  .pk-affiliate-section,
+  .pk-block-table,
+  .pk-block-image,
+  .pk-faq-section,
+  .pk-disclosure-footer {
+    padding-left: 24px;
+    padding-right: 24px;
+    box-sizing: border-box;
+  }
+  .pk-product-card {
+    grid-template-columns: 160px 1fr;
+    gap: 16px;
+    padding: 16px;
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
+  }
+  .pk-product-ctas a,
+  .pk-aff-btn,
+  .entry-content a.pk-aff-btn {
+    min-height: 44px;
+  }
+  .pk-faq-q {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* Phone */
+@media (max-width: 768px) {
+  .pk-review-hero {
+    width: 100%;
+    max-width: 100%;
+    margin: 16px auto 4px;
+    padding: 24px 16px 4px;
+  }
+  .pk-review-hero-inner { max-width: 100%; }
+  .pk-review-title { font-size: clamp(28px, 7vw, 40px); }
+  .pk-review-dek { font-size: 16px; max-width: 100%; }
+  .pk-crumbs { font-size: 12px; margin-bottom: 14px; }
+  .pk-entry-content-wrap,
+  .pk-affiliate-section,
+  .pk-block-table,
+  .pk-block-image,
+  .pk-faq-section,
+  .pk-disclosure-footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .pk-article-cover-wrap {
+    padding-left: 12px;
+    padding-right: 12px;
+    margin: 8px auto 20px;
+  }
+  .entry-content { max-width: 100%; }
+  .entry-content p { font-size: 16px; }
+  .entry-content h2 { font-size: clamp(19px, 5.5vw, 24px); }
+  .entry-content h3 { font-size: clamp(16px, 4.5vw, 20px); }
+  .pk-mw-guide, .pk-block-table { max-width: 100%; }
+  .pk-product-card {
+    grid-template-columns: 1fr;
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
+  }
+  .pk-product-ctas {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .pk-product-ctas a,
+  .pk-aff-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .pk-aff-card {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+  }
+  .pk-table,
+  .pk-mw-table {
+    min-width: 560px;
+    font-size: 14px;
+  }
+  .pk-table th, .pk-table td,
+  .pk-mw-table th, .pk-mw-table td {
+    padding: 10px 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .pk-aff-card { flex-direction: column; align-items: stretch; }
+  .pk-table,
+  .pk-mw-table { min-width: 480px; }
+}
+
+@media (max-width: 700px) {
+  .pk-product-card { grid-template-columns: 1fr; }
 }
 
 ${PK_MW_GUIDE_CSS}
