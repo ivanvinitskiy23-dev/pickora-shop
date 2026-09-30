@@ -58,6 +58,41 @@ function paragraphs(text) {
     .join("\n");
 }
 
+function sanitizeRichHtml(html) {
+  let s = String(html || "");
+  if (!s.trim()) return "";
+  s = s
+    .replace(/<\/?(div|span)([^>]*)>/gi, "")
+    .replace(/<br\s*\/?>/gi, "<br>")
+    .replace(/&nbsp;/gi, " ");
+  s = s.replace(/<\/?(?!\/?(?:p|br|strong|b|em|i|a)\b)[a-z][^>]*>/gi, "");
+  s = s.replace(/<a\b[^>]*>/gi, (tag) => {
+    const m = tag.match(/href\s*=\s*["']([^"']+)["']/i);
+    const href = m ? m[1].trim() : "";
+    if (!/^https?:\/\//i.test(href)) return "<a>";
+    return `<a href="${escAttr(href)}" target="_blank" rel="noopener noreferrer">`;
+  });
+  s = s.replace(/<(strong|b|em|i|p)\b[^>]*>/gi, "<$1>");
+  return s.trim();
+}
+
+function richToHtml(text) {
+  const raw = String(text || "").trim();
+  if (!raw) return "";
+  if (/<\/?[a-z]/i.test(raw)) {
+    const clean = sanitizeRichHtml(raw);
+    if (!clean) return "";
+    if (/<p[\s>]/i.test(clean)) return clean;
+    return clean
+      .split(/\n{2,}/)
+      .map((p) => p.trim())
+      .filter(Boolean)
+      .map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`)
+      .join("\n");
+  }
+  return paragraphs(raw);
+}
+
 function listHtml(items) {
   const lis = (items || [])
     .map((x) => String(x || "").trim())
@@ -68,10 +103,39 @@ function listHtml(items) {
 }
 
 function amazonBtn(url, label) {
+  return buyBtn(url, label || "Check on Amazon →", "amazon");
+}
+
+function isAmazonUrl(url) {
+  return /^https?:\/\/(amzn\.to\/|www\.amazon\.|amazon\.|link\.amazon\/)/i.test(
+    String(url || "").trim()
+  );
+}
+
+const LINK_STYLES = ["amazon", "blue", "outline", "walmart", "dark"];
+
+function detectLinkStyle(url, explicit) {
+  if (explicit && LINK_STYLES.includes(explicit)) return explicit;
+  if (isAmazonUrl(url)) return "amazon";
+  return "blue";
+}
+
+function buyBtn(url, label, style) {
   const href = String(url || "").trim();
   if (!href) return "";
-  const text = String(label || "Check on Amazon →").trim() || "Check on Amazon →";
-  return `<a style="background:#FF9900;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block;margin-top:8px;" target="_blank" rel="sponsored nofollow noopener noreferrer" href="${escAttr(href)}">${escHtml(text)}</a>`;
+  const text = String(label || "Buy").trim() || "Buy";
+  const st = detectLinkStyle(href, style);
+  const cls =
+    st === "amazon"
+      ? "pk-aff-btn pk-aff-btn--amazon"
+      : st === "outline"
+        ? "pk-aff-btn pk-aff-btn--outline"
+        : st === "walmart"
+          ? "pk-aff-btn pk-aff-btn--walmart"
+          : st === "dark"
+            ? "pk-aff-btn pk-aff-btn--dark"
+            : "pk-aff-btn pk-aff-btn--primary";
+  return `<a class="${cls}" href="${escAttr(href)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${escHtml(text)}</a>`;
 }
 
 /**
@@ -83,22 +147,23 @@ function amazonBtn(url, label) {
 export function renderTableCell(raw) {
   const cell = String(raw ?? "").trim();
   if (!cell) return "";
-  const pipe = cell.indexOf("|");
-  if (pipe > 0) {
-    const label = cell.slice(0, pipe).trim();
-    const url = cell.slice(pipe + 1).trim();
-    if (/^https?:\/\//i.test(url)) return amazonBtn(url, label || "Amazon →");
+  const parts = cell.split("|");
+  if (parts.length >= 2 && /^https?:\/\//i.test(parts[1].trim())) {
+    return buyBtn(
+      parts[1].trim(),
+      parts[0].trim() || "Amazon →",
+      parts[2]?.trim() || "amazon"
+    );
   }
-  if (/^https?:\/\/(amzn\.to\/|www\.amazon\.|amazon\.|link\.amazon\/)/i.test(cell)) {
-    return amazonBtn(cell, "Amazon →");
-  }
+  if (isAmazonUrl(cell)) return buyBtn(cell, "Amazon →", "amazon");
   return escHtml(cell);
 }
 
 const VARIANTS = {
   table: ["compare", "simple", "striped"],
   product: ["card", "compact"],
-  cta: ["primary", "outline", "amazon"],
+  cta: ["primary", "outline", "amazon", "walmart", "dark"],
+  verdict: ["blue", "advice"],
 };
 
 function variantOf(block) {
@@ -115,13 +180,13 @@ export function compileBlocksToHtml(blocks) {
       if (!b || !b.type) return "";
       switch (b.type) {
         case "intro":
-          return `<div class="pk-block pk-block-intro">${paragraphs(b.text)}</div>`;
+          return `<div class="pk-block pk-block-intro">${richToHtml(b.text)}</div>`;
         case "heading": {
           const lv = b.level === 3 ? 3 : 2;
           return `<h${lv}>${escHtml(b.text)}</h${lv}>`;
         }
         case "richtext":
-          return `<div class="pk-block pk-block-text">${paragraphs(b.text)}</div>`;
+          return `<div class="pk-block pk-block-text">${richToHtml(b.text)}</div>`;
         case "image":
           if (!b.src) return "";
           return `<figure class="pk-block pk-block-image">
@@ -150,7 +215,7 @@ export function compileBlocksToHtml(blocks) {
         case "product": {
           const links = (b.links || [])
             .filter((l) => l && String(l.url || "").trim())
-            .map((l) => amazonBtn(l.url, l.label || "Check on Amazon →"))
+            .map((l) => buyBtn(l.url, l.label || "Buy", l.style || detectLinkStyle(l.url)))
             .join("\n");
           const pros = listHtml(b.pros);
           const cons = listHtml(b.cons);
@@ -162,7 +227,7 @@ export function compileBlocksToHtml(blocks) {
 </div>`
               : "";
           const verdict = b.verdict
-            ? `<div class="pk-mw-verdict">${paragraphs(b.verdict)}</div>`
+            ? `<div class="pk-mw-verdict">${richToHtml(b.verdict)}</div>`
             : "";
           return `<article class="pk-mw-pick">
   ${
@@ -174,27 +239,31 @@ export function compileBlocksToHtml(blocks) {
   }
   ${b.role ? `<span class="pk-mw-badge">${escHtml(b.role)}</span>` : ""}
   <h3 class="pk-mw-pick-title">${escHtml(b.title || "Product")}</h3>
-  ${paragraphs(b.description)}
+  ${richToHtml(b.description)}
   ${cols}
   ${verdict}
-  ${links ? `<p>${links}</p>` : ""}
+  ${links ? `<p class="pk-product-ctas">${links}</p>` : ""}
 </article>`;
         }
         case "cta": {
-          const style = variantOf(b);
+          const fallbackStyle =
+            variantOf(b) === "primary"
+              ? "blue"
+              : variantOf(b) === "amazon"
+                ? "amazon"
+                : variantOf(b);
           const links = (b.links || [])
             .filter((l) => l && String(l.url || "").trim())
-            .map((l) => {
-              if (style === "amazon") return amazonBtn(l.url, l.label || "Check on Amazon →");
-              const cls =
-                style === "outline" ? "pk-aff-btn pk-aff-btn--outline" : "pk-aff-btn pk-aff-btn--primary";
-              return `<a class="${cls}" href="${escAttr(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${escHtml(
-                l.label || "Buy"
-              )}</a>`;
-            })
+            .map((l) =>
+              buyBtn(
+                l.url,
+                l.label || "Buy",
+                l.style || detectLinkStyle(l.url, fallbackStyle)
+              )
+            )
             .join("\n");
           if (!links) return "";
-          return `<div class="pk-block pk-block-cta pk-block-cta--${style}">
+          return `<div class="pk-block pk-block-cta pk-block-cta--${variantOf(b)}">
   ${b.title ? `<p class="pk-cta-title">${escHtml(b.title)}</p>` : ""}
   <div class="pk-product-ctas">${links}</div>
 </div>`;
@@ -208,14 +277,16 @@ export function compileBlocksToHtml(blocks) {
     .map(
       (it) => `<details class="pk-faq-acc">
   <summary class="pk-faq-q">${escHtml(it.q || "Question")}</summary>
-  <div class="pk-faq-a">${paragraphs(it.a)}</div>
+  <div class="pk-faq-a">${richToHtml(it.a)}</div>
 </details>`
     )
     .join("\n")}
 </div>`;
         }
-        case "verdict":
-          return `<div class="pk-mw-verdict pk-block-verdict">${paragraphs(b.text)}</div>`;
+        case "verdict": {
+          const v = variantOf(b) || "blue";
+          return `<div class="pk-mw-verdict pk-block-verdict pk-mw-verdict--${v}">${richToHtml(b.text)}</div>`;
+        }
         case "html":
           return String(b.html || "");
         default:
@@ -294,6 +365,10 @@ export const PK_MW_GUIDE_CSS = `
   border-radius: 0 10px 10px 0;
   color: #15223B;
   line-height: 1.5;
+}
+.pk-mw-verdict--advice {
+  background: #fff7ed;
+  border-left-color: #ff9900;
 }
 .pk-mw-verdict p { margin: 0 0 8px; }
 .pk-mw-verdict p:last-child { margin: 0; }
@@ -383,11 +458,15 @@ export const PK_MW_GUIDE_CSS = `
 .pk-cta-title { font-weight: 700; margin: 0 0 12px; }
 .pk-product-ctas { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 .pk-aff-btn {
-  display: inline-flex; align-items: center;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; box-sizing: border-box;
   background: #2075d2; color: #fff !important; text-decoration: none !important;
   font-weight: 700; font-size: 14px; padding: 10px 20px; border-radius: 999px;
 }
 .pk-aff-btn--outline { background: #fff; color: #2075D2 !important; border: 1.5px solid #2075D2; }
 .pk-aff-btn--primary { background: #2075D2; }
+.pk-aff-btn--amazon { background: #ff9900 !important; color: #111 !important; }
+.pk-aff-btn--walmart { background: #0071dc !important; color: #fff !important; }
+.pk-aff-btn--dark { background: #15223B !important; color: #fff !important; }
 .pk-review-title .pk-blue-text, .pk-blue-text { color: #2075d2; }
 `;

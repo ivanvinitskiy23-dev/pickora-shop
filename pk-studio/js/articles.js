@@ -28,6 +28,32 @@
       .replace(/</g, "&lt;");
   }
 
+  /** Hub category → Articles filter tab (never product hubs). */
+  const HUB_ARTICLES = {
+    "Home & Kitchen": "/articles/?cat=kitchen",
+    "Consumer Electronics": "/articles/?cat=electronics",
+    "Fitness & Health": "/articles/?cat=fitness",
+    "Pet Supplies": "/articles/?cat=pets",
+  };
+
+  function articlesHubUrl(hubCategory) {
+    return HUB_ARTICLES[hubCategory] || "/articles/";
+  }
+
+  function normalizeHubUrl(hubCategory, url) {
+    const mapped = articlesHubUrl(hubCategory);
+    const u = String(url || "").trim();
+    if (!u) return mapped;
+    // Old product-hub paths → Articles filter
+    if (
+      /\/(home-kitchen|consumer-electronics|fitness-health|pet-supplies)\/?$/i.test(u) ||
+      /pickora\.shop\/(home-kitchen|consumer-electronics|fitness-health|pet-supplies)\/?$/i.test(u)
+    ) {
+      return mapped;
+    }
+    return u;
+  }
+
   function emptyDraft() {
     const type = 2;
     return {
@@ -39,13 +65,13 @@
       h1: "",
       dek: "",
       hubCategory: "Home & Kitchen",
-      hubUrl: "/home-kitchen/",
+      hubUrl: articlesHubUrl("Home & Kitchen"),
       chips: ["kitchen"],
       coverImage: "",
       coverAlt: "",
       canonical: "",
       affiliateLinks: [],
-      internalLinks: ["/articles/", "/home-kitchen/"],
+      internalLinks: ["/articles/", "/articles/?cat=kitchen"],
       bodyHtml: "",
       blocks: window.PK_BLOCKS.starterBlocks(type),
       faq: [],
@@ -145,7 +171,10 @@
       h1: ($("#art-h1")?.value || "").trim(),
       dek: ($("#art-dek")?.value || "").trim(),
       hubCategory: $("#art-hub")?.value || current.hubCategory,
-      hubUrl: ($("#art-hub-url")?.value || "").trim(),
+      hubUrl: normalizeHubUrl(
+        $("#art-hub")?.value || current.hubCategory,
+        ($("#art-hub-url")?.value || "").trim()
+      ),
       chips: chipsRaw,
       coverImage: ($("#art-cover")?.value || "").trim(),
       coverAlt: ($("#art-cover-alt")?.value || "").trim(),
@@ -169,6 +198,7 @@
     $("#art-h1").value = current.h1 || "";
     $("#art-dek").value = current.dek || "";
     $("#art-hub").value = current.hubCategory || "Home & Kitchen";
+    current.hubUrl = normalizeHubUrl(current.hubCategory, current.hubUrl);
     $("#art-hub-url").value = current.hubUrl || "";
     $("#art-chips").value = (current.chips || []).join(" ");
     $("#art-cover").value = current.coverImage || "";
@@ -446,6 +476,17 @@
       const f = $("#art-cover-file").files?.[0];
       if (f) uploadCover(f);
       $("#art-cover-file").value = "";
+    });
+    $("#art-hub")?.addEventListener("change", () => {
+      const hub = $("#art-hub").value;
+      const url = articlesHubUrl(hub);
+      if ($("#art-hub-url")) $("#art-hub-url").value = url;
+      // Suggest primary chip if chips empty
+      const chipsEl = $("#art-chips");
+      if (chipsEl && !String(chipsEl.value || "").trim()) {
+        const chip = (url.match(/[?&]cat=([^&]+)/) || [])[1];
+        if (chip) chipsEl.value = chip;
+      }
     });
     $("#art-type")?.addEventListener("change", () => {
       if (!current) return;

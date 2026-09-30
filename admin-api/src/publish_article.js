@@ -363,7 +363,19 @@ export function buildArticlePage(draft, options = {}) {
   const coverImage  = String(draft.coverImage || "");
   const coverAlt    = String(draft.coverAlt  || title);
   const hubCategory = String(draft.hubCategory || "Articles");
-  let hubUrl        = String(draft.hubUrl     || "https://pickora.shop/articles/");
+  const HUB_ARTICLES = {
+    "Home & Kitchen": "https://pickora.shop/articles/?cat=kitchen",
+    "Consumer Electronics": "https://pickora.shop/articles/?cat=electronics",
+    "Fitness & Health": "https://pickora.shop/articles/?cat=fitness",
+    "Pet Supplies": "https://pickora.shop/articles/?cat=pets",
+  };
+  // Badge + breadcrumb always open Articles filter — never product hubs
+  let hubUrl =
+    HUB_ARTICLES[hubCategory] ||
+    String(draft.hubUrl || "https://pickora.shop/articles/");
+  if (/\/(home-kitchen|consumer-electronics|fitness-health|pet-supplies)\/?/i.test(hubUrl)) {
+    hubUrl = "https://pickora.shop/articles/";
+  }
   if (hubUrl && !/^https?:\/\//i.test(hubUrl)) {
     hubUrl = `https://pickora.shop${hubUrl.startsWith("/") ? "" : "/"}${hubUrl}`;
   }
@@ -738,10 +750,16 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
 .entry-content tr:hover td { background: #f8fafc; }
 .entry-content hr { border: 0; border-top: 1px solid #e2e8f0; margin: 32px 0; }
 /* Verdicts / callouts (used in bodyHtml) */
-.pk-verdict {
+.pk-verdict,
+.pk-mw-verdict {
   background: #f0f7ff; border-left: 4px solid #2075d2;
   padding: 14px 16px; margin: 12px 0 20px;
   border-radius: 0 10px 10px 0; color: #15223B; font-size: 15px; line-height: 1.55;
+}
+.pk-mw-verdict--advice,
+.pk-block-verdict.pk-mw-verdict--advice {
+  background: #fff7ed;
+  border-left-color: #ff9900;
 }
 
 /* ── Affiliate product cards ── */
@@ -784,6 +802,16 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
   color: #111 !important;
 }
 .pk-aff-btn--amazon:hover { background: #e88b00 !important; }
+.pk-aff-btn--walmart {
+  background: #0071dc !important;
+  color: #fff !important;
+}
+.pk-aff-btn--walmart:hover { background: #0658b0 !important; }
+.pk-aff-btn--dark {
+  background: #15223B !important;
+  color: #fff !important;
+}
+.pk-aff-btn--dark:hover { background: #0d1524 !important; }
 .pk-aff-btn--primary { background: #2075D2; color: #fff !important; }
 
 /* Table variants — match live pk-mw-table look */

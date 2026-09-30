@@ -25,13 +25,95 @@ window.PK_BLOCKS = (function () {
   const VARIANTS = {
     table: ["compare", "simple", "striped"],
     product: ["card", "compact"],
-    cta: ["primary", "outline", "amazon"],
+    cta: ["primary", "outline", "amazon", "walmart", "dark"],
+    verdict: ["blue", "advice"],
   };
+
+  const LINK_STYLES = ["amazon", "blue", "outline", "walmart", "dark"];
 
   function variantOf(block) {
     const allowed = VARIANTS[block && block.type];
     if (!allowed) return "";
     return allowed.includes(block.variant) ? block.variant : allowed[0];
+  }
+
+  function isAmazonUrl(url) {
+    return /^https?:\/\/(amzn\.to\/|www\.amazon\.|amazon\.|link\.amazon\/)/i.test(
+      String(url || "").trim()
+    );
+  }
+
+  function detectLinkStyle(url, explicit) {
+    if (explicit && LINK_STYLES.includes(explicit)) return explicit;
+    if (isAmazonUrl(url)) return "amazon";
+    return "blue";
+  }
+
+  function buyBtn(url, label, style) {
+    const href = String(url || "").trim();
+    if (!href) return "";
+    const text = String(label || "Buy").trim() || "Buy";
+    const st = detectLinkStyle(href, style);
+    const cls =
+      st === "amazon"
+        ? "pk-aff-btn pk-aff-btn--amazon"
+        : st === "outline"
+          ? "pk-aff-btn pk-aff-btn--outline"
+          : st === "walmart"
+            ? "pk-aff-btn pk-aff-btn--walmart"
+            : st === "dark"
+              ? "pk-aff-btn pk-aff-btn--dark"
+              : "pk-aff-btn pk-aff-btn--primary";
+    return `<a class="${cls}" href="${esc(href)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(text)}</a>`;
+  }
+
+  /** Allow only safe inline tags from the Studio RTE. */
+  function sanitizeRichHtml(html) {
+    let s = String(html || "");
+    if (!s.trim()) return "";
+    // Normalize common editor output
+    s = s
+      .replace(/<\/?(div|span)([^>]*)>/gi, "")
+      .replace(/<br\s*\/?>/gi, "<br>")
+      .replace(/&nbsp;/gi, " ");
+    // Drop everything except p/br/strong/b/em/i/a
+    s = s.replace(/<\/?(?!\/?(?:p|br|strong|b|em|i|a)\b)[a-z][^>]*>/gi, "");
+    // Clean <a> to href only (http/https)
+    s = s.replace(/<a\b[^>]*>/gi, (tag) => {
+      const m = tag.match(/href\s*=\s*["']([^"']+)["']/i);
+      const href = m ? m[1].trim() : "";
+      if (!/^https?:\/\//i.test(href)) return "<a>";
+      return `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">`;
+    });
+    s = s.replace(/<(strong|b|em|i|p)\b[^>]*>/gi, "<$1>");
+    return s.trim();
+  }
+
+  function richToHtml(text) {
+    const raw = String(text || "").trim();
+    if (!raw) return "";
+    if (/<\/?[a-z]/i.test(raw)) {
+      const clean = sanitizeRichHtml(raw);
+      if (!clean) return "";
+      // If already has block tags, use as-is; else wrap paragraphs
+      if (/<p[\s>]/i.test(clean)) return clean;
+      return clean
+        .split(/\n{2,}/)
+        .map((p) => p.trim())
+        .filter(Boolean)
+        .map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`)
+        .join("\n");
+    }
+    return paragraphsToHtml(raw);
+  }
+
+  function paragraphsToHtml(text) {
+    return String(text || "")
+      .split(/\n{2,}/)
+      .map((p) => p.trim())
+      .filter(Boolean)
+      .map((p) => `<p>${esc(p).replace(/\n/g, "<br>")}</p>`)
+      .join("\n");
   }
 
   const CATALOG = [
@@ -100,17 +182,17 @@ window.PK_BLOCKS = (function () {
           pros: [],
           cons: [],
           verdict: "",
-          links: [{ label: "Amazon", url: "https://amzn.to/" }],
+          links: [{ label: "Amazon", url: "https://amzn.to/", style: "amazon" }],
         };
       case "cta":
         return {
           id,
           type,
-          variant: "primary",
+          variant: "amazon",
           title: "",
           links: [
-            { label: "Amazon", url: "https://amzn.to/" },
-            { label: "Walmart", url: "" },
+            { label: "Amazon", url: "https://amzn.to/", style: "amazon" },
+            { label: "Walmart", url: "", style: "walmart" },
           ],
         };
       case "faq":
@@ -123,7 +205,7 @@ window.PK_BLOCKS = (function () {
           ],
         };
       case "verdict":
-        return { id, type, text: "" };
+        return { id, type, variant: "blue", text: "" };
       case "html":
         return { id, type, html: "" };
       default:
@@ -172,15 +254,6 @@ window.PK_BLOCKS = (function () {
     return starterBlocks(draft.type || 2);
   }
 
-  function paragraphsToHtml(text) {
-    return String(text || "")
-      .split(/\n{2,}/)
-      .map((p) => p.trim())
-      .filter(Boolean)
-      .map((p) => `<p>${esc(p).replace(/\n/g, "<br>")}</p>`)
-      .join("\n");
-  }
-
   function listToHtml(items, tag) {
     const lis = (items || [])
       .map((x) => String(x || "").trim())
@@ -190,25 +263,17 @@ window.PK_BLOCKS = (function () {
     return lis ? `<${tag}>${lis}</${tag}>` : "";
   }
 
-  function amazonBtn(url, label) {
-    const href = String(url || "").trim();
-    if (!href) return "";
-    const text = String(label || "Check on Amazon →").trim() || "Check on Amazon →";
-    return `<a style="background:#FF9900;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block;margin-top:8px;" target="_blank" rel="sponsored nofollow noopener noreferrer" href="${esc(href)}">${esc(text)}</a>`;
-  }
-
   function renderTableCell(raw) {
     const cell = String(raw ?? "").trim();
     if (!cell) return "";
-    const pipe = cell.indexOf("|");
-    if (pipe > 0) {
-      const label = cell.slice(0, pipe).trim();
-      const url = cell.slice(pipe + 1).trim();
-      if (/^https?:\/\//i.test(url)) return amazonBtn(url, label || "Amazon →");
+    const parts = cell.split("|");
+    if (parts.length >= 2 && /^https?:\/\//i.test(parts[1].trim())) {
+      const label = parts[0].trim();
+      const url = parts[1].trim();
+      const style = parts[2] ? parts[2].trim() : "";
+      return buyBtn(url, label || "Amazon →", style || "amazon");
     }
-    if (/^https?:\/\/(amzn\.to\/|www\.amazon\.|amazon\.|link\.amazon\/)/i.test(cell)) {
-      return amazonBtn(cell, "Amazon →");
-    }
+    if (isAmazonUrl(cell)) return buyBtn(cell, "Amazon →", "amazon");
     return esc(cell);
   }
 
@@ -216,13 +281,13 @@ window.PK_BLOCKS = (function () {
     if (!b || !b.type) return "";
     switch (b.type) {
       case "intro":
-        return `<div class="pk-block pk-block-intro">${paragraphsToHtml(b.text)}</div>`;
+        return `<div class="pk-block pk-block-intro">${richToHtml(b.text)}</div>`;
       case "heading": {
         const lv = b.level === 3 ? 3 : 2;
         return `<h${lv}>${esc(b.text)}</h${lv}>`;
       }
       case "richtext":
-        return `<div class="pk-block pk-block-text">${paragraphsToHtml(b.text)}</div>`;
+        return `<div class="pk-block pk-block-text">${richToHtml(b.text)}</div>`;
       case "image":
         if (!b.src) return "";
         return `<figure class="pk-block pk-block-image">
@@ -250,7 +315,7 @@ window.PK_BLOCKS = (function () {
       case "product": {
         const links = (b.links || [])
           .filter((l) => l && String(l.url || "").trim())
-          .map((l) => amazonBtn(l.url, l.label || "Check on Amazon →"))
+          .map((l) => buyBtn(l.url, l.label || "Buy", l.style || detectLinkStyle(l.url)))
           .join("\n");
         const pros = listToHtml(b.pros, "ul");
         const cons = listToHtml(b.cons, "ul");
@@ -269,26 +334,31 @@ window.PK_BLOCKS = (function () {
   }
   ${b.role ? `<span class="pk-mw-badge">${esc(b.role)}</span>` : ""}
   <h3 class="pk-mw-pick-title">${esc(b.title || "Product")}</h3>
-  ${paragraphsToHtml(b.description)}
+  ${richToHtml(b.description)}
   ${cols}
-  ${b.verdict ? `<div class="pk-mw-verdict">${paragraphsToHtml(b.verdict)}</div>` : ""}
-  ${links ? `<p>${links}</p>` : ""}
+  ${b.verdict ? `<div class="pk-mw-verdict">${richToHtml(b.verdict)}</div>` : ""}
+  ${links ? `<p class="pk-product-ctas">${links}</p>` : ""}
 </article>`;
       }
       case "cta": {
-        const style = variantOf(b);
+        const fallbackStyle =
+          variantOf(b) === "primary"
+            ? "blue"
+            : variantOf(b) === "amazon"
+              ? "amazon"
+              : variantOf(b);
         const links = (b.links || [])
           .filter((l) => l && String(l.url || "").trim())
           .map((l) =>
-            style === "amazon"
-              ? amazonBtn(l.url, l.label || "Check on Amazon →")
-              : `<a class="pk-aff-btn pk-aff-btn--${style}" href="${esc(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
-                  l.label || "Buy"
-                )}</a>`
+            buyBtn(
+              l.url,
+              l.label || "Buy",
+              l.style || detectLinkStyle(l.url, fallbackStyle)
+            )
           )
           .join("\n");
         if (!links) return "";
-        return `<div class="pk-block pk-block-cta pk-block-cta--${style}">
+        return `<div class="pk-block pk-block-cta pk-block-cta--${variantOf(b)}">
   ${b.title ? `<p class="pk-cta-title">${esc(b.title)}</p>` : ""}
   <div class="pk-product-ctas">${links}</div>
 </div>`;
@@ -302,14 +372,16 @@ window.PK_BLOCKS = (function () {
     .map(
       (it) => `<details class="pk-faq-acc">
   <summary class="pk-faq-q">${esc(it.q || "Question")}</summary>
-  <div class="pk-faq-a">${paragraphsToHtml(it.a)}</div>
+  <div class="pk-faq-a">${richToHtml(it.a)}</div>
 </details>`
     )
     .join("\n")}
 </div>`;
       }
-      case "verdict":
-        return `<div class="pk-mw-verdict pk-block-verdict">${paragraphsToHtml(b.text)}</div>`;
+      case "verdict": {
+        const v = variantOf(b) || "blue";
+        return `<div class="pk-mw-verdict pk-block-verdict pk-mw-verdict--${v}">${richToHtml(b.text)}</div>`;
+      }
       case "html":
         return String(b.html || "");
       default:
@@ -430,7 +502,9 @@ window.PK_BLOCKS = (function () {
           if (v && VARIANTS[type].includes(v)) b.variant = v;
         }
         if (type === "intro" || type === "richtext" || type === "verdict") {
-          b.text = card.querySelector("[data-f=text]")?.value || "";
+          const rte = card.querySelector("[data-f=text][contenteditable]");
+          if (rte) b.text = sanitizeRichHtml(rte.innerHTML);
+          else b.text = card.querySelector("[data-f=text]")?.value || "";
         } else if (type === "heading") {
           b.text = card.querySelector("[data-f=text]")?.value || "";
           b.level = Number(card.querySelector("[data-f=level]")?.value || 2);
@@ -479,12 +553,20 @@ window.PK_BLOCKS = (function () {
           b.links = [...card.querySelectorAll("[data-link-row]")].map((row) => ({
             label: row.querySelector("[data-f=llabel]")?.value || "",
             url: row.querySelector("[data-f=lurl]")?.value || "",
+            style: detectLinkStyle(
+              row.querySelector("[data-f=lurl]")?.value || "",
+              row.querySelector("[data-f=lstyle]")?.value || ""
+            ),
           }));
         } else if (type === "cta") {
           b.title = card.querySelector("[data-f=title]")?.value || "";
           b.links = [...card.querySelectorAll("[data-link-row]")].map((row) => ({
             label: row.querySelector("[data-f=llabel]")?.value || "",
             url: row.querySelector("[data-f=lurl]")?.value || "",
+            style: detectLinkStyle(
+              row.querySelector("[data-f=lurl]")?.value || "",
+              row.querySelector("[data-f=lstyle]")?.value || ""
+            ),
           }));
         } else if (type === "faq") {
           b.items = [...card.querySelectorAll("[data-faq-row]")].map((row) => ({
@@ -497,20 +579,45 @@ window.PK_BLOCKS = (function () {
 
     function linksEditor(links) {
       const del = esc(t("btnDeletePin"));
-      const rows = (links && links.length ? links : [{ label: "Amazon", url: "" }])
-        .map(
-          (l, i) => `<div class="buy-row" data-link-row>
+      const styleOpts = (cur) =>
+        LINK_STYLES.map(
+          (s) =>
+            `<option value="${s}"${s === cur ? " selected" : ""}>${esc(t("linkStyle_" + s))}</option>`
+        ).join("");
+      const rows = (links && links.length ? links : [{ label: "Amazon", url: "", style: "amazon" }])
+        .map((l, i) => {
+          const st = detectLinkStyle(l.url, l.style);
+          return `<div class="buy-row" data-link-row>
           <input class="buy-store" data-f="llabel" placeholder="Amazon" value="${esc(l.label || "")}">
           <input class="buy-url" data-f="lurl" placeholder="https://amzn.to/xxxxx" value="${esc(l.url || "")}" inputmode="url" spellcheck="false">
+          <select class="buy-style" data-f="lstyle" title="${esc(t("linkStyle"))}" aria-label="${esc(t("linkStyle"))}">${styleOpts(st)}</select>
           <button type="button" class="block-tool block-tool-del" data-link-del="${i}" title="${del}" aria-label="${del}">×</button>
-        </div>`
-        )
+        </div>`;
+        })
         .join("");
       return `<div class="buy-links">
         <span class="block-legend">${esc(t("blockBuyLinks"))}</span>
         <p class="block-hint">${esc(t("hintBuyLink"))}</p>
         <div class="buy-rows">${rows}</div>
         <button type="button" class="btn btn-ghost btn-sm" data-link-add>+ ${esc(t("blockAddLink"))}</button>
+      </div>`;
+    }
+
+    function rteEditor(text, verdictVariant) {
+      const html = String(text || "").trim()
+        ? /<\/?[a-z]/i.test(text)
+          ? sanitizeRichHtml(text)
+          : esc(text).replace(/\n/g, "<br>")
+        : "";
+      const vClass = verdictVariant ? ` rte-verdict--${verdictVariant}` : "";
+      return `<div class="block-prose block-rte${vClass}">
+        <div class="rte-toolbar" role="toolbar" aria-label="Format">
+          <button type="button" class="rte-btn" data-rte="bold" title="${esc(t("rteBold"))}"><b>B</b></button>
+          <button type="button" class="rte-btn" data-rte="italic" title="${esc(t("rteItalic"))}"><i>I</i></button>
+          <button type="button" class="rte-btn" data-rte="createLink" title="${esc(t("rteLink"))}">🔗</button>
+        </div>
+        <div class="prose-input rte-input" data-f="text" contenteditable="true" role="textbox" aria-multiline="true">${html}</div>
+        <p class="block-hint rte-hint">${esc(t("rteHint"))}</p>
       </div>`;
     }
 
@@ -530,10 +637,9 @@ window.PK_BLOCKS = (function () {
       switch (b.type) {
         case "intro":
         case "richtext":
+          return rteEditor(b.text);
         case "verdict":
-          return `<div class="block-prose">
-            <textarea class="prose-input" data-f="text" rows="5" placeholder="${esc(t("blockText"))}…">${esc(b.text || "")}</textarea>
-          </div>`;
+          return rteEditor(b.text, variantOf(b) || "blue");
         case "heading":
           return `<div class="block-head-edit">
             <select class="level-pick" data-f="level" aria-label="H">
@@ -798,10 +904,47 @@ window.PK_BLOCKS = (function () {
             if (el.matches("[data-f=variant]")) {
               paint({ skipDomRead: true });
             }
+            // Auto-pick Amazon color when URL is an Amazon link
+            if (el.matches("[data-f=lurl]")) {
+              const row = el.closest("[data-link-row]");
+              const styleSel = row?.querySelector("[data-f=lstyle]");
+              if (styleSel && isAmazonUrl(el.value) && styleSel.value !== "amazon") {
+                styleSel.value = "amazon";
+              }
+            }
             emit();
           });
           el.addEventListener("input", () => {
             /* live soft sync without full repaint */
+          });
+        });
+
+        /* Rich-text toolbar (bold / italic / link) */
+        card.querySelectorAll("[data-rte]").forEach((btn) => {
+          btn.addEventListener("mousedown", (e) => e.preventDefault());
+          btn.addEventListener("click", () => {
+            const cmd = btn.getAttribute("data-rte");
+            const editor = card.querySelector(".rte-input");
+            if (!editor) return;
+            editor.focus();
+            if (cmd === "createLink") {
+              const url = window.prompt("URL", "https://");
+              if (url) document.execCommand("createLink", false, url);
+            } else {
+              document.execCommand(cmd, false, null);
+            }
+            readDomIntoList();
+            emit();
+          });
+        });
+        card.querySelectorAll(".rte-input").forEach((ed) => {
+          ed.addEventListener("input", () => {
+            readDomIntoList();
+            emit();
+          });
+          ed.addEventListener("blur", () => {
+            readDomIntoList();
+            emit();
           });
         });
 
@@ -822,7 +965,7 @@ window.PK_BLOCKS = (function () {
         card.querySelector("[data-link-add]")?.addEventListener("click", () => {
           readDomIntoList();
           b.links = Array.isArray(b.links) ? b.links : [];
-          b.links.push({ label: "Amazon", url: "https://amzn.to/" });
+          b.links.push({ label: "Amazon", url: "https://amzn.to/", style: "amazon" });
           paint({ skipDomRead: true });
           emit();
         });
@@ -831,7 +974,7 @@ window.PK_BLOCKS = (function () {
             readDomIntoList();
             b.links = Array.isArray(b.links) ? b.links : [];
             b.links.splice(Number(btn.getAttribute("data-link-del")), 1);
-            if (!b.links.length) b.links.push({ label: "Amazon", url: "" });
+            if (!b.links.length) b.links.push({ label: "Amazon", url: "", style: "amazon" });
             paint({ skipDomRead: true });
             emit();
           });

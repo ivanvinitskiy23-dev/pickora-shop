@@ -2208,13 +2208,54 @@ body.studio-app {
   border-color: var(--pk-blue);
   box-shadow: 0 0 0 3px rgba(32,117,210,0.14);
 }
+.block-rte .rte-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.rte-btn {
+  min-width: 34px;
+  height: 34px;
+  border: 1.5px solid var(--pk-line);
+  border-radius: 8px;
+  background: var(--pk-white);
+  color: var(--pk-navy);
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.rte-btn:hover { border-color: var(--pk-blue); color: var(--pk-blue); }
+.rte-input {
+  min-height: 112px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.rte-input:empty:before {
+  content: attr(data-placeholder);
+  color: #93a4bb;
+  pointer-events: none;
+}
+.rte-hint { margin: 8px 0 0; }
 .block-row[data-block-type="intro"] .prose-input { font-size: 1.05rem; }
-.block-row[data-block-type="verdict"] .prose-input {
+.block-row[data-block-type="verdict"] .prose-input,
+.rte-verdict--blue .rte-input {
   box-shadow: inset 3px 0 0 var(--pk-blue);
   padding-left: 19px;
 }
-.block-row[data-block-type="verdict"] .prose-input:focus {
+.block-row[data-block-type="verdict"] .prose-input:focus,
+.rte-verdict--blue .rte-input:focus {
   box-shadow: inset 3px 0 0 var(--pk-blue), 0 0 0 3px rgba(32,117,210,0.14);
+}
+.rte-verdict--advice .rte-input {
+  box-shadow: inset 3px 0 0 #ff9900;
+  padding-left: 19px;
+  background: #fffaf3;
+}
+.rte-verdict--advice .rte-input:focus {
+  box-shadow: inset 3px 0 0 #ff9900, 0 0 0 3px rgba(255,153,0,0.18);
 }
 
 /* ---- heading block ---- */
@@ -2389,6 +2430,18 @@ body.studio-app {
   transition: background .15s, border-color .15s;
 }
 .buy-row:focus-within { background: var(--pk-white); border-color: var(--pk-blue); }
+.buy-style {
+  flex: 0 0 118px;
+  width: 118px;
+  min-width: 0;
+  border: 1.5px solid var(--pk-line);
+  border-radius: 9px;
+  padding: 7px 8px;
+  background: var(--pk-white);
+  font-size: 0.8rem;
+  color: var(--pk-navy);
+  outline: none;
+}
 .buy-store {
   flex: 0 0 118px;
   width: 118px;
@@ -2599,6 +2652,18 @@ body.studio-app {
   background: #ff9900;
   color: #111;
   border-color: #ff9900;
+}
+.cta-edit--walmart .cta-style-preview .pk-aff-btn,
+.pk-aff-btn--walmart {
+  background: #0071dc;
+  color: #fff;
+  border-color: #0071dc;
+}
+.cta-edit--dark .cta-style-preview .pk-aff-btn,
+.pk-aff-btn--dark {
+  background: #15223B;
+  color: #fff;
+  border-color: #15223B;
 }
 .pk-aff-btn--primary { background: #2075D2; color: #fff; }
 
@@ -2848,6 +2913,7 @@ body.studio-app {
   .pc-grid { grid-template-columns: 1fr; gap: 12px; }
   .buy-row { flex-wrap: wrap; padding: 8px 8px 8px 12px; }
   .buy-store { flex: 1 1 100%; width: auto; }
+  .buy-style { flex: 1 1 calc(50% - 8px); width: auto; }
   .buy-url {
     flex: 1 1 100%;
     border-left: 0;
