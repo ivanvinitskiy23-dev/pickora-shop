@@ -29,18 +29,59 @@ export { compileBlocksToHtml, ensureBlueH1 };
 const LIVE_HEADER_CSS = `
 /* =========================================================
    Pickora — premium header + mobile navigation (sitewide)
+   Cloned from live article pages (best-coffee-makers-2026)
    ========================================================= */
+
+:root {
+  --wp--preset--color--color-1: #F5FAFF;
+  --wp--preset--color--color-2: #15223B;
+  --wp--preset--color--color-3: #2075d2;
+  --wp--preset--color--light: #ffffff;
+  --wp--preset--color--dark: #0d141a;
+  --wp--preset--font-size--small: 12px;
+  --wp--preset--font-size--medium: 16px;
+  --wp--preset--font-size--large: 18px;
+  --wp--preset--spacing--30: 0.67rem;
+  --wp--preset--spacing--40: 1rem;
+  --wp--preset--spacing--50: 1.5rem;
+  --wp--preset--spacing--60: 2.25rem;
+  --wp--style--global--content-size: 700px;
+  --wp--style--global--wide-size: 1100px;
+  --wp--style--root--padding-right: var(--wp--preset--spacing--50);
+  --wp--style--root--padding-left: var(--wp--preset--spacing--50);
+}
+
+.has-color-1-background-color { background-color: var(--wp--preset--color--color-1) !important; }
+.has-color-2-background-color { background-color: var(--wp--preset--color--color-2) !important; }
+.has-color-3-color { color: var(--wp--preset--color--color-3) !important; }
+.has-light-color { color: var(--wp--preset--color--light) !important; }
+.has-large-font-size { font-size: var(--wp--preset--font-size--large) !important; }
+.has-medium-font-size { font-size: var(--wp--preset--font-size--medium) !important; }
+.has-global-padding {
+  padding-right: var(--wp--style--root--padding-right);
+  padding-left: var(--wp--style--root--padding-left);
+}
+.alignwide { max-width: var(--wp--style--global--wide-size); margin-left: auto; margin-right: auto; }
+.screen-reader-text {
+  border: 0; clip: rect(1px,1px,1px,1px); clip-path: inset(50%);
+  height: 1px; margin: -1px; overflow: hidden; padding: 0;
+  position: absolute; width: 1px; word-wrap: normal !important;
+}
 
 /* --- Sticky header bar --- */
 header.site-header {
   position: sticky !important;
   top: 0 !important;
   z-index: 10000 !important;
-  background: #ffffff !important;
+  background: #F5FAFF !important;
   width: 100% !important;
   flex: 0 0 auto !important;
   min-height: 72px !important;
   box-shadow: 0 1px 0 rgba(15, 23, 42, 0.06) !important;
+}
+
+header.site-header .hostinger-ai-menu {
+  background: #F5FAFF !important;
 }
 
 header.site-header .hostinger-ai-menu-wrapper {
@@ -54,6 +95,8 @@ header.site-header .hostinger-ai-menu-wrapper {
   margin-left: auto !important;
   margin-right: auto !important;
   box-sizing: border-box !important;
+  padding-top: var(--wp--preset--spacing--50) !important;
+  padding-bottom: var(--wp--preset--spacing--50) !important;
 }
 
 header.site-header .hostinger-ai-site-navigation-wrapper {
@@ -66,6 +109,21 @@ header.site-header .hostinger-ai-site-navigation-wrapper {
 header.site-header .hostinger-ai-site-navigation.wp-block-navigation {
   display: flex !important;
   align-items: center !important;
+}
+
+header.site-header .hostinger-ai-site-title,
+header.site-header .hostinger-ai-site-title a {
+  font-family: Montserrat, "Open Sans", sans-serif !important;
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
+  color: #2075d2 !important;
+  text-decoration: none !important;
+  margin: 0 !important;
+  line-height: 1.2 !important;
+}
+header.site-header .hostinger-ai-site-title a:hover {
+  color: #15223B !important;
 }
 
 /* --- Desktop nav: one clean horizontal row --- */
@@ -110,11 +168,17 @@ header.site-header .hostinger-ai-site-navigation.wp-block-navigation {
     padding: 4px 0 !important;
     margin: 0 !important;
     white-space: nowrap !important;
+    font-family: "Open Sans", DMSans, sans-serif !important;
     font-size: 15px !important;
     font-weight: 500 !important;
     letter-spacing: -0.01em !important;
     color: #0f172a !important;
     line-height: 1.2 !important;
+    text-decoration: none !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
   }
   header.site-header .wp-block-navigation-item__content:hover {
     color: #2075d2 !important;
@@ -123,200 +187,263 @@ header.site-header .hostinger-ai-site-navigation.wp-block-navigation {
   header.site-header .wp-block-navigation-item__content[aria-current="page"] {
     color: #2075d2 !important;
     font-weight: 600 !important;
+  }
+  header.site-header .wp-block-navigation__responsive-container-open,
+  header.site-header .wp-block-navigation__responsive-container-close {
+    display: none !important;
+  }
+}
+
+@media (max-width: 991px) {
+  header.site-header .wp-block-navigation__responsive-container-open {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 10px !important;
+    margin: -10px !important;
     background: transparent !important;
     border: 0 !important;
-    outline: 0 !important;
-    box-shadow: none !important;
+    cursor: pointer !important;
+    color: #0f172a !important;
   }
-  header.site-header .wp-block-navigation,
-  header.site-header .wp-block-navigation ul,
-  header.site-header .wp-block-navigation li,
-  header.site-header .wp-block-navigation a {
-    border: 0 !important;
-    outline: 0 !important;
-    box-shadow: none !important;
+  header.site-header .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
+    .wp-block-navigation__responsive-container-content {
+    display: none !important;
   }
 }
+`;
 
-/* --- Kill outlines / underlines / borders on ALL header + overlay nav links --- */
-header.site-header .wp-block-navigation a.wp-block-navigation-item__content,
-header.site-header .wp-block-navigation a.wp-block-navigation-item__content:link,
-header.site-header .wp-block-navigation a.wp-block-navigation-item__content:visited,
-header.site-header .wp-block-navigation a.wp-block-navigation-item__content:hover,
-header.site-header .wp-block-navigation a.wp-block-navigation-item__content:active,
-header.site-header .wp-block-navigation a.wp-block-navigation-item__content:focus,
-header.site-header .wp-block-navigation a.wp-block-navigation-item__content:focus-visible,
-header.site-header .wp-block-navigation .current-menu-item > a,
-header.site-header .wp-block-navigation a[aria-current="page"],
-.wp-block-navigation__responsive-container.is-menu-open a,
-.wp-block-navigation__responsive-container.has-modal-open a,
-.wp-block-navigation__responsive-container.is-menu-open a:link,
-.wp-block-navigation__responsive-container.has-modal-open a:link,
-.wp-block-navigation__responsive-container.is-menu-open a:visited,
-.wp-block-navigation__responsive-container.has-modal-open a:visited,
-.wp-block-navigation__responsive-container.is-menu-open a:hover,
-.wp-block-navigation__responsive-container.has-modal-open a:hover,
-.wp-block-navigation__responsive-container.is-menu-open a:active,
-.wp-block-navigation__responsive-container.has-modal-open a:active,
-.wp-block-navigation__responsive-container.is-menu-open a:focus,
-.wp-block-navigation__responsive-container.has-modal-open a:focus,
-.wp-block-navigation__responsive-container.is-menu-open a:focus-visible,
-.wp-block-navigation__responsive-container.has-modal-open a:focus-visible {
-  outline: 0 !important;
-  outline-offset: 0 !important;
-  border: 0 !important;
-  border-bottom: 0 !important;
-  border-top: 0 !important;
-  border-left: 0 !important;
-  border-right: 0 !important;
-  box-shadow: none !important;
-  text-decoration: none !important;
-  text-decoration-line: none !important;
-  text-underline-offset: unset !important;
-  -webkit-tap-highlight-color: transparent !important;
-}
-
-header.site-header .wp-block-navigation .wp-block-navigation-item__label,
-.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item__label,
-.wp-block-navigation__responsive-container.has-modal-open .wp-block-navigation-item__label {
-  text-decoration: none !important;
-  border: 0 !important;
-  box-shadow: none !important;
-}
-
-header.site-header .wp-block-navigation .current-menu-item > a::after,
-header.site-header .wp-block-navigation .current-menu-item > a::before,
-header.site-header .wp-block-navigation a[aria-current="page"]::after,
-header.site-header .wp-block-navigation a[aria-current="page"]::before,
-.wp-block-navigation__responsive-container.is-menu-open .current-menu-item > a::after,
-.wp-block-navigation__responsive-container.has-modal-open .current-menu-item > a::after,
-.wp-block-navigation__responsive-container.is-menu-open .current-menu-item > a::before,
-.wp-block-navigation__responsive-container.has-modal-open .current-menu-item > a::before,
-.wp-block-navigation__responsive-container.is-menu-open a[aria-current="page"]::after,
-.wp-block-navigation__responsive-container.has-modal-open a[aria-current="page"]::after,
-.wp-block-navigation__responsive-container.is-menu-open a[aria-current="page"]::before,
-.wp-block-navigation__responsive-container.has-modal-open a[aria-current="page"]::before {
-  content: none !important;
-  display: none !important;
-  border: 0 !important;
-  width: 0 !important;
-  height: 0 !important;
-}
-
-/* MOBILE OVERLAY styles moved to /assets/css/pickora-nav.css (Variant C drawer) */
-/* Search stacking under sticky header */
-#pk-search-system,
-.pk-search-container,
-.pk-search-box,
-.pk-search-outer-container,
-input[type="search"],
-input#pk-realtime-search {
-  position: relative !important;
-  z-index: 1 !important;
-}
-
-/* Hub titles: keep space under sticky header (do not collapse) */
-.pk-hub-header-section {
-  margin-top: 56px !important;
-  padding-top: 12px !important;
-}
-.pk-catalog-header {
-  padding-top: 48px !important;
-}
-@media (max-width: 768px) {
-  .pk-hub-header-section {
-    margin-top: 36px !important;
-    padding-top: 12px !important;
-  }
-  .pk-catalog-header {
-    padding-top: 36px !important;
-  }
-  .pk-main-title {
-    line-height: 1.15 !important;
-  }
-}
-
-/* Categories board must stay visible; no flex-grown empty gap */
-.pickora-pins-container {
-  display: block !important;
-  min-height: 0 !important;
-}
-.pickora-board-grid {
-  display: grid !important;
-}
-.wp-site-blocks > .elementor-widget-container,
-.wp-site-blocks > .elementor-element,
-.e-con.e-flexbox-base,
-.elementor-widget-container {
-  flex-grow: 0 !important;
-  flex-shrink: 0 !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  min-height: 0 !important;
-}
-
+const LIVE_FOOTER_CSS = `
 /* =========================================================
-   Sticky footer WITHOUT painting legal content navy
+   Live footer chrome (wp-block-columns + social icons + ML form)
    ========================================================= */
-html {
-  background-color: #ffffff !important;
-  height: 100% !important;
-}
-
-body {
-  min-height: 100vh !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-}
-
-body > .wp-site-blocks {
-  display: flex !important;
-  flex-direction: column !important;
-  flex: 1 0 auto !important;
-  min-height: 100vh !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-  background-color: #ffffff !important;
-}
-
-main {
-  flex: 1 0 auto !important;
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-}
-
-.entry-content,
-.pk-legal-container,
-.pk-legal-content,
-.pk-legal-hero {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-}
-
-.pk-legal-content p,
-.pk-legal-content li,
-.pk-legal-content h2,
-.pk-legal-content h3 {
-  color: #0f172a !important;
-}
-
-footer,
 footer.site-footer {
   flex-shrink: 0 !important;
   width: 100% !important;
   margin-top: auto !important;
   margin-bottom: 0 !important;
-  padding-bottom: 30px !important;
+  padding-bottom: 8px !important;
   background-color: #15223B !important;
+  color: rgba(255,255,255,0.85);
   box-shadow: 0 50vh 0 0 #15223B;
 }
-
 footer.site-footer > .wp-block-group.has-color-2-background-color {
   background-color: #15223B !important;
+  padding-top: var(--wp--preset--spacing--60) !important;
+  padding-bottom: var(--wp--preset--spacing--60) !important;
+}
+footer.site-footer .wp-block-columns.alignwide {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  max-width: 1140px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  align-items: flex-start;
+}
+footer.site-footer .wp-block-column {
+  flex: 1 1 280px;
+  min-width: 0;
+  box-sizing: border-box;
+}
+footer.site-footer .wp-block-heading {
+  font-family: Montserrat, "Open Sans", sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin: 0 0 14px !important;
+  line-height: 1.25 !important;
+}
+footer.site-footer .wp-block-heading + .wp-block-heading,
+footer.site-footer p + .wp-block-heading {
+  margin-top: 22px !important;
+}
+footer.site-footer p.has-light-color,
+footer.site-footer .wp-block-paragraph {
+  color: rgba(255,255,255,0.78) !important;
+  font-size: 15px !important;
+  margin: 0 0 8px !important;
+  font-family: "Open Sans", DMSans, sans-serif;
+}
+footer.site-footer .is-vertical.wp-block-navigation .wp-block-navigation__container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+footer.site-footer .is-vertical .wp-block-navigation__responsive-container-open,
+footer.site-footer .is-vertical .wp-block-navigation__responsive-container-close {
+  display: none !important;
+}
+footer.site-footer .is-vertical .wp-block-navigation__responsive-container {
+  display: block !important;
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+  background: transparent !important;
+}
+footer.site-footer .is-vertical .wp-block-navigation__responsive-container-content {
+  display: block !important;
+  visibility: visible !important;
+  position: static !important;
+  padding: 0 !important;
+}
+footer.site-footer .is-vertical .wp-block-navigation-item__content {
+  color: rgba(255,255,255,0.78) !important;
+  text-decoration: none !important;
+  font-size: 15px !important;
+  font-family: "Open Sans", DMSans, sans-serif !important;
+  font-weight: 400 !important;
+  line-height: 1.4 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+footer.site-footer .is-vertical .wp-block-navigation-item__content:hover {
+  color: #ffffff !important;
+}
+
+/* Social icons row — logos-only white */
+footer.site-footer .wp-block-social-links {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 14px !important;
+  margin: 4px 0 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+  background: none !important;
+}
+footer.site-footer .wp-block-social-links .wp-social-link {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+footer.site-footer .wp-block-social-links .wp-social-link a {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #ffffff !important;
+  fill: currentColor !important;
+  text-decoration: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  opacity: 0.92;
+}
+footer.site-footer .wp-block-social-links .wp-social-link a:hover { opacity: 1; }
+footer.site-footer .wp-block-social-links .wp-social-link svg {
+  width: 22px !important;
+  height: 22px !important;
+  display: block !important;
+}
+
+/* Newsletter — white field + brand blue button (live MailerLite look) */
+footer.site-footer .pk-ml-footer {
+  width: 100%;
+  max-width: 420px;
+  margin-top: 12px;
+}
+footer.site-footer .pk-ml-footer form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+}
+footer.site-footer .pk-ml-footer input[type="email"] {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  font-size: 14px;
+  font-family: "Open Sans", DMSans, sans-serif;
+}
+footer.site-footer .pk-ml-footer input[type="email"]::placeholder {
+  color: #94a3b8;
+}
+footer.site-footer .pk-ml-footer button[type="submit"] {
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 14px;
+  border: 0;
+  border-radius: 4px;
+  background: #2075d2 !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: "Open Sans", DMSans, sans-serif;
+}
+footer.site-footer .pk-ml-footer button[type="submit"]:hover {
+  background: #1a63b3 !important;
+}
+
+.pk-footer-bottom {
+  max-width: 1140px !important;
+  width: 100% !important;
+  margin: 24px auto 0 !important;
+  padding: 20px 20px 32px !important;
+  border-top: 1px solid rgba(255,255,255,0.1) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  box-sizing: border-box !important;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.pk-footer-legal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0;
+}
+.pk-footer-legal a {
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+}
+.pk-footer-legal a:hover { color: #ffffff; }
+.pk-footer-legal .pk-sep { color: rgba(255,255,255,0.3); }
+.pk-footer-copyright {
+  margin: 0 !important;
+  color: rgba(255,255,255,0.7) !important;
+  font-size: 13px !important;
+  white-space: nowrap;
+}
+
+@media (max-width: 781px) {
+  footer.site-footer .wp-block-columns.alignwide {
+    flex-direction: column;
+    gap: 28px;
+  }
+  footer.site-footer .wp-block-column {
+    flex-basis: 100% !important;
+    width: 100% !important;
+  }
+  footer.site-footer .pk-ml-footer { max-width: 100%; }
+  .pk-footer-bottom {
+    flex-direction: column !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 12px !important;
+  }
+  .pk-footer-legal { justify-content: center; }
+  .pk-footer-copyright { text-align: center; white-space: normal; }
 }
 `;
 
@@ -838,9 +965,11 @@ body {
   src: url('https://pickora.shop/wp-content/themes/hostinger-ai-theme/assets/fonts/DMSans-Bold.ttf') format('truetype'); }
 @font-face { font-family: Montserrat; font-style: normal; font-weight: 400 800; font-display: fallback;
   src: url('https://pickora.shop/wp-content/themes/hostinger-ai-theme/assets/fonts/Montserrat-Regular.ttf') format('truetype'); }
+@font-face { font-family: "Open Sans"; font-style: normal; font-weight: 400 700; font-display: fallback;
+  src: url('https://pickora.shop/wp-content/themes/hostinger-ai-theme/assets/fonts/OpenSans-Regular.ttf') format('truetype'); }
 
 ${LIVE_HEADER_CSS}
-
+${LIVE_FOOTER_CSS}
 
 /* skip link */
 .skip-link { position: absolute; left: -9999px; z-index: 99999;
@@ -849,65 +978,6 @@ ${LIVE_HEADER_CSS}
 
 /* ── Layout wrapper ── */
 .wp-site-blocks { display: flex; flex-direction: column; min-height: 100vh; }
-
-/* ── Sticky header (matches live article pages) ── */
-header.site-header {
-  position: sticky; top: 0; z-index: 10000;
-  background: #fff; width: 100%; flex: 0 0 auto;
-  min-height: 72px; box-shadow: 0 1px 0 rgba(15,23,42,0.06);
-}
-.hostinger-ai-menu-wrapper {
-  display: flex; align-items: center; justify-content: space-between; gap: 24px;
-  width: 100%; max-width: 1140px; margin: 0 auto;
-  padding: 20px 20px; box-sizing: border-box;
-}
-.hostinger-ai-site-navigation-wrapper {
-  display: flex; align-items: center; justify-content: flex-end; margin-left: auto;
-}
-.hostinger-ai-site-title a {
-  font-family: Montserrat, sans-serif; font-size: 22px; font-weight: 800;
-  color: #2075d2 !important; text-decoration: none; letter-spacing: -0.03em;
-}
-.hostinger-ai-site-title a:hover { color: #15223B !important; }
-
-/* Mobile burger (≤991px) */
-@media (max-width: 991px) {
-  .wp-block-navigation__responsive-container-open {
-    display: flex !important; align-items: center; justify-content: center;
-    min-width: 44px !important; min-height: 44px !important;
-    padding: 10px !important; margin: -10px !important;
-    background: transparent; border: 0; cursor: pointer; color: #0f172a;
-  }
-  .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open)
-    .wp-block-navigation__responsive-container-content { display: none !important; }
-}
-/* Desktop nav (≥992px) — one horizontal row */
-@media (min-width: 992px) {
-  .wp-block-navigation__responsive-container-open,
-  .wp-block-navigation__responsive-container-close { display: none !important; }
-  .wp-block-navigation__responsive-container {
-    display: block !important; position: static !important;
-    width: auto !important; height: auto !important;
-    overflow: visible !important; background: transparent !important;
-  }
-  .wp-block-navigation__responsive-container-content {
-    display: flex !important; visibility: visible !important;
-    position: static !important; padding: 0 !important;
-  }
-  .wp-block-navigation__container {
-    display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center;
-    justify-content: flex-end; gap: 32px; margin: 0; padding: 0; list-style: none;
-  }
-  .wp-block-navigation-item { display: inline-flex; align-items: center; margin: 0; padding: 0; }
-  .wp-block-navigation-item__content {
-    display: inline-block; padding: 4px 0; margin: 0;
-    font-size: 15px; font-weight: 500; letter-spacing: -0.01em;
-    color: #0f172a; text-decoration: none; white-space: nowrap;
-    border: 0; outline: 0; box-shadow: none;
-  }
-  .wp-block-navigation-item__content:hover { color: #2075d2; }
-  .wp-block-navigation-item__label { text-decoration: none; }
-}
 
 /* ── Article hero (matches .pk-review-hero on live article pages) ── */
 main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
@@ -1125,47 +1195,8 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
 .pk-disclosure-footer p { margin: 0; }
 .pk-disclosure-footer a { color: #2075d2; text-decoration: underline; }
 
-/* ── Site footer (dark #15223B — matches live pages) ── */
-footer.site-footer { background: #15223B; color: rgba(255,255,255,0.85); padding: 48px 0 8px; }
-.pk-footer-inner {
-  max-width: 1140px; margin: 0 auto; padding: 0 20px;
-  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; box-sizing: border-box;
-}
-@media (max-width: 768px) { .pk-footer-inner { grid-template-columns: 1fr; gap: 28px; } }
-.pk-footer-col h3 {
-  font-family: Montserrat, sans-serif; font-size: 18px; font-weight: 700;
-  color: #fff; margin: 0 0 12px;
-}
-.pk-footer-col a { display: block; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 15px; margin-bottom: 8px; }
-.pk-footer-col a:hover { color: #fff; }
-.pk-footer-col p { color: rgba(255,255,255,0.7); font-size: 15px; margin: 0 0 8px; }
-.pk-footer-ml input[type="email"] {
-  width: 100%; padding: 10px; border: 1px solid rgba(255,255,255,0.25);
-  border-radius: 4px; font-size: 14px; min-height: 44px; box-sizing: border-box;
-  background: rgba(255,255,255,0.1); color: #fff; margin-bottom: 8px;
-}
-.pk-footer-ml input[type="email"]::placeholder { color: rgba(255,255,255,0.5); }
-.pk-footer-ml button[type="submit"] {
-  background: #2075d2; color: #fff; border: none; border-radius: 4px;
-  padding: 11px; width: 100%; min-height: 44px;
-  font-weight: 700; font-size: 14px; cursor: pointer;
-}
-.pk-footer-ml button[type="submit"]:hover { background: #1a63b3; }
-.pk-footer-bottom {
-  max-width: 1140px; margin: 24px auto 0; padding: 20px 20px 32px;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  display: flex; justify-content: space-between; align-items: center;
-  font-size: 13px; gap: 16px; flex-wrap: wrap; box-sizing: border-box;
-}
-.pk-footer-legal { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0; }
-.pk-footer-legal a { color: rgba(255,255,255,0.7); text-decoration: none; }
-.pk-footer-legal a:hover { color: #fff; }
-.pk-footer-legal .pk-sep { color: rgba(255,255,255,0.3); }
-.pk-footer-copyright { margin: 0; color: rgba(255,255,255,0.7); font-size: 13px; white-space: nowrap; }
+/* Footer chrome CSS lives in LIVE_FOOTER_CSS (icons + white ML form) */
 @media (max-width: 768px) {
-  .pk-footer-bottom { flex-direction: column; justify-content: center; text-align: center; gap: 12px; }
-  .pk-footer-legal { justify-content: center; }
-  .pk-footer-copyright { text-align: center; white-space: normal; }
   .pk-review-hero { width: 100%; max-width: 100%; margin: 16px auto 4px; padding: 28px 16px 4px; }
   .pk-review-hero-inner { max-width: 100%; }
   .pk-review-title { font-size: clamp(26px, 7vw, 36px); }
@@ -1287,36 +1318,51 @@ ${faqSection}
   <p>Pickora is reader-supported. When you buy through links on our site, we may earn an affiliate commission at no extra cost to you. As an Amazon Associate we earn from qualifying purchases. <a href="https://pickora.shop/affiliate-disclosure/">Learn more</a>.</p>
 </div>
 
-<!-- ═══ Footer (same three-column structure as live pages) ═══ -->
+<!-- ═══ Footer (live WP columns + social icons + white newsletter) ═══ -->
 <footer class="site-footer wp-block-template-part">
-  <div class="pk-footer-inner">
-    <div class="pk-footer-col">
-      <h3>Menu</h3>
-      <a href="https://pickora.shop/">Home</a>
-      <a href="https://pickora.shop/products/">Products</a>
-      <a href="https://pickora.shop/articles/">Articles</a>
-      <a href="https://pickora.shop/categories/">Categories</a>
-      <a href="https://pickora.shop/about/">About</a>
-    </div>
-    <div class="pk-footer-col">
-      <h3>Contacts</h3>
-      <p>Pickora@proton.me</p>
-      <h3 style="margin-top:20px">Socials</h3>
-      <a href="https://facebook.com/" target="_blank" rel="noopener">Facebook</a>
-      <a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
-      <a href="https://twitter.com/" target="_blank" rel="noopener">X / Twitter</a>
-    </div>
-    <div class="pk-footer-col">
-      <h3>Subscribe to our newsletter</h3>
-      <div class="pk-footer-ml">
-        <form action="https://assets.mailerlite.com/jsonp/2575871/forms/195779655847905146/subscribe"
-              method="post" target="_blank">
-          <input type="email" name="fields[email]" placeholder="Email"
-                 autocomplete="email" aria-label="Email address" required>
-          <input type="hidden" name="ml-submit" value="1">
-          <input type="hidden" name="anticsrf" value="true">
-          <button type="submit">Subscribe</button>
-        </form>
+  <div class="wp-block-group has-color-2-background-color has-background has-global-padding is-layout-constrained wp-block-group-is-layout-constrained" style="padding-top:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--60)">
+    <div class="wp-block-columns alignwide is-layout-flex wp-block-columns-is-layout-flex">
+      <div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:33.34%">
+        <h3 class="wp-block-heading has-light-color has-text-color has-large-font-size">Menu</h3>
+        <nav class="has-text-color has-light-color has-medium-font-size is-vertical hostinger-ai-site-navigation wp-block-navigation is-layout-flex" aria-label="Footer">
+          <div class="wp-block-navigation__responsive-container">
+            <div class="wp-block-navigation__responsive-close">
+              <div class="wp-block-navigation__responsive-dialog">
+                <div class="wp-block-navigation__responsive-container-content">
+                  <ul class="wp-block-navigation__container has-text-color has-light-color has-medium-font-size is-vertical hostinger-ai-site-navigation wp-block-navigation">
+                    <li class="wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="https://pickora.shop/"><span class="wp-block-navigation-item__label">Home</span></a></li>
+                    <li class="wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="https://pickora.shop/products/"><span class="wp-block-navigation-item__label">Products</span></a></li>
+                    <li class="wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="https://pickora.shop/articles/"><span class="wp-block-navigation-item__label">Articles</span></a></li>
+                    <li class="wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="https://pickora.shop/categories/"><span class="wp-block-navigation-item__label">Categories</span></a></li>
+                    <li class="wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="https://pickora.shop/about/"><span class="wp-block-navigation-item__label">About</span></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:33.34%">
+        <h3 class="wp-block-heading has-light-color has-text-color has-large-font-size">Contacts</h3>
+        <p class="has-light-color has-text-color has-medium-font-size wp-block-paragraph">Pickora@proton.me</p>
+        <h3 class="wp-block-heading has-light-color has-text-color has-large-font-size">Socials</h3>
+        <ul class="wp-block-social-links has-icon-color is-style-logos-only is-layout-flex">
+          <li style="color:#ffffff" class="wp-social-link wp-social-link-facebook has-light-color wp-block-social-link"><a href="https://facebook.com/" class="wp-block-social-link-anchor" target="_blank" rel="noopener noreferrer"><svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12c0-5.5-4.5-10-10-10z"></path></svg><span class="wp-block-social-link-label screen-reader-text">Facebook</span></a></li>
+          <li style="color:#ffffff" class="wp-social-link wp-social-link-instagram has-light-color wp-block-social-link"><a href="https://instagram.com/" class="wp-block-social-link-anchor" target="_blank" rel="noopener noreferrer"><svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path fill="currentColor" d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path></svg><span class="wp-block-social-link-label screen-reader-text">Instagram</span></a></li>
+          <li style="color:#ffffff" class="wp-social-link wp-social-link-x has-light-color wp-block-social-link"><a href="https://twitter.com/" class="wp-block-social-link-anchor" target="_blank" rel="noopener noreferrer"><svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path fill="currentColor" d="M13.982 10.622 20.54 3h-1.554l-5.693 6.618L8.745 3H3.5l6.876 10.007L3.5 21h1.554l6.012-6.989L15.868 21h5.245l-7.131-10.378Zm-2.128 2.474-.697-.997-5.543-7.93H8l4.474 6.4.697.996 5.815 8.318h-2.387l-4.745-6.787Z"></path></svg><span class="wp-block-social-link-label screen-reader-text">X</span></a></li>
+          <li style="color:#ffffff" class="wp-social-link wp-social-link-tiktok has-light-color wp-block-social-link"><a href="https://tiktok.com/" class="wp-block-social-link-anchor" target="_blank" rel="noopener noreferrer"><svg width="24" height="24" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path fill="currentColor" d="M16.708.027c1.745-.027 3.48-.011 5.213-.027.105 2.041.839 4.12 2.333 5.563 1.491 1.479 3.6 2.156 5.652 2.385v5.369c-1.923-.063-3.855-.463-5.6-1.291-.76-.344-1.468-.787-2.161-1.24-.009 3.896.016 7.787-.025 11.667-.104 1.864-.719 3.719-1.803 5.255-1.744 2.557-4.771 4.224-7.88 4.276-1.907.109-3.812-.411-5.437-1.369-2.693-1.588-4.588-4.495-4.864-7.615-.032-.667-.043-1.333-.016-1.984.24-2.537 1.495-4.964 3.443-6.615 2.208-1.923 5.301-2.839 8.197-2.297.027 1.975-.052 3.948-.052 5.923-1.323-.428-2.869-.308-4.025.495-.844.547-1.485 1.385-1.819 2.333-.276.676-.197 1.427-.181 2.145.317 2.188 2.421 4.027 4.667 3.828 1.489-.016 2.916-.88 3.692-2.145.251-.443.532-.896.547-1.417.131-2.385.079-4.76.095-7.145.011-5.375-.016-10.735.025-16.093z"></path></svg><span class="wp-block-social-link-label screen-reader-text">TikTok</span></a></li>
+        </ul>
+      </div>
+      <div class="wp-block-column has-light-color is-layout-flow wp-block-column-is-layout-flow" style="flex-basis:33.33%">
+        <h3 class="wp-block-heading has-light-color has-text-color has-large-font-size">Subscribe to our newsletter</h3>
+        <div class="pk-ml-footer">
+          <form action="https://assets.mailerlite.com/jsonp/2575871/forms/195779655847905146/subscribe" method="post" target="_blank">
+            <input type="email" name="fields[email]" placeholder="Email" autocomplete="email" aria-label="Email address" required>
+            <input type="hidden" name="ml-submit" value="1">
+            <input type="hidden" name="anticsrf" value="true">
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
