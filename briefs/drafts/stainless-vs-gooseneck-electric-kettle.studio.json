@@ -1,0 +1,111 @@
+{
+  "slug": "stainless-vs-gooseneck-electric-kettle",
+  "status": "draft",
+  "type": 3,
+  "title": "Stainless vs Gooseneck Electric Kettle: Which One Belongs on Your Counter?",
+  "metaDescription": "Fast stainless kettle or precise gooseneck? A short Pickora vs guide for tea drinkers and pour-over fans — skip advice included.",
+  "h1": "Stainless vs <span class=\"pk-blue-text\">Gooseneck</span> Electric Kettle",
+  "dek": "One boils a crowd’s tea in minutes. The other pours a slow, even stream for coffee. Pick the shape that matches how you actually use hot water.",
+  "hubCategory": "Home & Kitchen",
+  "hubUrl": "/home-kitchen/",
+  "chips": ["kitchen"],
+  "coverImage": "https://pickora.shop/wp-content/uploads/2026/09/stainless-vs-gooseneck-electric-kettle-cover.webp",
+  "coverAlt": "Stainless and matte black electric kettles on a kitchen counter with a mug",
+  "canonical": "https://pickora.shop/stainless-vs-gooseneck-electric-kettle/",
+  "internalLinks": [
+    "/home-kitchen/",
+    "/how-to-choose-an-espresso-machine/",
+    "/articles/"
+  ],
+  "affiliateLinks": [],
+  "blocks": [
+    {
+      "id": "bintro1",
+      "type": "intro",
+      "text": "Apartment kitchens do not need two kettles. They need one that matches the job.\n\nIf you mostly make tea, instant oats, or guest mugs, a wide-spout stainless kettle is the boring win. If pour-over coffee is the daily ritual, a gooseneck’s thin spout is the upgrade that actually changes the cup.\n\nThis short vs guide compares those two shapes only — capacity, pour control, and who should skip each. Specs and owner complaint themes, not a kitchen lab. More kitchen picks live in Home & Kitchen. Espresso buyers can jump to our espresso machine guide."
+    },
+    {
+      "id": "btable1",
+      "type": "table",
+      "variant": "compare",
+      "headers": ["Model", "Best for", "Skip if", "Price"],
+      "rows": [
+        ["Cosori-style stainless (~1.7L)", "Fast household boils, tea for two+", "You need a precise pour-over stream", "$$"],
+        ["Gooseneck (Fellow-style)", "Pour-over / temp hold", "You boil big pots of water daily", "$$$"]
+      ]
+    },
+    {
+      "id": "bprod1",
+      "type": "product",
+      "variant": "card",
+      "title": "Cosori Electric Kettle (stainless, 1.7L class)",
+      "role": "Best everyday boil · $$",
+      "image": "https://pickora.shop/wp-content/uploads/2026/09/stainless-vs-gooseneck-electric-kettle-stainless.webp",
+      "imageAlt": "Brushed stainless electric kettle on a kitchen counter",
+      "description": "Owners who like these units talk about speed and capacity. A 1.7L tank covers tea for a small group without a second boil. Auto shut-off and boil-dry protection show up often in apartment praise. Cleanup is usually a quick wipe until hard water leaves scale.",
+      "pros": [
+        "Fast heat for everyday tea and instant foods",
+        "Larger tank than most goosenecks",
+        "Simple controls — boil and go",
+        "Easy exterior wipe-down"
+      ],
+      "cons": [
+        "Wide spout overshoots pour-over filters",
+        "Scale builds on hard water",
+        "Less precise temperature control on basic models"
+      ],
+      "verdict": "Buy if you want one kettle for daily household water. Skip if coffee pour-over is your main ritual.",
+      "links": [
+        { "label": "Check on Amazon →", "url": "https://amzn.to/TODO1" }
+      ]
+    },
+    {
+      "id": "bprod2",
+      "type": "product",
+      "variant": "card",
+      "title": "Gooseneck electric kettle (Fellow-style)",
+      "role": "Best pour-over control · $$$",
+      "image": "https://pickora.shop/wp-content/uploads/2026/09/stainless-vs-gooseneck-electric-kettle-gooseneck.webp",
+      "imageAlt": "Matte black gooseneck electric kettle beside a pour-over dripper",
+      "description": "Gooseneck owners care about the stream. A narrow spout makes slow circles over a V60 or Chemex feel controlled instead of splashy. Variable temp and hold modes help light roasts and green tea. The tradeoff is a smaller tank and a higher price for that precision.",
+      "pros": [
+        "Precise, slow pour for filter coffee",
+        "Temp hold helps tea and light roasts",
+        "Looks intentional on a small counter",
+        "Better for matcha whisking routines"
+      ],
+      "cons": [
+        "Small capacity for family tea service",
+        "Costs more than a basic stainless boil kettle",
+        "Slower when you only need hot water now"
+      ],
+      "verdict": "Buy if pour-over is daily. Skip if you mostly reheat water for tea bags and oatmeal.",
+      "links": [
+        { "label": "Check on Amazon →", "url": "https://amzn.to/TODO2" }
+      ]
+    },
+    {
+      "id": "bfaq1",
+      "type": "faq",
+      "items": [
+        {
+          "q": "Do I need a gooseneck if I only drink tea?",
+          "a": "Usually no. A stainless everyday kettle is enough unless you care about exact temperatures for green or white tea."
+        },
+        {
+          "q": "Is variable temperature worth it?",
+          "a": "Yes if you brew pour-over or delicate teas. No if you only need a rolling boil."
+        },
+        {
+          "q": "How often should I descale?",
+          "a": "In hard-water cities, many owners wipe scale monthly and run a vinegar or citric cycle when the kettle looks chalky or boils loudly."
+        }
+      ]
+    },
+    {
+      "id": "bverdict1",
+      "type": "verdict",
+      "text": "Get the stainless kettle if hot water is a utility — tea, guests, instant food. Get the gooseneck if coffee pour-over is the reason you own a kettle. Owning both is rare; pick the spout you will use every morning."
+    }
+  ]
+}
