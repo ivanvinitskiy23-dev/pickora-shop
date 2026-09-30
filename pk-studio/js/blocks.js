@@ -63,10 +63,10 @@ window.PK_BLOCKS = (function () {
           id,
           type,
           variant: "compare",
-          headers: ["Model", "Best for", "Skip if"],
+          headers: ["Model", "Best for", "Skip if", "Price", "Action"],
           rows: [
-            ["", "", ""],
-            ["", "", ""],
+            ["", "", "", "", "Amazon →|https://amzn.to/"],
+            ["", "", "", "", "Amazon →|https://amzn.to/"],
           ],
         };
       case "product":
@@ -172,6 +172,28 @@ window.PK_BLOCKS = (function () {
     return lis ? `<${tag}>${lis}</${tag}>` : "";
   }
 
+  function amazonBtn(url, label) {
+    const href = String(url || "").trim();
+    if (!href) return "";
+    const text = String(label || "Check on Amazon →").trim() || "Check on Amazon →";
+    return `<a style="background:#FF9900;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block;margin-top:8px;" target="_blank" rel="sponsored nofollow noopener noreferrer" href="${esc(href)}">${esc(text)}</a>`;
+  }
+
+  function renderTableCell(raw) {
+    const cell = String(raw ?? "").trim();
+    if (!cell) return "";
+    const pipe = cell.indexOf("|");
+    if (pipe > 0) {
+      const label = cell.slice(0, pipe).trim();
+      const url = cell.slice(pipe + 1).trim();
+      if (/^https?:\/\//i.test(url)) return amazonBtn(url, label || "Amazon →");
+    }
+    if (/^https?:\/\/(amzn\.to\/|www\.amazon\.|amazon\.|link\.amazon\/)/i.test(cell)) {
+      return amazonBtn(cell, "Amazon →");
+    }
+    return esc(cell);
+  }
+
   function compileBlock(b) {
     if (!b || !b.type) return "";
     switch (b.type) {
@@ -179,7 +201,7 @@ window.PK_BLOCKS = (function () {
         return `<div class="pk-block pk-block-intro">${paragraphsToHtml(b.text)}</div>`;
       case "heading": {
         const lv = b.level === 3 ? 3 : 2;
-        return `<h${lv} class="pk-block-h">${esc(b.text)}</h${lv}>`;
+        return `<h${lv}>${esc(b.text)}</h${lv}>`;
       }
       case "richtext":
         return `<div class="pk-block pk-block-text">${paragraphsToHtml(b.text)}</div>`;
@@ -198,54 +220,53 @@ window.PK_BLOCKS = (function () {
           .map(
             (row) =>
               `<tr>${headers
-                .map((_, i) => `<td>${esc((row && row[i]) || "")}</td>`)
+                .map((_, i) => `<td>${renderTableCell((row && row[i]) || "")}</td>`)
                 .join("")}</tr>`
           )
           .join("\n");
-        return `<div class="pk-block pk-block-table pk-table--${variantOf(
-          b
-        )}"><table class="pk-table"><thead>${thead}</thead><tbody>${tbody}</tbody></table></div>`;
+        return `<p class="pk-swipe-hint">Swipe the table sideways on a phone to compare models.</p>
+<div class="pk-mw-table-wrap pk-table--${variantOf(b)}">
+<table class="pk-mw-table"><thead>${thead}</thead><tbody>${tbody}</tbody></table>
+</div>`;
       }
       case "product": {
         const links = (b.links || [])
           .filter((l) => l && String(l.url || "").trim())
-          .map(
-            (l) =>
-              `<a class="pk-aff-btn pk-aff-btn--amazon" href="${esc(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
-                l.label || "Check on Amazon →"
-              )}</a>`
-          )
+          .map((l) => amazonBtn(l.url, l.label || "Check on Amazon →"))
           .join("\n");
-        return `<article class="pk-block pk-product-card pk-product-card--${variantOf(b)}">
+        const pros = listToHtml(b.pros, "ul");
+        const cons = listToHtml(b.cons, "ul");
+        const cols =
+          pros || cons
+            ? `<div class="pk-mw-cols">
+  <div class="pk-mw-box"><h4>Pros</h4>${pros || "<ul><li>—</li></ul>"}</div>
+  <div class="pk-mw-box"><h4>Cons</h4>${cons || "<ul><li>—</li></ul>"}</div>
+</div>`
+            : "";
+        return `<article class="pk-mw-pick">
   ${
     b.image
-      ? `<div class="pk-product-media"><img src="${esc(b.image)}" alt="${esc(
-          b.imageAlt || b.title || ""
-        )}" loading="lazy"></div>`
+      ? `<img src="${esc(b.image)}" alt="${esc(b.imageAlt || b.title || "")}" loading="lazy" decoding="async">`
       : ""
   }
-  <div class="pk-product-body">
-    ${b.role ? `<span class="pk-aff-card-role">${esc(b.role)}</span>` : ""}
-    <h3>${esc(b.title || "Product")}</h3>
-    ${paragraphsToHtml(b.description)}
-    ${listToHtml(b.pros, "ul")}
-    ${b.cons && b.cons.filter(Boolean).length ? `<p><strong>Skip if:</strong></p>${listToHtml(b.cons, "ul")}` : ""}
-    ${b.verdict ? `<div class="pk-verdict">${paragraphsToHtml(b.verdict)}</div>` : ""}
-    ${links ? `<div class="pk-product-ctas">${links}</div>` : ""}
-  </div>
+  ${b.role ? `<span class="pk-mw-badge">${esc(b.role)}</span>` : ""}
+  <h3 class="pk-mw-pick-title">${esc(b.title || "Product")}</h3>
+  ${paragraphsToHtml(b.description)}
+  ${cols}
+  ${b.verdict ? `<div class="pk-mw-verdict">${paragraphsToHtml(b.verdict)}</div>` : ""}
+  ${links ? `<p>${links}</p>` : ""}
 </article>`;
       }
       case "cta": {
         const style = variantOf(b);
         const links = (b.links || [])
           .filter((l) => l && String(l.url || "").trim())
-          .map(
-            (l) =>
-              `<a class="pk-aff-btn pk-aff-btn--${style}" href="${esc(
-                l.url
-              )}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
-                l.label || "Buy"
-              )}</a>`
+          .map((l) =>
+            style === "amazon"
+              ? amazonBtn(l.url, l.label || "Check on Amazon →")
+              : `<a class="pk-aff-btn pk-aff-btn--${style}" href="${esc(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
+                  l.label || "Buy"
+                )}</a>`
           )
           .join("\n");
         if (!links) return "";
@@ -257,20 +278,20 @@ window.PK_BLOCKS = (function () {
       case "faq": {
         const items = (b.items || []).filter((it) => it && (it.q || it.a));
         if (!items.length) return "";
-        return `<div class="pk-faq-section pk-block">
+        return `<div class="pk-faq-section">
   <h2>Frequently Asked Questions</h2>
   ${items
     .map(
-      (it) => `<div class="pk-faq-item">
-    <p class="pk-faq-q">${esc(it.q || "")}</p>
-    <div class="pk-faq-a">${paragraphsToHtml(it.a)}</div>
-  </div>`
+      (it) => `<details class="pk-faq-acc">
+  <summary class="pk-faq-q">${esc(it.q || "Question")}</summary>
+  <div class="pk-faq-a">${paragraphsToHtml(it.a)}</div>
+</details>`
     )
     .join("\n")}
 </div>`;
       }
       case "verdict":
-        return `<div class="pk-block pk-verdict pk-block-verdict">${paragraphsToHtml(b.text)}</div>`;
+        return `<div class="pk-mw-verdict pk-block-verdict">${paragraphsToHtml(b.text)}</div>`;
       case "html":
         return String(b.html || "");
       default:
@@ -279,7 +300,8 @@ window.PK_BLOCKS = (function () {
   }
 
   function compileBlocksToHtml(blocks) {
-    return (blocks || []).map(compileBlock).filter(Boolean).join("\n\n");
+    const inner = (blocks || []).map(compileBlock).filter(Boolean).join("\n\n");
+    return inner ? `<div class="pk-mw-guide">\n${inner}\n</div>` : "";
   }
 
   function plainTextFromBlocks(blocks) {
@@ -404,9 +426,23 @@ window.PK_BLOCKS = (function () {
           const headers = [...card.querySelectorAll("[data-th]")].map((el) => el.value);
           b.headers = headers;
           const rowEls = [...card.querySelectorAll("[data-row]")];
-          b.rows = rowEls.map((row) =>
-            [...row.querySelectorAll("[data-td]")].map((el) => el.value)
-          );
+          b.rows = rowEls.map((row) => {
+            const cells = [];
+            const kids = [...row.children].filter((el) => el.matches("[data-td], [data-td-link]"));
+            kids.forEach((el) => {
+              if (el.matches("[data-td-link]")) {
+                const label = el.querySelector("[data-td-label]")?.value || "";
+                const url = el.querySelector("[data-td-url]")?.value || "";
+                const combined = url ? `${label || "Amazon →"}|${url}` : label;
+                const hidden = el.querySelector("[data-td]");
+                if (hidden) hidden.value = combined;
+                cells.push(combined);
+              } else {
+                cells.push(el.value || "");
+              }
+            });
+            return cells;
+          });
         } else if (type === "product") {
           b.title = card.querySelector("[data-f=title]")?.value || "";
           b.role = card.querySelector("[data-f=role]")?.value || "";
@@ -502,8 +538,19 @@ window.PK_BLOCKS = (function () {
           const rows = b.rows || [];
           const del = esc(t("btnDeletePin"));
           const v = variantOf(b);
+          const isActionCol = (h) => /^(action|amazon|buy|cta)$/i.test(String(h || "").trim());
+          const splitLink = (raw) => {
+            const cell = String(raw || "");
+            const pipe = cell.indexOf("|");
+            if (pipe > 0 && /^https?:\/\//i.test(cell.slice(pipe + 1).trim())) {
+              return { label: cell.slice(0, pipe).trim(), url: cell.slice(pipe + 1).trim() };
+            }
+            if (/^https?:\/\//i.test(cell.trim())) return { label: "Amazon →", url: cell.trim() };
+            return { label: cell, url: "" };
+          };
           return `<div class="tbl-edit tbl-edit--${v}" data-table-variant="${v}" style="--cols:${Math.max(headers.length, 1)}">
             <p class="block-hint">${esc(t("hintTableVariant_" + v))}</p>
+            <p class="block-hint">${esc(t("hintTableAmazon"))}</p>
             <div class="tbl-grid">
               <div class="tbl-head">${headers
                 .map((h, i) => `<input data-th value="${esc(h)}" placeholder="Col ${i + 1}">`)
@@ -512,10 +559,19 @@ window.PK_BLOCKS = (function () {
                 .map(
                   (row, ri) =>
                     `<div class="tbl-row" data-row>${headers
-                      .map(
-                        (_, ci) =>
-                          `<input data-td value="${esc((row && row[ci]) || "")}">`
-                      )
+                      .map((_, ci) => {
+                        const h = headers[ci];
+                        const val = (row && row[ci]) || "";
+                        if (isActionCol(h) || String(val).includes("|") || /^https?:\/\/amzn\.to\//i.test(val)) {
+                          const parts = splitLink(val);
+                          return `<div class="tbl-link-cell" data-td-link>
+                            <input data-td-label placeholder="Amazon →" value="${esc(parts.label)}">
+                            <input data-td-url placeholder="https://amzn.to/xxxxx" value="${esc(parts.url)}">
+                            <input type="hidden" data-td value="${esc(val)}">
+                          </div>`;
+                        }
+                        return `<input data-td value="${esc(val)}">`;
+                      })
                       .join("")}
                       <button type="button" class="block-tool block-tool-del" data-row-del="${ri}" title="${del}" aria-label="${del}">×</button>
                     </div>`
@@ -525,6 +581,7 @@ window.PK_BLOCKS = (function () {
             <div class="tbl-tools">
               <button type="button" class="btn btn-ghost btn-sm" data-row-add>+ ${esc(t("blockAddRow"))}</button>
               <button type="button" class="btn btn-ghost btn-sm" data-col-add>+ Col</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-action-col>+ ${esc(t("blockAddActionCol"))}</button>
             </div>
           </div>`;
         }
@@ -799,6 +856,16 @@ window.PK_BLOCKS = (function () {
           b.headers = Array.isArray(b.headers) ? b.headers : [];
           b.headers.push("Col");
           b.rows = (b.rows || []).map((r) => [...(r || []), ""]);
+          paint({ skipDomRead: true });
+          emit();
+        });
+        card.querySelector("[data-action-col]")?.addEventListener("click", () => {
+          readDomIntoList();
+          b.headers = Array.isArray(b.headers) ? b.headers : [];
+          if (!b.headers.some((h) => /^(action|amazon|buy|cta)$/i.test(String(h || "").trim()))) {
+            b.headers.push("Action");
+            b.rows = (b.rows || []).map((r) => [...(r || []), "Amazon →|https://amzn.to/"]);
+          }
           paint({ skipDomRead: true });
           emit();
         });

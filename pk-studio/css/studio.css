@@ -2451,6 +2451,28 @@ body.studio-app {
 .tbl-head input:focus, .tbl-row input:focus { background: var(--pk-blue-pale); }
 .tbl-row .block-tool { justify-self: center; }
 .tbl-tools { display: flex; gap: 8px; flex-wrap: wrap; }
+.tbl-link-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 8px;
+  min-width: 0;
+}
+.tbl-link-cell input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-size: 0.8rem;
+  color: var(--pk-navy);
+  padding: 4px 6px;
+}
+.tbl-link-cell input[data-td-url] {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  color: #64748b;
+  border-top: 1px dashed var(--pk-line);
+}
 
 /* Live article table look (pk-mw-table) — Compare */
 .tbl-edit--compare .tbl-grid {

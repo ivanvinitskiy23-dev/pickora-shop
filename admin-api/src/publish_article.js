@@ -16,6 +16,310 @@
  */
 
 import { getFile, putFile } from "./github.js";
+import {
+  compileBlocksToHtml,
+  ensureBlueH1,
+  PK_MW_GUIDE_CSS,
+  escHtml,
+  escAttr,
+} from "./article_blocks.js";
+
+export { compileBlocksToHtml, ensureBlueH1 };
+
+const LIVE_HEADER_CSS = `
+/* =========================================================
+   Pickora — premium header + mobile navigation (sitewide)
+   ========================================================= */
+
+/* --- Sticky header bar --- */
+header.site-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10000 !important;
+  background: #ffffff !important;
+  width: 100% !important;
+  flex: 0 0 auto !important;
+  min-height: 72px !important;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.06) !important;
+}
+
+header.site-header .hostinger-ai-menu-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+  grid-template-columns: none !important;
+  width: 100% !important;
+  max-width: 1140px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+}
+
+header.site-header .hostinger-ai-site-navigation-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  margin-left: auto !important;
+}
+
+header.site-header .hostinger-ai-site-navigation.wp-block-navigation {
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* --- Desktop nav: one clean horizontal row --- */
+@media (min-width: 992px) {
+  header.site-header .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open) {
+    display: block !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: transparent !important;
+  }
+  header.site-header .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open) .wp-block-navigation__responsive-close,
+  header.site-header .wp-block-navigation__responsive-container:not(.is-menu-open):not(.has-modal-open) .wp-block-navigation__responsive-dialog {
+    display: contents !important;
+  }
+  header.site-header .wp-block-navigation__responsive-container-content {
+    display: flex !important;
+    visibility: visible !important;
+    position: static !important;
+    padding: 0 !important;
+  }
+  header.site-header .wp-block-navigation__container {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 32px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+  }
+  header.site-header .wp-block-navigation-item {
+    display: inline-flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  header.site-header .wp-block-navigation-item__content {
+    display: inline-block !important;
+    padding: 4px 0 !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.01em !important;
+    color: #0f172a !important;
+    line-height: 1.2 !important;
+  }
+  header.site-header .wp-block-navigation-item__content:hover {
+    color: #2075d2 !important;
+  }
+  header.site-header .current-menu-item > .wp-block-navigation-item__content,
+  header.site-header .wp-block-navigation-item__content[aria-current="page"] {
+    color: #2075d2 !important;
+    font-weight: 600 !important;
+    background: transparent !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+  }
+  header.site-header .wp-block-navigation,
+  header.site-header .wp-block-navigation ul,
+  header.site-header .wp-block-navigation li,
+  header.site-header .wp-block-navigation a {
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+  }
+}
+
+/* --- Kill outlines / underlines / borders on ALL header + overlay nav links --- */
+header.site-header .wp-block-navigation a.wp-block-navigation-item__content,
+header.site-header .wp-block-navigation a.wp-block-navigation-item__content:link,
+header.site-header .wp-block-navigation a.wp-block-navigation-item__content:visited,
+header.site-header .wp-block-navigation a.wp-block-navigation-item__content:hover,
+header.site-header .wp-block-navigation a.wp-block-navigation-item__content:active,
+header.site-header .wp-block-navigation a.wp-block-navigation-item__content:focus,
+header.site-header .wp-block-navigation a.wp-block-navigation-item__content:focus-visible,
+header.site-header .wp-block-navigation .current-menu-item > a,
+header.site-header .wp-block-navigation a[aria-current="page"],
+.wp-block-navigation__responsive-container.is-menu-open a,
+.wp-block-navigation__responsive-container.has-modal-open a,
+.wp-block-navigation__responsive-container.is-menu-open a:link,
+.wp-block-navigation__responsive-container.has-modal-open a:link,
+.wp-block-navigation__responsive-container.is-menu-open a:visited,
+.wp-block-navigation__responsive-container.has-modal-open a:visited,
+.wp-block-navigation__responsive-container.is-menu-open a:hover,
+.wp-block-navigation__responsive-container.has-modal-open a:hover,
+.wp-block-navigation__responsive-container.is-menu-open a:active,
+.wp-block-navigation__responsive-container.has-modal-open a:active,
+.wp-block-navigation__responsive-container.is-menu-open a:focus,
+.wp-block-navigation__responsive-container.has-modal-open a:focus,
+.wp-block-navigation__responsive-container.is-menu-open a:focus-visible,
+.wp-block-navigation__responsive-container.has-modal-open a:focus-visible {
+  outline: 0 !important;
+  outline-offset: 0 !important;
+  border: 0 !important;
+  border-bottom: 0 !important;
+  border-top: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+  text-underline-offset: unset !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+header.site-header .wp-block-navigation .wp-block-navigation-item__label,
+.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item__label,
+.wp-block-navigation__responsive-container.has-modal-open .wp-block-navigation-item__label {
+  text-decoration: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+header.site-header .wp-block-navigation .current-menu-item > a::after,
+header.site-header .wp-block-navigation .current-menu-item > a::before,
+header.site-header .wp-block-navigation a[aria-current="page"]::after,
+header.site-header .wp-block-navigation a[aria-current="page"]::before,
+.wp-block-navigation__responsive-container.is-menu-open .current-menu-item > a::after,
+.wp-block-navigation__responsive-container.has-modal-open .current-menu-item > a::after,
+.wp-block-navigation__responsive-container.is-menu-open .current-menu-item > a::before,
+.wp-block-navigation__responsive-container.has-modal-open .current-menu-item > a::before,
+.wp-block-navigation__responsive-container.is-menu-open a[aria-current="page"]::after,
+.wp-block-navigation__responsive-container.has-modal-open a[aria-current="page"]::after,
+.wp-block-navigation__responsive-container.is-menu-open a[aria-current="page"]::before,
+.wp-block-navigation__responsive-container.has-modal-open a[aria-current="page"]::before {
+  content: none !important;
+  display: none !important;
+  border: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* MOBILE OVERLAY styles moved to /assets/css/pickora-nav.css (Variant C drawer) */
+/* Search stacking under sticky header */
+#pk-search-system,
+.pk-search-container,
+.pk-search-box,
+.pk-search-outer-container,
+input[type="search"],
+input#pk-realtime-search {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Hub titles: keep space under sticky header (do not collapse) */
+.pk-hub-header-section {
+  margin-top: 56px !important;
+  padding-top: 12px !important;
+}
+.pk-catalog-header {
+  padding-top: 48px !important;
+}
+@media (max-width: 768px) {
+  .pk-hub-header-section {
+    margin-top: 36px !important;
+    padding-top: 12px !important;
+  }
+  .pk-catalog-header {
+    padding-top: 36px !important;
+  }
+  .pk-main-title {
+    line-height: 1.15 !important;
+  }
+}
+
+/* Categories board must stay visible; no flex-grown empty gap */
+.pickora-pins-container {
+  display: block !important;
+  min-height: 0 !important;
+}
+.pickora-board-grid {
+  display: grid !important;
+}
+.wp-site-blocks > .elementor-widget-container,
+.wp-site-blocks > .elementor-element,
+.e-con.e-flexbox-base,
+.elementor-widget-container {
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 0 !important;
+}
+
+/* =========================================================
+   Sticky footer WITHOUT painting legal content navy
+   ========================================================= */
+html {
+  background-color: #ffffff !important;
+  height: 100% !important;
+}
+
+body {
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+body > .wp-site-blocks {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 0 auto !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  background-color: #ffffff !important;
+}
+
+main {
+  flex: 1 0 auto !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.entry-content,
+.pk-legal-container,
+.pk-legal-content,
+.pk-legal-hero {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.pk-legal-content p,
+.pk-legal-content li,
+.pk-legal-content h2,
+.pk-legal-content h3 {
+  color: #0f172a !important;
+}
+
+footer,
+footer.site-footer {
+  flex-shrink: 0 !important;
+  width: 100% !important;
+  margin-top: auto !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 30px !important;
+  background-color: #15223B !important;
+  box-shadow: 0 50vh 0 0 #15223B;
+}
+
+footer.site-footer > .wp-block-group.has-color-2-background-color {
+  background-color: #15223B !important;
+}
+`;
+
 
 // ---------------------------------------------------------------------------
 // Chip slug → display label map (source of truth: chips.md)
@@ -241,17 +545,16 @@ ${cards}
  */
 function _buildFaqSectionHtml(faq) {
   if (!Array.isArray(faq) || faq.length === 0) return "";
-  const items = faq
-    .map(
-      (item) => `  <div class="pk-faq-item">
-    <p class="pk-faq-q">${escHtml(String(item.q || ""))}</p>
-    <div class="pk-faq-a">${item.a || ""}</div>
-  </div>`
-    )
-    .join("\n");
   return `<div class="pk-faq-section">
   <h2>Frequently Asked Questions</h2>
-${items}
+${faq
+    .map(
+      (item) => `  <details class="pk-faq-acc">
+    <summary class="pk-faq-q">${escHtml(String(item.q || "Question"))}</summary>
+    <div class="pk-faq-a">${item.a || ""}</div>
+  </details>`
+    )
+    .join("\n")}
 </div>
 `;
 }
@@ -335,152 +638,6 @@ ${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }, null, 2)
  * @param {object} draft - Published article draft
  * @returns {string} Complete HTML document
  */
-/**
- * Compile Studio block constructor JSON → article body HTML.
- * Mirrors pk-studio/js/blocks.js compileBlocksToHtml.
- */
-export function compileBlocksToHtml(blocks) {
-  if (!Array.isArray(blocks) || !blocks.length) return "";
-
-  const VARIANTS = {
-    table: ["compare", "simple", "striped"],
-    product: ["card", "compact"],
-    cta: ["primary", "outline", "amazon"],
-  };
-  const variantOf = (block) => {
-    const allowed = VARIANTS[block && block.type];
-    if (!allowed) return "";
-    return allowed.includes(block.variant) ? block.variant : allowed[0];
-  };
-
-  const esc = escHtml;
-  const paragraphs = (text) =>
-    String(text || "")
-      .split(/\n{2,}/)
-      .map((p) => p.trim())
-      .filter(Boolean)
-      .map((p) => `<p>${esc(p).replace(/\n/g, "<br>")}</p>`)
-      .join("\n");
-  const listHtml = (items, tag) => {
-    const lis = (items || [])
-      .map((x) => String(x || "").trim())
-      .filter(Boolean)
-      .map((x) => `<li>${esc(x)}</li>`)
-      .join("");
-    return lis ? `<${tag}>${lis}</${tag}>` : "";
-  };
-
-  return blocks
-    .map((b) => {
-      if (!b || !b.type) return "";
-      switch (b.type) {
-        case "intro":
-          return `<div class="pk-block pk-block-intro">${paragraphs(b.text)}</div>`;
-        case "heading": {
-          const lv = b.level === 3 ? 3 : 2;
-          return `<h${lv} class="pk-block-h">${esc(b.text)}</h${lv}>`;
-        }
-        case "richtext":
-          return `<div class="pk-block pk-block-text">${paragraphs(b.text)}</div>`;
-        case "image":
-          if (!b.src) return "";
-          return `<figure class="pk-block pk-block-image">
-  <img src="${escAttr(b.src)}" alt="${escAttr(b.alt || "")}" loading="lazy">
-  ${b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : ""}
-</figure>`;
-        case "table": {
-          const headers = Array.isArray(b.headers) ? b.headers : [];
-          const rows = Array.isArray(b.rows) ? b.rows : [];
-          if (!headers.length) return "";
-          const thead = `<tr>${headers.map((h) => `<th>${esc(h)}</th>`).join("")}</tr>`;
-          const tbody = rows
-            .map(
-              (row) =>
-                `<tr>${headers
-                  .map((_, i) => `<td>${esc((row && row[i]) || "")}</td>`)
-                  .join("")}</tr>`
-            )
-            .join("\n");
-          return `<div class="pk-block pk-block-table pk-table--${variantOf(b)}"><table class="pk-table"><thead>${thead}</thead><tbody>${tbody}</tbody></table></div>`;
-        }
-        case "product": {
-          const style = variantOf(b);
-          const links = (b.links || [])
-            .filter((l) => l && String(l.url || "").trim())
-            .map(
-              (l) =>
-                `<a class="pk-aff-btn pk-aff-btn--amazon" href="${escAttr(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
-                  l.label || "Check on Amazon →"
-                )}</a>`
-            )
-            .join("\n");
-          return `<article class="pk-block pk-product-card pk-product-card--${style}">
-  ${
-    b.image
-      ? `<div class="pk-product-media"><img src="${escAttr(b.image)}" alt="${escAttr(
-          b.imageAlt || b.title || ""
-        )}" loading="lazy"></div>`
-      : ""
-  }
-  <div class="pk-product-body">
-    ${b.role ? `<span class="pk-aff-card-role">${esc(b.role)}</span>` : ""}
-    <h3>${esc(b.title || "Product")}</h3>
-    ${paragraphs(b.description)}
-    ${listHtml(b.pros, "ul")}
-    ${
-      b.cons && b.cons.filter(Boolean).length
-        ? `<p><strong>Skip if:</strong></p>${listHtml(b.cons, "ul")}`
-        : ""
-    }
-    ${b.verdict ? `<div class="pk-verdict">${paragraphs(b.verdict)}</div>` : ""}
-    ${links ? `<div class="pk-product-ctas">${links}</div>` : ""}
-  </div>
-</article>`;
-        }
-        case "cta": {
-          const style = variantOf(b);
-          const links = (b.links || [])
-            .filter((l) => l && String(l.url || "").trim())
-            .map(
-              (l) =>
-                `<a class="pk-aff-btn pk-aff-btn--${style}" href="${escAttr(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
-                  l.label || "Buy"
-                )}</a>`
-            )
-            .join("\n");
-          if (!links) return "";
-          return `<div class="pk-block pk-block-cta pk-block-cta--${style}">
-  ${b.title ? `<p class="pk-cta-title">${esc(b.title)}</p>` : ""}
-  <div class="pk-product-ctas">${links}</div>
-</div>`;
-        }
-        case "faq": {
-          const items = (b.items || []).filter((it) => it && (it.q || it.a));
-          if (!items.length) return "";
-          return `<div class="pk-faq-section pk-block">
-  <h2>Frequently Asked Questions</h2>
-  ${items
-    .map(
-      (it) => `  <div class="pk-faq-item">
-    <p class="pk-faq-q">${esc(it.q || "")}</p>
-    <div class="pk-faq-a">${paragraphs(it.a)}</div>
-  </div>`
-    )
-    .join("\n")}
-</div>`;
-        }
-        case "verdict":
-          return `<div class="pk-block pk-verdict pk-block-verdict">${paragraphs(b.text)}</div>`;
-        case "html":
-          return String(b.html || "");
-        default:
-          return "";
-      }
-    })
-    .filter(Boolean)
-    .join("\n\n");
-}
-
 export function buildArticlePage(draft, options = {}) {
   const preview     = !!(options && options.preview);
   const previewBy   = String((options && options.previewBy) || "studio");
@@ -488,8 +645,8 @@ export function buildArticlePage(draft, options = {}) {
   const canonical   = String(draft.canonical || `https://pickora.shop/${slug}/`);
   const title       = String(draft.title     || slug);
   const metaDesc    = String(draft.metaDescription || draft.dek || "").slice(0, 160);
-  // h1 may contain trusted HTML spans (e.g. <span class="pk-blue-text">…</span>)
-  const h1Html      = draft.h1 || escHtml(title);
+  // Brand blue accent on H1 (auto if author left plain text)
+  const h1Html      = ensureBlueH1(draft.h1, title);
   const dek         = String(draft.dek || "");
   const coverImage  = String(draft.coverImage || "");
   const coverAlt    = String(draft.coverAlt  || title);
@@ -612,23 +769,17 @@ body.pk-is-preview{padding-top:0}
     ? "wp-singular single-post single-format-standard wp-embed-responsive wp-theme-hostinger-ai-theme pk-is-preview"
     : "wp-singular single-post single-format-standard wp-embed-responsive wp-theme-hostinger-ai-theme";
 
-  const footerAssets = preview
-    ? `<!-- preview chrome assets (absolute → pickora.shop) -->
+  const footerAssets = `<!-- site chrome assets -->
 <link rel="stylesheet" href="https://pickora.shop/assets/css/pickora-nav.css?v=5">
 <script src="https://pickora.shop/assets/js/pickora-nav.js?v=5" defer></script>
 <link rel="stylesheet" href="https://pickora.shop/assets/css/pickora-mobile-fixes.css?v=2">
 <script src="https://pickora.shop/assets/js/pickora-product-anchors.js" defer></script>
-<script data-wp-router-options="{&quot;loadOnClientNavigation&quot;:true}" fetchpriority="low"
-        id="@wordpress/block-library/navigation/view-js-module"
-        src="https://pickora.shop/wp-includes/js/dist/script-modules/block-library/navigation/view.min.js?ver=96a846e1d7b789c39ab9"
-        type="module"></script>`
-    : `<!-- pk-analytics-body -->
-<script src="/assets/js/pickora-consent.js?v=3" defer></script>
-<link rel="stylesheet" href="/assets/css/pickora-nav.css?v=5">
-<script src="/assets/js/pickora-nav.js?v=5" defer></script>
-<link rel="stylesheet" href="/assets/css/pickora-mobile-fixes.css?v=2">
-<script src="/assets/js/pickora-analytics.js" defer></script>
-<script src="/assets/js/pickora-product-anchors.js" defer></script>
+${
+  preview
+    ? ""
+    : `<script src="https://pickora.shop/assets/js/pickora-consent.js?v=3" defer></script>
+<script src="https://pickora.shop/assets/js/pickora-analytics.js" defer></script>`
+}
 <script data-wp-router-options="{&quot;loadOnClientNavigation&quot;:true}" fetchpriority="low"
         id="@wordpress/block-library/navigation/view-js-module"
         src="https://pickora.shop/wp-includes/js/dist/script-modules/block-library/navigation/view.min.js?ver=96a846e1d7b789c39ab9"
@@ -691,6 +842,9 @@ body {
 @font-face { font-family: Montserrat; font-style: normal; font-weight: 400 800; font-display: fallback;
   src: url('https://pickora.shop/wp-content/themes/hostinger-ai-theme/assets/fonts/Montserrat-Regular.ttf') format('truetype'); }
 
+${LIVE_HEADER_CSS}
+
+
 /* skip link */
 .skip-link { position: absolute; left: -9999px; z-index: 99999;
   padding: 8px 16px; background: #2075d2; color: #fff; text-decoration: none; }
@@ -715,7 +869,7 @@ header.site-header {
 }
 .hostinger-ai-site-title a {
   font-family: Montserrat, sans-serif; font-size: 22px; font-weight: 800;
-  color: #0f172a; text-decoration: none; letter-spacing: -0.03em;
+  color: #0f172a !important; text-decoration: none; letter-spacing: -0.03em;
 }
 .hostinger-ai-site-title a:hover { color: #2075d2; }
 
@@ -1026,6 +1180,8 @@ footer.site-footer { background: #15223B; color: rgba(255,255,255,0.85); padding
   .pk-article-cover-wrap { padding-left: 12px; padding-right: 12px; }
   .pk-entry-content-wrap { padding-left: 16px; padding-right: 16px; }
 }
+
+${PK_MW_GUIDE_CSS}
 </style>
 </head>
 
@@ -1309,18 +1465,3 @@ function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
-/** Escape a string for safe use as HTML text content. */
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
-/** Escape a string for safe use inside an HTML attribute value (double-quoted). */
-function escAttr(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/"/g, "&quot;");
-}
