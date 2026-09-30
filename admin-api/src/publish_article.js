@@ -557,10 +557,21 @@ body {
 }
 h1, h2, h3, h4, h5, h6,
 .pk-review-title,
-.hostinger-ai-site-title,
-.hostinger-ai-site-title a,
 footer.site-footer .wp-block-heading {
   font-family: Montserrat, sans-serif !important;
+}
+/* Live logo wordmark = Open Sans 700 / 18px (NOT Montserrat — looks like a different brand) */
+.hostinger-ai-site-title,
+.hostinger-ai-site-title a,
+.wp-block-site-title,
+.wp-block-site-title a {
+  font-family: "Open Sans", sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 18px !important;
+  line-height: 1.5 !important;
+  letter-spacing: normal !important;
+  color: #2075d2 !important;
+  text-decoration: none !important;
 }
 .pk-review-dek,
 .entry-content,
