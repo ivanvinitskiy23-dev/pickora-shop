@@ -22,7 +22,7 @@ const STYLE_IDS = [
   "global-styles-inline-css",
   "core-block-supports-inline-css",
   "pk-footer-bottom-inline-css",
-  "pk-mobile-menu-footer-form-inline-css",
+  "pk-mobile-menu-footer-fix-inline-css",
   "pk-ml-footer-dark",
 ];
 

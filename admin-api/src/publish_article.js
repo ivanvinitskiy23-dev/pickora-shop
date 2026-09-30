@@ -478,7 +478,7 @@ body.pk-is-preview{padding-top:0}
     ? "wp-singular single-post single-format-standard wp-embed-responsive wp-theme-hostinger-ai-theme pk-is-preview"
     : "wp-singular single-post single-format-standard wp-embed-responsive wp-theme-hostinger-ai-theme";
 
-  const footerAssets = `<!-- site chrome scripts (CSS loaded in LIVE_CHROME_HEAD_LINKS) -->
+  const footerAssets = `<!-- site chrome scripts (CSS loaded in LIVE_CHROME_HEAD) -->
 <script src="https://pickora.shop/assets/js/pickora-nav.js?v=5" defer></script>
 <script src="https://pickora.shop/assets/js/pickora-product-anchors.js" defer></script>
 ${
