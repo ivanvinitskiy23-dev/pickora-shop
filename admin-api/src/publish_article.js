@@ -450,29 +450,37 @@ export function buildArticlePage(draft, options = {}) {
   </div>
 </div>
 <style>
+:root { --pk-preview-banner-h: 52px; }
 #pk-preview-banner{
-  position:sticky;top:0;z-index:100000;
-  background:#15223B;color:#fff;
-  font-family:Montserrat,DMSans,sans-serif;
+  position:fixed; top:0; left:0; right:0; z-index:100001;
+  background:#15223B; color:#fff;
+  font-family:Montserrat,"Open Sans",sans-serif;
   box-shadow:0 2px 12px rgba(15,23,42,.28);
 }
 .pk-preview-banner-inner{
-  max-width:1140px;margin:0 auto;padding:10px 20px;
-  display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;
-  font-size:13px;line-height:1.35;
+  max-width:1140px; margin:0 auto; padding:10px 20px;
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px;
+  font-size:13px; line-height:1.35;
+  min-height:var(--pk-preview-banner-h); box-sizing:border-box;
 }
 #pk-preview-banner strong{
-  letter-spacing:.12em;font-size:11px;background:#ff9900;color:#111;
-  padding:4px 8px;border-radius:6px;
+  letter-spacing:.12em; font-size:11px; background:#ff9900; color:#111;
+  padding:4px 8px; border-radius:6px;
 }
-.pk-preview-meta{margin-left:auto;opacity:.75;font-size:12px}
-body.pk-is-preview{padding-top:0}
+.pk-preview-meta{ margin-left:auto; opacity:.75; font-size:12px; }
+/* Push page + sticky header below the fixed preview bar (do not cover logo/nav) */
+body.pk-is-preview { padding-top: var(--pk-preview-banner-h) !important; }
+body.pk-is-preview header.site-header {
+  top: var(--pk-preview-banner-h) !important;
+}
 @media (max-width:700px){
-  .pk-preview-meta{margin-left:0;width:100%}
+  :root { --pk-preview-banner-h: 72px; }
+  .pk-preview-meta{ margin-left:0; width:100%; }
 }
 </style>
 `
     : "";
+
 
   const bodyClass = preview
     ? "wp-singular single-post single-format-standard wp-embed-responsive wp-theme-hostinger-ai-theme pk-is-preview"
@@ -532,25 +540,93 @@ ${preview ? "<!-- preview: json-ld skipped -->" : jsonLd}
    =================================================================== */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { max-width: 100%; overflow-x: clip; margin: 0; padding: 0; }
+/* Live article fonts: Open Sans body + Montserrat titles (same as pickora.shop) */
 body {
-  font-family: DMSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-               "Helvetica Neue", Arial, sans-serif;
+  font-family: "Open Sans", sans-serif !important;
   color: #0f172a; background: #fff; line-height: 1.6;
 }
+h1, h2, h3, h4, h5, h6,
+.pk-review-title,
+.hostinger-ai-site-title,
+.hostinger-ai-site-title a,
+footer.site-footer .wp-block-heading {
+  font-family: Montserrat, sans-serif !important;
+}
+.pk-review-dek,
+.entry-content,
+.entry-content p,
+.entry-content li,
+footer.site-footer,
+footer.site-footer a,
+footer.site-footer p {
+  font-family: "Open Sans", sans-serif !important;
+}
 
-/* ── Fonts — served from WP on same domain ── */
-@font-face { font-family: DMSans; font-style: normal; font-weight: 400; font-display: fallback;
-  src: url('https://pickora.shop/wp-content/themes/hostinger-ai-theme/assets/fonts/DMSans-Regular.ttf') format('truetype'); }
-@font-face { font-family: DMSans; font-style: italic; font-weight: 400; font-display: fallback;
-  src: url('https://pickora.shop/wp-content/themes/hostinger-ai-theme/assets/fonts/DMSans-Italic.ttf') format('truetype'); }
-@font-face { font-family: DMSans; font-style: normal; font-weight: 500; font-display: fallback;
-  src: url('https://pickora.shop/wp-content/themes/hostinger-ai-theme/assets/fonts/DMSans-Medium.ttf') format('truetype'); }
-@font-face { font-family: DMSans; font-style: normal; font-weight: 700; font-display: fallback;
-  src: url('https://pickora.shop/wp-content/themes/hostinger-ai-theme/assets/fonts/DMSans-Bold.ttf') format('truetype'); }
-@font-face { font-family: Montserrat; font-style: normal; font-weight: 400 800; font-display: fallback;
+/* ── Fonts — Google Fonts via LIVE_CHROME_HEAD + theme files as fallback ── */
+@font-face { font-family: Montserrat; font-style: normal; font-weight: 400; font-display: swap;
   src: url('https://pickora.shop/wp-content/themes/hostinger-ai-theme/assets/fonts/Montserrat-Regular.ttf') format('truetype'); }
-@font-face { font-family: "Open Sans"; font-style: normal; font-weight: 400 700; font-display: fallback;
-  src: url('https://pickora.shop/wp-content/themes/hostinger-ai-theme/assets/fonts/OpenSans-Regular.ttf') format('truetype'); }
+@font-face { font-family: "Open Sans"; font-style: normal; font-weight: 300 800; font-display: swap;
+  src: url('https://pickora.shop/wp-content/themes/hostinger-ai-theme/assets/fonts/OpenSans-Variable.ttf') format('truetype'); }
+
+/* Accessibility: hide SR-only labels (without this, footer social icons show “Facebook” text and wrap) */
+.screen-reader-text,
+.wp-block-social-link-label.screen-reader-text {
+  border: 0 !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  clip-path: inset(50%) !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: 1px !important;
+  word-wrap: normal !important;
+}
+
+/* Footer socials: one clean icon row like live (override huge WP gap + 44px tap targets) */
+footer.site-footer .wp-block-social-links,
+footer.site-footer .wp-container-core-social-links-is-layout-87452e7f {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 14px !important;
+  margin: 4px 0 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+footer.site-footer .wp-block-social-links .wp-social-link {
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+footer.site-footer .wp-block-social-links .wp-social-link a {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #fff !important;
+  padding: 4px !important;
+}
+footer.site-footer .wp-block-social-links .wp-social-link svg {
+  width: 22px !important;
+  height: 22px !important;
+  fill: currentColor !important;
+}
+/* Tighten footer flow spacing (WP global 40px gap looks sparse in preview) */
+footer.site-footer .wp-block-column.is-layout-flow > * {
+  margin-block-start: 0.75rem !important;
+}
+footer.site-footer .wp-block-column.is-layout-flow > :first-child {
+  margin-block-start: 0 !important;
+}
+footer.site-footer .wp-block-heading {
+  margin: 0 0 10px !important;
+}
+footer.site-footer .is-vertical .wp-block-navigation__container {
+  gap: 8px !important;
+}
 
 /* Article-only styles below; header/footer chrome = LIVE_CHROME_* */
 
@@ -570,7 +646,8 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
   background: transparent; text-align: left;
 }
 .pk-review-hero-inner { max-width: 720px; margin: 0; }
-.pk-crumbs { margin: 0 0 18px; padding: 0; font-size: 13px; line-height: 1.4; color: #94a3b8; }
+.pk-crumbs { margin: 0 0 18px; padding: 0; font-size: 13px; line-height: 1.4; color: #94a3b8;
+  font-family: "Open Sans", sans-serif; }
 .pk-crumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0;
   margin: 0; padding: 0; list-style: none; }
 .pk-crumbs li { display: inline-flex; align-items: center; }
@@ -582,16 +659,20 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
   display: inline-flex; align-items: center; gap: 8px; margin: 0 0 14px;
   font-size: 12px; font-weight: 700; letter-spacing: 0.14em;
   text-transform: uppercase; color: #2075d2;
+  font-family: Montserrat, sans-serif;
 }
 .pk-dot-blue { width: 8px; height: 8px; border-radius: 50%; background: #2075d2; display: inline-block; }
 .pk-review-title {
-  font-family: Montserrat, sans-serif;
+  font-family: Montserrat, sans-serif !important;
   font-size: clamp(32px, 4.6vw, 52px); font-weight: 800;
   letter-spacing: -0.03em; line-height: 1.12;
   color: #15223B !important; margin: 0 0 16px !important;
 }
 .pk-blue-text { color: #2075d2; }
-.pk-review-dek { margin: 0 0 8px; max-width: 640px; font-size: 17px; line-height: 1.65; color: #475569; }
+.pk-review-dek {
+  margin: 0 0 8px; max-width: 640px; font-size: 17px; line-height: 1.65; color: #475569;
+  font-family: "Open Sans", sans-serif !important;
+}
 
 /* ── Cover image (live alignwide cover ≈ 1140) ── */
 .pk-article-cover-wrap {
