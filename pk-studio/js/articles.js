@@ -249,9 +249,28 @@
     showWizard(true);
   }
 
+  function setSettingsOpen(on) {
+    const panel = $("#art-settings");
+    const bd = $("#art-settings-backdrop");
+    const studio = $("#articles-wizard");
+    if (!panel) return;
+    panel.classList.toggle("is-open", !!on);
+    studio?.classList.toggle("settings-open", !!on);
+    if (bd) {
+      bd.hidden = !on;
+      bd.classList.toggle("open", !!on);
+    }
+  }
+
   function showWizard(on) {
     $("#articles-home")?.classList.toggle("pk-hidden", on);
     $("#articles-wizard")?.classList.toggle("pk-hidden", !on);
+    if (on) {
+      const wide = window.matchMedia("(min-width: 1100px)").matches;
+      setSettingsOpen(wide);
+    } else {
+      setSettingsOpen(false);
+    }
   }
 
   async function saveDraft() {
@@ -341,6 +360,11 @@
     $("#btn-article-save")?.addEventListener("click", () => saveDraft());
     $("#btn-article-gate")?.addEventListener("click", () => runGate());
     $("#btn-article-seo-ready")?.addEventListener("click", () => markSeoReady());
+    $("#btn-art-settings")?.addEventListener("click", () => {
+      setSettingsOpen(!$("#art-settings")?.classList.contains("is-open"));
+    });
+    $("#btn-art-settings-close")?.addEventListener("click", () => setSettingsOpen(false));
+    $("#art-settings-backdrop")?.addEventListener("click", () => setSettingsOpen(false));
     $("#art-cover-file")?.addEventListener("change", () => {
       const f = $("#art-cover-file").files?.[0];
       if (f) uploadCover(f);

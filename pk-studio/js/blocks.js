@@ -21,6 +21,19 @@ window.PK_BLOCKS = (function () {
     return pack[key] || (window.PK_I18N && window.PK_I18N.en[key]) || key;
   }
 
+  /** Optional style variants. First entry is the default. */
+  const VARIANTS = {
+    table: ["compare", "simple", "striped"],
+    product: ["card", "compact"],
+    cta: ["primary", "outline", "amazon"],
+  };
+
+  function variantOf(block) {
+    const allowed = VARIANTS[block && block.type];
+    if (!allowed) return "";
+    return allowed.includes(block.variant) ? block.variant : allowed[0];
+  }
+
   const CATALOG = [
     { type: "intro", labelKey: "blockIntro", icon: "¶" },
     { type: "heading", labelKey: "blockHeading", icon: "H" },
@@ -49,6 +62,7 @@ window.PK_BLOCKS = (function () {
         return {
           id,
           type,
+          variant: "compare",
           headers: ["Model", "Best for", "Skip if"],
           rows: [
             ["", "", ""],
@@ -59,6 +73,7 @@ window.PK_BLOCKS = (function () {
         return {
           id,
           type,
+          variant: "card",
           title: "",
           role: "",
           image: "",
@@ -73,6 +88,7 @@ window.PK_BLOCKS = (function () {
         return {
           id,
           type,
+          variant: "primary",
           title: "",
           links: [
             { label: "Amazon", url: "https://amzn.to/" },
@@ -186,19 +202,21 @@ window.PK_BLOCKS = (function () {
                 .join("")}</tr>`
           )
           .join("\n");
-        return `<div class="pk-block pk-block-table"><table><thead>${thead}</thead><tbody>${tbody}</tbody></table></div>`;
+        return `<div class="pk-block pk-block-table pk-table--${variantOf(
+          b
+        )}"><table class="pk-table"><thead>${thead}</thead><tbody>${tbody}</tbody></table></div>`;
       }
       case "product": {
         const links = (b.links || [])
           .filter((l) => l && String(l.url || "").trim())
           .map(
             (l) =>
-              `<a class="pk-aff-btn" href="${esc(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
+              `<a class="pk-aff-btn pk-aff-btn--${variantOf(b)}" href="${esc(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
                 l.label || "Buy"
               )}</a>`
           )
           .join("\n");
-        return `<article class="pk-block pk-product-card">
+        return `<article class="pk-block pk-product-card pk-product-card--${variantOf(b)}">
   ${
     b.image
       ? `<div class="pk-product-media"><img src="${esc(b.image)}" alt="${esc(
@@ -218,17 +236,20 @@ window.PK_BLOCKS = (function () {
 </article>`;
       }
       case "cta": {
+        const style = variantOf(b);
         const links = (b.links || [])
           .filter((l) => l && String(l.url || "").trim())
           .map(
             (l) =>
-              `<a class="pk-aff-btn" href="${esc(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
+              `<a class="pk-aff-btn pk-aff-btn--${style}" href="${esc(
+                l.url
+              )}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
                 l.label || "Buy"
               )}</a>`
           )
           .join("\n");
         if (!links) return "";
-        return `<div class="pk-block pk-block-cta">
+        return `<div class="pk-block pk-block-cta pk-block-cta--${style}">
   ${b.title ? `<p class="pk-cta-title">${esc(b.title)}</p>` : ""}
   <div class="pk-product-ctas">${links}</div>
 </div>`;
@@ -348,12 +369,26 @@ window.PK_BLOCKS = (function () {
       emit();
     }
 
+    function duplicateAt(i) {
+      const src = list[i];
+      if (!src) return;
+      const copy = JSON.parse(JSON.stringify(src));
+      copy.id = uid();
+      list.splice(i + 1, 0, copy);
+      paint();
+      emit();
+    }
+
     function readDomIntoList() {
       container.querySelectorAll("[data-block-id]").forEach((card) => {
         const id = card.getAttribute("data-block-id");
         const b = list.find((x) => x.id === id);
         if (!b) return;
         const type = b.type;
+        if (VARIANTS[type]) {
+          const v = card.querySelector("[data-f=variant]")?.value;
+          if (v && VARIANTS[type].includes(v)) b.variant = v;
+        }
         if (type === "intro" || type === "richtext" || type === "verdict") {
           b.text = card.querySelector("[data-f=text]")?.value || "";
         } else if (type === "heading") {
@@ -550,9 +585,28 @@ window.PK_BLOCKS = (function () {
       }
     }
 
+    /** Small style switch in the block header — only for table / product / cta. */
+    function variantPicker(b) {
+      const allowed = VARIANTS[b.type];
+      if (!allowed) return "";
+      const cur = variantOf(b);
+      const opts = allowed
+        .map(
+          (v) =>
+            `<option value="${v}"${v === cur ? " selected" : ""}>${esc(
+              t("blockVariant_" + b.type + "_" + v)
+            )}</option>`
+        )
+        .join("");
+      return `<label class="block-variant">
+        <span class="pk-sr">${esc(t("blockVariant"))}</span>
+        <select class="variant-pick" data-f="variant" title="${esc(t("blockVariant"))}">${opts}</select>
+      </label>`;
+    }
+
     /** Type picker: a compact popover sheet, opened from one "+" affordance. */
-    function catalogBar(afterIndex, variant) {
-      const main = variant === "main";
+    function catalogBar(afterIndex, placement) {
+      const main = placement === "main";
       const addLabel = esc(t("blockAdd"));
       const items = CATALOG.map(
         (c) => `<button type="button" class="pick-item" data-add-type="${c.type}" data-after="${afterIndex}">
@@ -596,6 +650,7 @@ window.PK_BLOCKS = (function () {
               <span class="block-seq">${String(i + 1).padStart(2, "0")}</span>
               <span class="block-mark" aria-hidden="true">${esc(typeMark(b.type))}</span>
               <span class="block-kind">${esc(typeLabel(b.type))}</span>
+              ${variantPicker(b)}
               <div class="block-tools">
                 <button type="button" class="block-tool" data-up="${i}" title="${up}" aria-label="${up}" ${i === 0 ? "disabled" : ""}>↑</button>
                 <button type="button" class="block-tool" data-down="${i}" title="${down}" aria-label="${down}" ${i === list.length - 1 ? "disabled" : ""}>↓</button>

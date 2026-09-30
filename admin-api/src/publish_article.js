@@ -342,6 +342,17 @@ ${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }, null, 2)
 export function compileBlocksToHtml(blocks) {
   if (!Array.isArray(blocks) || !blocks.length) return "";
 
+  const VARIANTS = {
+    table: ["compare", "simple", "striped"],
+    product: ["card", "compact"],
+    cta: ["primary", "outline", "amazon"],
+  };
+  const variantOf = (block) => {
+    const allowed = VARIANTS[block && block.type];
+    if (!allowed) return "";
+    return allowed.includes(block.variant) ? block.variant : allowed[0];
+  };
+
   const esc = escHtml;
   const paragraphs = (text) =>
     String(text || "")
@@ -390,19 +401,20 @@ export function compileBlocksToHtml(blocks) {
                   .join("")}</tr>`
             )
             .join("\n");
-          return `<div class="pk-block pk-block-table"><table><thead>${thead}</thead><tbody>${tbody}</tbody></table></div>`;
+          return `<div class="pk-block pk-block-table pk-table--${variantOf(b)}"><table class="pk-table"><thead>${thead}</thead><tbody>${tbody}</tbody></table></div>`;
         }
         case "product": {
+          const style = variantOf(b);
           const links = (b.links || [])
             .filter((l) => l && String(l.url || "").trim())
             .map(
               (l) =>
-                `<a class="pk-aff-btn" href="${escAttr(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
+                `<a class="pk-aff-btn pk-aff-btn--${style === "compact" ? "outline" : "primary"}" href="${escAttr(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
                   l.label || "Buy"
                 )}</a>`
             )
             .join("\n");
-          return `<article class="pk-block pk-product-card">
+          return `<article class="pk-block pk-product-card pk-product-card--${style}">
   ${
     b.image
       ? `<div class="pk-product-media"><img src="${escAttr(b.image)}" alt="${escAttr(
@@ -426,17 +438,18 @@ export function compileBlocksToHtml(blocks) {
 </article>`;
         }
         case "cta": {
+          const style = variantOf(b);
           const links = (b.links || [])
             .filter((l) => l && String(l.url || "").trim())
             .map(
               (l) =>
-                `<a class="pk-aff-btn" href="${escAttr(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
+                `<a class="pk-aff-btn pk-aff-btn--${style}" href="${escAttr(l.url)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(
                   l.label || "Buy"
                 )}</a>`
             )
             .join("\n");
           if (!links) return "";
-          return `<div class="pk-block pk-block-cta">
+          return `<div class="pk-block pk-block-cta pk-block-cta--${style}">
   ${b.title ? `<p class="pk-cta-title">${esc(b.title)}</p>` : ""}
   <div class="pk-product-ctas">${links}</div>
 </div>`;
@@ -777,6 +790,28 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
   transition: background 0.15s;
 }
 .pk-aff-btn:hover { background: #1a63b5; }
+.pk-aff-btn--outline {
+  background: #fff;
+  color: #2075D2;
+  border: 1.5px solid #2075D2;
+}
+.pk-aff-btn--outline:hover { background: #dbeeff; }
+.pk-aff-btn--amazon {
+  background: #ff9900;
+  color: #111;
+}
+.pk-aff-btn--amazon:hover { background: #e88b00; }
+.pk-aff-btn--primary { background: #2075D2; color: #fff; }
+.pk-table--simple table { border: none; }
+.pk-table--simple th, .pk-table--simple td { border-bottom: 1px solid #e2e8f0; }
+.pk-table--striped tbody tr:nth-child(even) { background: #f8fafc; }
+.pk-table--compare th { background: #15223B; color: #fff; }
+.pk-product-card--compact {
+  grid-template-columns: 120px 1fr;
+  padding: 14px;
+  gap: 14px;
+}
+.pk-product-card--compact h3 { font-size: 1.05rem; }
 @media (max-width: 600px) { .pk-aff-card { flex-direction: column; align-items: stretch; } }
 
 /* ── Block constructor product cards ── */
