@@ -2,7 +2,7 @@
  * Pickora Admin API — Cloudflare Worker
  * Auth + cloud drafts (D1) + media + publish to GitHub Pages.
  */
-import { publishArticleDraft, compileBlocksToHtml } from "./publish_article.js";
+import { publishArticleDraft, compileBlocksToHtml, buildArticlePage } from "./publish_article.js";
 import { publishHomeDraft }    from "./publish_home.js";
 import { publishPinsDraft }    from "./publish_pins.js";
 import { publishProductsDraft } from "./publish_products.js";
@@ -81,6 +81,11 @@ export default {
       if (url.pathname === "/api/publish/article" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
         return cors(await handlePublishArticle(env, await readJson(request), user), request);
+      }
+
+      if (url.pathname === "/api/preview/article" && request.method === "POST") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(await handlePreviewArticle(await readJson(request), user), request);
       }
 
       if (url.pathname === "/api/publish/home" && request.method === "POST") {
@@ -792,6 +797,65 @@ async function handleMediaDelete(pathname, env, user) {
     .bind(user.login, key)
     .run();
   return json({ ok: true, key });
+}
+
+async function normalizePreviewDraft(payload) {
+  const slug = String(payload?.slug || "")
+    .trim()
+    .toLowerCase() || "preview-draft";
+  const draft = {
+    ...payload,
+    slug,
+    canonical: `https://pickora.shop/${slug}/`,
+    status: payload?.status || "draft",
+  };
+  if (Array.isArray(draft.blocks) && draft.blocks.length) {
+    draft.bodyHtml = compileBlocksToHtml(draft.blocks);
+    const fromBlocks = [];
+    draft.blocks.forEach((b) => {
+      if (b && (b.type === "product" || b.type === "cta")) {
+        (b.links || []).forEach((l) => {
+          const u = String(l?.url || "").trim();
+          if (u && !fromBlocks.includes(u)) fromBlocks.push(u);
+        });
+      }
+    });
+    const existing = Array.isArray(draft.affiliateLinks) ? draft.affiliateLinks : [];
+    draft.affiliateLinks = [
+      ...new Set([...existing, ...fromBlocks].map((u) => String(u).trim()).filter(Boolean)),
+    ];
+  }
+  // Absolute hub URL so breadcrumbs match live
+  const hub = String(draft.hubUrl || "/articles/").trim();
+  if (hub && !/^https?:\/\//i.test(hub)) {
+    draft.hubUrl = `https://pickora.shop${hub.startsWith("/") ? "" : "/"}${hub}`;
+  }
+  return draft;
+}
+
+/**
+ * Live-identical article HTML preview — same renderer as Publish, no GitHub write.
+ */
+async function handlePreviewArticle(body, user) {
+  if (!body || typeof body !== "object") {
+    return json({ error: "invalid_payload" }, 400);
+  }
+  const draft = await normalizePreviewDraft(body);
+  if (!draft.title && !draft.h1 && !(draft.blocks || []).length && !draft.bodyHtml) {
+    return json({ error: "empty_draft", hint: "Add a title or blocks first" }, 400);
+  }
+  const html = buildArticlePage(draft, {
+    preview: true,
+    previewBy: user?.login || "studio",
+  });
+  return new Response(html, {
+    status: 200,
+    headers: {
+      "Content-Type": "text/html; charset=utf-8",
+      "Cache-Control": "no-store",
+      "X-Robots-Tag": "noindex, nofollow",
+    },
+  });
 }
 
 async function handlePublishArticle(env, body, user) {

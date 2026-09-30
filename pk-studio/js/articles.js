@@ -56,10 +56,19 @@
 
   function setStatus(msg, kind) {
     const el = $("#articles-status");
-    if (!el) return;
-    el.classList.remove("pk-hidden", "ok", "warn");
-    el.textContent = msg;
-    if (kind) el.classList.add(kind);
+    if (el) {
+      el.classList.remove("pk-hidden", "ok", "warn");
+      el.textContent = msg;
+      if (kind) el.classList.add(kind);
+      if (!msg) el.classList.add("pk-hidden");
+    }
+    const bar = $("#art-studio-status");
+    if (bar) {
+      bar.textContent = msg || "";
+      bar.classList.toggle("is-ok", kind === "ok");
+      bar.classList.toggle("is-warn", kind === "warn");
+      bar.hidden = !msg;
+    }
   }
 
   function renderGate(result) {
@@ -329,6 +338,73 @@
     await loadLists();
   }
 
+  async function openPreview() {
+    const d = readForm();
+    if (!d.title && !d.h1 && !(d.blocks || []).length) {
+      setStatus(t("previewFail"), "warn");
+      return;
+    }
+    // Open window early (same click gesture) so popup blockers don't kill us
+    const win = window.open("", "pk-article-preview");
+    if (!win) {
+      setStatus(t("previewPopupBlocked"), "warn");
+      return;
+    }
+    try {
+      win.document.write(
+        `<!doctype html><title>${escapeAttr(t("previewOpening"))}</title>
+         <body style="font:15px/1.5 system-ui;padding:40px;color:#15223B">
+         ${escapeAttr(t("previewOpening"))}</body>`
+      );
+      win.document.close();
+    } catch {
+      /* cross-origin replace later via location */
+    }
+    setStatus(t("previewOpening"));
+    try {
+      const res = await fetch(window.PK_AUTH.API + "/api/preview/article", {
+        method: "POST",
+        headers: authHeaders(),
+        credentials: "include",
+        body: JSON.stringify(d),
+      });
+      const html = await res.text();
+      if (!res.ok) {
+        let msg = t("previewFail");
+        try {
+          const err = JSON.parse(html);
+          if (err.error) msg += ": " + err.error;
+        } catch {
+          /* not json */
+        }
+        try {
+          win.document.write(
+            `<!doctype html><body style="font:15px/1.5 system-ui;padding:40px;color:#b91c1c">${escapeAttr(
+              msg
+            )}</body>`
+          );
+          win.document.close();
+        } catch {
+          win.close();
+        }
+        setStatus(msg, "warn");
+        return;
+      }
+      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      win.location = url;
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      setStatus(t("previewOk"), "ok");
+    } catch (err) {
+      try {
+        win.close();
+      } catch {
+        /* ignore */
+      }
+      setStatus(t("previewFail") + (err?.message ? ": " + err.message : ""), "warn");
+    }
+  }
+
   async function uploadCover(file) {
     setStatus(t("uploading"));
     try {
@@ -359,6 +435,7 @@
     $("#btn-article-cancel")?.addEventListener("click", () => showWizard(false));
     $("#btn-article-save")?.addEventListener("click", () => saveDraft());
     $("#btn-article-gate")?.addEventListener("click", () => runGate());
+    $("#btn-article-preview")?.addEventListener("click", () => openPreview());
     $("#btn-article-seo-ready")?.addEventListener("click", () => markSeoReady());
     $("#btn-art-settings")?.addEventListener("click", () => {
       setSettingsOpen(!$("#art-settings")?.classList.contains("is-open"));

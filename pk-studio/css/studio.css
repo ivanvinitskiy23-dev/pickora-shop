@@ -2898,6 +2898,17 @@ body.studio-app {
   width: auto;
   margin-top: 0;
 }
+.art-studio-status {
+  font-size: 0.72rem;
+  color: var(--pk-muted);
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.art-studio-status.is-ok { color: var(--pk-ok); }
+.art-studio-status.is-warn { color: var(--pk-danger); }
+.art-studio-status[hidden] { display: none; }
 .art-studio-body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 320px;

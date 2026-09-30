@@ -481,7 +481,9 @@ export function compileBlocksToHtml(blocks) {
     .join("\n\n");
 }
 
-export function buildArticlePage(draft) {
+export function buildArticlePage(draft, options = {}) {
+  const preview     = !!(options && options.preview);
+  const previewBy   = String((options && options.previewBy) || "studio");
   const slug        = String(draft.slug || "");
   const canonical   = String(draft.canonical || `https://pickora.shop/${slug}/`);
   const title       = String(draft.title     || slug);
@@ -493,7 +495,10 @@ export function buildArticlePage(draft) {
   const coverAlt    = String(draft.coverAlt  || title);
   const chips       = (Array.isArray(draft.chips) ? draft.chips : []).filter((c) => CHIP_LABELS[c]).slice(0, 3);
   const hubCategory = String(draft.hubCategory || "Articles");
-  const hubUrl      = String(draft.hubUrl     || "https://pickora.shop/articles/");
+  let hubUrl        = String(draft.hubUrl     || "https://pickora.shop/articles/");
+  if (hubUrl && !/^https?:\/\//i.test(hubUrl)) {
+    hubUrl = `https://pickora.shop${hubUrl.startsWith("/") ? "" : "/"}${hubUrl}`;
+  }
   const hasBlocks   = Array.isArray(draft.blocks) && draft.blocks.length > 0;
   const bodyHtml    = hasBlocks
     ? compileBlocksToHtml(draft.blocks)
@@ -524,33 +529,15 @@ export function buildArticlePage(draft) {
     .map((c) => `<span class="pk-chip">${escHtml(CHIP_LABELS[c] || c)}</span>`)
     .join(" ");
 
-  /* ── Full HTML page ─────────────────────────────────────────────────────── */
-  return `<!DOCTYPE html>
-<html lang="en-US">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="max-image-preview:large">
-<title>${escHtml(title)} – Pickora</title>
-<link rel="canonical" href="${escAttr(canonical)}">
-<meta name="description" content="${escAttr(metaDesc)}">
-<meta property="og:type" content="article">
-<meta property="og:site_name" content="Pickora">
-<meta property="og:title" content="${escAttr(title)} – Pickora">
-<meta property="og:description" content="${escAttr(metaDesc)}">
-<meta property="og:url" content="${escAttr(canonical)}">
-${coverImage
-  ? `<meta property="og:image" content="${escAttr(coverImage)}">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="${escAttr(coverImage)}">`
-  : `<meta name="twitter:card" content="summary">`
-}
-<meta name="twitter:title" content="${escAttr(title)} – Pickora">
-<meta name="twitter:description" content="${escAttr(metaDesc)}">
-<link rel="icon" href="/favicon.ico" type="image/x-icon">
-<link rel="icon" href="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-32x32.webp" sizes="32x32">
-<link rel="apple-touch-icon" href="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-180x180.webp">
-<!-- pk-analytics-head -->
+  const pageTitle = preview ? `[Preview] ${title} – Pickora` : `${title} – Pickora`;
+  const robotsMeta = preview
+    ? `<meta name="robots" content="noindex,nofollow">`
+    : `<meta name="robots" content="max-image-preview:large">`;
+  const baseTag = preview ? `<base href="https://pickora.shop/">\n` : "";
+
+  const analyticsHead = preview
+    ? `<!-- preview: analytics skipped -->`
+    : `<!-- pk-analytics-head -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -586,9 +573,96 @@ ${coverImage
   r=d.getElementsByTagName(u)[0];e.async=1;e.src=l;r.parentNode.insertBefore(e,r)
   })(window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
   ml('account', '2575871');
-</script>
+</script>`;
+
+  const previewBanner = preview
+    ? `<div id="pk-preview-banner" role="status">
+  <div class="pk-preview-banner-inner">
+    <strong>PREVIEW</strong>
+    <span>Не опубликовано · тот же HTML, что уйдёт в Publish · без записи в GitHub</span>
+    <span class="pk-preview-meta">${escHtml(slug || "no-slug")} · ${escHtml(previewBy)}</span>
+  </div>
+</div>
+<style>
+#pk-preview-banner{
+  position:sticky;top:0;z-index:100000;
+  background:#15223B;color:#fff;
+  font-family:Montserrat,DMSans,sans-serif;
+  box-shadow:0 2px 12px rgba(15,23,42,.28);
+}
+.pk-preview-banner-inner{
+  max-width:1140px;margin:0 auto;padding:10px 20px;
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;
+  font-size:13px;line-height:1.35;
+}
+#pk-preview-banner strong{
+  letter-spacing:.12em;font-size:11px;background:#ff9900;color:#111;
+  padding:4px 8px;border-radius:6px;
+}
+.pk-preview-meta{margin-left:auto;opacity:.75;font-size:12px}
+body.pk-is-preview{padding-top:0}
+@media (max-width:700px){
+  .pk-preview-meta{margin-left:0;width:100%}
+}
+</style>
+`
+    : "";
+
+  const bodyClass = preview
+    ? "wp-singular single-post single-format-standard wp-embed-responsive wp-theme-hostinger-ai-theme pk-is-preview"
+    : "wp-singular single-post single-format-standard wp-embed-responsive wp-theme-hostinger-ai-theme";
+
+  const footerAssets = preview
+    ? `<!-- preview chrome assets (absolute → pickora.shop) -->
+<link rel="stylesheet" href="https://pickora.shop/assets/css/pickora-nav.css?v=5">
+<script src="https://pickora.shop/assets/js/pickora-nav.js?v=5" defer></script>
+<link rel="stylesheet" href="https://pickora.shop/assets/css/pickora-mobile-fixes.css?v=2">
+<script src="https://pickora.shop/assets/js/pickora-product-anchors.js" defer></script>
+<script data-wp-router-options="{&quot;loadOnClientNavigation&quot;:true}" fetchpriority="low"
+        id="@wordpress/block-library/navigation/view-js-module"
+        src="https://pickora.shop/wp-includes/js/dist/script-modules/block-library/navigation/view.min.js?ver=96a846e1d7b789c39ab9"
+        type="module"></script>`
+    : `<!-- pk-analytics-body -->
+<script src="/assets/js/pickora-consent.js?v=3" defer></script>
+<link rel="stylesheet" href="/assets/css/pickora-nav.css?v=5">
+<script src="/assets/js/pickora-nav.js?v=5" defer></script>
+<link rel="stylesheet" href="/assets/css/pickora-mobile-fixes.css?v=2">
+<script src="/assets/js/pickora-analytics.js" defer></script>
+<script src="/assets/js/pickora-product-anchors.js" defer></script>
+<script data-wp-router-options="{&quot;loadOnClientNavigation&quot;:true}" fetchpriority="low"
+        id="@wordpress/block-library/navigation/view-js-module"
+        src="https://pickora.shop/wp-includes/js/dist/script-modules/block-library/navigation/view.min.js?ver=96a846e1d7b789c39ab9"
+        type="module"></script>`;
+
+  /* ── Full HTML page ─────────────────────────────────────────────────────── */
+  return `<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+${robotsMeta}
+${baseTag}<title>${escHtml(pageTitle)}</title>
+<link rel="canonical" href="${escAttr(canonical)}">
+<meta name="description" content="${escAttr(metaDesc)}">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Pickora">
+<meta property="og:title" content="${escAttr(title)} – Pickora">
+<meta property="og:description" content="${escAttr(metaDesc)}">
+<meta property="og:url" content="${escAttr(canonical)}">
+${coverImage
+  ? `<meta property="og:image" content="${escAttr(coverImage)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="${escAttr(coverImage)}">`
+  : `<meta name="twitter:card" content="summary">`
+}
+<meta name="twitter:title" content="${escAttr(title)} – Pickora">
+<meta name="twitter:description" content="${escAttr(metaDesc)}">
+<link rel="icon" href="https://pickora.shop/favicon.ico" type="image/x-icon">
+<link rel="icon" href="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-32x32.webp" sizes="32x32">
+<link rel="apple-touch-icon" href="https://pickora.shop/wp-content/uploads/2026/06/cropped-EBB147B3-3B2F-4397-A012-C55F9BECCDC1-180x180.webp">
+${analyticsHead}
 <!-- structured data -->
-${jsonLd}
+${preview ? "<!-- preview: json-ld skipped -->" : jsonLd}
 <script id="wp-importmap" type="importmap">{"imports":{"@wordpress/interactivity":"https://pickora.shop/wp-includes/js/dist/script-modules/interactivity/index.min.js?ver=efaa5193bbad9c60ffd1"}}</script>
 <style>
 /* ===================================================================
@@ -955,8 +1029,8 @@ footer.site-footer { background: #15223B; color: rgba(255,255,255,0.85); padding
 </style>
 </head>
 
-<body class="wp-singular single-post single-format-standard wp-embed-responsive wp-theme-hostinger-ai-theme">
-<a class="skip-link screen-reader-text" id="wp-skip-link" href="#wp--skip-link--target">Skip to content</a>
+<body class="${bodyClass}">
+${previewBanner}<a class="skip-link screen-reader-text" id="wp-skip-link" href="#wp--skip-link--target">Skip to content</a>
 <div class="wp-site-blocks">
 
 <!-- ═══ Header / Nav (same WP block nav structure as live article pages) ═══ -->
@@ -1054,7 +1128,7 @@ ${affiliateSection}
 ${faqSection}
 <!-- ═══ Affiliate disclosure ═══ -->
 <div class="pk-disclosure-footer">
-  <p>Pickora is reader-supported. When you buy through links on our site, we may earn an affiliate commission at no extra cost to you. As an Amazon Associate we earn from qualifying purchases. <a href="/affiliate-disclosure/">Learn more</a>.</p>
+  <p>Pickora is reader-supported. When you buy through links on our site, we may earn an affiliate commission at no extra cost to you. As an Amazon Associate we earn from qualifying purchases. <a href="https://pickora.shop/affiliate-disclosure/">Learn more</a>.</p>
 </div>
 
 <!-- ═══ Footer (same three-column structure as live pages) ═══ -->
@@ -1092,10 +1166,10 @@ ${faqSection}
   </div>
   <div class="pk-footer-bottom">
     <nav class="pk-footer-legal" aria-label="Legal">
-      <a href="/privacy-policy/">Privacy Policy</a><span class="pk-sep" aria-hidden="true">•</span>
-      <a href="/affiliate-disclosure/">Affiliate Disclosure</a><span class="pk-sep" aria-hidden="true">•</span>
-      <a href="/terms-of-service/">Terms of Service</a><span class="pk-sep" aria-hidden="true">•</span>
-      <a href="/contact/">Contact</a>
+      <a href="https://pickora.shop/privacy-policy/">Privacy Policy</a><span class="pk-sep" aria-hidden="true">•</span>
+      <a href="https://pickora.shop/affiliate-disclosure/">Affiliate Disclosure</a><span class="pk-sep" aria-hidden="true">•</span>
+      <a href="https://pickora.shop/terms-of-service/">Terms of Service</a><span class="pk-sep" aria-hidden="true">•</span>
+      <a href="https://pickora.shop/contact/">Contact</a>
     </nav>
     <p class="pk-footer-copyright">© ${year} Pickora Shop. All rights reserved.</p>
   </div>
@@ -1103,17 +1177,7 @@ ${faqSection}
 
 </div><!-- /.wp-site-blocks -->
 
-<!-- pk-analytics-body -->
-<script src="/assets/js/pickora-consent.js?v=3" defer></script>
-<link rel="stylesheet" href="/assets/css/pickora-nav.css?v=5">
-<script src="/assets/js/pickora-nav.js?v=5" defer></script>
-<link rel="stylesheet" href="/assets/css/pickora-mobile-fixes.css?v=2">
-<script src="/assets/js/pickora-analytics.js" defer></script>
-<script src="/assets/js/pickora-product-anchors.js" defer></script>
-<script data-wp-router-options="{&quot;loadOnClientNavigation&quot;:true}" fetchpriority="low"
-        id="@wordpress/block-library/navigation/view-js-module"
-        src="https://pickora.shop/wp-includes/js/dist/script-modules/block-library/navigation/view.min.js?ver=96a846e1d7b789c39ab9"
-        type="module"></script>
+${footerAssets}
 </body>
 </html>`;
 }
