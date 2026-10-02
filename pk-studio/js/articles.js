@@ -30,6 +30,7 @@
 
   /** Hub category → Articles filter tab (never product hubs). */
   const HUB_ARTICLES = {
+    Articles: "/articles/",
     "Home & Kitchen": "/articles/?cat=kitchen",
     "Consumer Electronics": "/articles/?cat=electronics",
     "Fitness & Health": "/articles/?cat=fitness",

@@ -17,6 +17,7 @@
   ];
 
   const HUBS = [
+    "Articles",
     "Home & Kitchen",
     "Consumer Electronics",
     "Fitness & Health",

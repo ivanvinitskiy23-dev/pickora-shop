@@ -33,6 +33,7 @@ export { compileBlocksToHtml, ensureBlueH1 };
 
 /** Hub category label → Articles filter URL (never product hubs). */
 const HUB_TO_ARTICLES = {
+  articles: "https://pickora.shop/articles/",
   "home & kitchen": "https://pickora.shop/articles/?cat=kitchen",
   "consumer electronics": "https://pickora.shop/articles/?cat=electronics",
   "fitness & health": "https://pickora.shop/articles/?cat=fitness",
