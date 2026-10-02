@@ -2,7 +2,12 @@
  * Pickora Admin API — Cloudflare Worker
  * Auth + cloud drafts (D1) + media + publish to GitHub Pages.
  */
-import { publishArticleDraft, compileBlocksToHtml, buildArticlePage } from "./publish_article.js";
+import {
+  publishArticleDraft,
+  compileBlocksToHtml,
+  buildArticlePage,
+  resolveArticlesHubUrl,
+} from "./publish_article.js";
 import { publishHomeDraft }    from "./publish_home.js";
 import { publishPinsDraft }    from "./publish_pins.js";
 import { publishProductsDraft } from "./publish_products.js";
@@ -825,11 +830,8 @@ async function normalizePreviewDraft(payload) {
       ...new Set([...existing, ...fromBlocks].map((u) => String(u).trim()).filter(Boolean)),
     ];
   }
-  // Absolute hub URL so breadcrumbs match live
-  const hub = String(draft.hubUrl || "/articles/").trim();
-  if (hub && !/^https?:\/\//i.test(hub)) {
-    draft.hubUrl = `https://pickora.shop${hub.startsWith("/") ? "" : "/"}${hub}`;
-  }
+  // Force Articles filter URL (never product hubs) before HTML build
+  draft.hubUrl = resolveArticlesHubUrl(draft);
   return draft;
 }
 

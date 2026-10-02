@@ -31,7 +31,63 @@ import {
 
 export { compileBlocksToHtml, ensureBlueH1 };
 
+/** Hub category label → Articles filter URL (never product hubs). */
+const HUB_TO_ARTICLES = {
+  "home & kitchen": "https://pickora.shop/articles/?cat=kitchen",
+  "consumer electronics": "https://pickora.shop/articles/?cat=electronics",
+  "fitness & health": "https://pickora.shop/articles/?cat=fitness",
+  "pet supplies": "https://pickora.shop/articles/?cat=pets",
+};
 
+const CHIP_TO_ARTICLES = {
+  kitchen: "https://pickora.shop/articles/?cat=kitchen",
+  electronics: "https://pickora.shop/articles/?cat=electronics",
+  fitness: "https://pickora.shop/articles/?cat=fitness",
+  pets: "https://pickora.shop/articles/?cat=pets",
+  home: "https://pickora.shop/articles/?cat=home",
+};
+
+const PRODUCT_HUB_RE =
+  /\/(home-kitchen|consumer-electronics|fitness-health|pet-supplies|products)(\/|$|\?)/i;
+
+function normalizeHubCategoryLabel(raw) {
+  return String(raw || "")
+    .replace(/&amp;/gi, "&")
+    .replace(/\u00a0/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Resolve breadcrumb / badge URL: always Articles filter, never product hubs.
+ * Exported for preview normalize + smoke tests.
+ */
+export function resolveArticlesHubUrl(draft) {
+  const label = normalizeHubCategoryLabel(draft?.hubCategory);
+  const key = label.toLowerCase();
+  if (HUB_TO_ARTICLES[key]) return HUB_TO_ARTICLES[key];
+
+  const chips = Array.isArray(draft?.chips) ? draft.chips : [];
+  for (const c of chips) {
+    const slug = String(c || "")
+      .toLowerCase()
+      .trim();
+    if (CHIP_TO_ARTICLES[slug]) return CHIP_TO_ARTICLES[slug];
+  }
+
+  let hubUrl = String(draft?.hubUrl || "").trim();
+  if (hubUrl && !/^https?:\/\//i.test(hubUrl)) {
+    hubUrl = `https://pickora.shop${hubUrl.startsWith("/") ? "" : "/"}${hubUrl}`;
+  }
+  // Already a good Articles filter link
+  if (/\/articles\/?\?cat=[a-z0-9-]+/i.test(hubUrl) && !PRODUCT_HUB_RE.test(hubUrl)) {
+    return hubUrl;
+  }
+  if (/\/articles\/?$/i.test(hubUrl) && !PRODUCT_HUB_RE.test(hubUrl)) {
+    return "https://pickora.shop/articles/";
+  }
+  return "https://pickora.shop/articles/";
+}
 
 // ---------------------------------------------------------------------------
 // Chip slug → display label map (source of truth: chips.md)
@@ -362,23 +418,9 @@ export function buildArticlePage(draft, options = {}) {
   const dek         = String(draft.dek || "");
   const coverImage  = String(draft.coverImage || "");
   const coverAlt    = String(draft.coverAlt  || title);
-  const hubCategory = String(draft.hubCategory || "Articles");
-  const HUB_ARTICLES = {
-    "Home & Kitchen": "https://pickora.shop/articles/?cat=kitchen",
-    "Consumer Electronics": "https://pickora.shop/articles/?cat=electronics",
-    "Fitness & Health": "https://pickora.shop/articles/?cat=fitness",
-    "Pet Supplies": "https://pickora.shop/articles/?cat=pets",
-  };
+  const hubCategory = normalizeHubCategoryLabel(draft.hubCategory || "Articles");
   // Badge + breadcrumb always open Articles filter — never product hubs
-  let hubUrl =
-    HUB_ARTICLES[hubCategory] ||
-    String(draft.hubUrl || "https://pickora.shop/articles/");
-  if (/\/(home-kitchen|consumer-electronics|fitness-health|pet-supplies)\/?/i.test(hubUrl)) {
-    hubUrl = "https://pickora.shop/articles/";
-  }
-  if (hubUrl && !/^https?:\/\//i.test(hubUrl)) {
-    hubUrl = `https://pickora.shop${hubUrl.startsWith("/") ? "" : "/"}${hubUrl}`;
-  }
+  const hubUrl = resolveArticlesHubUrl({ ...draft, hubCategory });
   const hasBlocks   = Array.isArray(draft.blocks) && draft.blocks.length > 0;
   const bodyHtml    = hasBlocks
     ? compileBlocksToHtml(draft.blocks)
@@ -689,7 +731,9 @@ main#wp--skip-link--target { padding-top: 0; padding-bottom: 0; }
   font-size: 12px; font-weight: 700; letter-spacing: 0.14em;
   text-transform: uppercase; color: #2075d2;
   font-family: Montserrat, sans-serif;
+  text-decoration: none;
 }
+a.pk-review-badge:hover { color: #15223B; }
 .pk-dot-blue { width: 8px; height: 8px; border-radius: 50%; background: #2075d2; display: inline-block; }
 .pk-review-title {
   font-family: Montserrat, sans-serif !important;
@@ -1156,7 +1200,7 @@ ${LIVE_HEADER_HTML}
           <li aria-current="page">${escHtml(title)}</li>
         </ol>
       </nav>
-      <p class="pk-review-badge"><span class="pk-dot-blue" aria-hidden="true"></span> ${escHtml(hubCategory)}</p>
+      <a class="pk-review-badge" href="${escAttr(hubUrl)}"><span class="pk-dot-blue" aria-hidden="true"></span> ${escHtml(hubCategory)}</a>
       <h1 id="pk-review-title" class="pk-review-title">${h1Html}</h1>
       <p class="pk-review-dek">${escHtml(dek)}</p>
     </div>

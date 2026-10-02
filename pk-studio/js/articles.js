@@ -37,21 +37,28 @@
   };
 
   function articlesHubUrl(hubCategory) {
-    return HUB_ARTICLES[hubCategory] || "/articles/";
+    const key = String(hubCategory || "")
+      .replace(/&amp;/gi, "&")
+      .replace(/\s+/g, " ")
+      .trim();
+    return HUB_ARTICLES[key] || "/articles/";
   }
 
-  function normalizeHubUrl(hubCategory, url) {
-    const mapped = articlesHubUrl(hubCategory);
-    const u = String(url || "").trim();
-    if (!u) return mapped;
-    // Old product-hub paths → Articles filter
-    if (
-      /\/(home-kitchen|consumer-electronics|fitness-health|pet-supplies)\/?$/i.test(u) ||
-      /pickora\.shop\/(home-kitchen|consumer-electronics|fitness-health|pet-supplies)\/?$/i.test(u)
-    ) {
-      return mapped;
-    }
-    return u;
+  /** Always map hub → Articles filter; ignore stale product-hub URLs. */
+  function normalizeHubUrl(hubCategory) {
+    return articlesHubUrl(hubCategory);
+  }
+
+  function scrubInternalLinks(lines) {
+    return (lines || [])
+      .map((x) => String(x || "").trim())
+      .filter(Boolean)
+      .map((u) => {
+        if (/\/(home-kitchen|consumer-electronics|fitness-health|pet-supplies)\/?/i.test(u)) {
+          return articlesHubUrl($("#art-hub")?.value || "Home & Kitchen");
+        }
+        return u;
+      });
   }
 
   function emptyDraft() {
@@ -148,10 +155,9 @@
       .split(/[\s,]+/)
       .map((x) => x.trim())
       .filter(Boolean);
-    const intl = ($("#art-internal")?.value || "")
-      .split("\n")
-      .map((x) => x.trim())
-      .filter(Boolean);
+    const hubCategory = $("#art-hub")?.value || current.hubCategory;
+    const hubUrl = normalizeHubUrl(hubCategory);
+    const intl = scrubInternalLinks(($("#art-internal")?.value || "").split("\n"));
     const slug = ($("#art-slug")?.value || "").trim().toLowerCase();
     const blocks = blocksApi?.getBlocks?.() || current.blocks || [];
     const bodyHtml = window.PK_BLOCKS.compileBlocksToHtml(blocks);
@@ -162,6 +168,13 @@
         .map((x) => x.trim())
         .filter(Boolean)
     );
+    // Keep Hub URL field in sync (read-only mapping)
+    if ($("#art-hub-url") && $("#art-hub-url").value !== hubUrl) {
+      $("#art-hub-url").value = hubUrl;
+    }
+    if ($("#art-internal")) {
+      $("#art-internal").value = intl.join("\n");
+    }
     current = {
       ...current,
       slug,
@@ -170,11 +183,8 @@
       metaDescription: ($("#art-meta")?.value || "").trim(),
       h1: ($("#art-h1")?.value || "").trim(),
       dek: ($("#art-dek")?.value || "").trim(),
-      hubCategory: $("#art-hub")?.value || current.hubCategory,
-      hubUrl: normalizeHubUrl(
-        $("#art-hub")?.value || current.hubCategory,
-        ($("#art-hub-url")?.value || "").trim()
-      ),
+      hubCategory,
+      hubUrl,
       chips: chipsRaw,
       coverImage: ($("#art-cover")?.value || "").trim(),
       coverAlt: ($("#art-cover-alt")?.value || "").trim(),
@@ -198,7 +208,8 @@
     $("#art-h1").value = current.h1 || "";
     $("#art-dek").value = current.dek || "";
     $("#art-hub").value = current.hubCategory || "Home & Kitchen";
-    current.hubUrl = normalizeHubUrl(current.hubCategory, current.hubUrl);
+    current.hubUrl = normalizeHubUrl(current.hubCategory);
+    current.internalLinks = scrubInternalLinks(current.internalLinks);
     $("#art-hub-url").value = current.hubUrl || "";
     $("#art-chips").value = (current.chips || []).join(" ");
     $("#art-cover").value = current.coverImage || "";
