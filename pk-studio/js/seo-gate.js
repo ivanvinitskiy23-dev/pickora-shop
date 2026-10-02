@@ -32,7 +32,44 @@
     /TODO/i,
     /example\.com/i,
     /amzn\.to\/TODO/i,
+    /link\.amazon\/TODO/i,
   ];
+
+  /** Real Amazon affiliate short links (amzn.to or link.amazon). */
+  function isGoodAffiliateUrl(u) {
+    const s = String(u || "").trim();
+    if (!s || /TODO/i.test(s)) return false;
+    return (
+      /^https:\/\/amzn\.to\/[A-Za-z0-9]+/i.test(s) ||
+      /^https:\/\/link\.amazon\/[A-Za-z0-9_-]+/i.test(s)
+    );
+  }
+
+  function collectDraftAffiliateUrls(d) {
+    const out = [];
+    const push = (u) => {
+      const s = String(u || "").trim();
+      if (s && !out.includes(s)) out.push(s);
+    };
+    (Array.isArray(d.affiliateLinks) ? d.affiliateLinks : []).forEach(push);
+    (Array.isArray(d.blocks) ? d.blocks : []).forEach((b) => {
+      if (!b) return;
+      if (b.type === "product" || b.type === "cta") {
+        (b.links || []).forEach((l) => push(l && l.url));
+      }
+      if (b.type === "table" && Array.isArray(b.rows)) {
+        b.rows.forEach((row) => {
+          (row || []).forEach((cell) => {
+            const c = String(cell || "");
+            const pipe = c.indexOf("|");
+            if (pipe > 0) push(c.slice(pipe + 1).trim());
+            else if (/^https?:\/\//i.test(c.trim())) push(c.trim());
+          });
+        });
+      }
+    });
+    return out;
+  }
 
   function validateArticleDraft(draft) {
     const blockers = [];
@@ -99,25 +136,11 @@
       });
     }
 
-    const linksFromField = Array.isArray(d.affiliateLinks) ? d.affiliateLinks : [];
-    let linksFromBlocks = [];
-    if (Array.isArray(d.blocks) && d.blocks.length) {
-      d.blocks.forEach((b) => {
-        if (b && (b.type === "product" || b.type === "cta")) {
-          (b.links || []).forEach((l) => {
-            if (l && l.url) linksFromBlocks.push(String(l.url).trim());
-          });
-        }
-      });
-    }
-    const links = [...linksFromField, ...linksFromBlocks];
-    const goodAff = links.filter(
-      (u) => /^https:\/\/amzn\.to\/[A-Za-z0-9]+/.test(String(u || "").trim())
-    );
+    const goodAff = collectDraftAffiliateUrls(d).filter(isGoodAffiliateUrl);
     if (goodAff.length < 1) {
       blockers.push({
         id: "affiliate",
-        label: "At least one real https://amzn.to/… link required",
+        label: "At least one real Amazon link required (amzn.to/… or link.amazon/…)",
       });
     }
 

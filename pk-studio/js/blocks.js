@@ -422,8 +422,19 @@ window.PK_BLOCKS = (function () {
     };
     (extra || []).forEach(push);
     (blocks || []).forEach((b) => {
+      if (!b) return;
       if (b.type === "product" || b.type === "cta") {
         (b.links || []).forEach((l) => push(l && l.url));
+      }
+      if (b.type === "table" && Array.isArray(b.rows)) {
+        b.rows.forEach((row) => {
+          (row || []).forEach((cell) => {
+            const c = String(cell || "");
+            const pipe = c.indexOf("|");
+            if (pipe > 0) push(c.slice(pipe + 1).trim());
+            else if (/^https?:\/\//i.test(c.trim())) push(c.trim());
+          });
+        });
       }
     });
     return out;
@@ -589,7 +600,7 @@ window.PK_BLOCKS = (function () {
           const st = detectLinkStyle(l.url, l.style);
           return `<div class="buy-row" data-link-row>
           <input class="buy-store" data-f="llabel" placeholder="Amazon" value="${esc(l.label || "")}">
-          <input class="buy-url" data-f="lurl" placeholder="https://amzn.to/xxxxx" value="${esc(l.url || "")}" inputmode="url" spellcheck="false">
+          <input class="buy-url" data-f="lurl" placeholder="https://link.amazon/xxxxx" value="${esc(l.url || "")}" inputmode="url" spellcheck="false">
           <select class="buy-style" data-f="lstyle" title="${esc(t("linkStyle"))}" aria-label="${esc(t("linkStyle"))}">${styleOpts(st)}</select>
           <button type="button" class="block-tool block-tool-del" data-link-del="${i}" title="${del}" aria-label="${del}">×</button>
         </div>`;
@@ -691,7 +702,7 @@ window.PK_BLOCKS = (function () {
                           const parts = splitLink(val);
                           return `<div class="tbl-link-cell" data-td-link>
                             <input data-td-label placeholder="Amazon →" value="${esc(parts.label)}">
-                            <input data-td-url placeholder="https://amzn.to/xxxxx" value="${esc(parts.url)}">
+                            <input data-td-url placeholder="https://link.amazon/xxxxx" value="${esc(parts.url)}">
                             <input type="hidden" data-td value="${esc(val)}">
                           </div>`;
                         }
