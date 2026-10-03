@@ -270,16 +270,20 @@
 <div class="dash-hero">
         <div class="eyebrow">Products hub</div>
         <h2 data-i18n="productsEditorTitle">Категории товаров</h2>
-        <p data-i18n="productsEditorDek">Карточки на /products/. Превью + загрузка WebP, путь сам.</p>
+        <p data-i18n="productsEditorDek">Вкладки хабов сверху. Офлайн-проверка = как Live, без коммита в Git.</p>
       </div>
       <div id="products-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
-      <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-        <button type="button" class="btn btn-primary" id="btn-hub-add" style="width:auto;padding-inline:22px" data-i18n="btnAddSection">+ Новый раздел</button>
-        <a class="btn btn-ghost" id="link-preview-products" href="/products/" target="_blank" rel="noopener" data-i18n="btnOpenLiveProducts">Открыть Live</a>
-        <a class="btn btn-ghost pk-hidden" id="link-lab-products" href="http://127.0.0.1:8765/admin-lab/site/products/" target="_blank" rel="noopener" data-i18n="btnOpenLabProducts">Открыть Lab</a>
+      <div class="hub-tabs-bar">
+        <div id="products-hub-tabs" class="hub-tabs" role="tablist" aria-label="Hubs"></div>
+        <div class="hub-tabs-actions">
+          <button type="button" class="btn btn-primary btn-sm" id="btn-hub-add" data-i18n="btnAddSection">+ Новый раздел</button>
+          <a class="btn btn-ghost btn-sm" id="link-preview-products" href="/products/" target="_blank" rel="noopener" data-i18n="btnOpenLiveProducts">Открыть Live</a>
+          <a class="btn btn-ghost btn-sm pk-hidden" id="link-lab-products" href="http://127.0.0.1:8765/admin-lab/site/products/" target="_blank" rel="noopener" data-i18n="btnOpenLabProducts">Открыть Lab</a>
+        </div>
       </div>
       <div id="products-list" class="module-grid" style="grid-template-columns:1fr"></div>
-      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+      <div class="products-sticky-actions">
+        <button type="button" class="btn btn-ghost" id="btn-products-offline" style="width:auto;padding-inline:22px" data-i18n="btnOfflineHub">Проверить офлайн</button>
         <button type="button" class="btn btn-primary" id="btn-products-save" style="width:auto;padding-inline:28px" data-i18n="btnSaveProducts">Сохранить черновик</button>
       </div>
       </section>

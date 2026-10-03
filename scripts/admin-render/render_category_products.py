@@ -1,4 +1,8 @@
-"""Render categoryProducts into admin-lab/site/<category>/index.html."""
+"""Render categoryProducts into admin-lab/site/<category>/index.html.
+
+Card markup + CSS must stay aligned with admin-api/src/publish_products.js
+(live Elementor chrome on pickora.shop).
+"""
 from __future__ import annotations
 
 import re
@@ -10,11 +14,6 @@ sys.path.insert(0, str(Path(__file__).parent))
 from common import LAB_SITE, ROOT, abs_url, esc, load_json  # noqa: E402
 
 CARD_START = '<div class="pickora-final-card">'
-# After last product cards, Elementor usually continues with another e-con / widget
-AFTER_CARDS = re.compile(
-    r'(</div>\s*</div>\s*</div>\s*)(<div class="elementor-element[^"]*e-con)',
-    re.S,
-)
 
 
 def stars(n: int) -> str:
@@ -32,41 +31,60 @@ def render_card(product: dict, eager: bool = False) -> str:
     alt = esc(product.get("imageAlt") or product.get("title") or "")
     title = esc(product.get("title") or "")
     desc = esc(product.get("description") or "")
-    verdict = product.get("verdict") or ""
-    # Keep "Pickora's Verdict:" prefix if missing
-    if verdict and "verdict" not in verdict.lower()[:40]:
-        verdict_html = f"<b>Pickora’s Verdict:</b> {esc(verdict)}"
-    else:
-        # may already contain label; escape whole but allow simple <b> if present
-        verdict_html = esc(re.sub(r"<[^>]+>", "", verdict))
-        if verdict_html.lower().startswith("pickora"):
-            # re-bold first label
-            parts = verdict_html.split(":", 1)
-            if len(parts) == 2:
-                verdict_html = f"<b>{parts[0]}:</b>{parts[1]}"
-        else:
-            verdict_html = f"<b>Pickora’s Verdict:</b> {verdict_html}"
-
     amazon = esc(product.get("amazonUrl") or "#")
-    pros = product.get("pros") or []
-    cons = product.get("cons") or []
+
+    star_n = product.get("ratingStars")
+    try:
+        star_n = int(star_n) if star_n is not None and star_n != "" else 0
+    except (TypeError, ValueError):
+        star_n = 0
+    rating_html = (
+        f'<div class="pickora-final-rating">{stars(star_n)}</div>'
+        if 1 <= star_n <= 5
+        else ""
+    )
+
+    raw_verdict = str(product.get("verdict") or "").strip()
+    verdict_block = ""
+    if raw_verdict:
+        plain = re.sub(r"<[^>]+>", "", raw_verdict)
+        escaped = esc(plain)
+        if escaped.lower().startswith("pickora"):
+            parts = escaped.split(":", 1)
+            body = f"<b>{parts[0]}:</b>{parts[1]}" if len(parts) == 2 else escaped
+        else:
+            body = f"<b>Pickora’s Verdict:</b> {escaped}"
+        verdict_block = f'<div class="pickora-final-verdict">\n      {body}\n    </div>'
+
     lines = []
-    for p in pros:
+    for p in product.get("pros") or []:
+        p = str(p or "").strip()
+        if not p:
+            continue
         lines.append(
             f'  <div class="pickora-final-list-line">\n'
             f'    <span class="pickora-final-badge-pro">Pros</span>\n'
             f"    <span>{esc(p)}</span>\n"
             f"  </div>"
         )
-    for c in cons:
+    for c in product.get("cons") or []:
+        c = str(c or "").strip()
+        if not c:
+            continue
         lines.append(
             f'  <div class="pickora-final-list-line">\n'
             f'    <span class="pickora-final-badge-con">Cons</span>\n'
             f"    <span>{esc(c)}</span>\n"
             f"  </div>"
         )
-    lists = "\n\n".join(lines)
-    rating = stars(product.get("ratingStars") or 5)
+    lists = (
+        f'<div class="pickora-final-lists">\n' + "\n\n".join(lines) + "\n</div>"
+        if lines
+        else ""
+    )
+    desc_html = (
+        f'<p class="pickora-final-text">\n     {desc}\n    </p>' if desc else ""
+    )
 
     return f"""<div class="pickora-final-card">
   <div class="pickora-final-img-col">
@@ -76,16 +94,10 @@ def render_card(product: dict, eager: bool = False) -> str:
   </div>
   <div class="pickora-final-info-col">
     <h3 class="pickora-final-title">{title}</h3>
-    <div class="pickora-final-rating">{rating}</div>
-    <p class="pickora-final-text">
-     {desc}
-    </p>
-<div class="pickora-final-lists">
+    {rating_html}
+    {desc_html}
 {lists}
-</div>
-    <div class="pickora-final-verdict">
-      {verdict_html}
-    </div>
+    {verdict_block}
     <a href="{amazon}" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
       Check Price on Amazon →
     </a>
@@ -93,6 +105,7 @@ def render_card(product: dict, eager: bool = False) -> str:
 </div>"""
 
 
+# Keep in sync with admin-api/src/publish_products.js STYLE_ONCE
 STYLE_ONCE = """
 <style>
   .pickora-final-card {
@@ -112,31 +125,42 @@ STYLE_ONCE = """
     width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 12px; background: #f8fafc;
   }
   .pickora-final-img-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .pickora-final-info-col { flex: 1; max-width: 55%; display: flex; flex-direction: column; gap: 12px; }
-  .pickora-final-title { margin: 0; font-size: 26px; font-weight: 700; color: #15223B; line-height: 1.25; }
-  .pickora-final-rating { color: #f5a623; letter-spacing: 2px; font-size: 18px; }
-  .pickora-final-text { margin: 0; font-size: 15.5px; line-height: 1.6; color: #445; }
-  .pickora-final-lists { display: flex; flex-direction: column; gap: 8px; }
-  .pickora-final-list-line { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: #334; }
+  .pickora-final-info-col {
+    flex: 1; max-width: 55%; display: flex; flex-direction: column; justify-content: center;
+  }
+  .pickora-final-title {
+    font-size: 26px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0; letter-spacing: -0.5px;
+  }
+  .pickora-final-rating { color: #ff9900; font-size: 15px; margin-bottom: 16px; }
+  .pickora-final-text { font-size: 15px; line-height: 1.6; color: #334155; margin: 0 0 20px 0; }
+  .pickora-final-lists { margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .pickora-final-list-line {
+    font-size: 14.5px; line-height: 1.5; color: #334155;
+    display: flex; align-items: center; gap: 10px;
+  }
   .pickora-final-badge-pro, .pickora-final-badge-con {
-    flex: 0 0 auto; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; text-transform: uppercase;
+    font-size: 11px; text-transform: uppercase; font-weight: 700;
+    padding: 3px 8px; border-radius: 4px; letter-spacing: 0.5px; flex: 0 0 auto;
   }
   .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
   .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
   .pickora-final-verdict {
-    background: #F5FAFF; border-left: 3px solid #2075d2; padding: 12px 14px; border-radius: 8px;
-    font-size: 14.5px; line-height: 1.55; color: #15223B;
+    background: #f8fafc; border-left: 4px solid #2563eb; padding: 12px 16px;
+    border-radius: 0 8px 8px 0; font-size: 14px; line-height: 1.5; color: #475569; margin-bottom: 24px;
   }
   .pickora-final-btn {
-    display: inline-flex; align-items: center; justify-content: center;
-    background: #2075d2; color: #fff !important; text-decoration: none !important;
-    font-weight: 700; padding: 12px 18px; border-radius: 999px; width: fit-content;
+    display: inline-block; align-self: flex-start; min-height: 44px; box-sizing: border-box;
+    background-color: #ff9900; color: #ffffff !important; text-decoration: none !important;
+    font-size: 15px; font-weight: 700; padding: 14px 32px; border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15); transition: all 0.2s ease-in-out;
   }
-  .pickora-final-btn:hover { background: #1a63b5; }
+  .pickora-final-btn:hover {
+    background-color: #e68a00; box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
+  }
   @media (max-width: 768px) {
     .pickora-final-card { flex-direction: column; align-items: stretch; gap: 20px; padding: 20px; }
     .pickora-final-img-col, .pickora-final-info-col { max-width: 100%; }
-    .pickora-final-btn { display: block; text-align: center; align-self: stretch; padding: 16px; }
+    .pickora-final-btn { display: block; text-align: center; align-self: stretch; }
   }
 </style>
 """
@@ -147,11 +171,8 @@ def replace_product_cards(html: str, products: list[dict]) -> str:
     if first < 0:
         raise ValueError("no pickora-final-card found")
 
-    # Walk from first card; find last card end by iterating card starts
     starts = [m.start() for m in re.finditer(re.escape(CARD_START), html)]
     last_start = starts[-1]
-    # End of last card: closing </div> of the card (outer)
-    # Heuristic: after last btn, two closing divs (info-col + card)
     m_end = re.search(
         r'class="pickora-final-btn"[^>]*>.*?</a>\s*(?:<!--.*?-->\s*)?</div>\s*</div>',
         html[last_start:],
@@ -161,8 +182,6 @@ def replace_product_cards(html: str, products: list[dict]) -> str:
         raise ValueError("could not find end of last product card")
     end = last_start + m_end.end()
 
-    # Also strip preceding duplicate <style>…pickora-final… blocks immediately before first card
-    # Keep page chrome; inject one style + all cards
     style_before = html.rfind("<style>", 0, first)
     inject_at = first
     if style_before >= 0 and "pickora-final-card" in html[style_before:first]:
@@ -188,7 +207,6 @@ def ensure_lab_category(cat_id: str, hub: dict | None = None) -> Path:
     html = dest.read_text(encoding="utf-8", errors="replace")
     if hub and not live.exists():
         title = hub.get("title") or cat_id
-        # Light retitle for lab stub pages cloned from home-kitchen
         html = re.sub(
             r"<title>[^<]*</title>",
             f"<title>{esc(title)} – Pickora</title>",
@@ -223,8 +241,6 @@ def main() -> None:
 
         try:
             target = ensure_lab_category(cat_id, hub)
-            html = target.read_text(encoding="utf-8", errors="replace")
-            # Re-copy base then patch (ensure_lab already copied)
             live = ROOT / cat_id / "index.html"
             src = live if live.exists() else ROOT / "home-kitchen" / "index.html"
             shutil.copy2(src, target)
@@ -237,6 +253,9 @@ def main() -> None:
                     html,
                     count=1,
                 )
+            if not products:
+                skipped.append(f"{cat_id}: no products")
+                continue
             new_html = replace_product_cards(html, products)
             target.write_text(new_html, encoding="utf-8")
             print(f"Rendered {len(products)} products -> {target}")

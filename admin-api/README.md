@@ -35,6 +35,8 @@ npx.cmd wrangler deploy
 ## Other
 
 - `GET /api/health` — `hasGithub`, `hasOwner`, `hasDb`
+- `POST /api/preview/article` — live-identical article HTML (no Git write)
+- `POST /api/preview/products` — `{ hubId, draft? }` category page offline (same cards as publish, real chrome + `<base>`)
 - `GET /api/audit`, `POST /api/links/check`
 - `GET/POST /api/team` — roster / invites (multi-admin)
 - `GET /api/status` — digest counts

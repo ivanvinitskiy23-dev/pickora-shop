@@ -22,6 +22,7 @@ import { getFile, putFile } from "./github.js";
 // One-shot style block injected before the product cards.
 // Replaces the per-card Elementor <style> blocks; mirrors render_category_products.py STYLE_ONCE.
 // ---------------------------------------------------------------------------
+/* Matches live category pages (Elementor card chrome on pickora.shop). */
 const STYLE_ONCE = `
 <style>
   .pickora-final-card {
@@ -41,34 +42,42 @@ const STYLE_ONCE = `
     width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 12px; background: #f8fafc;
   }
   .pickora-final-img-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .pickora-final-info-col { flex: 1; max-width: 55%; display: flex; flex-direction: column; gap: 12px; }
-  .pickora-final-title { margin: 0; font-size: 26px; font-weight: 700; color: #15223B; line-height: 1.25; }
-  .pickora-final-rating { color: #f5a623; letter-spacing: 2px; font-size: 18px; }
-  .pickora-final-text { margin: 0; font-size: 15.5px; line-height: 1.6; color: #445; }
-  .pickora-final-lists { display: flex; flex-direction: column; gap: 14px; }
-  .pickora-final-list-block h4 {
-    margin: 0 0 6px; font-size: 13px; font-weight: 800; letter-spacing: 0.04em;
-    text-transform: uppercase; color: #15223B;
+  .pickora-final-info-col {
+    flex: 1; max-width: 55%; display: flex; flex-direction: column; justify-content: center;
   }
-  .pickora-final-list-block ul { margin: 0; padding-left: 18px; }
-  .pickora-final-list-block li { margin: 0 0 6px; font-size: 14px; color: #334; line-height: 1.45; }
-  .pickora-final-list-block--pro h4 { color: #166534; }
-  .pickora-final-list-block--con h4 { color: #991b1b; }
+  .pickora-final-title {
+    font-size: 26px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0; letter-spacing: -0.5px;
+  }
+  .pickora-final-rating { color: #ff9900; font-size: 15px; margin-bottom: 16px; }
+  .pickora-final-text { font-size: 15px; line-height: 1.6; color: #334155; margin: 0 0 20px 0; }
+  .pickora-final-lists { margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .pickora-final-list-line {
+    font-size: 14.5px; line-height: 1.5; color: #334155;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .pickora-final-badge-pro, .pickora-final-badge-con {
+    font-size: 11px; text-transform: uppercase; font-weight: 700;
+    padding: 3px 8px; border-radius: 4px; letter-spacing: 0.5px; flex: 0 0 auto;
+  }
+  .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
+  .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
   .pickora-final-verdict {
-    background: #F5FAFF; border-left: 3px solid #2075d2; padding: 12px 14px; border-radius: 8px;
-    font-size: 14.5px; line-height: 1.55; color: #15223B;
+    background: #f8fafc; border-left: 4px solid #2563eb; padding: 12px 16px;
+    border-radius: 0 8px 8px 0; font-size: 14px; line-height: 1.5; color: #475569; margin-bottom: 24px;
   }
   .pickora-final-btn {
-    display: inline-flex; align-items: center; justify-content: center;
-    min-height: 44px; box-sizing: border-box;
-    background: #ff9900; color: #111 !important; text-decoration: none !important;
-    font-weight: 700; padding: 12px 18px; border-radius: 999px; width: fit-content;
+    display: inline-block; align-self: flex-start; min-height: 44px; box-sizing: border-box;
+    background-color: #ff9900; color: #ffffff !important; text-decoration: none !important;
+    font-size: 15px; font-weight: 700; padding: 14px 32px; border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15); transition: all 0.2s ease-in-out;
   }
-  .pickora-final-btn:hover { background: #e88b00; }
+  .pickora-final-btn:hover {
+    background-color: #e68a00; box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
+  }
   @media (max-width: 768px) {
     .pickora-final-card { flex-direction: column; align-items: stretch; gap: 20px; padding: 20px; }
     .pickora-final-img-col, .pickora-final-info-col { max-width: 100%; }
-    .pickora-final-btn { display: block; text-align: center; align-self: stretch; padding: 16px; }
+    .pickora-final-btn { display: block; text-align: center; align-self: stretch; }
   }
 </style>
 `;
@@ -146,6 +155,7 @@ export function buildProductCard(product, eager = false) {
   const desc   = escHtml(product.description || "");
   const amazon = escHtml(product.amazonUrl || "#");
   const starN  = Number(product.ratingStars);
+  // 0 / empty = hide stars (Studio option); 1–5 = show like live
   const ratingHtml =
     starN >= 1 && starN <= 5
       ? `<div class="pickora-final-rating">${stars(starN)}</div>`
@@ -163,31 +173,35 @@ export function buildProductCard(product, eager = false) {
             ? `<b>${parts[0]}:</b>${parts[1]}`
             : escaped;
         })()
-      : `<b>Pickora's Verdict:</b> ${escaped}`;
-    verdictBlock = `<div class="pickora-final-verdict">${body}</div>`;
+      : `<b>Pickora’s Verdict:</b> ${escaped}`;
+    verdictBlock = `<div class="pickora-final-verdict">\n      ${body}\n    </div>`;
   }
 
   const pros = (product.pros || []).map((x) => String(x || "").trim()).filter(Boolean);
   const cons = (product.cons || []).map((x) => String(x || "").trim()).filter(Boolean);
-  const listsParts = [];
-  if (pros.length) {
-    listsParts.push(
-      `<div class="pickora-final-list-block pickora-final-list-block--pro"><h4>Pros</h4><ul>${pros
-        .map((p) => `<li>${escHtml(p)}</li>`)
-        .join("")}</ul></div>`
+  const lines = [];
+  for (const p of pros) {
+    lines.push(
+      `  <div class="pickora-final-list-line">\n` +
+        `    <span class="pickora-final-badge-pro">Pros</span>\n` +
+        `    <span>${escHtml(p)}</span>\n` +
+        `  </div>`
     );
   }
-  if (cons.length) {
-    listsParts.push(
-      `<div class="pickora-final-list-block pickora-final-list-block--con"><h4>Cons</h4><ul>${cons
-        .map((c) => `<li>${escHtml(c)}</li>`)
-        .join("")}</ul></div>`
+  for (const c of cons) {
+    lines.push(
+      `  <div class="pickora-final-list-line">\n` +
+        `    <span class="pickora-final-badge-con">Cons</span>\n` +
+        `    <span>${escHtml(c)}</span>\n` +
+        `  </div>`
     );
   }
-  const lists = listsParts.length
-    ? `<div class="pickora-final-lists">${listsParts.join("\n")}</div>`
+  const lists = lines.length
+    ? `<div class="pickora-final-lists">\n${lines.join("\n\n")}\n</div>`
     : "";
-  const descHtml = desc ? `<p class="pickora-final-text">${desc}</p>` : "";
+  const descHtml = desc
+    ? `<p class="pickora-final-text">\n     ${desc}\n    </p>`
+    : "";
 
   return `<div class="pickora-final-card">
   <div class="pickora-final-img-col">
@@ -253,6 +267,118 @@ export function replaceProductCards(html, products) {
   const block  = STYLE_ONCE + "\n" + cards + "\n";
 
   return html.slice(0, injectAt) + block + html.slice(endIdx);
+}
+
+// ---------------------------------------------------------------------------
+// Offline preview (same card renderer as publish; real page chrome + <base>)
+// ---------------------------------------------------------------------------
+
+const PREVIEW_BANNER = `
+<style id="pk-products-preview-banner-css">
+#pk-preview-banner{
+  position:sticky;top:0;z-index:99999;background:#15223B;color:#fff;
+  font:13px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+.pk-preview-banner-inner{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;
+  padding:10px 16px;max-width:1200px;margin:0 auto;
+}
+#pk-preview-banner strong{ font-weight:700; }
+.pk-preview-meta{ margin-left:auto; opacity:.75; font-size:12px; }
+@media (max-width:768px){
+  .pk-preview-banner-inner{ padding:8px 12px; font-size:12px; }
+  .pk-preview-meta{ margin-left:0; width:100%; }
+}
+</style>
+`;
+
+/**
+ * Patch a live/GitHub category page with draft products for offline Studio check.
+ * Uses replaceProductCards (identical to publish). Adds <base> so blob/preview
+ * loads CSS/images from pickora.shop — does NOT rebuild header/footer chrome.
+ */
+export function buildCategoryPreviewHtml(templateHtml, products, meta = {}) {
+  if (!Array.isArray(products) || products.length === 0) {
+    throw new Error("no_products");
+  }
+  let html = replaceProductCards(templateHtml, products);
+  const hubId = String(meta.hubId || "hub");
+  const title = String(meta.title || hubId);
+  const by = escHtml(meta.previewBy || "studio");
+
+  if (!/<base\s/i.test(html)) {
+    html = html.replace(/<head([^>]*)>/i, `<head$1>\n<base href="https://pickora.shop/">\n`);
+  }
+  if (/<meta\s+name=["']robots["']/i.test(html)) {
+    html = html.replace(
+      /<meta\s+name=["']robots["'][^>]*>/i,
+      `<meta name="robots" content="noindex,nofollow">`
+    );
+  } else {
+    html = html.replace(
+      /<head([^>]*)>/i,
+      `<head$1>\n<meta name="robots" content="noindex,nofollow">\n`
+    );
+  }
+  html = html.replace(
+    /<title>[^<]*<\/title>/i,
+    `<title>[Preview] ${escHtml(title)} – Pickora</title>`
+  );
+
+  html = html.replace(/<body([^>]*)>/i, (full, attrs) => {
+    if (/\bclass\s*=\s*"/i.test(attrs)) {
+      return `<body${attrs.replace(/\bclass\s*=\s*"/i, 'class="pk-is-preview ')}`;
+    }
+    if (/\bclass\s*=\s*'/i.test(attrs)) {
+      return `<body${attrs.replace(/\bclass\s*=\s*'/i, "class='pk-is-preview ")}`;
+    }
+    return `<body class="pk-is-preview"${attrs}>`;
+  });
+
+  const banner = `${PREVIEW_BANNER}
+<div id="pk-preview-banner" role="status">
+  <div class="pk-preview-banner-inner">
+    <strong>Offline preview</strong>
+    <span>Same cards as Publish · not saved to GitHub</span>
+    <span class="pk-preview-meta">${escHtml(hubId)} · ${by}</span>
+  </div>
+</div>`;
+
+  html = html.replace(/<body[^>]*>/i, (open) => `${open}\n${banner}\n`);
+  return html;
+}
+
+/**
+ * Load category page HTML for preview: GitHub first, then live pickora.shop.
+ * New hubs without a page fall back to home-kitchen chrome.
+ */
+export async function loadCategoryTemplateHtml(env, catId) {
+  const id = String(catId || "").replace(/^\/+|\/+$/g, "");
+  if (!id) throw new Error("hub_id_required");
+
+  if (env?.GITHUB_TOKEN) {
+    try {
+      const file = await getFile(env, `${id}/index.html`);
+      if (file?.content) return { html: file.content, source: "github", stub: false };
+      const fallback = await getFile(env, "home-kitchen/index.html");
+      if (fallback?.content) return { html: fallback.content, source: "github", stub: true };
+    } catch {
+      /* fall through to live fetch */
+    }
+  }
+
+  let res = await fetch(`https://pickora.shop/${id}/`, {
+    headers: { "User-Agent": "pickora-admin-api/preview" },
+  });
+  let stub = false;
+  if (!res.ok) {
+    res = await fetch("https://pickora.shop/home-kitchen/", {
+      headers: { "User-Agent": "pickora-admin-api/preview" },
+    });
+    stub = true;
+  }
+  if (!res.ok) throw new Error("template_unavailable");
+  return { html: await res.text(), source: "live", stub };
 }
 
 // ---------------------------------------------------------------------------

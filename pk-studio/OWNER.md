@@ -36,6 +36,7 @@ API: Cloudflare Worker `pickora-admin-api`.
 ## Lab vs Live
 
 - **Lab** (`admin-lab/site/`, localhost:8765): локальный preview без боя.
+- **Products → «Проверить офлайн»**: Worker собирает HTML текущего хаба (реальный chrome с live/GitHub + те же карточки, что Publish). Без коммита в Git. Нужен логин в Studio.
 - **Live**: GitHub Pages после Publish из Studio.
 
 Команды lab (из корня репо):
