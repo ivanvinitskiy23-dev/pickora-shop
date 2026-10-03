@@ -273,27 +273,42 @@ export function replaceProductCards(html, products) {
 // Offline preview (same card renderer as publish; real page chrome + <base>)
 // ---------------------------------------------------------------------------
 
-const PREVIEW_BANNER = `
+const PREVIEW_BANNER_CSS = `
 <style id="pk-products-preview-banner-css">
-/* In-flow bar above .wp-site-blocks — never sticky, never covers logo */
+/* Notice strip UNDER the live nav — never covers Pickora header */
 #pk-preview-banner{
-  position:relative; z-index:10001; background:#15223B; color:#fff;
+  position:relative; z-index:1; background:#15223B; color:#fff;
   font:13px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  flex:0 0 auto; width:100%; box-sizing:border-box;
+  flex:0 0 auto; width:100%; box-sizing:border-box; margin:0;
 }
 .pk-preview-banner-inner{
   display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px;
-  padding:10px 16px; max-width:1200px; margin:0 auto;
+  padding:8px 16px; max-width:1200px; margin:0 auto;
 }
 #pk-preview-banner strong{ font-weight:700; }
 .pk-preview-meta{ margin-left:auto; opacity:.75; font-size:12px; }
 body.pk-is-preview{ margin:0 !important; padding:0 !important; }
-body.pk-is-preview > #pk-preview-banner{ margin:0 !important; }
-body.pk-is-preview > .wp-site-blocks{ margin-top:0 !important; }
-/* Disable sticky header in preview — sticky top:0 would cover the banner */
+/* Keep site header exactly like live (top of page, not under a floating bar) */
 body.pk-is-preview header.site-header{
   position: relative !important;
   top: auto !important;
+  flex: 0 0 auto !important;
+}
+/* Empty WP title wrapper leaves a hairline / spacer — hide it in preview */
+body.pk-is-preview .hostinger-ai-page-title{ display:none !important; }
+body.pk-is-preview main > .wp-block-group:has(> .hostinger-ai-page-title){
+  display:none !important;
+  margin:0 !important; padding:0 !important; border:0 !important;
+  min-height:0 !important; height:0 !important; overflow:hidden !important;
+}
+/* Match live Elementor pull-up so the hat sits tight under the nav */
+body.pk-is-preview .entry-content > .elementor > .e-con:first-child{
+  margin-block-start:-10px !important;
+  margin-top:-10px !important;
+}
+body.pk-is-preview .pk-page-hat{
+  margin-top:12px !important;
+  padding-top:20px !important;
 }
 @media (max-width:768px){
   .pk-preview-banner-inner{ padding:8px 12px; font-size:12px; }
@@ -335,8 +350,12 @@ export function buildCategoryPreviewHtml(templateHtml, products, meta = {}) {
     `<title>[Preview] ${escHtml(title)} – Pickora</title>`
   );
 
-  // IMPORTANT: keep the closing ">" on <body> — dropping it swallows skip-link
-  // and injects the banner mid-markup (white gap + broken header).
+  // CSS in <head> so it always wins over late theme rules
+  if (!html.includes("pk-products-preview-banner-css")) {
+    html = html.replace(/<\/head>/i, `${PREVIEW_BANNER_CSS}\n</head>`);
+  }
+
+  // IMPORTANT: keep the closing ">" on <body>
   html = html.replace(/<body([^>]*)>/i, (_, attrs) => {
     let next = attrs || "";
     if (/\bclass\s*=\s*"/i.test(next)) {
@@ -349,8 +368,7 @@ export function buildCategoryPreviewHtml(templateHtml, products, meta = {}) {
     return `<body${next}>`;
   });
 
-  const banner = `${PREVIEW_BANNER}
-<div id="pk-preview-banner" role="status">
+  const banner = `<div id="pk-preview-banner" role="status">
   <div class="pk-preview-banner-inner">
     <strong>Offline preview</strong>
     <span>Same cards as Publish · not saved to GitHub</span>
@@ -358,7 +376,15 @@ export function buildCategoryPreviewHtml(templateHtml, products, meta = {}) {
   </div>
 </div>`;
 
-  html = html.replace(/<body[^>]*>/i, (open) => `${open}\n${banner}\n`);
+  // Place notice AFTER the live site header so nav/logo stay top-most like live
+  if (/<header\b[^>]*site-header[\s\S]*?<\/header>/i.test(html)) {
+    html = html.replace(
+      /(<header\b[^>]*site-header[\s\S]*?<\/header>)/i,
+      `$1\n${banner}\n`
+    );
+  } else {
+    html = html.replace(/<\/header>/i, `</header>\n${banner}\n`);
+  }
   return html;
 }
 

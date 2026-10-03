@@ -30,18 +30,14 @@ for (const hub of hubs) {
   });
   const body = html.match(/<body[^>]*>/i)?.[0] || "";
   const bannerIdx = html.indexOf('id="pk-preview-banner"');
-  const skipIdx = html.indexOf('class="skip-link');
-  const headerIdx = html.indexOf("<header");
+  const headerClose = html.indexOf("</header>");
   const ok = {
     bodyGt: body.endsWith(">"),
     previewClass: body.includes("pk-is-preview"),
     banner: bannerIdx > 0,
-    skipIntact: html.includes('Skip to content</a><div class="wp-site-blocks">') ||
-      /Skip to content<\/a>\s*<div class="wp-site-blocks">/.test(html),
-    order: bannerIdx > 0 && skipIdx > bannerIdx && headerIdx > skipIdx,
-    noBannerInsideSkip: !html
-      .slice(Math.max(0, skipIdx), skipIdx + 200)
-      .includes("#pk-preview-banner"),
+    skipIntact: /Skip to content<\/a>\s*<div class="wp-site-blocks">/.test(html),
+    order: headerClose > 0 && bannerIdx > headerClose,
+    cssInHead: html.indexOf("pk-products-preview-banner-css") < html.indexOf("</head>"),
   };
   const all = Object.values(ok).every(Boolean);
   if (!all) failed++;
