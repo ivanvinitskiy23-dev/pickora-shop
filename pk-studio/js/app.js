@@ -663,7 +663,7 @@
     readPinsForm();
     const nextId = pinsData.pins.reduce((m, p) => Math.max(m, Number(p.id) || 0), 0) + 1;
     const firstCat = (pinsData.filters || []).find((f) => f.id !== "all")?.id || "work";
-    pinsData.pins.push({
+    pinsData.pins.unshift({
       id: nextId,
       category: firstCat,
       title: "New pin",
@@ -976,7 +976,7 @@
         if (!hub) return;
         ensureCategoryProducts();
         const list = productsData.categoryProducts[hub.id];
-        list.push({
+        list.unshift({
           id: `${hub.id}-${list.length + 1}`,
           title: "",
           image: "",
