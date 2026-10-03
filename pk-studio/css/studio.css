@@ -679,6 +679,20 @@ button { border: none; }
   background: var(--pk-ice);
   border-radius: var(--pk-radius-sm);
 }
+.product-item--compact .review-card-body { gap: 12px; }
+.product-more {
+  margin-top: 8px;
+  border-top: 1px dashed var(--pk-line);
+  padding-top: 8px;
+}
+.product-more summary {
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--pk-blue);
+  margin-bottom: 8px;
+}
+.top-pick-card .field-row .grow { flex: 1 1 200px; }
 
 
 /* ================================================================

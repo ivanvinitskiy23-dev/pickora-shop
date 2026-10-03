@@ -1,3 +1,6 @@
+# Local agent brains (not shipped to GitHub yet)
+pickora-agents/
+
 # Admin lab secrets and local env (never commit)
 admin-lab/secrets/
 **/.env

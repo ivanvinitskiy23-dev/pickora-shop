@@ -257,6 +257,170 @@
         input.value = "";
       });
     });
+
+    renderTopPicksEditor();
+  }
+
+  function ensureTopPicks() {
+    if (!homeData.topPicks || typeof homeData.topPicks !== "object") {
+      homeData.topPicks = { updated: "", picks: [] };
+    }
+    if (!Array.isArray(homeData.topPicks.picks)) homeData.topPicks.picks = [];
+  }
+
+  function renderTopPicksEditor() {
+    const wrap = $("#home-top-picks");
+    if (!wrap || !homeData) return;
+    ensureTopPicks();
+    const picks = homeData.topPicks.picks;
+    wrap.innerHTML =
+      `<div class="field" style="margin-bottom:12px"><label>${escapeAttr(
+        t("labelTopPicksUpdated")
+      )}</label>
+        <input id="top-picks-updated" value="${escapeAttr(
+          homeData.topPicks.updated || ""
+        )}" placeholder="2026-10-03"></div>` +
+      picks
+        .map((p, i) => {
+          return `<div class="review-card panel top-pick-card" data-top-pick="${i}">
+          <div class="review-card-head">
+            <h3>#${i + 1} ${escapeAttr(p.title || "Top pick")}</h3>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <button type="button" class="btn btn-ghost btn-sm" data-tp-up="${i}" ${
+                i === 0 ? "disabled" : ""
+              }>↑</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-tp-down="${i}" ${
+                i === picks.length - 1 ? "disabled" : ""
+              }>↓</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-tp-del="${i}">${escapeAttr(
+                t("btnDeletePin")
+              )}</button>
+            </div>
+          </div>
+          <div class="review-card-body">
+            <div class="review-thumb-col">
+              <div class="review-thumb">
+                ${
+                  p.image
+                    ? `<img src="${escapeAttr(imgSrc(p.image))}" alt="">`
+                    : `<div class="review-thumb-empty">${escapeAttr(t("noImage"))}</div>`
+                }
+              </div>
+              <label class="btn btn-ghost btn-sm upload-btn">${escapeAttr(t("btnUploadImage"))}
+                <input type="file" accept="image/*" data-tp-upload="${i}" hidden>
+              </label>
+            </div>
+            <div class="review-fields">
+              <div class="field-row" style="display:flex;gap:10px;flex-wrap:wrap">
+                <div class="field grow"><label>Title</label><input data-tp="title" value="${escapeAttr(
+                  p.title || ""
+                )}"></div>
+                <div class="field"><label>Badge</label><input data-tp="badge" value="${escapeAttr(
+                  p.badge || ""
+                )}" placeholder="Top Pick"></div>
+              </div>
+              <div class="field"><label>Tagline</label><input data-tp="tagline" value="${escapeAttr(
+                p.tagline || ""
+              )}"></div>
+              <div class="field"><label>${escapeAttr(t("labelCategory"))}</label><input data-tp="category" value="${escapeAttr(
+                p.category || ""
+              )}"></div>
+              <div class="field"><label>Blurb</label><textarea data-tp="blurb" rows="2">${escapeAttr(
+                p.blurb || ""
+              )}</textarea></div>
+              <div class="field"><label>Pros (1/line)</label><textarea data-tp="pros" rows="2">${escapeAttr(
+                (p.pros || []).join("\n")
+              )}</textarea></div>
+              <div class="field"><label>Amazon</label><input data-tp="amazonUrl" value="${escapeAttr(
+                p.amazonUrl || ""
+              )}" placeholder="https://link.amazon/…"></div>
+              <div class="field"><label>Guide URL</label><input data-tp="guideUrl" value="${escapeAttr(
+                p.guideUrl || ""
+              )}" placeholder="/best-…/"></div>
+              <div class="field"><label>Alt</label><input data-tp="imageAlt" value="${escapeAttr(
+                p.imageAlt || ""
+              )}"></div>
+            </div>
+          </div>
+        </div>`;
+        })
+        .join("");
+
+    $$("[data-tp-del]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        readTopPicksForm();
+        homeData.topPicks.picks.splice(Number(btn.getAttribute("data-tp-del")), 1);
+        renderTopPicksEditor();
+      });
+    });
+    $$("[data-tp-up]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const i = Number(btn.getAttribute("data-tp-up"));
+        readTopPicksForm();
+        const arr = homeData.topPicks.picks;
+        if (i < 1) return;
+        [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
+        renderTopPicksEditor();
+      });
+    });
+    $$("[data-tp-down]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const i = Number(btn.getAttribute("data-tp-down"));
+        readTopPicksForm();
+        const arr = homeData.topPicks.picks;
+        if (i >= arr.length - 1) return;
+        [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+        renderTopPicksEditor();
+      });
+    });
+    $$("[data-tp-upload]").forEach((input) => {
+      input.addEventListener("change", async () => {
+        const i = Number(input.getAttribute("data-tp-upload"));
+        const file = input.files && input.files[0];
+        input.value = "";
+        if (!file) return;
+        const status = $("#home-status");
+        setStatus(status, t("uploading"));
+        try {
+          readTopPicksForm();
+          const id = homeData.topPicks.picks[i]?.id || "top-pick";
+          const data = await uploadImage(file, "top-pick-" + id);
+          homeData.topPicks.picks[i].image = data.path;
+          renderTopPicksEditor();
+          setStatus(status, t("uploadOk"), "ok");
+        } catch (err) {
+          setStatus(status, window.PK_MEDIA.errorMessage(err, t), "warn");
+        }
+      });
+    });
+  }
+
+  function readTopPicksForm() {
+    ensureTopPicks();
+    const updated = $("#top-picks-updated")?.value?.trim() || homeData.topPicks.updated || "";
+    const picks = [];
+    $$("#home-top-picks [data-top-pick]").forEach((card) => {
+      const i = Number(card.getAttribute("data-top-pick"));
+      const prev = homeData.topPicks.picks[i] || {};
+      const g = (k) => card.querySelector(`[data-tp="${k}"]`)?.value || "";
+      const title = g("title").trim();
+      picks.push({
+        ...prev,
+        id: prev.id || slugify(title) || "pick-" + (i + 1),
+        title,
+        badge: g("badge").trim(),
+        tagline: g("tagline").trim(),
+        category: g("category").trim(),
+        blurb: g("blurb").trim(),
+        pros: linesToList(g("pros")),
+        amazonUrl: g("amazonUrl").trim(),
+        guideUrl: g("guideUrl").trim(),
+        imageAlt: g("imageAlt").trim() || title,
+        image: prev.image || "",
+      });
+    });
+    homeData.topPicks = { ...homeData.topPicks, updated, picks };
+    return homeData.topPicks;
   }
 
   function readHomeForm() {
@@ -320,17 +484,19 @@
   async function saveHome() {
     const status = $("#home-status");
     const latestReviews = readHomeForm();
+    const topPicks = readTopPicksForm();
     const res = await fetch(window.PK_AUTH.API + "/api/content/home", {
       method: "POST",
       headers: authHeaders(),
       credentials: "include",
-      body: JSON.stringify({ latestReviews, topPicks: homeData.topPicks }),
+      body: JSON.stringify({ latestReviews, topPicks }),
     });
     if (!res.ok) {
       setStatus(status, t("homeSaveFail"), "warn");
       return;
     }
     homeData.latestReviews = latestReviews;
+    homeData.topPicks = topPicks;
     setStatus(
       status,
       window.PK_AUTH.isCloud?.() ? t("homeSavedCloud") : t("homeSaved"),
@@ -573,12 +739,24 @@
         const open = c._open ? " open" : "";
         const productsHtml = products
           .map((p, pi) => {
-            return `<div class="product-item panel" data-product-index="${pi}">
+            const starsVal =
+              p.ratingStars === 0 || p.ratingStars === "0" || p.ratingStars == null
+                ? "0"
+                : String(Math.min(5, Math.max(0, Number(p.ratingStars) || 0)));
+            return `<div class="product-item panel product-item--compact" data-product-index="${pi}">
               <div class="review-card-head">
                 <h4>${escapeAttr(t("labelProduct"))} #${pi + 1}</h4>
-                <button type="button" class="btn btn-ghost btn-sm" data-product-del="${i}:${pi}">${escapeAttr(
-                  t("btnDeleteProduct")
-                )}</button>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <button type="button" class="btn btn-ghost btn-sm" data-product-up="${i}:${pi}" ${
+                    pi === 0 ? "disabled" : ""
+                  }>↑</button>
+                  <button type="button" class="btn btn-ghost btn-sm" data-product-down="${i}:${pi}" ${
+                    pi === products.length - 1 ? "disabled" : ""
+                  }>↓</button>
+                  <button type="button" class="btn btn-ghost btn-sm" data-product-del="${i}:${pi}">${escapeAttr(
+                    t("btnDeleteProduct")
+                  )}</button>
+                </div>
               </div>
               <div class="review-card-body">
                 <div class="review-thumb-col">
@@ -595,27 +773,43 @@
                     ${escapeAttr(t("btnUploadImage"))}
                     <input type="file" accept="image/*" data-product-upload="${i}:${pi}" hidden>
                   </label>
-                  <p class="path-hint">${escapeAttr(p.image || "—")}</p>
                 </div>
                 <div class="review-fields">
                   <div class="field"><label>${escapeAttr(t("labelTitle"))}</label>
                     <input data-pk="title" value="${escapeAttr(p.title || "")}"></div>
-                  <div class="field"><label>${escapeAttr(t("labelExcerpt"))}</label>
-                    <textarea data-pk="description" rows="3">${escapeAttr(p.description || "")}</textarea></div>
-                  <div class="field"><label>${escapeAttr(t("labelPros"))}</label>
-                    <textarea data-pk="pros" rows="3" placeholder="one per line">${escapeAttr(
-                      (p.pros || []).join("\n")
-                    )}</textarea></div>
-                  <div class="field"><label>${escapeAttr(t("labelCons"))}</label>
-                    <textarea data-pk="cons" rows="2" placeholder="one per line">${escapeAttr(
-                      (p.cons || []).join("\n")
-                    )}</textarea></div>
-                  <div class="field"><label>${escapeAttr(t("labelVerdict"))}</label>
-                    <textarea data-pk="verdict" rows="2">${escapeAttr(p.verdict || "")}</textarea></div>
                   <div class="field"><label>${escapeAttr(t("labelAmazon"))}</label>
-                    <input data-pk="amazonUrl" value="${escapeAttr(p.amazonUrl || "")}"></div>
-                  <div class="field"><label>${escapeAttr(t("labelImageAlt"))}</label>
-                    <input data-pk="imageAlt" value="${escapeAttr(p.imageAlt || "")}"></div>
+                    <input data-pk="amazonUrl" value="${escapeAttr(
+                      p.amazonUrl || ""
+                    )}" placeholder="https://link.amazon/xxxxx"></div>
+                  <div class="field"><label>${escapeAttr(t("labelStars"))}</label>
+                    <select data-pk="ratingStars">
+                      <option value="0"${starsVal === "0" ? " selected" : ""}>${escapeAttr(
+                        t("starsHidden")
+                      )}</option>
+                      ${[1, 2, 3, 4, 5]
+                        .map(
+                          (n) =>
+                            `<option value="${n}"${starsVal === String(n) ? " selected" : ""}>${n} ★</option>`
+                        )
+                        .join("")}
+                    </select></div>
+                  <details class="product-more">
+                    <summary>${escapeAttr(t("productMoreFields"))}</summary>
+                    <div class="field"><label>${escapeAttr(t("labelExcerpt"))}</label>
+                      <textarea data-pk="description" rows="2">${escapeAttr(p.description || "")}</textarea></div>
+                    <div class="field"><label>${escapeAttr(t("labelPros"))}</label>
+                      <textarea data-pk="pros" rows="2" placeholder="one per line">${escapeAttr(
+                        (p.pros || []).join("\n")
+                      )}</textarea></div>
+                    <div class="field"><label>${escapeAttr(t("labelCons"))}</label>
+                      <textarea data-pk="cons" rows="2" placeholder="one per line">${escapeAttr(
+                        (p.cons || []).join("\n")
+                      )}</textarea></div>
+                    <div class="field"><label>${escapeAttr(t("labelVerdict"))}</label>
+                      <textarea data-pk="verdict" rows="2">${escapeAttr(p.verdict || "")}</textarea></div>
+                    <div class="field"><label>${escapeAttr(t("labelImageAlt"))}</label>
+                      <input data-pk="imageAlt" value="${escapeAttr(p.imageAlt || "")}"></div>
+                  </details>
                 </div>
               </div>
             </div>`;
@@ -663,7 +857,9 @@
               <div class="field"><label>${escapeAttr(t("labelUrl"))}</label>
                 <input data-k="url" value="${escapeAttr(c.url || "")}"></div>
               <div class="field"><label>${escapeAttr(t("labelSectionId"))}</label>
-                <input data-k="id" value="${escapeAttr(c.id || "")}"></div>
+                <input data-k="id" value="${escapeAttr(c.id || "")}" readonly class="mono" title="${escapeAttr(
+                  t("hintSectionIdReadonly")
+                )}"><p class="field-hint">${escapeAttr(t("hintSectionIdReadonly"))}</p></div>
               <div class="field"><label>${escapeAttr(t("labelImageAlt"))}</label>
                 <input data-k="imageAlt" value="${escapeAttr(c.imageAlt || "")}"></div>
             </div>
@@ -721,16 +917,41 @@
         const list = productsData.categoryProducts[hub.id];
         list.push({
           id: `${hub.id}-${list.length + 1}`,
-          title: "New product",
+          title: "",
           image: "",
           imageAlt: "",
           description: "",
           pros: [],
           cons: [],
           verdict: "",
-          amazonUrl: "https://amzn.to/",
-          ratingStars: 5,
+          amazonUrl: "https://link.amazon/",
+          ratingStars: 0,
         });
+        hub._open = true;
+        renderProductsEditor();
+      });
+    });
+
+    $$("[data-product-up]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const [hi, pi] = btn.getAttribute("data-product-up").split(":").map(Number);
+        readProductsForm();
+        const hub = productsData.hubCategories[hi];
+        const list = productsData.categoryProducts[hub.id];
+        if (!list || pi < 1) return;
+        [list[pi - 1], list[pi]] = [list[pi], list[pi - 1]];
+        hub._open = true;
+        renderProductsEditor();
+      });
+    });
+    $$("[data-product-down]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const [hi, pi] = btn.getAttribute("data-product-down").split(":").map(Number);
+        readProductsForm();
+        const hub = productsData.hubCategories[hi];
+        const list = productsData.categoryProducts[hub.id];
+        if (!list || pi >= list.length - 1) return;
+        [list[pi], list[pi + 1]] = [list[pi + 1], list[pi]];
         hub._open = true;
         renderProductsEditor();
       });
@@ -798,6 +1019,8 @@
           const el = pCard.querySelector(`[data-pk="${k}"]`);
           return el ? el.value : "";
         };
+        const starsRaw = gp("ratingStars").trim();
+        const ratingStars = starsRaw === "" ? 0 : Math.min(5, Math.max(0, Number(starsRaw) || 0));
         list[pi] = {
           ...pPrev,
           title: gp("title").trim() || pPrev.title,
@@ -809,7 +1032,7 @@
           imageAlt: gp("imageAlt").trim() || pPrev.imageAlt,
           image: pPrev.image,
           id: pPrev.id || `${newId}-${pi + 1}`,
-          ratingStars: pPrev.ratingStars || 5,
+          ratingStars,
         };
       });
       productsData.categoryProducts[oldId] = list;
@@ -899,9 +1122,34 @@
     show("products");
   }
 
+  function isGoodAmazonUrl(u) {
+    const s = String(u || "").trim();
+    if (!s || /TODO/i.test(s)) return false;
+    return (
+      /^https:\/\/amzn\.to\/[A-Za-z0-9]+/i.test(s) ||
+      /^https:\/\/link\.amazon\/[A-Za-z0-9_-]+/i.test(s)
+    );
+  }
+
   async function saveProducts() {
     const status = $("#products-status");
     readProductsForm();
+    const bad = [];
+    Object.values(productsData.categoryProducts || {}).forEach((list) => {
+      (list || []).forEach((p) => {
+        if (p && p.title && p.amazonUrl && !isGoodAmazonUrl(p.amazonUrl)) {
+          bad.push(p.title || p.amazonUrl);
+        }
+      });
+    });
+    if (bad.length) {
+      setStatus(
+        status,
+        t("productsBadAmazon").replace("{n}", String(bad.length)) + ": " + bad.slice(0, 3).join(", "),
+        "warn"
+      );
+      return;
+    }
     const payload = {
       hubCategories: productsData.hubCategories.map(({ _open, ...rest }) => rest),
       categoryProducts: { ...productsData.categoryProducts },
@@ -1105,6 +1353,25 @@
     });
 
     $("#btn-home-save")?.addEventListener("click", () => saveHome());
+    $("#btn-top-pick-add")?.addEventListener("click", () => {
+      if (!homeData) return;
+      readTopPicksForm();
+      ensureTopPicks();
+      homeData.topPicks.picks.push({
+        id: "pick-" + (homeData.topPicks.picks.length + 1),
+        title: "",
+        badge: "Top Pick",
+        tagline: "",
+        category: "Home & Kitchen",
+        image: "",
+        imageAlt: "",
+        blurb: "",
+        pros: [],
+        amazonUrl: "https://link.amazon/",
+        guideUrl: "/articles/",
+      });
+      renderTopPicksEditor();
+    });
     $("#btn-pins-save")?.addEventListener("click", () => savePins());
     $("#btn-products-save")?.addEventListener("click", () => saveProducts());
     $("#btn-pin-add")?.addEventListener("click", () => addPin());

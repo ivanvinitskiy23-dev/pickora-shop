@@ -12,6 +12,7 @@ import { publishHomeDraft }    from "./publish_home.js";
 import { publishPinsDraft }    from "./publish_pins.js";
 import { publishProductsDraft } from "./publish_products.js";
 import { validateArticleDraft } from "./seo_gate.js";
+import { getFileSha, putBinaryFile } from "./github.js";
 
 const SESSION_TTL_SEC = 60 * 60 * 12;
 const RAW_CONTENT =
@@ -23,6 +24,9 @@ export default {
     if (request.method === "OPTIONS") {
       return cors(new Response(null, { status: 204 }), request);
     }
+    // Reject browser mutating calls from unknown Origins before handlers run
+    const earlyCors = corsGuard(request);
+    if (earlyCors) return earlyCors;
 
     try {
       if (url.pathname === "/" || url.pathname === "") {
@@ -506,12 +510,28 @@ async function handleMediaUpload(request, env, user) {
     return json({ error: "media_write_failed", detail: msg }, 500);
   }
 
-  const abs = `https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/${finalKey}`;
+  // Prefer permanent site path under wp-content/uploads (GitHub Pages)
+  const siteRel = `/wp-content/uploads/${yyyy}/${mm}/${base}.${ext}`;
+  const ghPath = `wp-content/uploads/${yyyy}/${mm}/${base}.${ext}`;
+  let pathOut = `https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/${finalKey}`;
+  let note = "Stored in D1; live path pending GitHub sync.";
+
+  if (env.GITHUB_TOKEN) {
+    try {
+      const sha = await getFileSha(env, ghPath);
+      await putBinaryFile(env, ghPath, raw, `media: upload ${ghPath}`, sha || undefined);
+      pathOut = siteRel;
+      note = "Uploaded to GitHub Pages path (wp-content/uploads).";
+    } catch (err) {
+      note = "D1 ok; GitHub sync failed: " + String(err?.message || err).slice(0, 120);
+    }
+  }
+
   try {
     await env.DB.prepare(
       `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'media_upload', ?)`
     )
-      .bind(user.login, finalKey)
+      .bind(user.login, `${finalKey} → ${pathOut}`)
       .run();
   } catch {
     /* non-fatal */
@@ -519,10 +539,10 @@ async function handleMediaUpload(request, env, user) {
 
   return json({
     ok: true,
-    path: abs,
+    path: pathOut,
     key: finalKey,
     bytes: bytes.length,
-    note: "Cloud media in D1 (temporary). Enable R2 later for larger files.",
+    note,
   });
 }
 
@@ -1251,16 +1271,35 @@ function json(obj, status = 200) {
   });
 }
 
+const CORS_ALLOWED = new Set([
+  "https://pickora.shop",
+  "https://www.pickora.shop",
+  "http://127.0.0.1:8765",
+  "http://localhost:8765",
+  "http://127.0.0.1:8799",
+  "http://localhost:8799",
+]);
+
+function corsGuard(request) {
+  const origin = request.headers.get("Origin") || "";
+  const method = (request.method || "GET").toUpperCase();
+  if (!origin) return null;
+  if (method === "GET" || method === "HEAD" || method === "OPTIONS") return null;
+  if (CORS_ALLOWED.has(origin)) return null;
+  return new Response(JSON.stringify({ error: "cors_origin_denied" }), {
+    status: 403,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store",
+      Vary: "Origin",
+    },
+  });
+}
+
 function cors(res, request) {
   const origin = request.headers.get("Origin") || "";
-  const allowed = new Set([
-    "https://pickora.shop",
-    "https://www.pickora.shop",
-    "http://127.0.0.1:8765",
-    "http://localhost:8765",
-  ]);
   const headers = new Headers(res.headers);
-  if (allowed.has(origin)) {
+  if (CORS_ALLOWED.has(origin)) {
     headers.set("Access-Control-Allow-Origin", origin);
     headers.set("Access-Control-Allow-Credentials", "true");
   }

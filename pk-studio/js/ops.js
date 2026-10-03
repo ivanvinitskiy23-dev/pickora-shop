@@ -523,18 +523,49 @@
       (d.affiliateLinks || []).forEach((u) => {
         if (u) links.push(u);
       });
+      (d.blocks || []).forEach((b) => {
+        if (!b) return;
+        if (b.type === "product" || b.type === "cta") {
+          (b.links || []).forEach((l) => {
+            if (l && l.url) links.push(l.url);
+          });
+        }
+        if (b.type === "table" && Array.isArray(b.rows)) {
+          b.rows.forEach((row) => {
+            (row || []).forEach((cell) => {
+              const c = String(cell || "");
+              const pipe = c.indexOf("|");
+              if (pipe > 0) links.push(c.slice(pipe + 1).trim());
+            });
+          });
+        }
+      });
     });
-    // Also scan products draft if available
+    // Products draft: categoryProducts map (not hub.products)
     try {
       const pr = await fetch(window.PK_AUTH.API + "/api/content/products", {
         headers: authHeaders(),
         credentials: "include",
       });
       const pd = await pr.json();
-      (pd.hubCategories || []).forEach((h) => {
-        (h.products || []).forEach((p) => {
-          if (p.amazonUrl) links.push(p.amazonUrl);
+      const map = pd.categoryProducts || {};
+      Object.keys(map).forEach((catId) => {
+        (map[catId] || []).forEach((p) => {
+          if (p && p.amazonUrl) links.push(p.amazonUrl);
         });
+      });
+    } catch {
+      /* ignore */
+    }
+    // Home top picks
+    try {
+      const hr = await fetch(window.PK_AUTH.API + "/api/content/home", {
+        headers: authHeaders(),
+        credentials: "include",
+      });
+      const hd = await hr.json();
+      ((hd.topPicks && hd.topPicks.picks) || []).forEach((p) => {
+        if (p && p.amazonUrl) links.push(p.amazonUrl);
       });
     } catch {
       /* ignore */

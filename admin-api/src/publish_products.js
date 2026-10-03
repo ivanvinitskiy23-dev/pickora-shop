@@ -45,24 +45,26 @@ const STYLE_ONCE = `
   .pickora-final-title { margin: 0; font-size: 26px; font-weight: 700; color: #15223B; line-height: 1.25; }
   .pickora-final-rating { color: #f5a623; letter-spacing: 2px; font-size: 18px; }
   .pickora-final-text { margin: 0; font-size: 15.5px; line-height: 1.6; color: #445; }
-  .pickora-final-lists { display: flex; flex-direction: column; gap: 8px; }
-  .pickora-final-list-line { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: #334; }
-  .pickora-final-badge-pro, .pickora-final-badge-con {
-    flex: 0 0 auto; font-size: 11px; font-weight: 700; padding: 3px 8px;
-    border-radius: 999px; text-transform: uppercase;
+  .pickora-final-lists { display: flex; flex-direction: column; gap: 14px; }
+  .pickora-final-list-block h4 {
+    margin: 0 0 6px; font-size: 13px; font-weight: 800; letter-spacing: 0.04em;
+    text-transform: uppercase; color: #15223B;
   }
-  .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
-  .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
+  .pickora-final-list-block ul { margin: 0; padding-left: 18px; }
+  .pickora-final-list-block li { margin: 0 0 6px; font-size: 14px; color: #334; line-height: 1.45; }
+  .pickora-final-list-block--pro h4 { color: #166534; }
+  .pickora-final-list-block--con h4 { color: #991b1b; }
   .pickora-final-verdict {
     background: #F5FAFF; border-left: 3px solid #2075d2; padding: 12px 14px; border-radius: 8px;
     font-size: 14.5px; line-height: 1.55; color: #15223B;
   }
   .pickora-final-btn {
     display: inline-flex; align-items: center; justify-content: center;
-    background: #2075d2; color: #fff !important; text-decoration: none !important;
+    min-height: 44px; box-sizing: border-box;
+    background: #ff9900; color: #111 !important; text-decoration: none !important;
     font-weight: 700; padding: 12px 18px; border-radius: 999px; width: fit-content;
   }
-  .pickora-final-btn:hover { background: #1a63b5; }
+  .pickora-final-btn:hover { background: #e88b00; }
   @media (max-width: 768px) {
     .pickora-final-card { flex-direction: column; align-items: stretch; gap: 20px; padding: 20px; }
     .pickora-final-img-col, .pickora-final-info-col { max-width: 100%; }
@@ -143,45 +145,49 @@ export function buildProductCard(product, eager = false) {
   const title  = escHtml(product.title || "");
   const desc   = escHtml(product.description || "");
   const amazon = escHtml(product.amazonUrl || "#");
-  const rating = stars(product.ratingStars || 5);
+  const starN  = Number(product.ratingStars);
+  const ratingHtml =
+    starN >= 1 && starN <= 5
+      ? `<div class="pickora-final-rating">${stars(starN)}</div>`
+      : "";
 
-  // Build verdict HTML — mirrors Python verdict logic
-  const rawVerdict = product.verdict || "";
-  let verdictHtml  = "";
+  const rawVerdict = String(product.verdict || "").trim();
+  let verdictBlock = "";
   if (rawVerdict) {
-    // Strip any existing HTML tags, then escape
     const plain   = rawVerdict.replace(/<[^>]+>/g, "");
     const escaped = escHtml(plain);
-    if (escaped.toLowerCase().startsWith("pickora")) {
-      const parts = escaped.split(":", 2);
-      verdictHtml = parts.length === 2
-        ? `<b>${parts[0]}:</b>${parts[1]}`
-        : escaped;
-    } else {
-      verdictHtml = `<b>Pickora's Verdict:</b> ${escaped}`;
-    }
-  } else {
-    verdictHtml = `<b>Pickora's Verdict:</b> `;
+    const body = escaped.toLowerCase().startsWith("pickora")
+      ? (() => {
+          const parts = escaped.split(":", 2);
+          return parts.length === 2
+            ? `<b>${parts[0]}:</b>${parts[1]}`
+            : escaped;
+        })()
+      : `<b>Pickora's Verdict:</b> ${escaped}`;
+    verdictBlock = `<div class="pickora-final-verdict">${body}</div>`;
   }
 
-  const lines = [];
-  for (const p of (product.pros || [])) {
-    lines.push(
-      `  <div class="pickora-final-list-line">\n` +
-      `    <span class="pickora-final-badge-pro">Pros</span>\n` +
-      `    <span>${escHtml(p)}</span>\n` +
-      `  </div>`
+  const pros = (product.pros || []).map((x) => String(x || "").trim()).filter(Boolean);
+  const cons = (product.cons || []).map((x) => String(x || "").trim()).filter(Boolean);
+  const listsParts = [];
+  if (pros.length) {
+    listsParts.push(
+      `<div class="pickora-final-list-block pickora-final-list-block--pro"><h4>Pros</h4><ul>${pros
+        .map((p) => `<li>${escHtml(p)}</li>`)
+        .join("")}</ul></div>`
     );
   }
-  for (const c of (product.cons || [])) {
-    lines.push(
-      `  <div class="pickora-final-list-line">\n` +
-      `    <span class="pickora-final-badge-con">Cons</span>\n` +
-      `    <span>${escHtml(c)}</span>\n` +
-      `  </div>`
+  if (cons.length) {
+    listsParts.push(
+      `<div class="pickora-final-list-block pickora-final-list-block--con"><h4>Cons</h4><ul>${cons
+        .map((c) => `<li>${escHtml(c)}</li>`)
+        .join("")}</ul></div>`
     );
   }
-  const lists = lines.join("\n\n");
+  const lists = listsParts.length
+    ? `<div class="pickora-final-lists">${listsParts.join("\n")}</div>`
+    : "";
+  const descHtml = desc ? `<p class="pickora-final-text">${desc}</p>` : "";
 
   return `<div class="pickora-final-card">
   <div class="pickora-final-img-col">
@@ -191,16 +197,10 @@ export function buildProductCard(product, eager = false) {
   </div>
   <div class="pickora-final-info-col">
     <h3 class="pickora-final-title">${title}</h3>
-    <div class="pickora-final-rating">${rating}</div>
-    <p class="pickora-final-text">
-     ${desc}
-    </p>
-<div class="pickora-final-lists">
+    ${ratingHtml}
+    ${descHtml}
 ${lists}
-</div>
-    <div class="pickora-final-verdict">
-      ${verdictHtml}
-    </div>
+    ${verdictBlock}
     <a href="${amazon}" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
       Check Price on Amazon →
     </a>

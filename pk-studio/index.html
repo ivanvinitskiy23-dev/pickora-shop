@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/pk-studio/css/studio.css?v=20261003c">
+  <link rel="stylesheet" href="/pk-studio/css/studio.css?v=20261003d">
 </head>
 <body>
   
@@ -126,6 +126,17 @@
       </div>
       <div id="home-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
       <div id="home-reviews" class="module-grid" style="grid-template-columns:1fr"></div>
+
+      <div class="dash-hero" style="margin-top:36px">
+        <div class="eyebrow">Reader selection</div>
+        <h2 data-i18n="topPicksTitle">Top picks</h2>
+        <p data-i18n="topPicksDek">Карусель на главной (assets/data/top-picks.json). Badge + Amazon + ссылка на гайд.</p>
+      </div>
+      <div id="home-top-picks" class="module-grid" style="grid-template-columns:1fr"></div>
+      <div style="margin-top:12px">
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-top-pick-add" style="width:auto;padding-inline:16px" data-i18n="btnAddTopPick">+ Top pick</button>
+      </div>
+
       <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
         <button type="button" class="btn btn-primary" id="btn-home-save" style="width:auto;padding-inline:28px" data-i18n="btnSaveHome">Сохранить черновик</button>
         <div class="preview-bar"><a class="btn btn-ghost" id="link-preview-home" href="/" target="_blank" rel="noopener" data-i18n="btnOpenLiveHome">Открыть Live</a>
@@ -312,7 +323,7 @@
       <section class="studio-panel pk-hidden" data-view="team">
 <div class="dash-hero">
         <h2 data-i18n="teamTitle">Команда</h2>
-        <p data-i18n="teamDek">Сейчас один owner через Cloudflare secrets. Инвайты админов — следующий шаг.</p>
+        <p data-i18n="teamDek">Owner через Cloudflare secrets. Ниже — пригласить / удалить админов (только owner).</p>
       </div>
       <div id="team-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
       <button type="button" class="btn btn-ghost" id="btn-team-refresh" style="width:auto;margin-bottom:14px" data-i18n="btnRefresh">Обновить</button>
@@ -386,13 +397,13 @@
     </div>
   </div>
 
-  <script src="/pk-studio/js/i18n.js?v=20261003c"></script>
-  <script src="/pk-studio/js/seo-gate.js?v=20261003c"></script>
-  <script src="/pk-studio/js/auth.js?v=20261003c"></script>
-  <script src="/pk-studio/js/media.js?v=20261003c"></script>
-  <script src="/pk-studio/js/blocks.js?v=20261003c"></script>
-  <script src="/pk-studio/js/articles.js?v=20261003c"></script>
-  <script src="/pk-studio/js/ops.js?v=20261003c"></script>
-  <script src="/pk-studio/js/app.js?v=20261003c"></script>
+  <script src="/pk-studio/js/i18n.js?v=20261003d"></script>
+  <script src="/pk-studio/js/seo-gate.js?v=20261003d"></script>
+  <script src="/pk-studio/js/auth.js?v=20261003d"></script>
+  <script src="/pk-studio/js/media.js?v=20261003d"></script>
+  <script src="/pk-studio/js/blocks.js?v=20261003d"></script>
+  <script src="/pk-studio/js/articles.js?v=20261003d"></script>
+  <script src="/pk-studio/js/ops.js?v=20261003d"></script>
+  <script src="/pk-studio/js/app.js?v=20261003d"></script>
 </body>
 </html>

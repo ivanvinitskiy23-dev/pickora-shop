@@ -73,6 +73,72 @@ export async function getFile(env, path) {
  * @returns {{ commit: { sha: string, message: string }, content: { path: string } }}
  * @throws Error on failure
  */
+/** Fetch blob SHA only (safe for binary files). */
+export async function getFileSha(env, path) {
+  const repo   = env.GITHUB_REPO   || DEFAULT_REPO;
+  const branch = env.GITHUB_BRANCH || DEFAULT_BRANCH;
+  const token  = env.GITHUB_TOKEN;
+  if (!token) throw new Error("GITHUB_TOKEN env binding is missing");
+
+  const url = `https://api.github.com/repos/${repo}/contents/${encodeURIPath(path)}?ref=${branch}`;
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept:        "application/vnd.github+json",
+      "User-Agent":  "pickora-admin-api/1.0",
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+  });
+  if (res.status === 404) return null;
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`GitHub getFileSha ${path} → ${res.status}: ${body.slice(0, 200)}`);
+  }
+  const data = await res.json();
+  return data.sha || null;
+}
+
+/**
+ * Create/update a binary file (image). Pass raw base64 (no data: prefix).
+ */
+export async function putBinaryFile(env, path, base64Content, message, sha) {
+  const repo   = env.GITHUB_REPO   || DEFAULT_REPO;
+  const branch = env.GITHUB_BRANCH || DEFAULT_BRANCH;
+  const token  = env.GITHUB_TOKEN;
+  if (!token) throw new Error("GITHUB_TOKEN env binding is missing");
+
+  const url = `https://api.github.com/repos/${repo}/contents/${encodeURIPath(path)}`;
+  const body = {
+    message,
+    content: String(base64Content || "").replace(/\s+/g, ""),
+    branch,
+  };
+  if (sha) body.sha = sha;
+
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Authorization:  `Bearer ${token}`,
+      Accept:         "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "User-Agent":   "pickora-admin-api/1.0",
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const errBody = await res.text().catch(() => "");
+    throw new Error(`GitHub putBinaryFile ${path} → ${res.status}: ${errBody.slice(0, 200)}`);
+  }
+
+  const data = await res.json();
+  return {
+    commit:  { sha: data.commit?.sha, message: data.commit?.message },
+    content: { path: data.content?.path, sha: data.content?.sha },
+  };
+}
+
 export async function putFile(env, path, content, message, sha) {
   const repo   = env.GITHUB_REPO   || DEFAULT_REPO;
   const branch = env.GITHUB_BRANCH || DEFAULT_BRANCH;
