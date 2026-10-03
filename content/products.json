@@ -43,17 +43,6 @@
       "imageAlt": "Pet Supplies",
       "width": 1200,
       "height": 896
-    },
-    {
-      "id": "microwave",
-      "url": "/microwave/",
-      "title": "New microwave",
-      "badge": "New",
-      "description": "Mirowave rewews",
-      "image": "",
-      "imageAlt": "microwave",
-      "width": 1200,
-      "height": 670
     }
   ],
   "categoryProducts": {
@@ -150,6 +139,86 @@
       }
     ],
     "consumer-electronics": [
+      {
+        "id": "consumer-electronics-musm8386",
+        "title": "BenQ ScreenBar Halo 2",
+        "image": "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/uploads/2026/10/benq-screenbar-halo-2-musm86ou.webp",
+        "imageAlt": "Monitor light bar on top of a screen, with a small wireless remote on the desk and a soft backlight behind the display.",
+        "description": "A light that sits on the monitor, lights the desk, and throws a soft glow behind the screen without a glare stripe. Auto brightness and a sensor that switches off when you leave are what owners actually use. It is a poor buy if you only wanted a cheap stick of LEDs.",
+        "pros": [
+          "Presence sensor turns the bar off when you walk away and on when you sit down"
+        ],
+        "cons": [
+          "The rear glow does little if the monitor sits far from a wall"
+        ],
+        "verdict": "Get it if the monitor sits in a dim room and overhead lights glare or strain your eyes. Skip it if you wanted the cheapest bar, or if you need the backlight to bounce off a nearby wall.",
+        "amazonUrl": "https://link.amazon/B00PvkakV",
+        "ratingStars": 5
+      },
+      {
+        "id": "consumer-electronics-musm5yu6",
+        "title": "SanDisk 2TB Portable SSD",
+        "image": "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/uploads/2026/10/sandisk-2tb-portable-ssd.webp",
+        "imageAlt": "Pocket-size portable SSD with a short USB-C cable on a marble table.",
+        "description": "A pocket drive for moving big folders without a spinning disk. Owners plug it in over USB-C and get speeds in the 10Gbps range when the port and cable match. Confirm you are buying the 2TB listing: the most detailed speed notes here were written about a 1TB stick in the same family.",
+        "pros": [
+          "One test saw reads around 1050 MB/s on a 10Gbps USB-C port"
+        ],
+        "cons": [
+          "Long-term failure is still a guess. Notes so far are from early use"
+        ],
+        "verdict": "Get it if you haul large folders between computers and the machines have a fast USB-C port. Skip it if you only have old USB-A ports, or if you have not checked that the listing is the 2TB stick.",
+        "amazonUrl": "https://link.amazon/B08n9nbzK",
+        "ratingStars": 5
+      },
+      {
+        "id": "consumer-electronics-musm4ggm",
+        "title": "Anker 737 Power Bank (PowerCore 24K)",
+        "image": "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/uploads/2026/10/anker-737-power-bank-musm4sou.webp",
+        "imageAlt": "Thick rectangular power bank with a small front display and USB ports on a white oak desk.",
+        "description": "This is a laptop brick, not a pocket phone bank. The screen shows what is going in and out, and owners have topped up a Surface, a MacBook Air, a phone, and headphones on one charge. Get it when a normal bank cannot lift a tablet or laptop. Leave it if you want something light for a jacket pocket.",
+        "pros": [
+          "USB-A port charged a DJI battery hub when USB-C would not negotiate"
+        ],
+        "cons": [
+          "Thick and heavy compared with a phone bank"
+        ],
+        "verdict": "Get it if a phone bank cannot charge your laptop or iPad and you can live with the weight. Skip it if the bank has to disappear into a jacket pocket.",
+        "amazonUrl": "https://link.amazon/B0fN7qEeC",
+        "ratingStars": 5
+      },
+      {
+        "id": "consumer-electronics-musm2i1c",
+        "title": "Apple AirPods Pro 3",
+        "image": "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/uploads/2026/10/airpods-pro-3.webp",
+        "imageAlt": "Open white charging case with two short-stem earbuds and soft foam tips on a walnut sideboard.",
+        "description": "These are the Pro buds to get if you live on an iPhone and the old pair falls out or dies mid-meeting. Owners describe a tighter foam fit, stronger noise cancelling, and clearer sound than the first Pros, including during workouts. Skip them if you jump between Android and Apple, or if your Pro 2s still fit and still hold a charge.",
+        "pros": [
+          "Noise cancelling cuts real noise, including a lawnmower in one note"
+        ],
+        "cons": [
+          "Multipoint stays inside Apple devices"
+        ],
+        "verdict": "Get them if your iPhone buds fall out, lose the workout, or die before the day ends. Skip them if you still like your Pro 2s, or if the same buds must jump to Android.",
+        "amazonUrl": "https://link.amazon/B0aWq84O4",
+        "ratingStars": 5
+      },
+      {
+        "id": "consumer-electronics-muslzodc",
+        "title": "Insta360 Link 2",
+        "image": "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/uploads/2026/10/insta360-link-2.webp",
+        "imageAlt": "Compact webcam on a magnetic monitor mount, lens tilted down, on a dark desk.",
+        "description": "A desk webcam for people who are on camera all day and are tired of a fixed 1080p brick. Face tracking, saved angles, and a lens that points down when the call ends are the reasons to buy it. The good controls live in Insta360’s app, so a locked work laptop keeps the basics and loses the rest.",
+        "pros": [
+          "Tracking follows your face, and presets can jump to a saved spot"
+        ],
+        "cons": [
+          "Color, backgrounds, and tracking need the desktop app"
+        ],
+        "verdict": "Get it if you are on camera all day and you can install the Insta360 app. Skip it if the work laptop blocks that app, or if a fixed webcam is already good enough.",
+        "amazonUrl": "https://link.amazon/B0ei9expx",
+        "ratingStars": 5
+      },
       {
         "id": "consumer-electronics-1",
         "title": "Keychron V1 Mechanical Keyboard",
@@ -394,7 +463,6 @@
         "amazonUrl": "https://amzn.to/4gIt0u8",
         "ratingStars": 5
       }
-    ],
-    "microwave": []
+    ]
   }
 }
