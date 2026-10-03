@@ -647,10 +647,11 @@
     setStatus(status, t("uploading"));
     try {
       readPinsForm();
-      const pinId = pinsData.pins[index]?.id || index + 1;
-      // Unique filename per upload so pins never share/overwrite one file.
-      const preferred = `pin-${pinId}-${Date.now().toString(36)}`;
-      const data = await uploadImage(file, preferred);
+      // SEO filename from owner's file; API adds suffix only on name conflict.
+      const preferred = String(file?.name || "pin")
+        .replace(/\.[^.]+$/, "")
+        .trim();
+      const data = await uploadImage(file, preferred || "pin");
       pinsData.pins[index].image = data.path;
       if (data.width) pinsData.pins[index].width = data.width;
       if (data.height) pinsData.pins[index].height = data.height;
@@ -1211,23 +1212,11 @@
     try {
       readProductsForm();
       const hub = productsData.hubCategories[hubIndex];
-      const product = productsData.categoryProducts[hub.id]?.[productIndex];
-      // Stable product id + unique suffix — never reuse slot index names like
-      // "hub-product-1" (unshift/reorder made every new upload overwrite one file).
-      const idPart = String(product?.id || `p${productIndex + 1}`)
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "")
-        .slice(0, 40);
-      const fileStem = String(file?.name || "img")
+      // SEO filename from owner's file (e.g. airpods-pro-3); API adds suffix only on conflict.
+      const preferred = String(file?.name || "product")
         .replace(/\.[^.]+$/, "")
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "")
-        .slice(0, 24);
-      const uniq = Date.now().toString(36);
-      const preferred = `${hub.id}-${idPart}-${fileStem || "img"}-${uniq}`;
-      const data = await uploadImage(file, preferred);
+        .trim();
+      const data = await uploadImage(file, preferred || "product");
       productsData.categoryProducts[hub.id][productIndex].image = data.path;
       productsActiveHub = hubIndex;
       renderProductsEditor();

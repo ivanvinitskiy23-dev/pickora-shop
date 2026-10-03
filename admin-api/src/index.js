@@ -505,7 +505,8 @@ async function handleMediaUpload(request, env, user) {
   const now = new Date();
   const yyyy = String(now.getUTCFullYear());
   const mm = String(now.getUTCMonth() + 1).padStart(2, "0");
-  let base = slugify(preferred || filename) || "upload";
+  const baseStem = slugify(preferred || filename) || "upload";
+  let base = baseStem;
   let ext = "jpg";
   let contentType = "image/jpeg";
   if (bytes[0] === 0x89 && bytes[1] === 0x50) {
@@ -518,20 +519,33 @@ async function handleMediaUpload(request, env, user) {
     ext = "webp";
     contentType = "image/webp";
   }
-  // Avoid silent overwrite of another product/pin image (same preferred name).
+  // Keep owner's SEO filename when free; never overwrite an existing D1/GitHub asset.
   let finalKey = `uploads/${yyyy}/${mm}/${base}.${ext}`;
-  try {
-    const exists = await env.DB.prepare(
-      `SELECT key FROM media_files WHERE key = ? LIMIT 1`
-    )
-      .bind(finalKey)
-      .first();
-    if (exists?.key) {
-      base = `${base}-${Date.now().toString(36)}`.slice(0, 60);
-      finalKey = `uploads/${yyyy}/${mm}/${base}.${ext}`;
+  let ghPathProbe = `wp-content/uploads/${yyyy}/${mm}/${base}.${ext}`;
+  for (let attempt = 0; attempt < 6; attempt++) {
+    let taken = false;
+    try {
+      const row = await env.DB.prepare(
+        `SELECT key FROM media_files WHERE key = ? LIMIT 1`
+      )
+        .bind(finalKey)
+        .first();
+      if (row?.key) taken = true;
+    } catch {
+      /* table missing handled on insert */
     }
-  } catch {
-    /* table missing handled below */
+    if (!taken && env.GITHUB_TOKEN) {
+      try {
+        const sha = await getFileSha(env, ghPathProbe);
+        if (sha) taken = true;
+      } catch {
+        /* ignore probe errors; put may still fail later */
+      }
+    }
+    if (!taken) break;
+    base = `${baseStem}-${Date.now().toString(36)}${attempt ? `-${attempt}` : ""}`.slice(0, 60);
+    finalKey = `uploads/${yyyy}/${mm}/${base}.${ext}`;
+    ghPathProbe = `wp-content/uploads/${yyyy}/${mm}/${base}.${ext}`;
   }
 
   try {
