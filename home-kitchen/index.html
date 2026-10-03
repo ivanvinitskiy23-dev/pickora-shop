@@ -789,1250 +789,274 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 <div class="elementor-element elementor-element-181bf26 e-con e-atomic-element e-flexbox-base e-8466a2b " data-id="181bf26" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="181bf26">
     		<div class="elementor-element elementor-element-abce3d8 elementor-widget elementor-widget-html" data-id="abce3d8" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
 				<div class="elementor-widget-container">
-					<style>
-  /* БАЗОВЫЙ КОНТЕЙНЕР КАРТОЧКИ (Идеальный баланс и анимация) */
+					
+<style>
   .pickora-final-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Текст строго по центру картинки */
-    gap: 40px;
-    background: #ffffff;
-    padding: 32px;
-    margin-bottom: 40px;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    display: flex; flex-direction: row; align-items: center; gap: 40px;
+    background: #ffffff; padding: 32px; margin-bottom: 40px; border-radius: 16px;
+    border: 1px solid #eef2f6; box-shadow: 0 4px 20px rgba(0,0,0,0.02);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   }
-
-  /* Эффект легкого приподнимания при наведении мышки */
   .pickora-final-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
     border-color: #cbd5e1;
   }
-
-  /* ЛЕВАЯ КОЛОНКА — ИЗОБРАЖЕНИЕ В ФОРМАТЕ 16:9 */
-  .pickora-final-img-col {
-    flex: 1;
-    max-width: 45%;
-  }
+  .pickora-final-img-col { flex: 1; max-width: 45%; }
   .pickora-final-img-wrapper {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Жесткий формат 16:9 */
-    overflow: hidden;
-    border-radius: 12px;
-    background: #f8fafc;
+    width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 12px; background: #f8fafc;
   }
-  .pickora-final-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Картинка заполняет 16:9 без искажений */
-    display: block;
-  }
-
-  /* ПРАВАЯ КОЛОНКА — ПРЕМИАЛЬНАЯ ТИПОГРАФИКА */
+  .pickora-final-img-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .pickora-final-info-col {
-    flex: 1;
-    max-width: 55%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex: 1; max-width: 55%; display: flex; flex-direction: column; justify-content: center;
   }
-
-  /* Дорогой темный заголовок */
   .pickora-final-title {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px;
+    font-size: 26px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0; letter-spacing: -0.5px;
   }
-
-  /* Звезды */
-  .pickora-final-rating {
-    color: #ff9900;
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  /* Контрастный читаемый текст */
-  .pickora-final-text {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #334155;
-    margin: 0 0 20px 0;
-  }
-
-  /* БЛОК ПЛЮСОВ И МИНУСОВ С БЕЙДЖАМИ */
-  .pickora-final-lists {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+  .pickora-final-rating { color: #ff9900; font-size: 15px; margin-bottom: 16px; }
+  .pickora-final-text { font-size: 15px; line-height: 1.6; color: #334155; margin: 0 0 20px 0; }
+  .pickora-final-lists { margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
   .pickora-final-list-line {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    font-size: 14.5px; line-height: 1.5; color: #334155;
+    display: flex; align-items: center; gap: 10px;
   }
   .pickora-final-badge-pro, .pickora-final-badge-con {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
+    font-size: 11px; text-transform: uppercase; font-weight: 700;
+    padding: 3px 8px; border-radius: 4px; letter-spacing: 0.5px; flex: 0 0 auto;
   }
   .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
   .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
-
-  /* ЭКСПЕРТНЫЙ ВЕРДИКТ */
   .pickora-final-verdict {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #475569;
-    margin-bottom: 24px;
+    background: #f8fafc; border-left: 4px solid #2563eb; padding: 12px 16px;
+    border-radius: 0 8px 8px 0; font-size: 14px; line-height: 1.5; color: #475569; margin-bottom: 24px;
   }
-
-  /* СТИЛЬНАЯ МИНИМАЛИСТИЧНАЯ КНОПКА AMAZON */
   .pickora-final-btn {
-    display: inline-block;
-    align-self: flex-start;
-    background-color: #ff9900;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15);
-    transition: all 0.2s ease-in-out;
+    display: inline-block; align-self: flex-start; min-height: 44px; box-sizing: border-box;
+    background-color: #ff9900; color: #ffffff !important; text-decoration: none !important;
+    font-size: 15px; font-weight: 700; padding: 14px 32px; border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15); transition: all 0.2s ease-in-out;
   }
   .pickora-final-btn:hover {
-    background-color: #e68a00;
-    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
+    background-color: #e68a00; box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
   }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ПЛАНШЕТЫ (Ширина экрана меньше 1024px) */
-  /* ======================================================== */
-  @media (max-width: 1024px) {
-    .pickora-final-card {
-      gap: 24px;
-      padding: 24px;
-    }
-    .pickora-final-title {
-      font-size: 22px;
-    }
-    .pickora-final-text {
-      font-size: 14.5px;
-    }
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ТЕЛЕФОНЫ (Ширина экрана меньше 768px)  */
-  /* ======================================================== */
   @media (max-width: 768px) {
-    .pickora-final-card {
-      flex-direction: column; /* Перестраиваем структуру в один столбец */
-      align-items: stretch;
-      gap: 20px;
-      padding: 20px;
-    }
-    .pickora-final-img-col, .pickora-final-info-col {
-      max-width: 100%; /* Элементы занимают всю ширину экрана смартфона */
-    }
-    .pickora-final-btn {
-      display: block;
-      text-align: center;
-      align-self: stretch; /* Кнопка растягивается на всю ширину для удобного тапа */
-      padding: 16px;
-    }
+    .pickora-final-card { flex-direction: column; align-items: stretch; gap: 20px; padding: 20px; }
+    .pickora-final-img-col, .pickora-final-info-col { max-width: 100%; }
+    .pickora-final-btn { display: block; text-align: center; align-self: stretch; }
   }
 </style>
 
 <div class="pickora-final-card">
-  
-  <!-- ЛЕВАЯ КОЛОНКА (КАРТИНКА) -->
   <div class="pickora-final-img-col">
     <div class="pickora-final-img-wrapper">
-      
-      <!-- !!! ЗАМЕНИ ССЫЛКУ НИЖЕ НА ССЫЛКУ СВОЕГО ИЗОБРАЖЕНИЯ !!! -->
       <img src="https://pickora.shop/wp-content/uploads/2026/06/Espresso_machine_and_latte_mug_202606281727.webp" alt="Matte black Breville Bambino Plus espresso machine on a modern white marble kitchen countertop next to a ceramic coffee mug, aesthetic kitchen styling" width="1376" height="768" loading="eager" fetchpriority="high" decoding="async">
-      <!-- !!! КОНЕЦ ЗАМЕНЫ КАРТИНКИ !!! -->
-
     </div>
   </div>
-  
-  <!-- ПРАВАЯ КОЛОНКА (КОНТЕНТ) -->
   <div class="pickora-final-info-col">
-    
-    <!-- !!! ЗАМЕНИ НАЗВАНИЕ ТОВАРА НИЖЕ !!! -->
     <h3 class="pickora-final-title">Breville Bambino Plus Espresso Machine</h3>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ НАЗВАНИЯ ТОВАРА !!! -->
-    
     <div class="pickora-final-rating">★★★★★ </div>
-    
-    <!-- !!! ЗАМЕНИ ОПИСАНИЕ ТОВАРА НИЖЕ !!! -->
     <p class="pickora-final-text">
      The Breville Bambino Plus delivers third-wave specialty coffee at home, bringing professional-grade performance into a compact, kitchen-friendly footprint. With its 54mm portafilter, 19 bars of pressure, and a proprietary ThermoJet heating system that reaches ideal extraction temperature in just 3 seconds, it extracts rich, full-bodied espresso with flawless crema every single time.
     </p>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ОПИСАНИЯ ТОВАРА !!! -->
-    
-    <!-- БЛОК ПЛЮСОВ И МИНУСОВ -->
 <div class="pickora-final-lists">
-
-  <!-- ПЛЮС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>3-second heat-up time with ThermoJet system.</span>
   </div>
 
-  <!-- ПЛЮС №2 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Automatic milk texturing creates true microfoam for latte art.</span>
   </div>
 
-  <!-- ПЛЮС №3 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Extremely compact design perfect for small counter spaces.</span>
   </div>
 
-  <!-- МИНУС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-con">Cons</span>
     <span>Mostly plastic internal components despite the steel exterior.</span>
   </div>
-
 </div>
-    
-    <!-- НАШ ЭКСПЕРТНЫЙ ВЕРДИКТ -->
-    <!-- !!! ЗАМЕНИ ТЕКСТ ВЕРДИКТА НИЖЕ !!! -->
     <div class="pickora-final-verdict">
       <b>Pickora’s Verdict:</b> The absolute gold standard for entry-level home espresso. It removes all the guesswork from milk steaming and heating, making barista-quality lattes accessible to everyone without cluttering the kitchen.
     </div>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ВЕРДИКТА !!! -->
-    
-    <!-- !!! ЗАМЕНИ ССЫЛКУ href НА СВОЮ ПАРТНЕРСКУЮ ССЫЛКУ АМАЗОН !!! -->
     <a href="https://amzn.to/440gWNu" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
       Check Price on Amazon →
     </a>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ССЫЛКИ АМАЗОН !!! -->
-    
   </div>
-
-</div>				</div>
-				</div>
-		
 </div>
-<div class="elementor-element elementor-element-e7b9d08 e-con e-atomic-element e-flexbox-base e-2834942 " data-id="e7b9d08" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="e7b9d08">
-    		<div class="elementor-element elementor-element-703013f elementor-widget elementor-widget-html" data-id="703013f" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
-				<div class="elementor-widget-container">
-					<style>
-  /* БАЗОВЫЙ КОНТЕЙНЕР КАРТОЧКИ (Идеальный баланс и анимация) */
-  .pickora-final-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Текст строго по центру картинки */
-    gap: 40px;
-    background: #ffffff;
-    padding: 32px;
-    margin-bottom: 40px;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  }
-
-  /* Эффект легкого приподнимания при наведении мышки */
-  .pickora-final-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-    border-color: #cbd5e1;
-  }
-
-  /* ЛЕВАЯ КОЛОНКА — ИЗОБРАЖЕНИЕ В ФОРМАТЕ 16:9 */
-  .pickora-final-img-col {
-    flex: 1;
-    max-width: 45%;
-  }
-  .pickora-final-img-wrapper {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Жесткий формат 16:9 */
-    overflow: hidden;
-    border-radius: 12px;
-    background: #f8fafc;
-  }
-  .pickora-final-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Картинка заполняет 16:9 без искажений */
-    display: block;
-  }
-
-  /* ПРАВАЯ КОЛОНКА — ПРЕМИАЛЬНАЯ ТИПОГРАФИКА */
-  .pickora-final-info-col {
-    flex: 1;
-    max-width: 55%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  /* Дорогой темный заголовок */
-  .pickora-final-title {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px;
-  }
-
-  /* Звезды */
-  .pickora-final-rating {
-    color: #ff9900;
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  /* Контрастный читаемый текст */
-  .pickora-final-text {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #334155;
-    margin: 0 0 20px 0;
-  }
-
-  /* БЛОК ПЛЮСОВ И МИНУСОВ С БЕЙДЖАМИ */
-  .pickora-final-lists {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .pickora-final-list-line {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .pickora-final-badge-pro, .pickora-final-badge-con {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-  }
-  .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
-  .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
-
-  /* ЭКСПЕРТНЫЙ ВЕРДИКТ */
-  .pickora-final-verdict {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #475569;
-    margin-bottom: 24px;
-  }
-
-  /* СТИЛЬНАЯ МИНИМАЛИСТИЧНАЯ КНОПКА AMAZON */
-  .pickora-final-btn {
-    display: inline-block;
-    align-self: flex-start;
-    background-color: #ff9900;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15);
-    transition: all 0.2s ease-in-out;
-  }
-  .pickora-final-btn:hover {
-    background-color: #e68a00;
-    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ПЛАНШЕТЫ (Ширина экрана меньше 1024px) */
-  /* ======================================================== */
-  @media (max-width: 1024px) {
-    .pickora-final-card {
-      gap: 24px;
-      padding: 24px;
-    }
-    .pickora-final-title {
-      font-size: 22px;
-    }
-    .pickora-final-text {
-      font-size: 14.5px;
-    }
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ТЕЛЕФОНЫ (Ширина экрана меньше 768px)  */
-  /* ======================================================== */
-  @media (max-width: 768px) {
-    .pickora-final-card {
-      flex-direction: column; /* Перестраиваем структуру в один столбец */
-      align-items: stretch;
-      gap: 20px;
-      padding: 20px;
-    }
-    .pickora-final-img-col, .pickora-final-info-col {
-      max-width: 100%; /* Элементы занимают всю ширину экрана смартфона */
-    }
-    .pickora-final-btn {
-      display: block;
-      text-align: center;
-      align-self: stretch; /* Кнопка растягивается на всю ширину для удобного тапа */
-      padding: 16px;
-    }
-  }
-</style>
 
 <div class="pickora-final-card">
-  
-  <!-- ЛЕВАЯ КОЛОНКА (КАРТИНКА) -->
   <div class="pickora-final-img-col">
     <div class="pickora-final-img-wrapper">
-      
-      <!-- !!! ЗАМЕНИ ССЫЛКУ НИЖЕ НА ССЫЛКУ СВОЕГО ИЗОБРАЖЕНИЯ !!! -->
       <img src="https://pickora.shop/wp-content/uploads/2026/06/Air_fryer_with_sweet_potato_202606281752.webp" alt="Matte black Cosori TurboBlaze air fryer on a clean white quartz kitchen countertop next to a small ceramic bowl of organic roasted snacks, cozy interior ambient lighting" width="1376" height="768" loading="lazy" decoding="async">
-      <!-- !!! КОНЕЦ ЗАМЕНЫ КАРТИНКИ !!! -->
-
     </div>
   </div>
-  
-  <!-- ПРАВАЯ КОЛОНКА (КОНТЕНТ) -->
   <div class="pickora-final-info-col">
-    
-    <!-- !!! ЗАМЕНИ НАЗВАНИЕ ТОВАРА НИЖЕ !!! -->
     <h3 class="pickora-final-title">Cosori TurboBlaze 6.0-Quart Air Fryer</h3>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ НАЗВАНИЯ ТОВАРА !!! -->
-    
     <div class="pickora-final-rating">★★★★★ </div>
-    
-    <!-- !!! ЗАМЕНИ ОПИСАНИЕ ТОВАРА НИЖЕ !!! -->
     <p class="pickora-final-text">
      The Cosori TurboBlaze Air Fryer reimagines counter-top cooking with a sleek, matte design and a professional-grade DC motor. This innovative heating technology ensures ultra-fast airflow, delivering perfectly crisp, gold-standard results with up to 85% less oil. With its generous 6-quart capacity and intuitive, dark-mode touch interface, it fits seamlessly into any modern, design-conscious kitchen.
     </p>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ОПИСАНИЯ ТОВАРА !!! -->
-    
-    <!-- БЛОК ПЛЮСОВ И МИНУСОВ -->
 <div class="pickora-final-lists">
-
-  <!-- ПЛЮС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Energy-efficient DC motor cooks up to 46% faster than previous models.</span>
   </div>
 
-  <!-- ПЛЮС №2 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Sleek, minimalist matte finish that eliminates fingerprint smudges.</span>
   </div>
 
-  <!-- ПЛЮС №3 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>9-in-1 versatile functionality, including dehydrate and proof settings.</span>
   </div>
 
-  <!-- МИНУС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-con">Cons</span>
     <span>The non-stick crisper plate fits tightly and can be stiff to remove at first.</span>
   </div>
-
 </div>
-    
-    <!-- НАШ ЭКСПЕРТНЫЙ ВЕРДИКТ -->
-    <!-- !!! ЗАМЕНИ ТЕКСТ ВЕРДИКТА НИЖЕ !!! -->
     <div class="pickora-final-verdict">
       <b>Pickora’s Verdict:</b> An absolute masterpiece of kitchen engineering and design. It handles family-sized meals effortlessly while looking like a high-end tech gadget on your counter rather than a bulky appliance.
     </div>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ВЕРДИКТА !!! -->
-    
-    <!-- !!! ЗАМЕНИ ССЫЛКУ href НА СВОЮ ПАРТНЕРСКУЮ ССЫЛКУ АМАЗОН !!! -->
     <a href="https://amzn.to/3R9HUz8" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
       Check Price on Amazon →
     </a>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ССЫЛКИ АМАЗОН !!! -->
-    
   </div>
-
-</div>				</div>
-				</div>
-		
 </div>
-<div class="elementor-element elementor-element-09e8971 e-con e-atomic-element e-flexbox-base e-2acacdb " data-id="09e8971" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="09e8971">
-    		<div class="elementor-element elementor-element-2c803fb elementor-widget elementor-widget-html" data-id="2c803fb" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
-				<div class="elementor-widget-container">
-					<style>
-  /* БАЗОВЫЙ КОНТЕЙНЕР КАРТОЧКИ (Идеальный баланс и анимация) */
-  .pickora-final-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Текст строго по центру картинки */
-    gap: 40px;
-    background: #ffffff;
-    padding: 32px;
-    margin-bottom: 40px;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  }
-
-  /* Эффект легкого приподнимания при наведении мышки */
-  .pickora-final-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-    border-color: #cbd5e1;
-  }
-
-  /* ЛЕВАЯ КОЛОНКА — ИЗОБРАЖЕНИЕ В ФОРМАТЕ 16:9 */
-  .pickora-final-img-col {
-    flex: 1;
-    max-width: 45%;
-  }
-  .pickora-final-img-wrapper {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Жесткий формат 16:9 */
-    overflow: hidden;
-    border-radius: 12px;
-    background: #f8fafc;
-  }
-  .pickora-final-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Картинка заполняет 16:9 без искажений */
-    display: block;
-  }
-
-  /* ПРАВАЯ КОЛОНКА — ПРЕМИАЛЬНАЯ ТИПОГРАФИКА */
-  .pickora-final-info-col {
-    flex: 1;
-    max-width: 55%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  /* Дорогой темный заголовок */
-  .pickora-final-title {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px;
-  }
-
-  /* Звезды */
-  .pickora-final-rating {
-    color: #ff9900;
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  /* Контрастный читаемый текст */
-  .pickora-final-text {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #334155;
-    margin: 0 0 20px 0;
-  }
-
-  /* БЛОК ПЛЮСОВ И МИНУСОВ С БЕЙДЖАМИ */
-  .pickora-final-lists {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .pickora-final-list-line {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .pickora-final-badge-pro, .pickora-final-badge-con {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-  }
-  .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
-  .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
-
-  /* ЭКСПЕРТНЫЙ ВЕРДИКТ */
-  .pickora-final-verdict {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #475569;
-    margin-bottom: 24px;
-  }
-
-  /* СТИЛЬНАЯ МИНИМАЛИСТИЧНАЯ КНОПКА AMAZON */
-  .pickora-final-btn {
-    display: inline-block;
-    align-self: flex-start;
-    background-color: #ff9900;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15);
-    transition: all 0.2s ease-in-out;
-  }
-  .pickora-final-btn:hover {
-    background-color: #e68a00;
-    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ПЛАНШЕТЫ (Ширина экрана меньше 1024px) */
-  /* ======================================================== */
-  @media (max-width: 1024px) {
-    .pickora-final-card {
-      gap: 24px;
-      padding: 24px;
-    }
-    .pickora-final-title {
-      font-size: 22px;
-    }
-    .pickora-final-text {
-      font-size: 14.5px;
-    }
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ТЕЛЕФОНЫ (Ширина экрана меньше 768px)  */
-  /* ======================================================== */
-  @media (max-width: 768px) {
-    .pickora-final-card {
-      flex-direction: column; /* Перестраиваем структуру в один столбец */
-      align-items: stretch;
-      gap: 20px;
-      padding: 20px;
-    }
-    .pickora-final-img-col, .pickora-final-info-col {
-      max-width: 100%; /* Элементы занимают всю ширину экрана смартфона */
-    }
-    .pickora-final-btn {
-      display: block;
-      text-align: center;
-      align-self: stretch; /* Кнопка растягивается на всю ширину для удобного тапа */
-      padding: 16px;
-    }
-  }
-</style>
 
 <div class="pickora-final-card">
-  
-  <!-- ЛЕВАЯ КОЛОНКА (КАРТИНКА) -->
   <div class="pickora-final-img-col">
     <div class="pickora-final-img-wrapper">
-      
-      <!-- !!! ЗАМЕНИ ССЫЛКУ НИЖЕ НА ССЫЛКУ СВОЕГО ИЗОБРАЖЕНИЯ !!! -->
       <img src="https://pickora.shop/wp-content/uploads/2026/06/Black_kettle_on_kitchen_countertop_202606281801.webp" alt="Matte black Cosori electric gooseneck kettle on a minimalist wooden kitchen counter next to a glass coffee server, clean aesthetic styling" width="1376" height="768" loading="lazy" decoding="async">
-      <!-- !!! КОНЕЦ ЗАМЕНЫ КАРТИНКИ !!! -->
-
     </div>
   </div>
-  
-  <!-- ПРАВАЯ КОЛОНКА (КОНТЕНТ) -->
   <div class="pickora-final-info-col">
-    
-    <!-- !!! ЗАМЕНИ НАЗВАНИЕ ТОВАРА НИЖЕ !!! -->
     <h3 class="pickora-final-title">Cosori Electric Gooseneck Kettle (5 Presets)</h3>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ НАЗВАНИЯ ТОВАРА !!! -->
-    
     <div class="pickora-final-rating">★★★★★ </div>
-    
-    <!-- !!! ЗАМЕНИ ОПИСАНИЕ ТОВАРА НИЖЕ !!! -->
     <p class="pickora-final-text">
      The Cosori Electric Gooseneck Kettle combines precision brewing with a sleek, space-saving design. Engineered with 5 precise one-touch temperature presets, it automatically heats water to the ideal temperature for coffee, green tea, or black tea. With its 100% food-grade stainless steel interior, a powerful 1200W heating element, and a laser-etched gooseneck spout, it offers ultimate control over your pour without compromising on speed or purity.
     </p>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ОПИСАНИЯ ТОВАРА !!! -->
-    
-  <!-- БЛОК ПЛЮСОВ И МИНУСОВ -->
 <div class="pickora-final-lists">
-
-  <!-- ПЛЮС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>5 convenient temperature presets optimized for different coffee and tea varieties.</span>
   </div>
 
-  <!-- ПЛЮС №2 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>100% food-grade stainless steel housing, lid, and bottom with zero plastic contact.</span>
   </div>
 
-  <!-- ПЛЮС №3 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Rapid boil technology (1200W) heats the full 0.8L capacity in just 3-5 minutes.</span>
   </div>
 
-  <!-- МИНУС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-con">Cons</span>
     <span>The alert beep when the water reaches temperature cannot be muted.</span>
   </div>
-
 </div>
-    
-    <!-- НАШ ЭКСПЕРТНЫЙ ВЕРДИКТ -->
-    <!-- !!! ЗАМЕНИ ТЕКСТ ВЕРДИКТА НИЖЕ !!! -->
     <div class="pickora-final-verdict">
       <b>Pickora’s Verdict:</b>The smart minimalist’s choice. It delivers the high-end pouring precision and temperature control of premium barista kettles at a fraction of the cost, making it an unbeatable addition to any modern coffee corner.
     </div>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ВЕРДИКТА !!! -->
-    
-    <!-- !!! ЗАМЕНИ ССЫЛКУ href НА СВОЮ ПАРТНЕРСКУЮ ССЫЛКУ АМАЗОН !!! -->
     <a href="https://amzn.to/4v6m5P9" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
       Check Price on Amazon →
     </a>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ССЫЛКИ АМАЗОН !!! -->
-    
   </div>
-
-</div>				</div>
-				</div>
-		
 </div>
-<div class="elementor-element elementor-element-bc8c2e0 e-con e-atomic-element e-flexbox-base e-6b1350c " data-id="bc8c2e0" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="bc8c2e0">
-    		<div class="elementor-element elementor-element-737d1bd elementor-widget elementor-widget-html" data-id="737d1bd" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
-				<div class="elementor-widget-container">
-					<style>
-  /* БАЗОВЫЙ КОНТЕЙНЕР КАРТОЧКИ (Идеальный баланс и анимация) */
-  .pickora-final-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Текст строго по центру картинки */
-    gap: 40px;
-    background: #ffffff;
-    padding: 32px;
-    margin-bottom: 40px;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  }
-
-  /* Эффект легкого приподнимания при наведении мышки */
-  .pickora-final-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-    border-color: #cbd5e1;
-  }
-
-  /* ЛЕВАЯ КОЛОНКА — ИЗОБРАЖЕНИЕ В ФОРМАТЕ 16:9 */
-  .pickora-final-img-col {
-    flex: 1;
-    max-width: 45%;
-  }
-  .pickora-final-img-wrapper {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Жесткий формат 16:9 */
-    overflow: hidden;
-    border-radius: 12px;
-    background: #f8fafc;
-  }
-  .pickora-final-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Картинка заполняет 16:9 без искажений */
-    display: block;
-  }
-
-  /* ПРАВАЯ КОЛОНКА — ПРЕМИАЛЬНАЯ ТИПОГРАФИКА */
-  .pickora-final-info-col {
-    flex: 1;
-    max-width: 55%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  /* Дорогой темный заголовок */
-  .pickora-final-title {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px;
-  }
-
-  /* Звезды */
-  .pickora-final-rating {
-    color: #ff9900;
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  /* Контрастный читаемый текст */
-  .pickora-final-text {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #334155;
-    margin: 0 0 20px 0;
-  }
-
-  /* БЛОК ПЛЮСОВ И МИНУСОВ С БЕЙДЖАМИ */
-  .pickora-final-lists {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .pickora-final-list-line {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .pickora-final-badge-pro, .pickora-final-badge-con {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-  }
-  .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
-  .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
-
-  /* ЭКСПЕРТНЫЙ ВЕРДИКТ */
-  .pickora-final-verdict {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #475569;
-    margin-bottom: 24px;
-  }
-
-  /* СТИЛЬНАЯ МИНИМАЛИСТИЧНАЯ КНОПКА AMAZON */
-  .pickora-final-btn {
-    display: inline-block;
-    align-self: flex-start;
-    background-color: #ff9900;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15);
-    transition: all 0.2s ease-in-out;
-  }
-  .pickora-final-btn:hover {
-    background-color: #e68a00;
-    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ПЛАНШЕТЫ (Ширина экрана меньше 1024px) */
-  /* ======================================================== */
-  @media (max-width: 1024px) {
-    .pickora-final-card {
-      gap: 24px;
-      padding: 24px;
-    }
-    .pickora-final-title {
-      font-size: 22px;
-    }
-    .pickora-final-text {
-      font-size: 14.5px;
-    }
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ТЕЛЕФОНЫ (Ширина экрана меньше 768px)  */
-  /* ======================================================== */
-  @media (max-width: 768px) {
-    .pickora-final-card {
-      flex-direction: column; /* Перестраиваем структуру в один столбец */
-      align-items: stretch;
-      gap: 20px;
-      padding: 20px;
-    }
-    .pickora-final-img-col, .pickora-final-info-col {
-      max-width: 100%; /* Элементы занимают всю ширину экрана смартфона */
-    }
-    .pickora-final-btn {
-      display: block;
-      text-align: center;
-      align-self: stretch; /* Кнопка растягивается на всю ширину для удобного тапа */
-      padding: 16px;
-    }
-  }
-</style>
 
 <div class="pickora-final-card">
-  
-  <!-- ЛЕВАЯ КОЛОНКА (КАРТИНКА) -->
   <div class="pickora-final-img-col">
     <div class="pickora-final-img-wrapper">
-      
-      <!-- !!! ЗАМЕНИ ССЫЛКУ НИЖЕ НА ССЫЛКУ СВОЕГО ИЗОБРАЖЕНИЯ !!! -->
       <img src="https://pickora.shop/wp-content/uploads/2026/06/Stainless_steel_smart_toaster_to-_202606281811.webp" alt="Stainless steel Keenstone 4-slice digital smart toaster with glowing touchscreen display on a dark granite kitchen island, futuristic kitchen tech styling" width="1376" height="768" loading="lazy" decoding="async">
-      <!-- !!! КОНЕЦ ЗАМЕНЫ КАРТИНКИ !!! -->
-
     </div>
   </div>
-  
-  <!-- ПРАВАЯ КОЛОНКА (КОНТЕНТ) -->
   <div class="pickora-final-info-col">
-    
-    <!-- !!! ЗАМЕНИ НАЗВАНИЕ ТОВАРА НИЖЕ !!! -->
     <h3 class="pickora-final-title">Keenstone 4-Slice Digital Smart Toaster</h3>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ НАЗВАНИЯ ТОВАРА !!! -->
-    
     <div class="pickora-final-rating">★★★★★ </div>
-    
-    <!-- !!! ЗАМЕНИ ОПИСАНИЕ ТОВАРА НИЖЕ !!! -->
     <p class="pickora-final-text">
      The Keenstone Digital Smart Toaster brings modern touch-control technology to your morning routine. Featuring an intuitive touchscreen and dual independent control panels, this 4-slice stainless steel powerhouse allows you to toast different items to perfection simultaneously. With a built-in digital countdown timer and specialized single-slot toasting logic, it delivers precise, even browning for everything from thick bagels to delicate waffles.
     </p>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ОПИСАНИЯ ТОВАРА !!! -->
-    
-  <!-- БЛОК ПЛЮСОВ И МИНУСОВ -->
 <div class="pickora-final-lists">
-
-  <!-- ПЛЮС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Intuitive digital touchscreen with a live countdown timer for precise breakfast planning.</span>
   </div>
 
-  <!-- ПЛЮС №2 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Dual independent control panels allow you to run different shade settings at the same time.</span>
   </div>
 
-  <!-- ПЛЮС №3 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Smart single-slot function saves energy when you only need to toast a single slice.</span>
   </div>
 
-  <!-- МИНУС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-con">Cons</span>
     <span>The glossy finish on the touch panel requires regular wiping to clear fingerprint smudges.</span>
   </div>
-
 </div>
-    
-    <!-- НАШ ЭКСПЕРТНЫЙ ВЕРДИКТ -->
-    <!-- !!! ЗАМЕНИ ТЕКСТ ВЕРДИКТА НИЖЕ !!! -->
     <div class="pickora-final-verdict">
       <b>Pickora’s Verdict:</b>A futuristic upgrade for any modern kitchen. If you love tech gadgets and want absolute precision over your morning toast, the responsive touchscreen, clear countdown timer, and versatile dual controls make this model an exceptional, high-utility choice.
     </div>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ВЕРДИКТА !!! -->
-    
-    <!-- !!! ЗАМЕНИ ССЫЛКУ href НА СВОЮ ПАРТНЕРСКУЮ ССЫЛКУ АМАЗОН !!! -->
     <a href="https://amzn.to/4f6xs4G" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
       Check Price on Amazon →
     </a>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ССЫЛКИ АМАЗОН !!! -->
-    
   </div>
-
-</div>				</div>
-				</div>
-		
 </div>
-<div class="elementor-element elementor-element-fded872 e-con e-atomic-element e-flexbox-base e-1ac5f2f " data-id="fded872" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="fded872">
-    		<div class="elementor-element elementor-element-157b414 elementor-widget elementor-widget-html" data-id="157b414" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
-				<div class="elementor-widget-container">
-					<style>
-  /* БАЗОВЫЙ КОНТЕЙНЕР КАРТОЧКИ (Идеальный баланс и анимация) */
-  .pickora-final-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Текст строго по центру картинки */
-    gap: 40px;
-    background: #ffffff;
-    padding: 32px;
-    margin-bottom: 40px;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  }
-
-  /* Эффект легкого приподнимания при наведении мышки */
-  .pickora-final-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-    border-color: #cbd5e1;
-  }
-
-  /* ЛЕВАЯ КОЛОНКА — ИЗОБРАЖЕНИЕ В ФОРМАТЕ 16:9 */
-  .pickora-final-img-col {
-    flex: 1;
-    max-width: 45%;
-  }
-  .pickora-final-img-wrapper {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Жесткий формат 16:9 */
-    overflow: hidden;
-    border-radius: 12px;
-    background: #f8fafc;
-  }
-  .pickora-final-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Картинка заполняет 16:9 без искажений */
-    display: block;
-  }
-
-  /* ПРАВАЯ КОЛОНКА — ПРЕМИАЛЬНАЯ ТИПОГРАФИКА */
-  .pickora-final-info-col {
-    flex: 1;
-    max-width: 55%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  /* Дорогой темный заголовок */
-  .pickora-final-title {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px;
-  }
-
-  /* Звезды */
-  .pickora-final-rating {
-    color: #ff9900;
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  /* Контрастный читаемый текст */
-  .pickora-final-text {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #334155;
-    margin: 0 0 20px 0;
-  }
-
-  /* БЛОК ПЛЮСОВ И МИНУСОВ С БЕЙДЖАМИ */
-  .pickora-final-lists {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .pickora-final-list-line {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .pickora-final-badge-pro, .pickora-final-badge-con {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-  }
-  .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
-  .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
-
-  /* ЭКСПЕРТНЫЙ ВЕРДИКТ */
-  .pickora-final-verdict {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #475569;
-    margin-bottom: 24px;
-  }
-
-  /* СТИЛЬНАЯ МИНИМАЛИСТИЧНАЯ КНОПКА AMAZON */
-  .pickora-final-btn {
-    display: inline-block;
-    align-self: flex-start;
-    background-color: #ff9900;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15);
-    transition: all 0.2s ease-in-out;
-  }
-  .pickora-final-btn:hover {
-    background-color: #e68a00;
-    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ПЛАНШЕТЫ (Ширина экрана меньше 1024px) */
-  /* ======================================================== */
-  @media (max-width: 1024px) {
-    .pickora-final-card {
-      gap: 24px;
-      padding: 24px;
-    }
-    .pickora-final-title {
-      font-size: 22px;
-    }
-    .pickora-final-text {
-      font-size: 14.5px;
-    }
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ТЕЛЕФОНЫ (Ширина экрана меньше 768px)  */
-  /* ======================================================== */
-  @media (max-width: 768px) {
-    .pickora-final-card {
-      flex-direction: column; /* Перестраиваем структуру в один столбец */
-      align-items: stretch;
-      gap: 20px;
-      padding: 20px;
-    }
-    .pickora-final-img-col, .pickora-final-info-col {
-      max-width: 100%; /* Элементы занимают всю ширину экрана смартфона */
-    }
-    .pickora-final-btn {
-      display: block;
-      text-align: center;
-      align-self: stretch; /* Кнопка растягивается на всю ширину для удобного тапа */
-      padding: 16px;
-    }
-  }
-</style>
 
 <div class="pickora-final-card">
-  
-  <!-- ЛЕВАЯ КОЛОНКА (КАРТИНКА) -->
   <div class="pickora-final-img-col">
     <div class="pickora-final-img-wrapper">
-      
-      <!-- !!! ЗАМЕНИ ССЫЛКУ НИЖЕ НА ССЫЛКУ СВОЕГО ИЗОБРАЖЕНИЯ !!! -->
       <img src="https://pickora.shop/wp-content/uploads/2026/06/Glass_water_filter_pitcher_empty_202606281821.webp" alt="Elegant glass LifeStraw Home water filter pitcher on a bright wooden kitchen table next to a clean drinking glass, soft scandinavian interior design." width="1376" height="768" loading="lazy" decoding="async">
-      <!-- !!! КОНЕЦ ЗАМЕНЫ КАРТИНКИ !!! -->
-
     </div>
   </div>
-  
-  <!-- ПРАВАЯ КОЛОНКА (КОНТЕНТ) -->
   <div class="pickora-final-info-col">
-    
-    <!-- !!! ЗАМЕНИ НАЗВАНИЕ ТОВАРА НИЖЕ !!! -->
     <h3 class="pickora-final-title">LifeStraw Home Glass Water Filter Pitcher</h3>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ НАЗВАНИЯ ТОВАРА !!! -->
-    
     <div class="pickora-final-rating">★★★★★ </div>
-    
-    <!-- !!! ЗАМЕНИ ОПИСАНИЕ ТОВАРА НИЖЕ !!! -->
     <p class="pickora-final-text">
      The LifeStraw Home is the only water filter pitcher made from premium, shatter-resistant borosilicate glass that pairs elegant Scandinavian design with industry-leading filtration. Engineered to protect against bacteria, parasites, microplastics, and heavy metals while significantly improving taste, it eliminates visual clutter and single-use plastics, making clean hydration a seamless part of your modern kitchen.
     </p>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ОПИСАНИЯ ТОВАРА !!! -->
-    
- <!-- БЛОК ПЛЮСОВ И МИНУСОВ -->
 <div class="pickora-final-lists">
-
-  <!-- ПЛЮС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Premium borosilicate glass body completely eliminates plastic-taste and odors.</span>
   </div>
 
-  <!-- ПЛЮС №2 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Advanced dual-filtration technology removes microplastics, bacteria, and lead.</span>
   </div>
 
-  <!-- ПЛЮС №3 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Sleek, award-winning minimalist aesthetic looks stunning on any dining table or counter.</span>
   </div>
 
-  <!-- МИНУС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-con">Cons</span>
     <span>Glass construction makes it heavier than standard plastic pitchers when fully filled.</span>
   </div>
-
 </div>
-    
-    <!-- НАШ ЭКСПЕРТНЫЙ ВЕРДИКТ -->
-    <!-- !!! ЗАМЕНИ ТЕКСТ ВЕРДИКТА НИЖЕ !!! -->
     <div class="pickora-final-verdict">
       <b>Pickora’s Verdict:</b>The ultimate synthesis of health and high design. If you are tired of bulky, ugly plastic water jugs, this elegant glass pitcher elevates your countertop environment while offering commercial-grade water purification.
     </div>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ВЕРДИКТА !!! -->
-    
-    <!-- !!! ЗАМЕНИ ССЫЛКУ href НА СВОЮ ПАРТНЕРСКУЮ ССЫЛКУ АМАЗОН !!! -->
     <a href="https://amzn.to/4gI96zl" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
       Check Price on Amazon →
     </a>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ССЫЛКИ АМАЗОН !!! -->
-    
   </div>
-
-</div>				</div>
+</div>
+				</div>
 				</div>
 		
 </div>
