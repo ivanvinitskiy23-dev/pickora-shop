@@ -8,7 +8,7 @@
  * draft shape (from D1 key 'products'):
  *   hubCategories:    Array<{ id, url, title, badge, description, image, imageAlt, width, height }>
  *   categoryProducts: { [catId]: Array<{ image, imageAlt, title, description, verdict,
- *                                        amazonUrl, pros, cons, ratingStars }> }
+ *                                        amazonUrl, links: [{label,url,style}], pros, cons, ratingStars }> }
  *
  * Files written to GitHub:
  *   content/products.json    — raw draft JSON
@@ -65,6 +65,9 @@ const STYLE_ONCE = `
     background: #f8fafc; border-left: 4px solid #2563eb; padding: 12px 16px;
     border-radius: 0 8px 8px 0; font-size: 14px; line-height: 1.5; color: #475569; margin-bottom: 24px;
   }
+  .pickora-final-btns {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 4px;
+  }
   .pickora-final-btn {
     display: inline-block; align-self: flex-start; min-height: 44px; box-sizing: border-box;
     background-color: #ff9900; color: #ffffff !important; text-decoration: none !important;
@@ -74,9 +77,21 @@ const STYLE_ONCE = `
   .pickora-final-btn:hover {
     background-color: #e68a00; box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
   }
+  .pickora-final-btn--walmart { background-color: #0071dc; box-shadow: 0 4px 12px rgba(0,113,220,0.18); }
+  .pickora-final-btn--walmart:hover { background-color: #0658b0; }
+  .pickora-final-btn--blue { background-color: #2563eb; box-shadow: 0 4px 12px rgba(37,99,235,0.18); }
+  .pickora-final-btn--blue:hover { background-color: #1d4ed8; }
+  .pickora-final-btn--dark { background-color: #0f172a; box-shadow: 0 4px 12px rgba(15,23,42,0.2); }
+  .pickora-final-btn--dark:hover { background-color: #020617; }
+  .pickora-final-btn--outline {
+    background-color: transparent; color: #0f172a !important; border: 2px solid #cbd5e1;
+    box-shadow: none;
+  }
+  .pickora-final-btn--outline:hover { background-color: #f1f5f9; border-color: #94a3b8; }
   @media (max-width: 768px) {
     .pickora-final-card { flex-direction: column; align-items: stretch; gap: 20px; padding: 20px; }
     .pickora-final-img-col, .pickora-final-info-col { max-width: 100%; }
+    .pickora-final-btns { flex-direction: column; align-items: stretch; }
     .pickora-final-btn { display: block; text-align: center; align-self: stretch; }
   }
 </style>
@@ -99,6 +114,49 @@ function escHtml(str) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+function isAmazonUrl(url) {
+  return /^https?:\/\/(amzn\.to\/|www\.amazon\.|amazon\.|link\.amazon\/)/i.test(
+    String(url || "").trim()
+  );
+}
+
+function isWalmartUrl(url) {
+  return /walmart\.com/i.test(String(url || ""));
+}
+
+/** Normalize product.links[] or legacy amazonUrl → buy buttons. */
+export function normalizeProductLinks(product) {
+  const raw = Array.isArray(product?.links) ? product.links : [];
+  const fromLinks = raw
+    .map((l) => ({
+      label: String(l?.label || "").trim(),
+      url: String(l?.url || "").trim(),
+      style: String(l?.style || "").trim(),
+    }))
+    .filter((l) => /^https?:\/\//i.test(l.url));
+  if (fromLinks.length) {
+    return fromLinks.map((l) => {
+      let style = l.style;
+      if (!style || !["amazon", "walmart", "blue", "outline", "dark"].includes(style)) {
+        style = isAmazonUrl(l.url) ? "amazon" : isWalmartUrl(l.url) ? "walmart" : "blue";
+      }
+      const label =
+        l.label ||
+        (style === "amazon"
+          ? "Check Price on Amazon"
+          : style === "walmart"
+            ? "Check on Walmart"
+            : "Check Price");
+      return { label, url: l.url, style };
+    });
+  }
+  const legacy = String(product?.amazonUrl || "").trim();
+  if (/^https?:\/\//i.test(legacy)) {
+    return [{ label: "Check Price on Amazon", url: legacy, style: "amazon" }];
+  }
+  return [];
 }
 
 function stars(n) {
@@ -153,7 +211,7 @@ export function buildProductCard(product, eager = false) {
   const alt    = escHtml(product.imageAlt || product.title || "");
   const title  = escHtml(product.title || "");
   const desc   = escHtml(product.description || "");
-  const amazon = escHtml(product.amazonUrl || "#");
+  const buyLinks = normalizeProductLinks(product);
   const starN  = Number(product.ratingStars);
   // 0 / empty = hide stars (Studio option); 1–5 = show like live
   const ratingHtml =
@@ -203,6 +261,18 @@ export function buildProductCard(product, eager = false) {
     ? `<p class="pickora-final-text">\n     ${desc}\n    </p>`
     : "";
 
+  const btnsHtml = buyLinks.length
+    ? `<div class="pickora-final-btns">\n${buyLinks
+        .map((l) => {
+          const mod =
+            l.style === "amazon"
+              ? ""
+              : ` pickora-final-btn--${escHtml(l.style)}`;
+          return `    <a href="${escHtml(l.url)}" class="pickora-final-btn${mod}" target="_blank" rel="nofollow sponsored noopener noreferrer">${escHtml(l.label)} →</a>`;
+        })
+        .join("\n")}\n    </div>`
+    : "";
+
   return `<div class="pickora-final-card">
   <div class="pickora-final-img-col">
     <div class="pickora-final-img-wrapper">
@@ -215,9 +285,7 @@ export function buildProductCard(product, eager = false) {
     ${descHtml}
 ${lists}
     ${verdictBlock}
-    <a href="${amazon}" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
-      Check Price on Amazon →
-    </a>
+    ${btnsHtml}
   </div>
 </div>`;
 }
@@ -249,9 +317,10 @@ export function replaceProductCards(html, products) {
 
   const lastStart = starts[starts.length - 1];
 
-  // End of last card: closing </a> of the buy button + info-col </div> + card </div>
+  // End of last card: buy button(s) + info-col </div> + card </div>
   const afterLast = html.slice(lastStart);
-  const endRe     = /class="pickora-final-btn"[^>]*>[\s\S]*?<\/a>\s*(?:<!--[\s\S]*?-->\s*)?<\/div>\s*<\/div>/;
+  const endRe =
+    /(?:class="pickora-final-btns"[\s\S]*?<\/div>|(?:class="pickora-final-btn"[^>]*>[\s\S]*?<\/a>\s*)+)\s*(?:<!--[\s\S]*?-->\s*)?<\/div>\s*<\/div>/;
   const endMatch  = afterLast.match(endRe);
   if (!endMatch) throw new Error("could not find end of last product card");
   const endIdx = lastStart + endMatch.index + endMatch[0].length;

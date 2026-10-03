@@ -551,7 +551,34 @@
       const map = pd.categoryProducts || {};
       Object.keys(map).forEach((catId) => {
         (map[catId] || []).forEach((p) => {
-          if (p && p.amazonUrl) links.push(p.amazonUrl);
+          if (!p) return;
+          if (Array.isArray(p.links)) {
+            p.links.forEach((l) => {
+              if (l && l.url) links.push(l.url);
+            });
+          }
+          if (p.amazonUrl) links.push(p.amazonUrl);
+        });
+      });
+    } catch {
+      /* ignore */
+    }
+    // Pins draft: product store links
+    try {
+      const pinRes = await fetch(window.PK_AUTH.API + "/api/content/pins", {
+        headers: authHeaders(),
+        credentials: "include",
+      });
+      const pinData = await pinRes.json();
+      (pinData.pins || []).forEach((pin) => {
+        (pin.products || []).forEach((prod) => {
+          if (!prod) return;
+          if (Array.isArray(prod.links)) {
+            prod.links.forEach((l) => {
+              if (l && l.url) links.push(l.url);
+            });
+          }
+          if (prod.url) links.push(prod.url);
         });
       });
     } catch {

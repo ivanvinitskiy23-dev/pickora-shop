@@ -36,6 +36,54 @@ function escHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
+function isAmazonUrl(url) {
+  return /^https?:\/\/(amzn\.to\/|www\.amazon\.|amazon\.|link\.amazon\/)/i.test(
+    String(url || "").trim()
+  );
+}
+
+function detectStyle(url, explicit) {
+  const st = String(explicit || "").trim();
+  if (["amazon", "walmart", "blue", "outline", "dark"].includes(st)) return st;
+  if (isAmazonUrl(url)) return "amazon";
+  if (/walmart\.com/i.test(url)) return "walmart";
+  return "blue";
+}
+
+/** Pin product: { name, url?, links?: [{label,url,style}] } */
+function normalizePinProduct(prod) {
+  const name = String(prod?.name || "").trim();
+  const rawLinks = Array.isArray(prod?.links) ? prod.links : [];
+  let links = rawLinks
+    .map((l) => ({
+      label: String(l?.label || "").trim(),
+      url: String(l?.url || "").trim(),
+      style: detectStyle(l?.url, l?.style),
+    }))
+    .filter((l) => /^https?:\/\//i.test(l.url))
+    .map((l) => ({
+      ...l,
+      label:
+        l.label ||
+        (l.style === "amazon" ? "Amazon" : l.style === "walmart" ? "Walmart" : "Buy"),
+    }));
+  const legacy = String(prod?.url || "").trim();
+  if (!links.length && /^https?:\/\//i.test(legacy)) {
+    links = [
+      {
+        label: isAmazonUrl(legacy) ? "Amazon" : "Buy",
+        url: legacy,
+        style: detectStyle(legacy),
+      },
+    ];
+  }
+  return {
+    name,
+    url: links[0]?.url || legacy || "",
+    links,
+  };
+}
+
 // ---------------------------------------------------------------------------
 // buildBoardPin — mirrors render_pins.py board_pin()
 // ---------------------------------------------------------------------------
@@ -89,7 +137,7 @@ export function buildPinDataJs(pins) {
       title:    p.title || "",
       desc:     p.popupDesc || p.boardDesc || "",
       image:    absUrl(p.image || ""),
-      products: p.products || [],
+      products: (p.products || []).map(normalizePinProduct),
     };
   }
   // 2-space JSON, then strip quotes around pure-numeric keys

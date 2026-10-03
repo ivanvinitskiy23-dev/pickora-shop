@@ -517,9 +517,123 @@
   }
 
   /* —— Pins —— */
+  const BUY_LINK_STYLES = ["amazon", "blue", "outline", "walmart", "dark"];
+
+  function detectBuyStyle(url, explicit) {
+    const st = String(explicit || "").trim();
+    if (BUY_LINK_STYLES.includes(st)) return st;
+    const u = String(url || "");
+    if (/amzn\.to|amazon\.|link\.amazon/i.test(u)) return "amazon";
+    if (/walmart\.com/i.test(u)) return "walmart";
+    return "blue";
+  }
+
+  function normalizeBuyLinks(product) {
+    const raw = Array.isArray(product?.links) ? product.links : [];
+    const fromLinks = raw
+      .map((l) => ({
+        label: String(l?.label || "").trim(),
+        url: String(l?.url || "").trim(),
+        style: detectBuyStyle(l?.url, l?.style),
+      }))
+      .filter((l) => l.url);
+    if (fromLinks.length) return fromLinks;
+    const legacy = String(product?.amazonUrl || product?.url || "").trim();
+    if (legacy) {
+      return [
+        {
+          label: /amzn\.to|amazon\.|link\.amazon/i.test(legacy) ? "Amazon" : "Buy",
+          url: legacy,
+          style: detectBuyStyle(legacy),
+        },
+      ];
+    }
+    return [{ label: "Amazon", url: "https://link.amazon/", style: "amazon" }];
+  }
+
+  function buyLinksEditorHtml(links, rowAttr) {
+    const list = links && links.length ? links : [{ label: "Amazon", url: "", style: "amazon" }];
+    const styleOpts = (cur) =>
+      BUY_LINK_STYLES.map(
+        (s) =>
+          `<option value="${s}"${s === cur ? " selected" : ""}>${escapeAttr(t("linkStyle_" + s))}</option>`
+      ).join("");
+    const rows = list
+      .map((l, i) => {
+        const st = detectBuyStyle(l.url, l.style);
+        return `<div class="buy-row" data-link-row>
+          <input class="buy-store" data-f="llabel" placeholder="Amazon" value="${escapeAttr(l.label || "")}">
+          <input class="buy-url" data-f="lurl" placeholder="https://amzn.to/… or store URL" value="${escapeAttr(l.url || "")}" inputmode="url" spellcheck="false">
+          <select class="buy-style" data-f="lstyle" title="${escapeAttr(t("linkStyle"))}" aria-label="${escapeAttr(t("linkStyle"))}">${styleOpts(st)}</select>
+          <button type="button" class="block-tool block-tool-del" data-link-del="${i}" title="${escapeAttr(t("btnDeletePin"))}" aria-label="${escapeAttr(t("btnDeletePin"))}">×</button>
+        </div>`;
+      })
+      .join("");
+    return `<div class="buy-links" ${rowAttr || ""}>
+        <span class="block-legend">${escapeAttr(t("blockBuyLinks"))}</span>
+        <p class="block-hint">${escapeAttr(t("hintBuyLinkMulti"))}</p>
+        <div class="buy-rows">${rows}</div>
+        <button type="button" class="btn btn-ghost btn-sm" data-link-add>+ ${escapeAttr(t("blockAddLink"))}</button>
+      </div>`;
+  }
+
+  function readBuyLinksFrom(el) {
+    if (!el) return [];
+    return [...el.querySelectorAll("[data-link-row]")]
+      .map((row) => {
+        const url = row.querySelector("[data-f=lurl]")?.value?.trim() || "";
+        const label = row.querySelector("[data-f=llabel]")?.value?.trim() || "";
+        const style = detectBuyStyle(url, row.querySelector("[data-f=lstyle]")?.value || "");
+        return { label: label || (style === "amazon" ? "Amazon" : "Buy"), url, style };
+      })
+      .filter((l) => l.url);
+  }
+
+  function bindBuyLinksEditor(root) {
+    if (!root) return;
+    root.querySelectorAll("[data-link-add]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const wrap = btn.closest(".buy-links");
+        const rows = wrap?.querySelector(".buy-rows");
+        if (!rows) return;
+        const div = document.createElement("div");
+        div.className = "buy-row";
+        div.setAttribute("data-link-row", "");
+        div.innerHTML = `<input class="buy-store" data-f="llabel" placeholder="Walmart" value="Walmart">
+          <input class="buy-url" data-f="lurl" placeholder="https://…" value="" inputmode="url" spellcheck="false">
+          <select class="buy-style" data-f="lstyle"><option value="amazon">Amazon</option><option value="blue">Blue</option><option value="outline">Outline</option><option value="walmart" selected>Walmart</option><option value="dark">Dark</option></select>
+          <button type="button" class="block-tool block-tool-del" data-link-del title="×">×</button>`;
+        rows.appendChild(div);
+        div.querySelector("[data-link-del]")?.addEventListener("click", () => {
+          if (rows.querySelectorAll("[data-link-row]").length > 1) div.remove();
+        });
+      });
+    });
+    root.querySelectorAll("[data-link-del]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const row = btn.closest("[data-link-row]");
+        const rows = btn.closest(".buy-rows");
+        if (!row || !rows) return;
+        if (rows.querySelectorAll("[data-link-row]").length > 1) row.remove();
+      });
+    });
+  }
+
+  /** Pin textarea: Name | Amazon | url | Walmart | url  OR legacy Name | url */
   function productsToText(products) {
     return (products || [])
-      .map((p) => `${p.name || ""} | ${p.url || ""}`)
+      .map((p) => {
+        const links = normalizeBuyLinks(p).filter((l) => l.url && l.url !== "https://link.amazon/");
+        if (!links.length && p.url) return `${p.name || ""} | ${p.url}`;
+        if (links.length === 1 && (!links[0].label || links[0].style === "amazon")) {
+          return `${p.name || ""} | ${links[0].url}`;
+        }
+        const parts = [p.name || ""];
+        links.forEach((l) => {
+          parts.push(l.label || "Buy", l.url);
+        });
+        return parts.join(" | ");
+      })
       .join("\n");
   }
 
@@ -530,7 +644,29 @@
       .filter(Boolean)
       .map((line) => {
         const parts = line.split("|").map((x) => x.trim());
-        return { name: parts[0] || "", url: parts[1] || "" };
+        const name = parts[0] || "";
+        if (parts.length === 2 && /^https?:\/\//i.test(parts[1] || "")) {
+          return {
+            name,
+            url: parts[1],
+            links: [
+              {
+                label: /amzn\.to|amazon\.|link\.amazon/i.test(parts[1]) ? "Amazon" : "Buy",
+                url: parts[1],
+                style: detectBuyStyle(parts[1]),
+              },
+            ],
+          };
+        }
+        const links = [];
+        for (let i = 1; i + 1 < parts.length; i += 2) {
+          const label = parts[i] || "Buy";
+          const url = parts[i + 1] || "";
+          if (/^https?:\/\//i.test(url)) {
+            links.push({ label, url, style: detectBuyStyle(url) });
+          }
+        }
+        return { name, url: links[0]?.url || "", links };
       })
       .filter((p) => p.name);
   }
@@ -588,9 +724,11 @@
               <div class="field"><label>${escapeAttr(t("labelImageAlt"))}</label>
                 <input data-k="imageAlt" value="${escapeAttr(p.imageAlt || "")}"></div>
               <div class="field"><label>${escapeAttr(t("labelPinProducts"))}</label>
-                <textarea data-k="productsText" rows="4" placeholder="Name | https://amzn.to/...">${escapeAttr(
-                  productsToText(p.products)
-                )}</textarea></div>
+                <textarea data-k="productsText" rows="5" placeholder="${escapeAttr(
+                  t("pinProductsPlaceholder")
+                )}">${escapeAttr(productsToText(p.products))}</textarea>
+                <p class="block-hint">${escapeAttr(t("pinProductsHint"))}</p>
+              </div>
             </div>
           </div>
         </div>`;
@@ -844,10 +982,7 @@
                 <div class="review-fields">
                   <div class="field"><label>${escapeAttr(t("labelTitle"))}</label>
                     <input data-pk="title" value="${escapeAttr(p.title || "")}"></div>
-                  <div class="field"><label>${escapeAttr(t("labelAmazon"))}</label>
-                    <input data-pk="amazonUrl" value="${escapeAttr(
-                      p.amazonUrl || ""
-                    )}" placeholder="https://link.amazon/xxxxx"></div>
+                  ${buyLinksEditorHtml(normalizeBuyLinks(p), `data-product-links="${pi}"`)}
                   <div class="field"><label>${escapeAttr(t("labelStars"))}</label>
                     <select data-pk="ratingStars">
                       <option value="0"${starsVal === "0" ? " selected" : ""}>${escapeAttr(
@@ -991,12 +1126,15 @@
           cons: [],
           verdict: "",
           amazonUrl: "https://link.amazon/",
+          links: [{ label: "Amazon", url: "https://link.amazon/", style: "amazon" }],
           ratingStars: 0,
         });
         productsActiveHub = idx;
         renderProductsEditor();
       });
     });
+
+    bindBuyLinksEditor(wrap);
 
     $$("[data-product-up]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -1165,6 +1303,9 @@
         };
         const starsRaw = gp("ratingStars").trim();
         const ratingStars = starsRaw === "" ? 0 : Math.min(5, Math.max(0, Number(starsRaw) || 0));
+        const links = readBuyLinksFrom(pCard.querySelector(".buy-links"));
+        const amazonUrl =
+          links.find((l) => l.style === "amazon")?.url || links[0]?.url || pPrev.amazonUrl || "";
         list[pi] = {
           ...pPrev,
           title: gp("title").trim() || pPrev.title,
@@ -1172,7 +1313,8 @@
           pros: linesToList(gp("pros")),
           cons: linesToList(gp("cons")),
           verdict: gp("verdict").trim(),
-          amazonUrl: gp("amazonUrl").trim(),
+          amazonUrl,
+          links,
           imageAlt: gp("imageAlt").trim() || pPrev.imageAlt,
           image: pPrev.image,
           id: pPrev.id || `${newId}-${pi + 1}`,
@@ -1270,13 +1412,13 @@
     show("products");
   }
 
-  function isGoodAmazonUrl(u) {
+  function isGoodBuyUrl(u) {
     const s = String(u || "").trim();
     if (!s || /TODO/i.test(s)) return false;
-    return (
-      /^https:\/\/amzn\.to\/[A-Za-z0-9]+/i.test(s) ||
-      /^https:\/\/link\.amazon\/[A-Za-z0-9_-]+/i.test(s)
-    );
+    if (!/^https:\/\//i.test(s)) return false;
+    // Placeholder stubs from "add product"
+    if (/^https:\/\/link\.amazon\/?$/i.test(s)) return false;
+    return true;
   }
 
   async function saveProducts() {
@@ -1285,15 +1427,21 @@
     const bad = [];
     Object.values(productsData.categoryProducts || {}).forEach((list) => {
       (list || []).forEach((p) => {
-        if (p && p.title && p.amazonUrl && !isGoodAmazonUrl(p.amazonUrl)) {
-          bad.push(p.title || p.amazonUrl);
+        if (!p || !p.title) return;
+        const links = normalizeBuyLinks(p).filter((l) => l.url);
+        if (!links.length) {
+          bad.push(p.title + " (no store link)");
+          return;
         }
+        links.forEach((l) => {
+          if (!isGoodBuyUrl(l.url)) bad.push(`${p.title}: ${l.url}`);
+        });
       });
     });
     if (bad.length) {
       setStatus(
         status,
-        t("productsBadAmazon").replace("{n}", String(bad.length)) + ": " + bad.slice(0, 3).join(", "),
+        t("productsBadLinks").replace("{n}", String(bad.length)) + ": " + bad.slice(0, 3).join(", "),
         "warn"
       );
       return;
