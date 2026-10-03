@@ -7,6 +7,7 @@
   let homeData = null;
   let pinsData = null;
   let productsData = null;
+  let productsActiveHub = 0;
   let articles = [];
 
   function t(key) {
@@ -120,8 +121,14 @@
 
   function imgSrc(path) {
     if (!path) return "";
-    if (path.startsWith("http://") || path.startsWith("https://")) return path;
-    return path.startsWith("/") ? path : "/" + path;
+    const p = String(path).trim();
+    // Broken relative media paths from catalog strip — point at Worker
+    if (/^\/?api\/media\/file\//i.test(p) || /^https?:\/\/pickora\.shop\/api\/media\/file\//i.test(p)) {
+      const key = p.replace(/^https?:\/\/pickora\.shop/i, "").replace(/^\/?api\/media\/file\//i, "");
+      return "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/" + key;
+    }
+    if (p.startsWith("http://") || p.startsWith("https://")) return p;
+    return p.startsWith("/") ? p : "/" + p;
   }
 
   function normalizeUrl(url) {
@@ -162,6 +169,11 @@
   function applyArticleToSlot(index, article) {
     if (!homeData?.latestReviews?.[index] || !article) return;
     const prev = homeData.latestReviews[index];
+    // Persist a URL that works on GitHub Pages (Worker media or /wp-content/…)
+    let image = article.image || "";
+    if (/\/api\/media\/file\//i.test(image) && !/^https?:\/\/pickora-admin-api\./i.test(image)) {
+      image = imgSrc(image);
+    }
     homeData.latestReviews[index] = {
       ...prev,
       slug: article.slug,
@@ -169,7 +181,7 @@
       title: article.title,
       excerpt: article.excerpt,
       category: article.category,
-      image: article.image,
+      image,
       imageAlt: article.imageAlt || article.title,
       badge: prev.badge || "none",
     };
@@ -728,22 +740,72 @@
     });
   }
 
+  function clampProductsActiveHub() {
+    const n = productsData?.hubCategories?.length || 0;
+    if (n === 0) {
+      productsActiveHub = 0;
+      return;
+    }
+    if (productsActiveHub < 0) productsActiveHub = 0;
+    if (productsActiveHub >= n) productsActiveHub = n - 1;
+  }
+
+  function productsDraftPayload() {
+    return {
+      hubCategories: productsData.hubCategories.map(({ _open, ...rest }) => rest),
+      categoryProducts: { ...productsData.categoryProducts },
+    };
+  }
+
+  function renderProductsHubTabs() {
+    const tabs = $("#products-hub-tabs");
+    if (!tabs || !productsData) return;
+    clampProductsActiveHub();
+    const hubs = productsData.hubCategories || [];
+    tabs.innerHTML = hubs
+      .map((c, i) => {
+        const count = (productsData.categoryProducts[c.id] || []).length;
+        const active = i === productsActiveHub ? " is-active" : "";
+        return `<button type="button" class="hub-tab${active}" role="tab" aria-selected="${
+          i === productsActiveHub ? "true" : "false"
+        }" data-hub-tab="${i}">
+          <span>${escapeAttr(c.title || c.id)}</span>
+          <span class="hub-tab-count">${count}</span>
+        </button>`;
+      })
+      .join("");
+    $$("[data-hub-tab]", tabs).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        readProductsForm();
+        productsActiveHub = Number(btn.getAttribute("data-hub-tab"));
+        renderProductsEditor();
+      });
+    });
+  }
+
   function renderProductsEditor() {
     const wrap = $("#products-list");
     if (!wrap || !productsData) return;
     ensureCategoryProducts();
+    clampProductsActiveHub();
+    renderProductsHubTabs();
 
-    wrap.innerHTML = productsData.hubCategories
-      .map((c, i) => {
-        const products = productsData.categoryProducts[c.id] || [];
-        const open = c._open ? " open" : "";
-        const productsHtml = products
-          .map((p, pi) => {
-            const starsVal =
-              p.ratingStars === 0 || p.ratingStars === "0" || p.ratingStars == null
-                ? "0"
-                : String(Math.min(5, Math.max(0, Number(p.ratingStars) || 0)));
-            return `<div class="product-item panel product-item--compact" data-product-index="${pi}">
+    const hubs = productsData.hubCategories || [];
+    if (!hubs.length) {
+      wrap.innerHTML = `<p class="hint">${escapeAttr(t("noHubsYet"))}</p>`;
+      return;
+    }
+
+    const i = productsActiveHub;
+    const c = hubs[i];
+    const products = productsData.categoryProducts[c.id] || [];
+    const productsHtml = products
+      .map((p, pi) => {
+        const starsVal =
+          p.ratingStars === 0 || p.ratingStars === "0" || p.ratingStars == null
+            ? "0"
+            : String(Math.min(5, Math.max(0, Number(p.ratingStars) || 0)));
+        return `<div class="product-item panel product-item--compact" data-product-index="${pi}">
               <div class="review-card-head">
                 <h4>${escapeAttr(t("labelProduct"))} #${pi + 1}</h4>
                 <div style="display:flex;gap:6px;flex-wrap:wrap">
@@ -813,17 +875,17 @@
                 </div>
               </div>
             </div>`;
-          })
-          .join("");
+      })
+      .join("");
 
-        return `<div class="review-card panel section-card" data-hub-index="${i}">
+    wrap.innerHTML = `<div class="review-card panel section-card" data-hub-index="${i}">
           <div class="review-card-head">
             <h3>${escapeAttr(c.title || c.id)} <span class="pill">${products.length} ${escapeAttr(
               t("productsCount")
             )}</span></h3>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button type="button" class="btn btn-ghost btn-sm" data-hub-toggle="${i}">${escapeAttr(
-                c._open ? t("btnHideProducts") : t("btnShowProducts")
+              <button type="button" class="btn btn-ghost btn-sm" data-hub-offline="${i}">${escapeAttr(
+                t("btnOfflineHub")
               )}</button>
               <button type="button" class="btn btn-ghost btn-sm" data-hub-del="${i}">${escapeAttr(
                 t("btnDeleteSection")
@@ -864,7 +926,7 @@
                 <input data-k="imageAlt" value="${escapeAttr(c.imageAlt || "")}"></div>
             </div>
           </div>
-          <div class="section-products${open}" data-hub-products="${i}">
+          <div class="section-products" data-hub-products="${i}">
             <div class="section-products-bar">
               <strong>${escapeAttr(t("productsInSection"))}</strong>
               <button type="button" class="btn btn-primary btn-sm" data-product-add="${i}" style="width:auto;padding-inline:16px">${escapeAttr(
@@ -874,8 +936,6 @@
             ${productsHtml || `<p class="hint">${escapeAttr(t("noProductsYet"))}</p>`}
           </div>
         </div>`;
-      })
-      .join("");
 
     $$("[data-hub-upload]").forEach((input) => {
       input.addEventListener("change", () => {
@@ -894,16 +954,17 @@
         const id = productsData.hubCategories[idx]?.id;
         productsData.hubCategories.splice(idx, 1);
         if (id && productsData.categoryProducts) delete productsData.categoryProducts[id];
+        if (productsActiveHub >= productsData.hubCategories.length) {
+          productsActiveHub = Math.max(0, productsData.hubCategories.length - 1);
+        }
         renderProductsEditor();
       });
     });
 
-    $$("[data-hub-toggle]").forEach((btn) => {
+    $$("[data-hub-offline]").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const idx = Number(btn.getAttribute("data-hub-toggle"));
-        readProductsForm();
-        productsData.hubCategories[idx]._open = !productsData.hubCategories[idx]._open;
-        renderProductsEditor();
+        productsActiveHub = Number(btn.getAttribute("data-hub-offline"));
+        openProductsOfflinePreview();
       });
     });
 
@@ -927,7 +988,7 @@
           amazonUrl: "https://link.amazon/",
           ratingStars: 0,
         });
-        hub._open = true;
+        productsActiveHub = idx;
         renderProductsEditor();
       });
     });
@@ -940,7 +1001,7 @@
         const list = productsData.categoryProducts[hub.id];
         if (!list || pi < 1) return;
         [list[pi - 1], list[pi]] = [list[pi], list[pi - 1]];
-        hub._open = true;
+        productsActiveHub = hi;
         renderProductsEditor();
       });
     });
@@ -952,7 +1013,7 @@
         const list = productsData.categoryProducts[hub.id];
         if (!list || pi >= list.length - 1) return;
         [list[pi], list[pi + 1]] = [list[pi + 1], list[pi]];
-        hub._open = true;
+        productsActiveHub = hi;
         renderProductsEditor();
       });
     });
@@ -965,7 +1026,7 @@
         const hub = productsData.hubCategories[hi];
         if (!hub) return;
         productsData.categoryProducts[hub.id].splice(pi, 1);
-        hub._open = true;
+        productsActiveHub = hi;
         renderProductsEditor();
       });
     });
@@ -978,6 +1039,85 @@
         input.value = "";
       });
     });
+  }
+
+  async function openProductsOfflinePreview() {
+    const status = $("#products-status");
+    if (!productsData) return;
+    readProductsForm();
+    clampProductsActiveHub();
+    const hub = productsData.hubCategories[productsActiveHub];
+    if (!hub?.id) {
+      setStatus(status, t("previewFail"), "warn");
+      return;
+    }
+    const list = productsData.categoryProducts[hub.id] || [];
+    if (!list.length) {
+      setStatus(status, t("productsOfflineNeedProducts"), "warn");
+      return;
+    }
+
+    const win = window.open("", "pk-products-preview");
+    if (!win) {
+      setStatus(status, t("previewPopupBlocked"), "warn");
+      return;
+    }
+    try {
+      win.document.write(
+        `<!doctype html><title>${escapeAttr(t("previewOpening"))}</title>
+         <body style="font:15px/1.5 system-ui;padding:40px;color:#15223B">
+         ${escapeAttr(t("previewOpening"))}</body>`
+      );
+      win.document.close();
+    } catch {
+      /* ignore */
+    }
+    setStatus(status, t("previewOpening"));
+    const draft = productsDraftPayload();
+    delete draft.categoryProducts._note;
+    try {
+      const res = await fetch(window.PK_AUTH.API + "/api/preview/products", {
+        method: "POST",
+        headers: authHeaders(),
+        credentials: "include",
+        body: JSON.stringify({ hubId: hub.id, draft }),
+      });
+      const html = await res.text();
+      if (!res.ok) {
+        let msg = t("previewFail");
+        try {
+          const err = JSON.parse(html);
+          if (err.error) msg += ": " + err.error;
+          if (err.hint) msg += " — " + err.hint;
+        } catch {
+          /* not json */
+        }
+        try {
+          win.document.write(
+            `<!doctype html><body style="font:15px/1.5 system-ui;padding:40px;color:#b91c1c">${escapeAttr(
+              msg
+            )}</body>`
+          );
+          win.document.close();
+        } catch {
+          win.close();
+        }
+        setStatus(status, msg, "warn");
+        return;
+      }
+      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      win.location = url;
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      setStatus(status, t("previewOk"), "ok");
+    } catch (err) {
+      try {
+        win.close();
+      } catch {
+        /* ignore */
+      }
+      setStatus(status, t("previewFail") + (err?.message ? ": " + err.message : ""), "warn");
+    }
   }
 
   function readProductsForm() {
@@ -1007,7 +1147,6 @@
         url: get("url") || `/${newId}/`,
         imageAlt: get("imageAlt") || prev.imageAlt,
         image: prev.image,
-        _open: !!prev._open,
       };
 
       const list = productsData.categoryProducts[oldId] || productsData.categoryProducts[newId] || [];
@@ -1073,7 +1212,7 @@
       const preferred = `${hub.id}-product-${productIndex + 1}`;
       const data = await uploadImage(file, preferred);
       productsData.categoryProducts[hub.id][productIndex].image = data.path;
-      hub._open = true;
+      productsActiveHub = hubIndex;
       renderProductsEditor();
       setStatus(status, t("uploadOk"), "ok");
     } catch (err) {
@@ -1101,9 +1240,9 @@
       imageAlt: "",
       width: 1200,
       height: 670,
-      _open: true,
     });
     productsData.categoryProducts[id] = [];
+    productsActiveHub = productsData.hubCategories.length - 1;
     renderProductsEditor();
   }
 
@@ -1115,8 +1254,7 @@
     if (!res.ok) throw new Error("load_failed");
     productsData = await res.json();
     ensureCategoryProducts();
-    // open first section with products by default
-    if (productsData.hubCategories[0]) productsData.hubCategories[0]._open = true;
+    productsActiveHub = 0;
     renderProductsEditor();
     applyI18n();
     show("products");
@@ -1150,10 +1288,7 @@
       );
       return;
     }
-    const payload = {
-      hubCategories: productsData.hubCategories.map(({ _open, ...rest }) => rest),
-      categoryProducts: { ...productsData.categoryProducts },
-    };
+    const payload = productsDraftPayload();
     delete payload.categoryProducts._note;
     const res = await fetch(window.PK_AUTH.API + "/api/content/products", {
       method: "POST",
@@ -1374,6 +1509,7 @@
     });
     $("#btn-pins-save")?.addEventListener("click", () => savePins());
     $("#btn-products-save")?.addEventListener("click", () => saveProducts());
+    $("#btn-products-offline")?.addEventListener("click", () => openProductsOfflinePreview());
     $("#btn-pin-add")?.addEventListener("click", () => addPin());
     $("#btn-hub-add")?.addEventListener("click", () => addHubSection());
 

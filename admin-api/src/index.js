@@ -10,7 +10,11 @@ import {
 } from "./publish_article.js";
 import { publishHomeDraft }    from "./publish_home.js";
 import { publishPinsDraft }    from "./publish_pins.js";
-import { publishProductsDraft } from "./publish_products.js";
+import {
+  publishProductsDraft,
+  buildCategoryPreviewHtml,
+  loadCategoryTemplateHtml,
+} from "./publish_products.js";
 import { validateArticleDraft } from "./seo_gate.js";
 import { getFileSha, putBinaryFile } from "./github.js";
 
@@ -95,6 +99,11 @@ export default {
       if (url.pathname === "/api/preview/article" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
         return cors(await handlePreviewArticle(await readJson(request), user), request);
+      }
+
+      if (url.pathname === "/api/preview/products" && request.method === "POST") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(await handlePreviewProducts(env, await readJson(request), user), request);
       }
 
       if (url.pathname === "/api/publish/home" && request.method === "POST") {
@@ -376,6 +385,40 @@ async function saveDraft(env, key, payload, user) {
   });
 }
 
+/**
+ * Normalize article-card image URLs for Studio Home picker.
+ * Never strip workers.dev /api/media hosts — that produced
+ * pickora.shop/api/media/... which GitHub Pages cannot serve.
+ */
+function publicCatalogImage(img) {
+  if (!img) return "";
+  const raw = String(img).trim();
+  const workerMedia =
+    "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/";
+
+  if (/\/api\/media\/file\//i.test(raw)) {
+    try {
+      if (/^https?:\/\//i.test(raw)) {
+        const u = new URL(raw);
+        return workerMedia + u.pathname.replace(/^\/api\/media\/file\//i, "");
+      }
+    } catch {
+      /* fall through */
+    }
+    const key = raw.replace(/^\/?api\/media\/file\//i, "");
+    return workerMedia + key;
+  }
+
+  if (/^https?:\/\//i.test(raw)) {
+    try {
+      return new URL(raw).pathname;
+    } catch {
+      return raw;
+    }
+  }
+  return raw.startsWith("/") ? raw : "/" + raw;
+}
+
 async function handleArticles() {
   const res = await fetch("https://pickora.shop/articles/", {
     cf: { cacheTtl: 120 },
@@ -413,14 +456,10 @@ async function handleArticles() {
         break;
       }
     }
-    let image = img;
-    if (image.startsWith("http")) {
-      try {
-        image = new URL(image).pathname;
-      } catch {
-        /* keep */
-      }
-    }
+    // Keep workers.dev /api/media absolute URLs — stripping the host turns them into
+    // /api/media/... which GitHub Pages cannot serve (broken Latest Reviews on Home).
+    // Prefer permanent /wp-content/uploads when the catalog already uses that path.
+    let image = publicCatalogImage(img);
     return {
       slug,
       url,
@@ -853,6 +892,79 @@ async function normalizePreviewDraft(payload) {
   // Force Articles filter URL (never product hubs) before HTML build
   draft.hubUrl = resolveArticlesHubUrl(draft);
   return draft;
+}
+
+/**
+ * Offline category preview — real live/GitHub page chrome + same product cards as Publish.
+ * Body: { hubId, draft?: { hubCategories, categoryProducts } }
+ * If draft omitted, uses D1 content_drafts key "products".
+ */
+async function handlePreviewProducts(env, body, user) {
+  if (!body || typeof body !== "object") {
+    return json({ error: "invalid_payload" }, 400);
+  }
+  const hubId = String(body.hubId || "").trim().replace(/^\/+|\/+$/g, "");
+  if (!hubId) return json({ error: "hub_id_required" }, 400);
+
+  let draft = body.draft;
+  if (!draft || typeof draft !== "object") {
+    const row = await env.DB.prepare(`SELECT json FROM content_drafts WHERE key = ?`)
+      .bind("products")
+      .first();
+    if (!row?.json) return json({ error: "draft_not_found" }, 404);
+    try {
+      draft = JSON.parse(row.json);
+    } catch {
+      return json({ error: "draft_corrupt" }, 500);
+    }
+  }
+
+  const hubs = Array.isArray(draft.hubCategories) ? draft.hubCategories : [];
+  const hub = hubs.find((h) => h && h.id === hubId) || { id: hubId, title: hubId };
+  const products = (draft.categoryProducts && draft.categoryProducts[hubId]) || [];
+  if (!Array.isArray(products) || products.length === 0) {
+    return json(
+      {
+        error: "no_products",
+        hint: "Add at least one product in this hub before offline preview",
+      },
+      400
+    );
+  }
+
+  try {
+    const tpl = await loadCategoryTemplateHtml(env, hubId);
+    let templateHtml = tpl.html;
+    if (tpl.stub && hub.title) {
+      const safeTitle = String(hub.title).replace(/</g, "");
+      templateHtml = templateHtml.replace(
+        /<title>[^<]*<\/title>/i,
+        `<title>${safeTitle} – Pickora</title>`
+      );
+    }
+    const html = buildCategoryPreviewHtml(templateHtml, products, {
+      hubId,
+      title: hub.title || hubId,
+      previewBy: user?.login || "studio",
+    });
+    return new Response(html, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/html; charset=utf-8",
+        "Cache-Control": "no-store",
+        "X-Robots-Tag": "noindex, nofollow",
+        "X-Pickora-Preview-Source": tpl.source + (tpl.stub ? "+stub" : ""),
+      },
+    });
+  } catch (err) {
+    return json(
+      {
+        error: "preview_failed",
+        detail: String(err?.message || err),
+      },
+      500
+    );
+  }
 }
 
 /**

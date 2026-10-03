@@ -26,11 +26,31 @@ const KEEP_COMMENT =
 // Helpers
 // ---------------------------------------------------------------------------
 
+const WORKER_MEDIA =
+  "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/";
+
+/**
+ * Absolute image URL for Home cards.
+ * Rewrites broken /api/media (and pickora.shop/api/media) to the Worker host —
+ * GitHub Pages has no /api/media route.
+ */
 function absUrl(path) {
   if (!path) return "";
-  if (path.startsWith("http://") || path.startsWith("https://")) return path;
-  if (path.startsWith("/")) return "https://pickora.shop" + path;
-  return path;
+  const p = String(path).trim();
+  if (/\/api\/media\/file\//i.test(p)) {
+    try {
+      if (/^https?:\/\//i.test(p)) {
+        const u = new URL(p);
+        return WORKER_MEDIA + u.pathname.replace(/^\/api\/media\/file\//i, "");
+      }
+    } catch {
+      /* fall through */
+    }
+    return WORKER_MEDIA + p.replace(/^\/?api\/media\/file\//i, "");
+  }
+  if (p.startsWith("http://") || p.startsWith("https://")) return p;
+  if (p.startsWith("/")) return "https://pickora.shop" + p;
+  return p;
 }
 
 function escHtml(str) {

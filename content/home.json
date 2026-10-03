@@ -37,7 +37,7 @@
       "excerpt": "Choosing between Ninja's single and dual-zone air fryers comes down to basket geometry, not just total quarts. Here is which model actually fits your routine, and which one to skip.",
       "category": "Home & Kitchen",
       "badge": "new",
-      "image": "/api/media/file/uploads/2026/10/article-cover.webp",
+      "image": "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/uploads/2026/10/article-cover.webp",
       "imageAlt": "ninja air fryer buying mistakes: which size to skip"
     }
   ],
