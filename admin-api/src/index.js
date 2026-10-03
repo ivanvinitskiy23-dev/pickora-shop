@@ -577,18 +577,21 @@ async function handleMediaUpload(request, env, user) {
     return json({ error: "media_write_failed", detail: msg }, 500);
   }
 
-  // Prefer permanent site path under wp-content/uploads (GitHub Pages)
+  // Always return Worker URL for Studio/preview (D1 is live immediately).
+  // GitHub Pages /wp-content path can 404 for minutes after upload — that broke thumbs.
   const siteRel = `/wp-content/uploads/${yyyy}/${mm}/${base}.${ext}`;
   const ghPath = `wp-content/uploads/${yyyy}/${mm}/${base}.${ext}`;
-  let pathOut = `https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/${finalKey}`;
-  let note = "Stored in D1; live path pending GitHub sync.";
+  const workerUrl =
+    `https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/${finalKey}`;
+  let sitePath = null;
+  let note = "Stored in D1 (preview URL). GitHub sync pending.";
 
   if (env.GITHUB_TOKEN) {
     try {
       const sha = await getFileSha(env, ghPath);
       await putBinaryFile(env, ghPath, raw, `media: upload ${ghPath}`, sha || undefined);
-      pathOut = siteRel;
-      note = "Uploaded to GitHub Pages path (wp-content/uploads).";
+      sitePath = siteRel;
+      note = `Saved as ${base}.${ext} (D1 + GitHub). Studio uses Worker URL until Pages catches up.`;
     } catch (err) {
       note = "D1 ok; GitHub sync failed: " + String(err?.message || err).slice(0, 120);
     }
@@ -598,7 +601,7 @@ async function handleMediaUpload(request, env, user) {
     await env.DB.prepare(
       `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'media_upload', ?)`
     )
-      .bind(user.login, `${finalKey} → ${pathOut}`)
+      .bind(user.login, `${finalKey} → ${workerUrl}${sitePath ? " | " + sitePath : ""}`)
       .run();
   } catch {
     /* non-fatal */
@@ -606,7 +609,8 @@ async function handleMediaUpload(request, env, user) {
 
   return json({
     ok: true,
-    path: pathOut,
+    path: workerUrl,
+    sitePath,
     key: finalKey,
     bytes: bytes.length,
     note,

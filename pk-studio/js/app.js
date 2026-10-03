@@ -656,7 +656,8 @@
       if (data.width) pinsData.pins[index].width = data.width;
       if (data.height) pinsData.pins[index].height = data.height;
       renderPinsEditor();
-      setStatus(status, t("uploadOk"), "ok");
+      const okMsg = data.note ? `${t("uploadOk")} — ${data.note}` : t("uploadOk");
+      setStatus(status, okMsg, data.sitePath ? "ok" : "warn");
     } catch (err) {
       setStatus(status, window.PK_MEDIA.errorMessage(err, t), "warn");
     }
@@ -838,6 +839,7 @@
                     ${escapeAttr(t("btnUploadImage"))}
                     <input type="file" accept="image/*" data-product-upload="${i}:${pi}" hidden>
                   </label>
+                  <p class="path-hint">${escapeAttr(p.image || "—")}</p>
                 </div>
                 <div class="review-fields">
                   <div class="field"><label>${escapeAttr(t("labelTitle"))}</label>
@@ -1217,10 +1219,12 @@
         .replace(/\.[^.]+$/, "")
         .trim();
       const data = await uploadImage(file, preferred || "product");
+      // Worker URL works immediately; sitePath is SEO path on Pages (may lag).
       productsData.categoryProducts[hub.id][productIndex].image = data.path;
       productsActiveHub = hubIndex;
       renderProductsEditor();
-      setStatus(status, t("uploadOk"), "ok");
+      const okMsg = data.note ? `${t("uploadOk")} — ${data.note}` : t("uploadOk");
+      setStatus(status, okMsg, data.sitePath ? "ok" : "warn");
     } catch (err) {
       setStatus(status, window.PK_MEDIA.errorMessage(err, t), "warn");
     }
