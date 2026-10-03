@@ -789,1250 +789,274 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 <div class="elementor-element elementor-element-7a723f1 e-con e-atomic-element e-flexbox-base e-6aa2f23 " data-id="7a723f1" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="7a723f1">
     		<div class="elementor-element elementor-element-673e6e7 elementor-widget elementor-widget-html" data-id="673e6e7" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
 				<div class="elementor-widget-container">
-					<style>
-  /* БАЗОВЫЙ КОНТЕЙНЕР КАРТОЧКИ (Идеальный баланс и анимация) */
+					
+<style>
   .pickora-final-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Текст строго по центру картинки */
-    gap: 40px;
-    background: #ffffff;
-    padding: 32px;
-    margin-bottom: 40px;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    display: flex; flex-direction: row; align-items: center; gap: 40px;
+    background: #ffffff; padding: 32px; margin-bottom: 40px; border-radius: 16px;
+    border: 1px solid #eef2f6; box-shadow: 0 4px 20px rgba(0,0,0,0.02);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   }
-
-  /* Эффект легкого приподнимания при наведении мышки */
   .pickora-final-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
     border-color: #cbd5e1;
   }
-
-  /* ЛЕВАЯ КОЛОНКА — ИЗОБРАЖЕНИЕ В ФОРМАТЕ 16:9 */
-  .pickora-final-img-col {
-    flex: 1;
-    max-width: 45%;
-  }
+  .pickora-final-img-col { flex: 1; max-width: 45%; }
   .pickora-final-img-wrapper {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Жесткий формат 16:9 */
-    overflow: hidden;
-    border-radius: 12px;
-    background: #f8fafc;
+    width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 12px; background: #f8fafc;
   }
-  .pickora-final-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Картинка заполняет 16:9 без искажений */
-    display: block;
-  }
-
-  /* ПРАВАЯ КОЛОНКА — ПРЕМИАЛЬНАЯ ТИПОГРАФИКА */
+  .pickora-final-img-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .pickora-final-info-col {
-    flex: 1;
-    max-width: 55%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex: 1; max-width: 55%; display: flex; flex-direction: column; justify-content: center;
   }
-
-  /* Дорогой темный заголовок */
   .pickora-final-title {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px;
+    font-size: 26px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0; letter-spacing: -0.5px;
   }
-
-  /* Звезды */
-  .pickora-final-rating {
-    color: #ff9900;
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  /* Контрастный читаемый текст */
-  .pickora-final-text {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #334155;
-    margin: 0 0 20px 0;
-  }
-
-  /* БЛОК ПЛЮСОВ И МИНУСОВ С БЕЙДЖАМИ */
-  .pickora-final-lists {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+  .pickora-final-rating { color: #ff9900; font-size: 15px; margin-bottom: 16px; }
+  .pickora-final-text { font-size: 15px; line-height: 1.6; color: #334155; margin: 0 0 20px 0; }
+  .pickora-final-lists { margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
   .pickora-final-list-line {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    font-size: 14.5px; line-height: 1.5; color: #334155;
+    display: flex; align-items: center; gap: 10px;
   }
   .pickora-final-badge-pro, .pickora-final-badge-con {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
+    font-size: 11px; text-transform: uppercase; font-weight: 700;
+    padding: 3px 8px; border-radius: 4px; letter-spacing: 0.5px; flex: 0 0 auto;
   }
   .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
   .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
-
-  /* ЭКСПЕРТНЫЙ ВЕРДИКТ */
   .pickora-final-verdict {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #475569;
-    margin-bottom: 24px;
+    background: #f8fafc; border-left: 4px solid #2563eb; padding: 12px 16px;
+    border-radius: 0 8px 8px 0; font-size: 14px; line-height: 1.5; color: #475569; margin-bottom: 24px;
   }
-
-  /* СТИЛЬНАЯ МИНИМАЛИСТИЧНАЯ КНОПКА AMAZON */
   .pickora-final-btn {
-    display: inline-block;
-    align-self: flex-start;
-    background-color: #ff9900;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15);
-    transition: all 0.2s ease-in-out;
+    display: inline-block; align-self: flex-start; min-height: 44px; box-sizing: border-box;
+    background-color: #ff9900; color: #ffffff !important; text-decoration: none !important;
+    font-size: 15px; font-weight: 700; padding: 14px 32px; border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15); transition: all 0.2s ease-in-out;
   }
   .pickora-final-btn:hover {
-    background-color: #e68a00;
-    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
+    background-color: #e68a00; box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
   }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ПЛАНШЕТЫ (Ширина экрана меньше 1024px) */
-  /* ======================================================== */
-  @media (max-width: 1024px) {
-    .pickora-final-card {
-      gap: 24px;
-      padding: 24px;
-    }
-    .pickora-final-title {
-      font-size: 22px;
-    }
-    .pickora-final-text {
-      font-size: 14.5px;
-    }
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ТЕЛЕФОНЫ (Ширина экрана меньше 768px)  */
-  /* ======================================================== */
   @media (max-width: 768px) {
-    .pickora-final-card {
-      flex-direction: column; /* Перестраиваем структуру в один столбец */
-      align-items: stretch;
-      gap: 20px;
-      padding: 20px;
-    }
-    .pickora-final-img-col, .pickora-final-info-col {
-      max-width: 100%; /* Элементы занимают всю ширину экрана смартфона */
-    }
-    .pickora-final-btn {
-      display: block;
-      text-align: center;
-      align-self: stretch; /* Кнопка растягивается на всю ширину для удобного тапа */
-      padding: 16px;
-    }
+    .pickora-final-card { flex-direction: column; align-items: stretch; gap: 20px; padding: 20px; }
+    .pickora-final-img-col, .pickora-final-info-col { max-width: 100%; }
+    .pickora-final-btn { display: block; text-align: center; align-self: stretch; }
   }
 </style>
 
 <div class="pickora-final-card">
-  
-  <!-- ЛЕВАЯ КОЛОНКА (КАРТИНКА) -->
   <div class="pickora-final-img-col">
     <div class="pickora-final-img-wrapper">
-      
-      <!-- !!! ЗАМЕНИ ССЫЛКУ НИЖЕ НА ССЫЛКУ СВОЕГО ИЗОБРАЖЕНИЯ !!! -->
       <img src="https://pickora.shop/wp-content/uploads/2026/06/Minimalist_smart_pet_feeder_202606282002.webp" alt="Minimalist white PETKIT automatic pet feeder with a stainless steel bowl on a light wooden floor, elegant pet-friendly home interior." width="1376" height="768" loading="eager" fetchpriority="high" decoding="async">
-      <!-- !!! КОНЕЦ ЗАМЕНЫ КАРТИНКИ !!! -->
-
     </div>
   </div>
-  
-  <!-- ПРАВАЯ КОЛОНКА (КОНТЕНТ) -->
   <div class="pickora-final-info-col">
-    
-    <!-- !!! ЗАМЕНИ НАЗВАНИЕ ТОВАРА НИЖЕ !!! -->
     <h3 class="pickora-final-title">PETKIT YumShare Smart Automatic Pet Feeder with Camera</h3>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ НАЗВАНИЯ ТОВАРА !!! -->
-    
     <div class="pickora-final-rating">★★★★★ </div>
-    
-    <!-- !!! ЗАМЕНИ ОПИСАНИЕ ТОВАРА НИЖЕ !!! -->
     <p class="pickora-final-text">
      The PETKIT YumShare reinvents pet care by merging automated nutrition with real-time smart monitoring. Featuring a built-in 1080P HD camera with night vision and AI pet recognition, this sleek automatic feeder allows you to watch, record, and talk to your pet through a dedicated app. Engineered with an anti-clogging dual food distribution system and a premium food-grade stainless steel bowl, it ensures your pet is fed precisely on time, every time, while looking incredibly elegant in your home.
     </p>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ОПИСАНИЯ ТОВАРА !!! -->
-    
-<!-- БЛОК ПЛЮСОВ И МИНУСОВ -->
 <div class="pickora-final-lists">
-
-  <!-- ПЛЮС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>1080P HD wide-angle camera with AI tracking to monitor your pet’s eating habits in real-time.</span>
   </div>
 
-  <!-- ПЛЮС №2 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Triple-fresh lock technology keeps kibble crunchy, moisture-free, and safe from pests.</span>
   </div>
 
-  <!-- ПЛЮС №3 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Built-in backup battery system ensures feeding schedules run even during power outages.</span>
   </div>
 
-  <!-- МИНУС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-con">Cons</span>
     <span>Optimized strictly for dry kibble; does not support wet or freeze-dried raw food profiles.</span>
   </div>
-
 </div>
-    
-    <!-- НАШ ЭКСПЕРТНЫЙ ВЕРДИКТ -->
-    <!-- !!! ЗАМЕНИ ТЕКСТ ВЕРДИКТА НИЖЕ !!! -->
     <div class="pickora-final-verdict">
       <b>Pickora’s Verdict:</b>The ultimate peace of mind for modern pet parents. PETKIT seamlessly hides complex automation inside a stunning, minimalist chassis. It completely removes the guilt of staying late at work, letting you stay connected to your pet’s health and happiness with a single tap on your screen.
     </div>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ВЕРДИКТА !!! -->
-    
-    <!-- !!! ЗАМЕНИ ССЫЛКУ href НА СВОЮ ПАРТНЕРСКУЮ ССЫЛКУ АМАЗОН !!! -->
     <a href="https://amzn.to/4oTniYm" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
-      Check on Amazon →
+      Check Price on Amazon →
     </a>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ССЫЛКИ АМАЗОН !!! -->
-    
   </div>
-
-</div>				</div>
-				</div>
-		
 </div>
-<div class="elementor-element elementor-element-8c75e9e e-con e-atomic-element e-flexbox-base e-ad197bb " data-id="8c75e9e" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="8c75e9e">
-    		<div class="elementor-element elementor-element-2c13dfb elementor-widget elementor-widget-html" data-id="2c13dfb" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
-				<div class="elementor-widget-container">
-					<style>
-  /* БАЗОВЫЙ КОНТЕЙНЕР КАРТОЧКИ (Идеальный баланс и анимация) */
-  .pickora-final-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Текст строго по центру картинки */
-    gap: 40px;
-    background: #ffffff;
-    padding: 32px;
-    margin-bottom: 40px;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  }
-
-  /* Эффект легкого приподнимания при наведении мышки */
-  .pickora-final-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-    border-color: #cbd5e1;
-  }
-
-  /* ЛЕВАЯ КОЛОНКА — ИЗОБРАЖЕНИЕ В ФОРМАТЕ 16:9 */
-  .pickora-final-img-col {
-    flex: 1;
-    max-width: 45%;
-  }
-  .pickora-final-img-wrapper {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Жесткий формат 16:9 */
-    overflow: hidden;
-    border-radius: 12px;
-    background: #f8fafc;
-  }
-  .pickora-final-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Картинка заполняет 16:9 без искажений */
-    display: block;
-  }
-
-  /* ПРАВАЯ КОЛОНКА — ПРЕМИАЛЬНАЯ ТИПОГРАФИКА */
-  .pickora-final-info-col {
-    flex: 1;
-    max-width: 55%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  /* Дорогой темный заголовок */
-  .pickora-final-title {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px;
-  }
-
-  /* Звезды */
-  .pickora-final-rating {
-    color: #ff9900;
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  /* Контрастный читаемый текст */
-  .pickora-final-text {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #334155;
-    margin: 0 0 20px 0;
-  }
-
-  /* БЛОК ПЛЮСОВ И МИНУСОВ С БЕЙДЖАМИ */
-  .pickora-final-lists {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .pickora-final-list-line {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .pickora-final-badge-pro, .pickora-final-badge-con {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-  }
-  .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
-  .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
-
-  /* ЭКСПЕРТНЫЙ ВЕРДИКТ */
-  .pickora-final-verdict {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #475569;
-    margin-bottom: 24px;
-  }
-
-  /* СТИЛЬНАЯ МИНИМАЛИСТИЧНАЯ КНОПКА AMAZON */
-  .pickora-final-btn {
-    display: inline-block;
-    align-self: flex-start;
-    background-color: #ff9900;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15);
-    transition: all 0.2s ease-in-out;
-  }
-  .pickora-final-btn:hover {
-    background-color: #e68a00;
-    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ПЛАНШЕТЫ (Ширина экрана меньше 1024px) */
-  /* ======================================================== */
-  @media (max-width: 1024px) {
-    .pickora-final-card {
-      gap: 24px;
-      padding: 24px;
-    }
-    .pickora-final-title {
-      font-size: 22px;
-    }
-    .pickora-final-text {
-      font-size: 14.5px;
-    }
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ТЕЛЕФОНЫ (Ширина экрана меньше 768px)  */
-  /* ======================================================== */
-  @media (max-width: 768px) {
-    .pickora-final-card {
-      flex-direction: column; /* Перестраиваем структуру в один столбец */
-      align-items: stretch;
-      gap: 20px;
-      padding: 20px;
-    }
-    .pickora-final-img-col, .pickora-final-info-col {
-      max-width: 100%; /* Элементы занимают всю ширину экрана смартфона */
-    }
-    .pickora-final-btn {
-      display: block;
-      text-align: center;
-      align-self: stretch; /* Кнопка растягивается на всю ширину для удобного тапа */
-      padding: 16px;
-    }
-  }
-</style>
 
 <div class="pickora-final-card">
-  
-  <!-- ЛЕВАЯ КОЛОНКА (КАРТИНКА) -->
   <div class="pickora-final-img-col">
     <div class="pickora-final-img-wrapper">
-      
-      <!-- !!! ЗАМЕНИ ССЫЛКУ НИЖЕ НА ССЫЛКУ СВОЕГО ИЗОБРАЖЕНИЯ !!! -->
       <img src="https://pickora.shop/wp-content/uploads/2026/06/Pet_water_fountain_minimalist_de-_202606301436.webp" alt="Minimalist translucent PETKIT pet water fountain with a gentle water stream on a modern kitchen tile floor, clean pet lifestyle photography." width="1376" height="768" loading="lazy" decoding="async">
-      <!-- !!! КОНЕЦ ЗАМЕНЫ КАРТИНКИ !!! -->
-
     </div>
   </div>
-  
-  <!-- ПРАВАЯ КОЛОНКА (КОНТЕНТ) -->
   <div class="pickora-final-info-col">
-    
-    <!-- !!! ЗАМЕНИ НАЗВАНИЕ ТОВАРА НИЖЕ !!! -->
     <h3 class="pickora-final-title">PETKIT EVERSWEET SOLO SE Smart Pet Water Fountain</h3>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ НАЗВАНИЯ ТОВАРА !!! -->
-    
     <div class="pickora-final-rating">★★★★★ </div>
-    
-    <!-- !!! ЗАМЕНИ ОПИСАНИЕ ТОВАРА НИЖЕ !!! -->
     <p class="pickora-final-text">
      The PETKIT EVERSWEET SOLO SE brings high-end fluid dynamics and absolute safety to your pet’s hydration routine. Featuring a groundbreaking wireless water pump, it eliminates submerged electrical cords to provide a 100% safe drinking experience and effortless cleaning. With its multi-layer filtration system that removes hair, debris, and heavy metals, this ultra-quiet fountain mimics natural running streams to encourage healthier drinking habits while maintaining a sleek, low-profile silhouette.
     </p>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ОПИСАНИЯ ТОВАРА !!! -->
-    
- <!-- БЛОК ПЛЮСОВ И МИНУСОВ -->
 <div class="pickora-final-lists">
-
-  <!-- ПЛЮС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Innovative wireless pump design makes cleaning safe and incredibly simple.</span>
   </div>
 
-  <!-- ПЛЮС №2 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>High-density purification filter eliminates chlorine, heavy metals, and pet hair.</span>
   </div>
 
-  <!-- ПЛЮС №3 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Roman fountain structure ensures whisper-quiet operation below 25 decibels.</span>
   </div>
 
-  <!-- МИНУС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-con">Cons</span>
     <span>Requires regular filter replacements every 3–4 weeks to maintain optimal water purity.</span>
   </div>
-
 </div>
-    
-    <!-- НАШ ЭКСПЕРТНЫЙ ВЕРДИКТ -->
-    <!-- !!! ЗАМЕНИ ТЕКСТ ВЕРДИКТА НИЖЕ !!! -->
     <div class="pickora-final-verdict">
       <b>Pickora’s Verdict:</b> A brilliant blend of safety and minimalism. PETKIT solves the worst part of traditional pet fountains—slimy, dangerous submerged wires—by separating the water tank entirely from the power base. It’s elegant, hygienic, and perfectly fits into any modern home layout.
     </div>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ВЕРДИКТА !!! -->
-    
-    <!-- !!! ЗАМЕНИ ССЫЛКУ href НА СВОЮ ПАРТНЕРСКУЮ ССЫЛКУ АМАЗОН !!! -->
     <a href="https://amzn.to/4v9SCnp" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
-      Check on Amazon →
+      Check Price on Amazon →
     </a>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ССЫЛКИ АМАЗОН !!! -->
-    
   </div>
-
-</div>				</div>
-				</div>
-		
 </div>
-<div class="elementor-element elementor-element-8caa09e e-con e-atomic-element e-flexbox-base e-053bfb7 " data-id="8caa09e" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="8caa09e">
-    		<div class="elementor-element elementor-element-4a377de elementor-widget elementor-widget-html" data-id="4a377de" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
-				<div class="elementor-widget-container">
-					<style>
-  /* БАЗОВЫЙ КОНТЕЙНЕР КАРТОЧКИ (Идеальный баланс и анимация) */
-  .pickora-final-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Текст строго по центру картинки */
-    gap: 40px;
-    background: #ffffff;
-    padding: 32px;
-    margin-bottom: 40px;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  }
-
-  /* Эффект легкого приподнимания при наведении мышки */
-  .pickora-final-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-    border-color: #cbd5e1;
-  }
-
-  /* ЛЕВАЯ КОЛОНКА — ИЗОБРАЖЕНИЕ В ФОРМАТЕ 16:9 */
-  .pickora-final-img-col {
-    flex: 1;
-    max-width: 45%;
-  }
-  .pickora-final-img-wrapper {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Жесткий формат 16:9 */
-    overflow: hidden;
-    border-radius: 12px;
-    background: #f8fafc;
-  }
-  .pickora-final-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Картинка заполняет 16:9 без искажений */
-    display: block;
-  }
-
-  /* ПРАВАЯ КОЛОНКА — ПРЕМИАЛЬНАЯ ТИПОГРАФИКА */
-  .pickora-final-info-col {
-    flex: 1;
-    max-width: 55%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  /* Дорогой темный заголовок */
-  .pickora-final-title {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px;
-  }
-
-  /* Звезды */
-  .pickora-final-rating {
-    color: #ff9900;
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  /* Контрастный читаемый текст */
-  .pickora-final-text {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #334155;
-    margin: 0 0 20px 0;
-  }
-
-  /* БЛОК ПЛЮСОВ И МИНУСОВ С БЕЙДЖАМИ */
-  .pickora-final-lists {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .pickora-final-list-line {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .pickora-final-badge-pro, .pickora-final-badge-con {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-  }
-  .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
-  .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
-
-  /* ЭКСПЕРТНЫЙ ВЕРДИКТ */
-  .pickora-final-verdict {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #475569;
-    margin-bottom: 24px;
-  }
-
-  /* СТИЛЬНАЯ МИНИМАЛИСТИЧНАЯ КНОПКА AMAZON */
-  .pickora-final-btn {
-    display: inline-block;
-    align-self: flex-start;
-    background-color: #ff9900;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15);
-    transition: all 0.2s ease-in-out;
-  }
-  .pickora-final-btn:hover {
-    background-color: #e68a00;
-    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ПЛАНШЕТЫ (Ширина экрана меньше 1024px) */
-  /* ======================================================== */
-  @media (max-width: 1024px) {
-    .pickora-final-card {
-      gap: 24px;
-      padding: 24px;
-    }
-    .pickora-final-title {
-      font-size: 22px;
-    }
-    .pickora-final-text {
-      font-size: 14.5px;
-    }
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ТЕЛЕФОНЫ (Ширина экрана меньше 768px)  */
-  /* ======================================================== */
-  @media (max-width: 768px) {
-    .pickora-final-card {
-      flex-direction: column; /* Перестраиваем структуру в один столбец */
-      align-items: stretch;
-      gap: 20px;
-      padding: 20px;
-    }
-    .pickora-final-img-col, .pickora-final-info-col {
-      max-width: 100%; /* Элементы занимают всю ширину экрана смартфона */
-    }
-    .pickora-final-btn {
-      display: block;
-      text-align: center;
-      align-self: stretch; /* Кнопка растягивается на всю ширину для удобного тапа */
-      padding: 16px;
-    }
-  }
-</style>
 
 <div class="pickora-final-card">
-  
-  <!-- ЛЕВАЯ КОЛОНКА (КАРТИНКА) -->
   <div class="pickora-final-img-col">
     <div class="pickora-final-img-wrapper">
-      
-      <!-- !!! ЗАМЕНИ ССЫЛКУ НИЖЕ НА ССЫЛКУ СВОЕГО ИЗОБРАЖЕНИЯ !!! -->
       <img src="https://pickora.shop/wp-content/uploads/2026/06/An_aesthetic_product_photography_of_202606301447.webp" alt="Large white Ellenpent automatic self-cleaning litter box with an open entry door on a light wood floor, modern minimal pet furniture style." width="1376" height="768" loading="lazy" decoding="async">
-      <!-- !!! КОНЕЦ ЗАМЕНЫ КАРТИНКИ !!! -->
-
     </div>
   </div>
-  
-  <!-- ПРАВАЯ КОЛОНКА (КОНТЕНТ) -->
   <div class="pickora-final-info-col">
-    
-    <!-- !!! ЗАМЕНИ НАЗВАНИЕ ТОВАРА НИЖЕ !!! -->
     <h3 class="pickora-final-title">Ellenpent Automatic Self-Cleaning Litter Box (90L Large Capacity)</h3>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ НАЗВАНИЯ ТОВАРА !!! -->
-    
     <div class="pickora-final-rating">★★★★★ </div>
-    
-    <!-- !!! ЗАМЕНИ ОПИСАНИЕ ТОВАРА НИЖЕ !!! -->
     <p class="pickora-final-text">
      The Ellenpent Automatic Litter Box is engineered specifically for multi-pet homes and larger feline companions, boasting a massive 90L internal capacity. This smart self-cleaning system automatically sifts waste into a sealed, odor-controlled compartment after your cat steps out. Packed with real-time app tracking for usage patterns, multiple safety sensors to prevent rotation when your pet is near, and coming with 3 rolls of customized garbage bags, it delivers maximum convenience and a fresh home environment.
     </p>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ОПИСАНИЯ ТОВАРА !!! -->
-    
-   <!-- БЛОК ПЛЮСОВ И МИНУСОВ -->
 <div class="pickora-final-lists">
-
-  <!-- ПЛЮС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Massive 90L volume perfectly accommodates large cats and multi-cat households.</span>
   </div>
 
-  <!-- ПЛЮС №2 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Advanced multi-layer safety sensor array immediately halts rotation for pet security.</span>
   </div>
 
-  <!-- ПЛЮС №3 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Includes 3 bonus rolls of garbage bags and features seamless Wi-Fi smartphone app controls.</span>
   </div>
 
-  <!-- МИНУС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-con">Cons</span>
     <span>The deep 90L outer chassis requires a dedicated, spacious floor area in your room.</span>
   </div>
-
 </div>
-    
-    <!-- НАШ ЭКСПЕРТНЫЙ ВЕРДИКТ -->
-    <!-- !!! ЗАМЕНИ ТЕКСТ ВЕРДИКТА НИЖЕ !!! -->
     <div class="pickora-final-verdict">
       <b>Pickora’s Verdict:</b> A heavy-duty automation lifesaver. If you have a larger cat or manage a busy multi-cat household, the Ellenpent Automatic Litter Box offers the massive capacity and advanced app analytics you need to keep your home odor-free without paying a massive luxury premium.
     </div>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ВЕРДИКТА !!! -->
-    
-    <!-- !!! ЗАМЕНИ ССЫЛКУ href НА СВОЮ ПАРТНЕРСКУЮ ССЫЛКУ АМАЗОН !!! -->
     <a href="https://amzn.to/4v83Ske" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
-      Check on Amazon →
+      Check Price on Amazon →
     </a>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ССЫЛКИ АМАЗОН !!! -->
-    
   </div>
-
-</div>				</div>
-				</div>
-		
 </div>
-<div class="elementor-element elementor-element-6132ca9 e-con e-atomic-element e-flexbox-base e-46270e1 " data-id="6132ca9" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="6132ca9">
-    		<div class="elementor-element elementor-element-f396d10 elementor-widget elementor-widget-html" data-id="f396d10" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
-				<div class="elementor-widget-container">
-					<style>
-  /* БАЗОВЫЙ КОНТЕЙНЕР КАРТОЧКИ (Идеальный баланс и анимация) */
-  .pickora-final-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Текст строго по центру картинки */
-    gap: 40px;
-    background: #ffffff;
-    padding: 32px;
-    margin-bottom: 40px;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  }
-
-  /* Эффект легкого приподнимания при наведении мышки */
-  .pickora-final-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-    border-color: #cbd5e1;
-  }
-
-  /* ЛЕВАЯ КОЛОНКА — ИЗОБРАЖЕНИЕ В ФОРМАТЕ 16:9 */
-  .pickora-final-img-col {
-    flex: 1;
-    max-width: 45%;
-  }
-  .pickora-final-img-wrapper {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Жесткий формат 16:9 */
-    overflow: hidden;
-    border-radius: 12px;
-    background: #f8fafc;
-  }
-  .pickora-final-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Картинка заполняет 16:9 без искажений */
-    display: block;
-  }
-
-  /* ПРАВАЯ КОЛОНКА — ПРЕМИАЛЬНАЯ ТИПОГРАФИКА */
-  .pickora-final-info-col {
-    flex: 1;
-    max-width: 55%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  /* Дорогой темный заголовок */
-  .pickora-final-title {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px;
-  }
-
-  /* Звезды */
-  .pickora-final-rating {
-    color: #ff9900;
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  /* Контрастный читаемый текст */
-  .pickora-final-text {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #334155;
-    margin: 0 0 20px 0;
-  }
-
-  /* БЛОК ПЛЮСОВ И МИНУСОВ С БЕЙДЖАМИ */
-  .pickora-final-lists {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .pickora-final-list-line {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .pickora-final-badge-pro, .pickora-final-badge-con {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-  }
-  .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
-  .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
-
-  /* ЭКСПЕРТНЫЙ ВЕРДИКТ */
-  .pickora-final-verdict {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #475569;
-    margin-bottom: 24px;
-  }
-
-  /* СТИЛЬНАЯ МИНИМАЛИСТИЧНАЯ КНОПКА AMAZON */
-  .pickora-final-btn {
-    display: inline-block;
-    align-self: flex-start;
-    background-color: #ff9900;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15);
-    transition: all 0.2s ease-in-out;
-  }
-  .pickora-final-btn:hover {
-    background-color: #e68a00;
-    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ПЛАНШЕТЫ (Ширина экрана меньше 1024px) */
-  /* ======================================================== */
-  @media (max-width: 1024px) {
-    .pickora-final-card {
-      gap: 24px;
-      padding: 24px;
-    }
-    .pickora-final-title {
-      font-size: 22px;
-    }
-    .pickora-final-text {
-      font-size: 14.5px;
-    }
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ТЕЛЕФОНЫ (Ширина экрана меньше 768px)  */
-  /* ======================================================== */
-  @media (max-width: 768px) {
-    .pickora-final-card {
-      flex-direction: column; /* Перестраиваем структуру в один столбец */
-      align-items: stretch;
-      gap: 20px;
-      padding: 20px;
-    }
-    .pickora-final-img-col, .pickora-final-info-col {
-      max-width: 100%; /* Элементы занимают всю ширину экрана смартфона */
-    }
-    .pickora-final-btn {
-      display: block;
-      text-align: center;
-      align-self: stretch; /* Кнопка растягивается на всю ширину для удобного тапа */
-      padding: 16px;
-    }
-  }
-</style>
 
 <div class="pickora-final-card">
-  
-  <!-- ЛЕВАЯ КОЛОНКА (КАРТИНКА) -->
   <div class="pickora-final-img-col">
     <div class="pickora-final-img-wrapper">
-      
-      <!-- !!! ЗАМЕНИ ССЫЛКУ НИЖЕ НА ССЫЛКУ СВОЕГО ИЗОБРАЖЕНИЯ !!! -->
       <img src="https://pickora.shop/wp-content/uploads/2026/06/An_aesthetic_product_photography_of_202606301516.webp" alt="Sleek minimalist white Tractive GPS pet tracker attached to a premium tan leather dog collar, resting on a clean wooden table surface." width="1376" height="768" loading="lazy" decoding="async">
-      <!-- !!! КОНЕЦ ЗАМЕНЫ КАРТИНКИ !!! -->
-
     </div>
   </div>
-  
-  <!-- ПРАВАЯ КОЛОНКА (КОНТЕНТ) -->
   <div class="pickora-final-info-col">
-    
-    <!-- !!! ЗАМЕНИ НАЗВАНИЕ ТОВАРА НИЖЕ !!! -->
     <h3 class="pickora-final-title">Tractive GPS Pet Tracker &amp; Health Monitor</h3>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ НАЗВАНИЯ ТОВАРА !!! -->
-    
     <div class="pickora-final-rating">★★★★★ </div>
-    
-    <!-- !!! ЗАМЕНИ ОПИСАНИЕ ТОВАРА НИЖЕ !!! -->
     <p class="pickora-final-text">
-    The Tractive GPS Pet Tracker offers ultimate peace of mind by allowing you to follow your pet’s every step in real-time. Featuring worldwide location tracking with an unlimited range, this lightweight, 100% waterproof device clips securely onto any standard collar. Beyond live radar tracking, it functions as a comprehensive health monitor, logging your pet’s active minutes, calories burned, and sleep disruption patterns to ensure they stay fit and healthy.
+     The Tractive GPS Pet Tracker offers ultimate peace of mind by allowing you to follow your pet’s every step in real-time. Featuring worldwide location tracking with an unlimited range, this lightweight, 100% waterproof device clips securely onto any standard collar. Beyond live radar tracking, it functions as a comprehensive health monitor, logging your pet’s active minutes, calories burned, and sleep disruption patterns to ensure they stay fit and healthy.
     </p>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ОПИСАНИЯ ТОВАРА !!! -->
-    
-   <!-- БЛОК ПЛЮСОВ И МИНУСОВ -->
 <div class="pickora-final-lists">
-
-  <!-- ПЛЮС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>LIVE Tracking mode updates your pet’s exact location every 2-3 seconds.</span>
   </div>
 
-  <!-- ПЛЮС №2 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Virtual Fence feature alerts your phone instantly if your pet leaves a designated safe zone.</span>
   </div>
 
-  <!-- ПЛЮС №3 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Up to 10 days of battery life with customizable power-saving Wi-Fi zones.</span>
   </div>
 
-  <!-- МИНУС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-con">Cons</span>
     <span>Requires a monthly subscription plan to connect to global cellular networks.</span>
   </div>
-
 </div>
-    
-    <!-- НАШ ЭКСПЕРТНЫЙ ВЕРДИКТ -->
-    <!-- !!! ЗАМЕНИ ТЕКСТ ВЕРДИКТА НИЖЕ !!! -->
     <div class="pickora-final-verdict">
       <b>Pickora’s Verdict:</b>An invisible digital leash for the modern adventurer. Tractive masterfully shrinks advanced satellite tracking into a durable, featherlight accessory. It removes the terrifying anxiety of a runaway pet, replacing it with smart, actionable data about their daily wellness and location.
     </div>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ВЕРДИКТА !!! -->
-    
-    <!-- !!! ЗАМЕНИ ССЫЛКУ href НА СВОЮ ПАРТНЕРСКУЮ ССЫЛКУ АМАЗОН !!! -->
     <a href="https://amzn.to/4gNbkNR" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
-      Check on Amazon →
+      Check Price on Amazon →
     </a>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ССЫЛКИ АМАЗОН !!! -->
-    
   </div>
-
-</div>				</div>
-				</div>
-		
 </div>
-<div class="elementor-element elementor-element-2d8043c e-con e-atomic-element e-flexbox-base e-1dbc55d " data-id="2d8043c" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="2d8043c">
-    		<div class="elementor-element elementor-element-2da69d4 elementor-widget elementor-widget-html" data-id="2da69d4" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
-				<div class="elementor-widget-container">
-					<style>
-  /* БАЗОВЫЙ КОНТЕЙНЕР КАРТОЧКИ (Идеальный баланс и анимация) */
-  .pickora-final-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Текст строго по центру картинки */
-    gap: 40px;
-    background: #ffffff;
-    padding: 32px;
-    margin-bottom: 40px;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  }
-
-  /* Эффект легкого приподнимания при наведении мышки */
-  .pickora-final-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-    border-color: #cbd5e1;
-  }
-
-  /* ЛЕВАЯ КОЛОНКА — ИЗОБРАЖЕНИЕ В ФОРМАТЕ 16:9 */
-  .pickora-final-img-col {
-    flex: 1;
-    max-width: 45%;
-  }
-  .pickora-final-img-wrapper {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Жесткий формат 16:9 */
-    overflow: hidden;
-    border-radius: 12px;
-    background: #f8fafc;
-  }
-  .pickora-final-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Картинка заполняет 16:9 без искажений */
-    display: block;
-  }
-
-  /* ПРАВАЯ КОЛОНКА — ПРЕМИАЛЬНАЯ ТИПОГРАФИКА */
-  .pickora-final-info-col {
-    flex: 1;
-    max-width: 55%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  /* Дорогой темный заголовок */
-  .pickora-final-title {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px;
-  }
-
-  /* Звезды */
-  .pickora-final-rating {
-    color: #ff9900;
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  /* Контрастный читаемый текст */
-  .pickora-final-text {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #334155;
-    margin: 0 0 20px 0;
-  }
-
-  /* БЛОК ПЛЮСОВ И МИНУСОВ С БЕЙДЖАМИ */
-  .pickora-final-lists {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .pickora-final-list-line {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .pickora-final-badge-pro, .pickora-final-badge-con {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-  }
-  .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
-  .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
-
-  /* ЭКСПЕРТНЫЙ ВЕРДИКТ */
-  .pickora-final-verdict {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #475569;
-    margin-bottom: 24px;
-  }
-
-  /* СТИЛЬНАЯ МИНИМАЛИСТИЧНАЯ КНОПКА AMAZON */
-  .pickora-final-btn {
-    display: inline-block;
-    align-self: flex-start;
-    background-color: #ff9900;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15);
-    transition: all 0.2s ease-in-out;
-  }
-  .pickora-final-btn:hover {
-    background-color: #e68a00;
-    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ПЛАНШЕТЫ (Ширина экрана меньше 1024px) */
-  /* ======================================================== */
-  @media (max-width: 1024px) {
-    .pickora-final-card {
-      gap: 24px;
-      padding: 24px;
-    }
-    .pickora-final-title {
-      font-size: 22px;
-    }
-    .pickora-final-text {
-      font-size: 14.5px;
-    }
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ТЕЛЕФОНЫ (Ширина экрана меньше 768px)  */
-  /* ======================================================== */
-  @media (max-width: 768px) {
-    .pickora-final-card {
-      flex-direction: column; /* Перестраиваем структуру в один столбец */
-      align-items: stretch;
-      gap: 20px;
-      padding: 20px;
-    }
-    .pickora-final-img-col, .pickora-final-info-col {
-      max-width: 100%; /* Элементы занимают всю ширину экрана смартфона */
-    }
-    .pickora-final-btn {
-      display: block;
-      text-align: center;
-      align-self: stretch; /* Кнопка растягивается на всю ширину для удобного тапа */
-      padding: 16px;
-    }
-  }
-</style>
 
 <div class="pickora-final-card">
-  
-  <!-- ЛЕВАЯ КОЛОНКА (КАРТИНКА) -->
   <div class="pickora-final-img-col">
     <div class="pickora-final-img-wrapper">
-      
-      <!-- !!! ЗАМЕНИ ССЫЛКУ НИЖЕ НА ССЫЛКУ СВОЕГО ИЗОБРАЖЕНИЯ !!! -->
-      <img src="https://pickora.shop/wp-content/uploads/2026/06/Heartwarming_scene_of_a_dog_202606171925-scaled.webp" alt="Sleek white Furbo 360 dog camera with a premium wooden top lid resting on a modern living room side table, high-end pet lifestyle photography." width="1200" height="670" loading="lazy" decoding="async">
-      <!-- !!! КОНЕЦ ЗАМЕНЫ КАРТИНКИ !!! -->
-
+      <img src="https://pickora.shop/wp-content/uploads/2026/06/Heartwarming_scene_of_a_dog_202606171925-scaled.webp" alt="Sleek white Furbo 360 dog camera with a premium wooden top lid resting on a modern living room side table, high-end pet lifestyle photography." width="1376" height="768" loading="lazy" decoding="async">
     </div>
   </div>
-  
-  <!-- ПРАВАЯ КОЛОНКА (КОНТЕНТ) -->
   <div class="pickora-final-info-col">
-    
-    <!-- !!! ЗАМЕНИ НАЗВАНИЕ ТОВАРА НИЖЕ !!! -->
     <h3 class="pickora-final-title">Furbo 360° Dog Camera with Treat Tossing</h3>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ НАЗВАНИЯ ТОВАРА !!! -->
-    
     <div class="pickora-final-rating">★★★★★ </div>
-    
-    <!-- !!! ЗАМЕНИ ОПИСАНИЕ ТОВАРА НИЖЕ !!! -->
     <p class="pickora-final-text">
      The Furbo 360° redefines how you connect with your pet from afar, combining an advanced rotating smart camera with an interactive treat dispenser. Delivering crystal-clear 1080p HD video with automatic pet tracking and color night vision, it ensures your dog is always in frame. With its intelligent real-time barking alerts, two-way audio communication, and a customizable treat-tossing mechanism, it transforms remote pet monitoring into a fun, interactive daily bonding experience.
     </p>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ОПИСАНИЯ ТОВАРА !!! -->
-    
-<!-- БЛОК ПЛЮСОВ И МИНУСОВ -->
 <div class="pickora-final-lists">
-
-  <!-- ПЛЮС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Smooth 360-degree rotating lens completely eliminates blind spots in your living room.</span>
   </div>
 
-  <!-- ПЛЮС №2 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Fun, app-controlled remote treat tossing works smoothly with various small kibble shapes.</span>
   </div>
 
-  <!-- ПЛЮС №3 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-pro">Pros</span>
     <span>Intelligent AI alerts detect barking, pet activity, and even potential home emergencies.</span>
   </div>
 
-  <!-- МИНУС №1 -->
   <div class="pickora-final-list-line">
     <span class="pickora-final-badge-con">Cons</span>
     <span>Advanced cloud-recording and specific AI pet-recognition features require a premium subscription.</span>
   </div>
-
 </div>
-    
-<!-- НАШ ЭКСПЕРТНЫЙ ВЕРДИКТ -->
-<!-- !!! ЗАМЕНИ ТЕКСТ ВЕРДИКТА НИЖЕ !!! -->
-<div class="pickora-final-verdict">
-  <b>Pickora’s Verdict:</b> The ultimate interactive babysitter for your pet. Furbo 360° completely cures separation anxiety—both yours and your dog’s. While we’ve previously evaluated it alongside competitors in our comprehensive roundup of the <a href="https://pickora.shop/best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews/" style="color: #0066cc; text-decoration: underline; font-weight: 600;">best pet cameras</a>, this model stands out on its own. It beautifully disguises a powerful AI security camera inside a sleek, wooden-accented design that feels warm, playful, and incredibly functional.
-</div>
-<!-- !!! КОНЕЦ ЗАМЕНЫ ВЕРДИКТА !!! -->
-    
-    <!-- !!! ЗАМЕНИ ССЫЛКУ href НА СВОЮ ПАРТНЕРСКУЮ ССЫЛКУ АМАЗОН !!! -->
+    <div class="pickora-final-verdict">
+      <b>Pickora’s Verdict:</b> The ultimate interactive babysitter for your pet. Furbo 360° completely cures separation anxiety—both yours and your dog’s. While we’ve previously evaluated it alongside competitors in our comprehensive roundup of the best pet cameras, this model stands out on its own. It beautifully disguises a powerful AI security camera inside a sleek, wooden-accented design that feels warm, playful, and incredibly functional.
+    </div>
     <a href="https://amzn.to/4gIt0u8" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
-      Check on Amazon →
+      Check Price on Amazon →
     </a>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ССЫЛКИ АМАЗОН !!! -->
-    
   </div>
-
-</div>				</div>
+</div>
+				</div>
 				</div>
 		
 </div>
