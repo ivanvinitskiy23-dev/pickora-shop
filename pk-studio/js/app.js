@@ -647,7 +647,9 @@
     setStatus(status, t("uploading"));
     try {
       readPinsForm();
-      const preferred = "pin-" + (pinsData.pins[index]?.id || index + 1);
+      const pinId = pinsData.pins[index]?.id || index + 1;
+      // Unique filename per upload so pins never share/overwrite one file.
+      const preferred = `pin-${pinId}-${Date.now().toString(36)}`;
       const data = await uploadImage(file, preferred);
       pinsData.pins[index].image = data.path;
       if (data.width) pinsData.pins[index].width = data.width;
@@ -977,7 +979,7 @@
         ensureCategoryProducts();
         const list = productsData.categoryProducts[hub.id];
         list.unshift({
-          id: `${hub.id}-${list.length + 1}`,
+          id: `${hub.id}-${Date.now().toString(36)}`,
           title: "",
           image: "",
           imageAlt: "",
@@ -1209,7 +1211,22 @@
     try {
       readProductsForm();
       const hub = productsData.hubCategories[hubIndex];
-      const preferred = `${hub.id}-product-${productIndex + 1}`;
+      const product = productsData.categoryProducts[hub.id]?.[productIndex];
+      // Stable product id + unique suffix — never reuse slot index names like
+      // "hub-product-1" (unshift/reorder made every new upload overwrite one file).
+      const idPart = String(product?.id || `p${productIndex + 1}`)
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 40);
+      const fileStem = String(file?.name || "img")
+        .replace(/\.[^.]+$/, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 24);
+      const uniq = Date.now().toString(36);
+      const preferred = `${hub.id}-${idPart}-${fileStem || "img"}-${uniq}`;
       const data = await uploadImage(file, preferred);
       productsData.categoryProducts[hub.id][productIndex].image = data.path;
       productsActiveHub = hubIndex;

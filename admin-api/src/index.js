@@ -505,7 +505,7 @@ async function handleMediaUpload(request, env, user) {
   const now = new Date();
   const yyyy = String(now.getUTCFullYear());
   const mm = String(now.getUTCMonth() + 1).padStart(2, "0");
-  const base = slugify(preferred || filename) || "upload";
+  let base = slugify(preferred || filename) || "upload";
   let ext = "jpg";
   let contentType = "image/jpeg";
   if (bytes[0] === 0x89 && bytes[1] === 0x50) {
@@ -518,7 +518,21 @@ async function handleMediaUpload(request, env, user) {
     ext = "webp";
     contentType = "image/webp";
   }
-  const finalKey = `uploads/${yyyy}/${mm}/${base}.${ext}`;
+  // Avoid silent overwrite of another product/pin image (same preferred name).
+  let finalKey = `uploads/${yyyy}/${mm}/${base}.${ext}`;
+  try {
+    const exists = await env.DB.prepare(
+      `SELECT key FROM media_files WHERE key = ? LIMIT 1`
+    )
+      .bind(finalKey)
+      .first();
+    if (exists?.key) {
+      base = `${base}-${Date.now().toString(36)}`.slice(0, 60);
+      finalKey = `uploads/${yyyy}/${mm}/${base}.${ext}`;
+    }
+  } catch {
+    /* table missing handled below */
+  }
 
   try {
     await env.DB.prepare(
