@@ -789,1179 +789,334 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 <div class="elementor-element elementor-element-a4a64da e-con e-atomic-element e-flexbox-base e-ad772ee " data-id="a4a64da" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="a4a64da">
     		<div class="elementor-element elementor-element-a9d8b23 elementor-widget elementor-widget-html" data-id="a9d8b23" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
 				<div class="elementor-widget-container">
-					<style>
-  /* БАЗОВЫЙ КОНТЕЙНЕР КАРТОЧКИ (Идеальный баланс и анимация) */
+					
+<style>
   .pickora-final-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Текст строго по центру картинки */
-    gap: 40px;
-    background: #ffffff;
-    padding: 32px;
-    margin-bottom: 40px;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    display: flex; flex-direction: row; align-items: center; gap: 40px;
+    background: #ffffff; padding: 32px; margin-bottom: 40px; border-radius: 16px;
+    border: 1px solid #eef2f6; box-shadow: 0 4px 20px rgba(0,0,0,0.02);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   }
-
-  /* Эффект легкого приподнимания при наведении мышки */
   .pickora-final-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
     border-color: #cbd5e1;
   }
-
-  /* ЛЕВАЯ КОЛОНКА — ИЗОБРАЖЕНИЕ В ФОРМАТЕ 16:9 */
-  .pickora-final-img-col {
-    flex: 1;
-    max-width: 45%;
-  }
+  .pickora-final-img-col { flex: 1; max-width: 45%; }
   .pickora-final-img-wrapper {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Жесткий формат 16:9 */
-    overflow: hidden;
-    border-radius: 12px;
-    background: #f8fafc;
+    width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 12px; background: #f8fafc;
   }
-  .pickora-final-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Картинка заполняет 16:9 без искажений */
-    display: block;
-  }
-
-  /* ПРАВАЯ КОЛОНКА — ПРЕМИАЛЬНАЯ ТИПОГРАФИКА */
+  .pickora-final-img-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .pickora-final-info-col {
-    flex: 1;
-    max-width: 55%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex: 1; max-width: 55%; display: flex; flex-direction: column; justify-content: center;
   }
-
-  /* Дорогой темный заголовок */
   .pickora-final-title {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px;
+    font-size: 26px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0; letter-spacing: -0.5px;
   }
-
-  /* Звезды */
-  .pickora-final-rating {
-    color: #ff9900;
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  /* Контрастный читаемый текст */
-  .pickora-final-text {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #334155;
-    margin: 0 0 20px 0;
-  }
-
-  /* БЛОК ПЛЮСОВ И МИНУСОВ С БЕЙДЖАМИ */
-  .pickora-final-lists {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+  .pickora-final-rating { color: #ff9900; font-size: 15px; margin-bottom: 16px; }
+  .pickora-final-text { font-size: 15px; line-height: 1.6; color: #334155; margin: 0 0 20px 0; }
+  .pickora-final-lists { margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
   .pickora-final-list-line {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    font-size: 14.5px; line-height: 1.5; color: #334155;
+    display: flex; align-items: center; gap: 10px;
   }
   .pickora-final-badge-pro, .pickora-final-badge-con {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
+    font-size: 11px; text-transform: uppercase; font-weight: 700;
+    padding: 3px 8px; border-radius: 4px; letter-spacing: 0.5px; flex: 0 0 auto;
   }
   .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
   .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
-
-  /* ЭКСПЕРТНЫЙ ВЕРДИКТ */
   .pickora-final-verdict {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #475569;
-    margin-bottom: 24px;
+    background: #f8fafc; border-left: 4px solid #2563eb; padding: 12px 16px;
+    border-radius: 0 8px 8px 0; font-size: 14px; line-height: 1.5; color: #475569; margin-bottom: 24px;
   }
-
-  /* СТИЛЬНАЯ МИНИМАЛИСТИЧНАЯ КНОПКА AMAZON */
   .pickora-final-btn {
-    display: inline-block;
-    align-self: flex-start;
-    background-color: #ff9900;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15);
-    transition: all 0.2s ease-in-out;
+    display: inline-block; align-self: flex-start; min-height: 44px; box-sizing: border-box;
+    background-color: #ff9900; color: #ffffff !important; text-decoration: none !important;
+    font-size: 15px; font-weight: 700; padding: 14px 32px; border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15); transition: all 0.2s ease-in-out;
   }
   .pickora-final-btn:hover {
-    background-color: #e68a00;
-    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
+    background-color: #e68a00; box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
   }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ПЛАНШЕТЫ (Ширина экрана меньше 1024px) */
-  /* ======================================================== */
-  @media (max-width: 1024px) {
-    .pickora-final-card {
-      gap: 24px;
-      padding: 24px;
-    }
-    .pickora-final-title {
-      font-size: 22px;
-    }
-    .pickora-final-text {
-      font-size: 14.5px;
-    }
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ТЕЛЕФОНЫ (Ширина экрана меньше 768px)  */
-  /* ======================================================== */
   @media (max-width: 768px) {
-    .pickora-final-card {
-      flex-direction: column; /* Перестраиваем структуру в один столбец */
-      align-items: stretch;
-      gap: 20px;
-      padding: 20px;
-    }
-    .pickora-final-img-col, .pickora-final-info-col {
-      max-width: 100%; /* Элементы занимают всю ширину экрана смартфона */
-    }
-    .pickora-final-btn {
-      display: block;
-      text-align: center;
-      align-self: stretch; /* Кнопка растягивается на всю ширину для удобного тапа */
-      padding: 16px;
-    }
+    .pickora-final-card { flex-direction: column; align-items: stretch; gap: 20px; padding: 20px; }
+    .pickora-final-img-col, .pickora-final-info-col { max-width: 100%; }
+    .pickora-final-btn { display: block; text-align: center; align-self: stretch; }
   }
 </style>
 
 <div class="pickora-final-card">
-  
-  <!-- ЛЕВАЯ КОЛОНКА (КАРТИНКА) -->
   <div class="pickora-final-img-col">
     <div class="pickora-final-img-wrapper">
-      
-      <!-- !!! ЗАМЕНИ ССЫЛКУ НИЖЕ НА ССЫЛКУ СВОЕГО ИЗОБРАЖЕНИЯ !!! -->
-      <img src="https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_the_202606261502-scaled.webp" alt="Premium customizable mechanical keyboard on a minimalist desk" width="1200" height="670" loading="eager" fetchpriority="high" decoding="async">
-      <!-- !!! КОНЕЦ ЗАМЕНЫ КАРТИНКИ !!! -->
-
+      <img src="https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/uploads/2026/10/benq-screenbar-halo-2-musm86ou.webp" alt="Monitor light bar on top of a screen, with a small wireless remote on the desk and a soft backlight behind the display." width="1376" height="768" loading="eager" fetchpriority="high" decoding="async">
     </div>
   </div>
-  
-  <!-- ПРАВАЯ КОЛОНКА (КОНТЕНТ) -->
   <div class="pickora-final-info-col">
-    
-    <!-- !!! ЗАМЕНИ НАЗВАНИЕ ТОВАРА НИЖЕ !!! -->
-    <h3 class="pickora-final-title">Keychron V1 Mechanical Keyboard</h3>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ НАЗВАНИЯ ТОВАРА !!! -->
-    
+    <h3 class="pickora-final-title">BenQ ScreenBar Halo 2</h3>
     <div class="pickora-final-rating">★★★★★ </div>
-    
-    <!-- !!! ЗАМЕНИ ОПИСАНИЕ ТОВАРА НИЖЕ !!! -->
     <p class="pickora-final-text">
-      The Keychron V1 is a fully customizable mechanical keyboard ready for any desk setup. With its compact 75% layout, hot-swappable switches, and acoustic silicone pad, it delivers a premium typing feel and sound right out of the box.
+     A light that sits on the monitor, lights the desk, and throws a soft glow behind the screen without a glare stripe. Auto brightness and a sensor that switches off when you leave are what owners actually use. It is a poor buy if you only wanted a cheap stick of LEDs.
     </p>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ОПИСАНИЯ ТОВАРА !!! -->
-    
-    <!-- БЛОК ПЛЮСОВ И МИНУСОВ -->
-    <div class="pickora-final-lists">
-      <div class="pickora-final-list-line">
-        <span class="pickora-final-badge-pro">Pros</span>
-        <!-- !!! ЗАМЕНИ ТЕКСТ ПЛЮСОВ НИЖЕ !!! -->
-        <span>Excellent build quality, hot-swappable switches, budget-friendly premium feel.</span>
-        <!-- !!! КОНЕЦ ЗАМЕНЫ ПЛЮСОВ !!! -->
-      </div>
-      <div class="pickora-final-list-line">
-        <span class="pickora-final-badge-con">Cons</span>
-        <!-- !!! ЗАМЕНИ ТЕКСТ МИНУСОВ НИЖЕ !!! -->
-        <span>Plastic body instead of aluminum.</span>
-        <!-- !!! КОНЕЦ ЗАМЕНЫ МИНУСОВ !!! -->
-      </div>
+<div class="pickora-final-lists">
+  <div class="pickora-final-list-line">
+    <span class="pickora-final-badge-pro">Pros</span>
+    <span>Presence sensor turns the bar off when you walk away and on when you sit down</span>
+  </div>
+
+  <div class="pickora-final-list-line">
+    <span class="pickora-final-badge-con">Cons</span>
+    <span>The rear glow does little if the monitor sits far from a wall</span>
+  </div>
+</div>
+    <div class="pickora-final-verdict">
+      <b>Pickora’s Verdict:</b> Get it if the monitor sits in a dim room and overhead lights glare or strain your eyes. Skip it if you wanted the cheapest bar, or if you need the backlight to bounce off a nearby wall.
     </div>
-    
-    <!-- НАШ ЭКСПЕРТНЫЙ ВЕРДИКТ -->
-    <!-- !!! ЗАМЕНИ ТЕКСТ ВЕРДИКТА НИЖЕ !!! -->
+    <a href="https://link.amazon/B00PvkakV" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
+      Check Price on Amazon →
+    </a>
+  </div>
+</div>
+
+<div class="pickora-final-card">
+  <div class="pickora-final-img-col">
+    <div class="pickora-final-img-wrapper">
+      <img src="https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/uploads/2026/10/sandisk-2tb-portable-ssd.webp" alt="Pocket-size portable SSD with a short USB-C cable on a marble table." width="1376" height="768" loading="lazy" decoding="async">
+    </div>
+  </div>
+  <div class="pickora-final-info-col">
+    <h3 class="pickora-final-title">SanDisk 2TB Portable SSD</h3>
+    <div class="pickora-final-rating">★★★★★ </div>
+    <p class="pickora-final-text">
+     A pocket drive for moving big folders without a spinning disk. Owners plug it in over USB-C and get speeds in the 10Gbps range when the port and cable match. Confirm you are buying the 2TB listing: the most detailed speed notes here were written about a 1TB stick in the same family.
+    </p>
+<div class="pickora-final-lists">
+  <div class="pickora-final-list-line">
+    <span class="pickora-final-badge-pro">Pros</span>
+    <span>One test saw reads around 1050 MB/s on a 10Gbps USB-C port</span>
+  </div>
+
+  <div class="pickora-final-list-line">
+    <span class="pickora-final-badge-con">Cons</span>
+    <span>Long-term failure is still a guess. Notes so far are from early use</span>
+  </div>
+</div>
+    <div class="pickora-final-verdict">
+      <b>Pickora’s Verdict:</b> Get it if you haul large folders between computers and the machines have a fast USB-C port. Skip it if you only have old USB-A ports, or if you have not checked that the listing is the 2TB stick.
+    </div>
+    <a href="https://link.amazon/B08n9nbzK" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
+      Check Price on Amazon →
+    </a>
+  </div>
+</div>
+
+<div class="pickora-final-card">
+  <div class="pickora-final-img-col">
+    <div class="pickora-final-img-wrapper">
+      <img src="https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/uploads/2026/10/anker-737-power-bank-musm4sou.webp" alt="Thick rectangular power bank with a small front display and USB ports on a white oak desk." width="1376" height="768" loading="lazy" decoding="async">
+    </div>
+  </div>
+  <div class="pickora-final-info-col">
+    <h3 class="pickora-final-title">Anker 737 Power Bank (PowerCore 24K)</h3>
+    <div class="pickora-final-rating">★★★★★ </div>
+    <p class="pickora-final-text">
+     This is a laptop brick, not a pocket phone bank. The screen shows what is going in and out, and owners have topped up a Surface, a MacBook Air, a phone, and headphones on one charge. Get it when a normal bank cannot lift a tablet or laptop. Leave it if you want something light for a jacket pocket.
+    </p>
+<div class="pickora-final-lists">
+  <div class="pickora-final-list-line">
+    <span class="pickora-final-badge-pro">Pros</span>
+    <span>USB-A port charged a DJI battery hub when USB-C would not negotiate</span>
+  </div>
+
+  <div class="pickora-final-list-line">
+    <span class="pickora-final-badge-con">Cons</span>
+    <span>Thick and heavy compared with a phone bank</span>
+  </div>
+</div>
+    <div class="pickora-final-verdict">
+      <b>Pickora’s Verdict:</b> Get it if a phone bank cannot charge your laptop or iPad and you can live with the weight. Skip it if the bank has to disappear into a jacket pocket.
+    </div>
+    <a href="https://link.amazon/B0fN7qEeC" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
+      Check Price on Amazon →
+    </a>
+  </div>
+</div>
+
+<div class="pickora-final-card">
+  <div class="pickora-final-img-col">
+    <div class="pickora-final-img-wrapper">
+      <img src="https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/uploads/2026/10/airpods-pro-3.webp" alt="Open white charging case with two short-stem earbuds and soft foam tips on a walnut sideboard." width="1376" height="768" loading="lazy" decoding="async">
+    </div>
+  </div>
+  <div class="pickora-final-info-col">
+    <h3 class="pickora-final-title">Apple AirPods Pro 3</h3>
+    <div class="pickora-final-rating">★★★★★ </div>
+    <p class="pickora-final-text">
+     These are the Pro buds to get if you live on an iPhone and the old pair falls out or dies mid-meeting. Owners describe a tighter foam fit, stronger noise cancelling, and clearer sound than the first Pros, including during workouts. Skip them if you jump between Android and Apple, or if your Pro 2s still fit and still hold a charge.
+    </p>
+<div class="pickora-final-lists">
+  <div class="pickora-final-list-line">
+    <span class="pickora-final-badge-pro">Pros</span>
+    <span>Noise cancelling cuts real noise, including a lawnmower in one note</span>
+  </div>
+
+  <div class="pickora-final-list-line">
+    <span class="pickora-final-badge-con">Cons</span>
+    <span>Multipoint stays inside Apple devices</span>
+  </div>
+</div>
+    <div class="pickora-final-verdict">
+      <b>Pickora’s Verdict:</b> Get them if your iPhone buds fall out, lose the workout, or die before the day ends. Skip them if you still like your Pro 2s, or if the same buds must jump to Android.
+    </div>
+    <a href="https://link.amazon/B0aWq84O4" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
+      Check Price on Amazon →
+    </a>
+  </div>
+</div>
+
+<div class="pickora-final-card">
+  <div class="pickora-final-img-col">
+    <div class="pickora-final-img-wrapper">
+      <img src="https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/uploads/2026/10/insta360-link-2.webp" alt="Compact webcam on a magnetic monitor mount, lens tilted down, on a dark desk." width="1376" height="768" loading="lazy" decoding="async">
+    </div>
+  </div>
+  <div class="pickora-final-info-col">
+    <h3 class="pickora-final-title">Insta360 Link 2</h3>
+    <div class="pickora-final-rating">★★★★★ </div>
+    <p class="pickora-final-text">
+     A desk webcam for people who are on camera all day and are tired of a fixed 1080p brick. Face tracking, saved angles, and a lens that points down when the call ends are the reasons to buy it. The good controls live in Insta360’s app, so a locked work laptop keeps the basics and loses the rest.
+    </p>
+<div class="pickora-final-lists">
+  <div class="pickora-final-list-line">
+    <span class="pickora-final-badge-pro">Pros</span>
+    <span>Tracking follows your face, and presets can jump to a saved spot</span>
+  </div>
+
+  <div class="pickora-final-list-line">
+    <span class="pickora-final-badge-con">Cons</span>
+    <span>Color, backgrounds, and tracking need the desktop app</span>
+  </div>
+</div>
+    <div class="pickora-final-verdict">
+      <b>Pickora’s Verdict:</b> Get it if you are on camera all day and you can install the Insta360 app. Skip it if the work laptop blocks that app, or if a fixed webcam is already good enough.
+    </div>
+    <a href="https://link.amazon/B0ei9expx" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
+      Check Price on Amazon →
+    </a>
+  </div>
+</div>
+
+<div class="pickora-final-card">
+  <div class="pickora-final-img-col">
+    <div class="pickora-final-img-wrapper">
+      <img src="https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_photography_of_the_202606261502-scaled.webp" alt="Premium customizable mechanical keyboard on a minimalist desk" width="1376" height="768" loading="lazy" decoding="async">
+    </div>
+  </div>
+  <div class="pickora-final-info-col">
+    <h3 class="pickora-final-title">Keychron V1 Mechanical Keyboard</h3>
+    <div class="pickora-final-rating">★★★★★ </div>
+    <p class="pickora-final-text">
+     The Keychron V1 is a fully customizable mechanical keyboard ready for any desk setup. With its compact 75% layout, hot-swappable switches, and acoustic silicone pad, it delivers a premium typing feel and sound right out of the box.
+    </p>
+
     <div class="pickora-final-verdict">
       <b>Pickora’s Verdict:</b> The absolute best entry point into mechanical keyboards. It offers unbeatable customizability and high-end typing acoustic for its price range.
     </div>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ВЕРДИКТА !!! -->
-    
-    <!-- !!! ЗАМЕНИ ССЫЛКУ href НА СВОЮ ПАРТНЕРСКУЮ ССЫЛКУ АМАЗОН !!! -->
     <a href="https://amzn.to/4vsLOCd" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
       Check Price on Amazon →
     </a>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ССЫЛКИ АМАЗОН !!! -->
-    
   </div>
-
-</div>				</div>
-				</div>
-		
 </div>
-<div class="elementor-element elementor-element-13ca111 e-con e-atomic-element e-flexbox-base e-13ca111-cae8809 " data-id="13ca111" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="13ca111">
-    		<div class="elementor-element elementor-element-12432a8 elementor-widget elementor-widget-html" data-id="12432a8" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
-				<div class="elementor-widget-container">
-					<style>
-  /* БАЗОВЫЙ КОНТЕЙНЕР КАРТОЧКИ (Идеальный баланс и анимация) */
-  .pickora-final-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Текст строго по центру картинки */
-    gap: 40px;
-    background: #ffffff;
-    padding: 32px;
-    margin-bottom: 40px;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  }
-
-  /* Эффект легкого приподнимания при наведении мышки */
-  .pickora-final-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-    border-color: #cbd5e1;
-  }
-
-  /* ЛЕВАЯ КОЛОНКА — ИЗОБРАЖЕНИЕ В ФОРМАТЕ 16:9 */
-  .pickora-final-img-col {
-    flex: 1;
-    max-width: 45%;
-  }
-  .pickora-final-img-wrapper {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Жесткий формат 16:9 */
-    overflow: hidden;
-    border-radius: 12px;
-    background: #f8fafc;
-  }
-  .pickora-final-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Картинка заполняет 16:9 без искажений */
-    display: block;
-  }
-
-  /* ПРАВАЯ КОЛОНКА — ПРЕМИАЛЬНАЯ ТИПОГРАФИКА */
-  .pickora-final-info-col {
-    flex: 1;
-    max-width: 55%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  /* Дорогой темный заголовок */
-  .pickora-final-title {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px;
-  }
-
-  /* Звезды */
-  .pickora-final-rating {
-    color: #ff9900;
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  /* Контрастный читаемый текст */
-  .pickora-final-text {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #334155;
-    margin: 0 0 20px 0;
-  }
-
-  /* БЛОК ПЛЮСОВ И МИНУСОВ С БЕЙДЖАМИ */
-  .pickora-final-lists {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .pickora-final-list-line {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .pickora-final-badge-pro, .pickora-final-badge-con {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-  }
-  .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
-  .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
-
-  /* ЭКСПЕРТНЫЙ ВЕРДИКТ */
-  .pickora-final-verdict {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #475569;
-    margin-bottom: 24px;
-  }
-
-  /* СТИЛЬНАЯ МИНИМАЛИСТИЧНАЯ КНОПКА AMAZON */
-  .pickora-final-btn {
-    display: inline-block;
-    align-self: flex-start;
-    background-color: #ff9900;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15);
-    transition: all 0.2s ease-in-out;
-  }
-  .pickora-final-btn:hover {
-    background-color: #e68a00;
-    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ПЛАНШЕТЫ (Ширина экрана меньше 1024px) */
-  /* ======================================================== */
-  @media (max-width: 1024px) {
-    .pickora-final-card {
-      gap: 24px;
-      padding: 24px;
-    }
-    .pickora-final-title {
-      font-size: 22px;
-    }
-    .pickora-final-text {
-      font-size: 14.5px;
-    }
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ТЕЛЕФОНЫ (Ширина экрана меньше 768px)  */
-  /* ======================================================== */
-  @media (max-width: 768px) {
-    .pickora-final-card {
-      flex-direction: column; /* Перестраиваем структуру в один столбец */
-      align-items: stretch;
-      gap: 20px;
-      padding: 20px;
-    }
-    .pickora-final-img-col, .pickora-final-info-col {
-      max-width: 100%; /* Элементы занимают всю ширину экрана смартфона */
-    }
-    .pickora-final-btn {
-      display: block;
-      text-align: center;
-      align-self: stretch; /* Кнопка растягивается на всю ширину для удобного тапа */
-      padding: 16px;
-    }
-  }
-</style>
 
 <div class="pickora-final-card">
-  
-  <!-- ЛЕВАЯ КОЛОНКА (КАРТИНКА) -->
   <div class="pickora-final-img-col">
     <div class="pickora-final-img-wrapper">
-      
-      <!-- !!! ЗАМЕНИ ССЫЛКУ НИЖЕ НА ССЫЛКУ СВОЕГО ИЗОБРАЖЕНИЯ !!! -->
-      <img src="https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261757-scaled.webp" alt="Premium customizable mechanical keyboard on a minimalist desk" width="1200" height="670" loading="lazy" decoding="async">
-      <!-- !!! КОНЕЦ ЗАМЕНЫ КАРТИНКИ !!! -->
-
+      <img src="https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261757-scaled.webp" alt="Premium customizable mechanical keyboard on a minimalist desk" width="1376" height="768" loading="lazy" decoding="async">
     </div>
   </div>
-  
-  <!-- ПРАВАЯ КОЛОНКА (КОНТЕНТ) -->
   <div class="pickora-final-info-col">
-    
-    <!-- !!! ЗАМЕНИ НАЗВАНИЕ ТОВАРА НИЖЕ !!! -->
     <h3 class="pickora-final-title">Logitech MX Master 4 Ergonomic Wireless Mouse</h3>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ НАЗВАНИЯ ТОВАРА !!! -->
-    
     <div class="pickora-final-rating">★★★★★ </div>
-    
-    <!-- !!! ЗАМЕНИ ОПИСАНИЕ ТОВАРА НИЖЕ !!! -->
     <p class="pickora-final-text">
      The ultimate flagship for productivity. The Logitech MX Master 4 features the revolutionary Actions Ring overlay, premium Haptic Sense tracking, and the ultra-fast MagSpeed wheel that scrolls 1,000 lines per second. It is meticulously sculpted for the perfect ergonomic palm grip.
     </p>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ОПИСАНИЯ ТОВАРА !!! -->
-    
-    <!-- БЛОК ПЛЮСОВ И МИНУСОВ -->
-    <div class="pickora-final-lists">
-      <div class="pickora-final-list-line">
-        <span class="pickora-final-badge-pro">Pros</span>
-        <!-- !!! ЗАМЕНИ ТЕКСТ ПЛЮСОВ НИЖЕ !!! -->
-        <span>Innovative customizable haptic feedback, Actions Ring radial shortcuts save up to 33% of time, flawless 8K DPI tracking on any surface including glass.</span>
-        <!-- !!! КОНЕЦ ЗАМЕНЫ ПЛЮСОВ !!! -->
-      </div>
-      <div class="pickora-final-list-line">
-        <span class="pickora-final-badge-con">Cons</span>
-        <!-- !!! ЗАМЕНИ ТЕКСТ МИНУСОВ НИЖЕ !!! -->
-        <span>Larger form factor might feel heavy for users with smaller hands.</span>
-        <!-- !!! КОНЕЦ ЗАМЕНЫ МИНУСОВ !!! -->
-      </div>
-    </div>
-    
-    <!-- НАШ ЭКСПЕРТНЫЙ ВЕРДИКТ -->
-    <!-- !!! ЗАМЕНИ ТЕКСТ ВЕРДИКТА НИЖЕ !!! -->
+
     <div class="pickora-final-verdict">
-     <b>Pickora’s Verdict:</b> The undisputed king of professional workspace mice. While it is a premium investment, its ability to automate repetitive tasks and completely eliminate wrist strain makes it a mandatory tool for any power user.
+      <b>Pickora’s Verdict:</b> The undisputed king of professional workspace mice. While it is a premium investment, its ability to automate repetitive tasks and completely eliminate wrist strain makes it a mandatory tool for any power user.
     </div>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ВЕРДИКТА !!! -->
-    
-    <!-- !!! ЗАМЕНИ ССЫЛКУ href НА СВОЮ ПАРТНЕРСКУЮ ССЫЛКУ АМАЗОН !!! -->
     <a href="https://amzn.to/4vDNlFM" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
       Check Price on Amazon →
     </a>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ССЫЛКИ АМАЗОН !!! -->
-    
   </div>
-
-</div>				</div>
-				</div>
-				<div class="elementor-element elementor-element-e397b66 elementor-widget elementor-widget-html" data-id="e397b66" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
-				<div class="elementor-widget-container">
-					<style>
-  /* БАЗОВЫЙ КОНТЕЙНЕР КАРТОЧКИ (Идеальный баланс и анимация) */
-  .pickora-final-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Текст строго по центру картинки */
-    gap: 40px;
-    background: #ffffff;
-    padding: 32px;
-    margin-bottom: 40px;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  }
-
-  /* Эффект легкого приподнимания при наведении мышки */
-  .pickora-final-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-    border-color: #cbd5e1;
-  }
-
-  /* ЛЕВАЯ КОЛОНКА — ИЗОБРАЖЕНИЕ В ФОРМАТЕ 16:9 */
-  .pickora-final-img-col {
-    flex: 1;
-    max-width: 45%;
-  }
-  .pickora-final-img-wrapper {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Жесткий формат 16:9 */
-    overflow: hidden;
-    border-radius: 12px;
-    background: #f8fafc;
-  }
-  .pickora-final-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Картинка заполняет 16:9 без искажений */
-    display: block;
-  }
-
-  /* ПРАВАЯ КОЛОНКА — ПРЕМИАЛЬНАЯ ТИПОГРАФИКА */
-  .pickora-final-info-col {
-    flex: 1;
-    max-width: 55%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  /* Дорогой темный заголовок */
-  .pickora-final-title {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px;
-  }
-
-  /* Звезды */
-  .pickora-final-rating {
-    color: #ff9900;
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  /* Контрастный читаемый текст */
-  .pickora-final-text {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #334155;
-    margin: 0 0 20px 0;
-  }
-
-  /* БЛОК ПЛЮСОВ И МИНУСОВ С БЕЙДЖАМИ */
-  .pickora-final-lists {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .pickora-final-list-line {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .pickora-final-badge-pro, .pickora-final-badge-con {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-  }
-  .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
-  .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
-
-  /* ЭКСПЕРТНЫЙ ВЕРДИКТ */
-  .pickora-final-verdict {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #475569;
-    margin-bottom: 24px;
-  }
-
-  /* СТИЛЬНАЯ МИНИМАЛИСТИЧНАЯ КНОПКА AMAZON */
-  .pickora-final-btn {
-    display: inline-block;
-    align-self: flex-start;
-    background-color: #ff9900;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15);
-    transition: all 0.2s ease-in-out;
-  }
-  .pickora-final-btn:hover {
-    background-color: #e68a00;
-    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ПЛАНШЕТЫ (Ширина экрана меньше 1024px) */
-  /* ======================================================== */
-  @media (max-width: 1024px) {
-    .pickora-final-card {
-      gap: 24px;
-      padding: 24px;
-    }
-    .pickora-final-title {
-      font-size: 22px;
-    }
-    .pickora-final-text {
-      font-size: 14.5px;
-    }
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ТЕЛЕФОНЫ (Ширина экрана меньше 768px)  */
-  /* ======================================================== */
-  @media (max-width: 768px) {
-    .pickora-final-card {
-      flex-direction: column; /* Перестраиваем структуру в один столбец */
-      align-items: stretch;
-      gap: 20px;
-      padding: 20px;
-    }
-    .pickora-final-img-col, .pickora-final-info-col {
-      max-width: 100%; /* Элементы занимают всю ширину экрана смартфона */
-    }
-    .pickora-final-btn {
-      display: block;
-      text-align: center;
-      align-self: stretch; /* Кнопка растягивается на всю ширину для удобного тапа */
-      padding: 16px;
-    }
-  }
-</style>
+</div>
 
 <div class="pickora-final-card">
-  
-  <!-- ЛЕВАЯ КОЛОНКА (КАРТИНКА) -->
   <div class="pickora-final-img-col">
     <div class="pickora-final-img-wrapper">
-      
-      <!-- !!! ЗАМЕНИ ССЫЛКУ НИЖЕ НА ССЫЛКУ СВОЕГО ИЗОБРАЖЕНИЯ !!! -->
-      <img src="https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261931-scaled.webp" alt="Sony WH-1000XM5 premium wireless noise canceling headphones on a minimalist desk setup" width="1200" height="670" loading="lazy" decoding="async">
-      <!-- !!! КОНЕЦ ЗАМЕНЫ КАРТИНКИ !!! -->
-
+      <img src="https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261931-scaled.webp" alt="Sony WH-1000XM5 premium wireless noise canceling headphones on a minimalist desk setup" width="1376" height="768" loading="lazy" decoding="async">
     </div>
   </div>
-  
-  <!-- ПРАВАЯ КОЛОНКА (КОНТЕНТ) -->
   <div class="pickora-final-info-col">
-    
-    <!-- !!! ЗАМЕНИ НАЗВАНИЕ ТОВАРА НИЖЕ !!! -->
     <h3 class="pickora-final-title">Sony WH-1000XM5 Wireless Noise Canceling Headphones</h3>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ НАЗВАНИЯ ТОВАРА !!! -->
-    
     <div class="pickora-final-rating">★★★★★ </div>
-    
-    <!-- !!! ЗАМЕНИ ОПИСАНИЕ ТОВАРА НИЖЕ !!! -->
     <p class="pickora-final-text">
      The ultimate benchmark for wireless audio. Featuring two processors controlling eight microphones, the Sony WH-1000XM5 delivers industry-leading active noise cancellation. With a redesigned lightweight chassis, precise carbon-fiber drivers, and up to 30 hours of battery life, they provide unparalleled comfort and acoustic clarity for any environment.
     </p>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ОПИСАНИЯ ТОВАРА !!! -->
-    
-    <!-- БЛОК ПЛЮСОВ И МИНУСОВ -->
-    <div class="pickora-final-lists">
-      <div class="pickora-final-list-line">
-        <span class="pickora-final-badge-pro">Pros</span>
-        <!-- !!! ЗАМЕНИ ТЕКСТ ПЛЮСОВ НИЖЕ !!! -->
-        <span>Unmatched industry-leading ANC performance, exceptional soundstage with LDAC support, ultra-comfortable lightweight design for long listening sessions.</span>
-        <!-- !!! КОНЕЦ ЗАМЕНЫ ПЛЮСОВ !!! -->
-      </div>
-      <div class="pickora-final-list-line">
-        <span class="pickora-final-badge-con">Cons</span>
-        <!-- !!! ЗАМЕНИ ТЕКСТ МИНУСОВ НИЖЕ !!! -->
-        <span>The new seamless design does not fold up as compactly as previous generations.</span>
-        <!-- !!! КОНЕЦ ЗАМЕНЫ МИНУСОВ !!! -->
-      </div>
-    </div>
-    
-    <!-- НАШ ЭКСПЕРТНЫЙ ВЕРДИКТ -->
-    <!-- !!! ЗАМЕНИ ТЕКСТ ВЕРДИКТА НИЖЕ !!! -->
+
     <div class="pickora-final-verdict">
-     <b>Pickora’s Verdict:</b> The undisputed king of premium noise-canceling headphones. Whether you are commuting, working in a noisy office, or relaxing at home, the XM5 offers the best combination of silence, smart features, and sound quality on the market.
+      <b>Pickora’s Verdict:</b> The undisputed king of premium noise-canceling headphones. Whether you are commuting, working in a noisy office, or relaxing at home, the XM5 offers the best combination of silence, smart features, and sound quality on the market.
     </div>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ВЕРДИКТА !!! -->
-    
-    <!-- !!! ЗАМЕНИ ССЫЛКУ href НА СВОЮ ПАРТНЕРСКУЮ ССЫЛКУ АМАЗОН !!! -->
     <a href="https://amzn.to/44vKS3Y" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
       Check Price on Amazon →
     </a>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ССЫЛКИ АМАЗОН !!! -->
-    
   </div>
-
-</div>				</div>
-				</div>
-				<div class="elementor-element elementor-element-bed4514 elementor-widget elementor-widget-html" data-id="bed4514" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
-				<div class="elementor-widget-container">
-					<style>
-  /* БАЗОВЫЙ КОНТЕЙНЕР КАРТОЧКИ (Идеальный баланс и анимация) */
-  .pickora-final-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Текст строго по центру картинки */
-    gap: 40px;
-    background: #ffffff;
-    padding: 32px;
-    margin-bottom: 40px;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  }
-
-  /* Эффект легкого приподнимания при наведении мышки */
-  .pickora-final-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-    border-color: #cbd5e1;
-  }
-
-  /* ЛЕВАЯ КОЛОНКА — ИЗОБРАЖЕНИЕ В ФОРМАТЕ 16:9 */
-  .pickora-final-img-col {
-    flex: 1;
-    max-width: 45%;
-  }
-  .pickora-final-img-wrapper {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Жесткий формат 16:9 */
-    overflow: hidden;
-    border-radius: 12px;
-    background: #f8fafc;
-  }
-  .pickora-final-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Картинка заполняет 16:9 без искажений */
-    display: block;
-  }
-
-  /* ПРАВАЯ КОЛОНКА — ПРЕМИАЛЬНАЯ ТИПОГРАФИКА */
-  .pickora-final-info-col {
-    flex: 1;
-    max-width: 55%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  /* Дорогой темный заголовок */
-  .pickora-final-title {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px;
-  }
-
-  /* Звезды */
-  .pickora-final-rating {
-    color: #ff9900;
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  /* Контрастный читаемый текст */
-  .pickora-final-text {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #334155;
-    margin: 0 0 20px 0;
-  }
-
-  /* БЛОК ПЛЮСОВ И МИНУСОВ С БЕЙДЖАМИ */
-  .pickora-final-lists {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .pickora-final-list-line {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .pickora-final-badge-pro, .pickora-final-badge-con {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-  }
-  .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
-  .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
-
-  /* ЭКСПЕРТНЫЙ ВЕРДИКТ */
-  .pickora-final-verdict {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #475569;
-    margin-bottom: 24px;
-  }
-
-  /* СТИЛЬНАЯ МИНИМАЛИСТИЧНАЯ КНОПКА AMAZON */
-  .pickora-final-btn {
-    display: inline-block;
-    align-self: flex-start;
-    background-color: #ff9900;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15);
-    transition: all 0.2s ease-in-out;
-  }
-  .pickora-final-btn:hover {
-    background-color: #e68a00;
-    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ПЛАНШЕТЫ (Ширина экрана меньше 1024px) */
-  /* ======================================================== */
-  @media (max-width: 1024px) {
-    .pickora-final-card {
-      gap: 24px;
-      padding: 24px;
-    }
-    .pickora-final-title {
-      font-size: 22px;
-    }
-    .pickora-final-text {
-      font-size: 14.5px;
-    }
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ТЕЛЕФОНЫ (Ширина экрана меньше 768px)  */
-  /* ======================================================== */
-  @media (max-width: 768px) {
-    .pickora-final-card {
-      flex-direction: column; /* Перестраиваем структуру в один столбец */
-      align-items: stretch;
-      gap: 20px;
-      padding: 20px;
-    }
-    .pickora-final-img-col, .pickora-final-info-col {
-      max-width: 100%; /* Элементы занимают всю ширину экрана смартфона */
-    }
-    .pickora-final-btn {
-      display: block;
-      text-align: center;
-      align-self: stretch; /* Кнопка растягивается на всю ширину для удобного тапа */
-      padding: 16px;
-    }
-  }
-</style>
+</div>
 
 <div class="pickora-final-card">
-  
-  <!-- ЛЕВАЯ КОЛОНКА (КАРТИНКА) -->
   <div class="pickora-final-img-col">
     <div class="pickora-final-img-wrapper">
-      
-      <!-- !!! ЗАМЕНИ ССЫЛКУ НИЖЕ НА ССЫЛКУ СВОЕГО ИЗОБРАЖЕНИЯ !!! -->
-      <img src="https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261942-2-scaled.webp" alt="Phomemo M110 portable smart thermal label maker printer on a minimalist desk workspace" width="1200" height="670" loading="lazy" decoding="async">
-      <!-- !!! КОНЕЦ ЗАМЕНЫ КАРТИНКИ !!! -->
-
+      <img src="https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261942-2-scaled.webp" alt="Phomemo M110 portable smart thermal label maker printer on a minimalist desk workspace" width="1376" height="768" loading="lazy" decoding="async">
     </div>
   </div>
-  
-  <!-- ПРАВАЯ КОЛОНКА (КОНТЕНТ) -->
   <div class="pickora-final-info-col">
-    
-    <!-- !!! ЗАМЕНИ НАЗВАНИЕ ТОВАРА НИЖЕ !!! -->
     <h3 class="pickora-final-title">Phomemo M110 Portable Thermal Label Maker</h3>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ НАЗВАНИЯ ТОВАРА !!! -->
-    
     <div class="pickora-final-rating">★★★★★ </div>
-    
-    <!-- !!! ЗАМЕНИ ОПИСАНИЕ ТОВАРА НИЖЕ !!! -->
     <p class="pickora-final-text">
      The ultimate tool for workspace organization. The Phomemo M110 is a compact, Bluetooth-enabled thermal printer that lets you design and print custom labels directly from your smartphone. Using advanced inkless thermal technology, it handles everything from cable labels and shipping tags to storage bin organizers with crisp, smudge-free clarity.
     </p>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ОПИСАНИЯ ТОВАРА !!! -->
-    
-    <!-- БЛОК ПЛЮСОВ И МИНУСОВ -->
-    <div class="pickora-final-lists">
-      <div class="pickora-final-list-line">
-        <span class="pickora-final-badge-pro">Pros</span>
-        <!-- !!! ЗАМЕНИ ТЕКСТ ПЛЮСОВ НИЖЕ !!! -->
-        <span>100% inkless thermal printing saves money, intuitive mobile app with hundreds of free templates, robust Bluetooth connection with long-lasting rechargeable battery.</span>
-        <!-- !!! КОНЕЦ ЗАМЕНЫ ПЛЮСОВ !!! -->
-      </div>
-      <div class="pickora-final-list-line">
-        <span class="pickora-final-badge-con">Cons</span>
-        <!-- !!! ЗАМЕНИ ТЕКСТ МИНУСОВ НИЖЕ !!! -->
-        <span>Prints only in crisp black and white (no color support).</span>
-        <!-- !!! КОНЕЦ ЗАМЕНЫ МИНУСОВ !!! -->
-      </div>
-    </div>
-    
-    <!-- НАШ ЭКСПЕРТНЫЙ ВЕРДИКТ -->
-    <!-- !!! ЗАМЕНИ ТЕКСТ ВЕРДИКТА НИЖЕ !!! -->
+
     <div class="pickora-final-verdict">
-     <b>Pickora’s Verdict:</b> An absolute game-changer for anyone obsessed with organizing their desk, cables, or studio space. It is incredibly compact, reliable, and completely eliminates the hassle of expensive ink cartridges. A small device that brings massive order.
+      <b>Pickora’s Verdict:</b> An absolute game-changer for anyone obsessed with organizing their desk, cables, or studio space. It is incredibly compact, reliable, and completely eliminates the hassle of expensive ink cartridges. A small device that brings massive order.
     </div>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ВЕРДИКТА !!! -->
-    
-    <!-- !!! ЗАМЕНИ ССЫЛКУ href НА СВОЮ ПАРТНЕРСКУЮ ССЫЛКУ АМАЗОН !!! -->
     <a href="https://amzn.to/4xVE7WU" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
       Check Price on Amazon →
     </a>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ССЫЛКИ АМАЗОН !!! -->
-    
   </div>
-
-</div>				</div>
-				</div>
-		
 </div>
-<div class="elementor-element elementor-element-4fc058b e-con e-atomic-element e-flexbox-base e-4fc058b-e4970b4 " data-id="4fc058b" data-element_type="e-flexbox" data-e-type="e-flexbox" data-interaction-id="4fc058b">
-    		<div class="elementor-element elementor-element-92cc88d elementor-widget elementor-widget-html" data-id="92cc88d" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
-				<div class="elementor-widget-container">
-					<style>
-  /* БАЗОВЫЙ КОНТЕЙНЕР КАРТОЧКИ (Идеальный баланс и анимация) */
-  .pickora-final-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Текст строго по центру картинки */
-    gap: 40px;
-    background: #ffffff;
-    padding: 32px;
-    margin-bottom: 40px;
-    border-radius: 16px;
-    border: 1px solid #eef2f6;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  }
-
-  /* Эффект легкого приподнимания при наведении мышки */
-  .pickora-final-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-    border-color: #cbd5e1;
-  }
-
-  /* ЛЕВАЯ КОЛОНКА — ИЗОБРАЖЕНИЕ В ФОРМАТЕ 16:9 */
-  .pickora-final-img-col {
-    flex: 1;
-    max-width: 45%;
-  }
-  .pickora-final-img-wrapper {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Жесткий формат 16:9 */
-    overflow: hidden;
-    border-radius: 12px;
-    background: #f8fafc;
-  }
-  .pickora-final-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Картинка заполняет 16:9 без искажений */
-    display: block;
-  }
-
-  /* ПРАВАЯ КОЛОНКА — ПРЕМИАЛЬНАЯ ТИПОГРАФИКА */
-  .pickora-final-info-col {
-    flex: 1;
-    max-width: 55%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  /* Дорогой темный заголовок */
-  .pickora-final-title {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px;
-  }
-
-  /* Звезды */
-  .pickora-final-rating {
-    color: #ff9900;
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  /* Контрастный читаемый текст */
-  .pickora-final-text {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #334155;
-    margin: 0 0 20px 0;
-  }
-
-  /* БЛОК ПЛЮСОВ И МИНУСОВ С БЕЙДЖАМИ */
-  .pickora-final-lists {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .pickora-final-list-line {
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .pickora-final-badge-pro, .pickora-final-badge-con {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-  }
-  .pickora-final-badge-pro { background: #dcfce7; color: #166534; }
-  .pickora-final-badge-con { background: #fee2e2; color: #991b1b; }
-
-  /* ЭКСПЕРТНЫЙ ВЕРДИКТ */
-  .pickora-final-verdict {
-    background: #f8fafc;
-    border-left: 4px solid #2563eb;
-    padding: 12px 16px;
-    border-radius: 0 8px 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #475569;
-    margin-bottom: 24px;
-  }
-
-  /* СТИЛЬНАЯ МИНИМАЛИСТИЧНАЯ КНОПКА AMAZON */
-  .pickora-final-btn {
-    display: inline-block;
-    align-self: flex-start;
-    background-color: #ff9900;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15);
-    transition: all 0.2s ease-in-out;
-  }
-  .pickora-final-btn:hover {
-    background-color: #e68a00;
-    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.3);
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ПЛАНШЕТЫ (Ширина экрана меньше 1024px) */
-  /* ======================================================== */
-  @media (max-width: 1024px) {
-    .pickora-final-card {
-      gap: 24px;
-      padding: 24px;
-    }
-    .pickora-final-title {
-      font-size: 22px;
-    }
-    .pickora-final-text {
-      font-size: 14.5px;
-    }
-  }
-
-  /* ======================================================== */
-  /* АДАПТИВНОСТЬ ПОД ТЕЛЕФОНЫ (Ширина экрана меньше 768px)  */
-  /* ======================================================== */
-  @media (max-width: 768px) {
-    .pickora-final-card {
-      flex-direction: column; /* Перестраиваем структуру в один столбец */
-      align-items: stretch;
-      gap: 20px;
-      padding: 20px;
-    }
-    .pickora-final-img-col, .pickora-final-info-col {
-      max-width: 100%; /* Элементы занимают всю ширину экрана смартфона */
-    }
-    .pickora-final-btn {
-      display: block;
-      text-align: center;
-      align-self: stretch; /* Кнопка растягивается на всю ширину для удобного тапа */
-      padding: 16px;
-    }
-  }
-</style>
 
 <div class="pickora-final-card">
-  
-  <!-- ЛЕВАЯ КОЛОНКА (КАРТИНКА) -->
   <div class="pickora-final-img-col">
     <div class="pickora-final-img-wrapper">
-      
-      <!-- !!! ЗАМЕНИ ССЫЛКУ НИЖЕ НА ССЫЛКУ СВОЕГО ИЗОБРАЖЕНИЯ !!! -->
-      <img src="https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261954-scaled.webp" alt="Samsung 49-inch Odyssey OLED G9 Super Ultrawide curved monitor on a premium minimalist desk" width="1200" height="670" loading="lazy" decoding="async">
-      <!-- !!! КОНЕЦ ЗАМЕНЫ КАРТИНКИ !!! -->
-
+      <img src="https://pickora.shop/wp-content/uploads/2026/06/Commercial_studio_product_photography_of_202606261954-scaled.webp" alt="Samsung 49-inch Odyssey OLED G9 Super Ultrawide curved monitor on a premium minimalist desk" width="1376" height="768" loading="lazy" decoding="async">
     </div>
   </div>
-  
-  <!-- ПРАВАЯ КОЛОНКА (КОНТЕНТ) -->
   <div class="pickora-final-info-col">
-    
-    <!-- !!! ЗАМЕНИ НАЗВАНИЕ ТОВАРА НИЖЕ !!! -->
     <h3 class="pickora-final-title">Samsung 49″ Odyssey OLED G9 (G95SC) Super Ultrawide Monitor</h3>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ НАЗВАНИЯ ТОВАРА !!! -->
-    
     <div class="pickora-final-rating">★★★★★ </div>
-    
-    <!-- !!! ЗАМЕНИ ОПИСАНИЕ ТОВАРА НИЖЕ !!! -->
     <p class="pickora-final-text">
      A colossal 49-inch curved display that redefines immersion. The Odyssey OLED G9 features a breathtaking 32:9 aspect ratio, equivalent to two QHD monitors side-by-side. With quantum dot technology, true black levels, and a blazingly fast 240Hz refresh rate, it offers unparalleled cinematic visual quality for both professional creative work and high-end gaming.
     </p>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ОПИСАНИЯ ТОВАРА !!! -->
-    
-    <!-- БЛОК ПЛЮСОВ И МИНУСОВ -->
-    <div class="pickora-final-lists">
-      <div class="pickora-final-list-line">
-        <span class="pickora-final-badge-pro">Pros</span>
-        <!-- !!! ЗАМЕНИ ТЕКСТ ПЛЮСОВ НИЖЕ !!! -->
-        <span>Stunning OLED panel with infinite contrast, massive screen real estate for workflow, incredibly smooth 0.03ms response time for gaming.</span>
-        <!-- !!! КОНЕЦ ЗАМЕНЫ ПЛЮСОВ !!! -->
-      </div>
-      <div class="pickora-final-list-line">
-        <span class="pickora-final-badge-con">Cons</span>
-        <!-- !!! ЗАМЕНИ ТЕКСТ МИНУСОВ НИЖЕ !!! -->
-        <span>Requires a very large desk; extreme width may feel overwhelming to some users.</span>
-        <!-- !!! КОНЕЦ ЗАМЕНЫ МИНУСОВ !!! -->
-      </div>
-    </div>
-    
-    <!-- НАШ ЭКСПЕРТНЫЙ ВЕРДИКТ -->
-    <!-- !!! ЗАМЕНИ ТЕКСТ ВЕРДИКТА НИЖЕ !!! -->
+
     <div class="pickora-final-verdict">
-     <b>Pickora’s Verdict:</b> The undisputed flagship of the monitor world. It is expensive, massive, and demanding, but it delivers a visually stunning experience that simply cannot be matched by any standard display. The ultimate productivity and gaming upgrade.
+      <b>Pickora’s Verdict:</b> The undisputed flagship of the monitor world. It is expensive, massive, and demanding, but it delivers a visually stunning experience that simply cannot be matched by any standard display. The ultimate productivity and gaming upgrade.
     </div>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ВЕРДИКТА !!! -->
-    
-    <!-- !!! ЗАМЕНИ ССЫЛКУ href НА СВОЮ ПАРТНЕРСКУЮ ССЫЛКУ АМАЗОН !!! -->
     <a href="https://amzn.to/4eJiOih" class="pickora-final-btn" target="_blank" rel="nofollow sponsored noopener noreferrer">
       Check Price on Amazon →
     </a>
-    <!-- !!! КОНЕЦ ЗАМЕНЫ ССЫЛКИ АМАЗОН !!! -->
-    
   </div>
-
-</div>				</div>
+</div>
+				</div>
 				</div>
 		
 </div>
