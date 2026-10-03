@@ -50,13 +50,23 @@ const preview = buildCategoryPreviewHtml(html, products, {
   previewBy: "smoke",
 });
 
+const bodyOpen = preview.match(/<body[^>]*>/i)?.[0] || "";
+const bannerIdx = preview.indexOf('id="pk-preview-banner"');
+const skipIdx = preview.indexOf('class="skip-link');
+const headerIdx = preview.indexOf("<header");
 const checks = {
   base: preview.includes('<base href="https://pickora.shop/">'),
   banner: preview.includes("Offline preview"),
   orangeBtn: preview.includes("background-color: #ff9900"),
   product1: preview.includes("Smoke Test Product"),
   product2: preview.includes("No stars product"),
-  skipLink: preview.includes("skip-link") || preview.includes("Skip to content"),
+  skipLink: skipIdx > 0 && preview.includes("Skip to content</a>"),
+  bodyClosed: />$/.test(bodyOpen) && bodyOpen.includes("pk-is-preview"),
+  orderOk:
+    bannerIdx > 0 &&
+    skipIdx > bannerIdx &&
+    headerIdx > skipIdx &&
+    !preview.slice(skipIdx, skipIdx + 80).includes("#pk-preview-banner"),
   noindex: /noindex/i.test(preview),
 };
 

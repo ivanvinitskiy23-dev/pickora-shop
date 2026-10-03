@@ -275,16 +275,26 @@ export function replaceProductCards(html, products) {
 
 const PREVIEW_BANNER = `
 <style id="pk-products-preview-banner-css">
+/* In-flow bar above .wp-site-blocks — never sticky, never covers logo */
 #pk-preview-banner{
-  position:sticky;top:0;z-index:99999;background:#15223B;color:#fff;
+  position:relative; z-index:10001; background:#15223B; color:#fff;
   font:13px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  flex:0 0 auto; width:100%; box-sizing:border-box;
 }
 .pk-preview-banner-inner{
-  display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;
-  padding:10px 16px;max-width:1200px;margin:0 auto;
+  display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px;
+  padding:10px 16px; max-width:1200px; margin:0 auto;
 }
 #pk-preview-banner strong{ font-weight:700; }
 .pk-preview-meta{ margin-left:auto; opacity:.75; font-size:12px; }
+body.pk-is-preview{ margin:0 !important; padding:0 !important; }
+body.pk-is-preview > #pk-preview-banner{ margin:0 !important; }
+body.pk-is-preview > .wp-site-blocks{ margin-top:0 !important; }
+/* Disable sticky header in preview — sticky top:0 would cover the banner */
+body.pk-is-preview header.site-header{
+  position: relative !important;
+  top: auto !important;
+}
 @media (max-width:768px){
   .pk-preview-banner-inner{ padding:8px 12px; font-size:12px; }
   .pk-preview-meta{ margin-left:0; width:100%; }
@@ -325,14 +335,18 @@ export function buildCategoryPreviewHtml(templateHtml, products, meta = {}) {
     `<title>[Preview] ${escHtml(title)} – Pickora</title>`
   );
 
-  html = html.replace(/<body([^>]*)>/i, (full, attrs) => {
-    if (/\bclass\s*=\s*"/i.test(attrs)) {
-      return `<body${attrs.replace(/\bclass\s*=\s*"/i, 'class="pk-is-preview ')}`;
+  // IMPORTANT: keep the closing ">" on <body> — dropping it swallows skip-link
+  // and injects the banner mid-markup (white gap + broken header).
+  html = html.replace(/<body([^>]*)>/i, (_, attrs) => {
+    let next = attrs || "";
+    if (/\bclass\s*=\s*"/i.test(next)) {
+      next = next.replace(/\bclass\s*=\s*"/i, 'class="pk-is-preview ');
+    } else if (/\bclass\s*=\s*'/i.test(next)) {
+      next = next.replace(/\bclass\s*=\s*'/i, "class='pk-is-preview ");
+    } else {
+      next = ` class="pk-is-preview"${next}`;
     }
-    if (/\bclass\s*=\s*'/i.test(attrs)) {
-      return `<body${attrs.replace(/\bclass\s*=\s*'/i, "class='pk-is-preview ")}`;
-    }
-    return `<body class="pk-is-preview"${attrs}>`;
+    return `<body${next}>`;
   });
 
   const banner = `${PREVIEW_BANNER}
