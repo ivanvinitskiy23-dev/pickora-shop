@@ -103,9 +103,23 @@ const STYLE_ONCE = `
 
 function absUrl(path) {
   if (!path) return "";
-  if (path.startsWith("http://") || path.startsWith("https://")) return path;
-  if (path.startsWith("/")) return "https://pickora.shop" + path;
-  return path;
+  const p = String(path).trim();
+  const WORKER_MEDIA =
+    "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/";
+  if (/\/api\/media\/file\//i.test(p)) {
+    try {
+      if (/^https?:\/\//i.test(p)) {
+        const u = new URL(p);
+        return WORKER_MEDIA + u.pathname.replace(/^\/api\/media\/file\//i, "");
+      }
+    } catch {
+      /* fall through */
+    }
+    return WORKER_MEDIA + p.replace(/^\/?api\/media\/file\//i, "");
+  }
+  if (p.startsWith("http://") || p.startsWith("https://")) return p;
+  if (p.startsWith("/")) return "https://pickora.shop" + p;
+  return p;
 }
 
 function escHtml(str) {
@@ -317,13 +331,39 @@ export function replaceProductCards(html, products) {
 
   const lastStart = starts[starts.length - 1];
 
-  // End of last card: buy button(s) + info-col </div> + card </div>
+  // End of last card: prefer buy-button close; else depth-walk the card (no CTAs)
   const afterLast = html.slice(lastStart);
   const endRe =
     /(?:class="pickora-final-btns"[\s\S]*?<\/div>|(?:class="pickora-final-btn"[^>]*>[\s\S]*?<\/a>\s*)+)\s*(?:<!--[\s\S]*?-->\s*)?<\/div>\s*<\/div>/;
-  const endMatch  = afterLast.match(endRe);
-  if (!endMatch) throw new Error("could not find end of last product card");
-  const endIdx = lastStart + endMatch.index + endMatch[0].length;
+  let endIdx = -1;
+  const endMatch = afterLast.match(endRe);
+  if (endMatch) {
+    endIdx = lastStart + endMatch.index + endMatch[0].length;
+  } else {
+    // Card with no buy buttons: walk nested <div> depth from CARD_START
+    const openTag = "<div";
+    const closeTag = "</div>";
+    let i = CARD_START.length;
+    let depth = 1;
+    while (i < afterLast.length && depth > 0) {
+      const nextOpen = afterLast.indexOf(openTag, i);
+      const nextClose = afterLast.indexOf(closeTag, i);
+      if (nextClose < 0) break;
+      if (nextOpen >= 0 && nextOpen < nextClose) {
+        // Only count real element opens, not attributes containing "<div"
+        const ch = afterLast[nextOpen + 4];
+        if (ch === " " || ch === ">" || ch === "\n" || ch === "\r" || ch === "\t") {
+          depth++;
+        }
+        i = nextOpen + 4;
+      } else {
+        depth--;
+        i = nextClose + closeTag.length;
+      }
+    }
+    if (depth !== 0) throw new Error("could not find end of last product card");
+    endIdx = lastStart + i;
+  }
 
   // Walk back from firstIdx to find a preceding <style> with pickora-final-card CSS
   const styleBefore = html.lastIndexOf("<style>", firstIdx);
@@ -387,18 +427,16 @@ body.pk-is-preview .pk-page-hat{
 `;
 
 /**
- * Patch a live/GitHub category page with draft products for offline Studio check.
- * Uses replaceProductCards (identical to publish). Adds <base> so blob/preview
- * loads CSS/images from pickora.shop — does NOT rebuild header/footer chrome.
+ * Shared offline preview chrome: <base>, robots, banner under site header.
+ * @param {string} html — patched page body
+ * @param {{ title?: string, label?: string, previewBy?: string, bannerNote?: string }} meta
  */
-export function buildCategoryPreviewHtml(templateHtml, products, meta = {}) {
-  if (!Array.isArray(products) || products.length === 0) {
-    throw new Error("no_products");
-  }
-  let html = replaceProductCards(templateHtml, products);
-  const hubId = String(meta.hubId || "hub");
-  const title = String(meta.title || hubId);
+export function injectStudioPreviewChrome(html, meta = {}) {
+  const title = String(meta.title || meta.label || "Preview");
+  const label = String(meta.label || meta.title || "preview");
   const by = escHtml(meta.previewBy || "studio");
+  const note =
+    meta.bannerNote || "Same content as Publish · not saved to GitHub";
 
   if (!/<base\s/i.test(html)) {
     html = html.replace(/<head([^>]*)>/i, `<head$1>\n<base href="https://pickora.shop/">\n`);
@@ -419,12 +457,10 @@ export function buildCategoryPreviewHtml(templateHtml, products, meta = {}) {
     `<title>[Preview] ${escHtml(title)} – Pickora</title>`
   );
 
-  // CSS in <head> so it always wins over late theme rules
   if (!html.includes("pk-products-preview-banner-css")) {
     html = html.replace(/<\/head>/i, `${PREVIEW_BANNER_CSS}\n</head>`);
   }
 
-  // IMPORTANT: keep the closing ">" on <body>
   html = html.replace(/<body([^>]*)>/i, (_, attrs) => {
     let next = attrs || "";
     if (/\bclass\s*=\s*"/i.test(next)) {
@@ -440,12 +476,11 @@ export function buildCategoryPreviewHtml(templateHtml, products, meta = {}) {
   const banner = `<div id="pk-preview-banner" role="status">
   <div class="pk-preview-banner-inner">
     <strong>Offline preview</strong>
-    <span>Same cards as Publish · not saved to GitHub</span>
-    <span class="pk-preview-meta">${escHtml(hubId)} · ${by}</span>
+    <span>${escHtml(note)}</span>
+    <span class="pk-preview-meta">${escHtml(label)} · ${by}</span>
   </div>
 </div>`;
 
-  // Place notice AFTER the live site header so nav/logo stay top-most like live
   if (/<header\b[^>]*site-header[\s\S]*?<\/header>/i.test(html)) {
     html = html.replace(
       /(<header\b[^>]*site-header[\s\S]*?<\/header>)/i,
@@ -455,6 +490,24 @@ export function buildCategoryPreviewHtml(templateHtml, products, meta = {}) {
     html = html.replace(/<\/header>/i, `</header>\n${banner}\n`);
   }
   return html;
+}
+
+/**
+ * Patch a live/GitHub category page with draft products for offline Studio check.
+ * Uses replaceProductCards (identical to publish). Adds <base> so blob/preview
+ * loads CSS/images from pickora.shop — does NOT rebuild header/footer chrome.
+ */
+export function buildCategoryPreviewHtml(templateHtml, products, meta = {}) {
+  if (!Array.isArray(products) || products.length === 0) {
+    throw new Error("no_products");
+  }
+  let html = replaceProductCards(templateHtml, products);
+  const hubId = String(meta.hubId || "hub");
+  return injectStudioPreviewChrome(html, {
+    title: meta.title || hubId,
+    label: hubId,
+    previewBy: meta.previewBy,
+  });
 }
 
 /**

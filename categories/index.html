@@ -1300,7 +1300,9 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 // =======================================================
   // ФУНКЦИЯ ДЛЯ РАНДОМНОГО ПЕРЕМЕШИВАНИЯ КАРТОЧЕК ПРИ ЗАГРУЗКЕ
   // =======================================================
+  const PICKORA_SHUFFLE_PINS = true;
   document.addEventListener("DOMContentLoaded", function() {
+    if (!PICKORA_SHUFFLE_PINS) return;
     const grid = document.getElementById('pins-grid');
     if (!grid) return;
     

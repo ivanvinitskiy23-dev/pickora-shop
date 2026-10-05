@@ -81,13 +81,41 @@ window.PK_AUTH = (function () {
       }
       return await res.json();
     } catch {
-      return { user: { login: s.login, role: s.role, owner: s.owner } };
+      // Network offline — do not fake a logged-in user from stale session
+      return null;
     }
+  }
+
+  /**
+   * Authenticated fetch — on 401 clears session and reloads to login.
+   * Pass relative path ("/api/…") or absolute URL.
+   */
+  async function apiFetch(path, opts = {}) {
+    const s = getSession();
+    const url = path.startsWith("http") ? path : API + path;
+    const headers = { ...(opts.headers || {}) };
+    if (s?.token && !headers.Authorization) {
+      headers.Authorization = "Bearer " + s.token;
+    }
+    const res = await fetch(url, {
+      ...opts,
+      headers,
+      credentials: opts.credentials || "include",
+    });
+    if (res.status === 401) {
+      clearSession();
+      if (typeof window.PK_STUDIO_ON_UNAUTHORIZED === "function") {
+        window.PK_STUDIO_ON_UNAUTHORIZED();
+      } else {
+        location.reload();
+      }
+    }
+    return res;
   }
 
   function isCloud() {
     return /workers\.dev$/.test(API) || API.includes("pickara-admin");
   }
 
-  return { API, getSession, login, logout, me, clearSession, isCloud };
+  return { API, getSession, login, logout, me, clearSession, isCloud, apiFetch };
 })();

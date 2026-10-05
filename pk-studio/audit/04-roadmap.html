@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>План развития — Pickora Studio</title>
+  <style>
+    :root { --ink:#0f172a; --muted:#475569; --line:#e2e8f0; --bg:#f8fafc; --card:#fff; --blue:#1d4ed8; --accent:#0f766e; --gold:#92400e; }
+    * { box-sizing: border-box; }
+    body { margin:0; font:15px/1.55 "Segoe UI",system-ui,sans-serif; color:var(--ink);
+      background: radial-gradient(900px 420px at 0% 0%, #d1fae5 0%, transparent 55%),
+                  radial-gradient(700px 360px at 100% 10%, #e0e7ff 0%, transparent 50%), var(--bg); }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 36px 18px 100px; }
+    header { border-bottom:1px solid var(--line); padding-bottom:22px; margin-bottom:22px; }
+    .eyebrow { font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin:0 0 8px; }
+    h1 { font-size: clamp(1.5rem, 3vw, 2.15rem); margin:0 0 10px; line-height:1.15; }
+    .dek { color:var(--muted); max-width:70ch; margin:0; }
+    nav.docs { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+    nav.docs a { text-decoration:none; color:var(--blue); background:#eff6ff; border:1px solid #bfdbfe; border-radius:999px; padding:6px 12px; font-size:13px; font-weight:650; }
+    h2 { margin:34px 0 12px; font-size:1.28rem; }
+    h3 { margin:18px 0 8px; font-size:1.05rem; }
+    .goal { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin:14px 0; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+    .card h4 { margin:0 0 8px; font-size:0.98rem; }
+    .card p, .card li { font-size:13.5px; color:var(--ink); }
+    .prio { font-size:11px; font-weight:800; color:var(--gold); text-transform:uppercase; letter-spacing:.04em; }
+    ul.fine > li { margin: 6px 0; }
+    table { width:100%; border-collapse:collapse; font-size:13px; background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+    th, td { border-bottom:1px solid var(--line); padding:9px 10px; text-align:left; vertical-align:top; }
+    th { background:#f1f5f9; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+    code { font-family:ui-monospace,Consolas,monospace; font-size:.88em; background:#f1f5f9; padding:1px 5px; border-radius:4px; }
+    footer { margin-top:48px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">Pickora Studio · Документ 4/4</p>
+      <h1>План развития админ-панели (до мелочей)</h1>
+      <p class="dek">Не баги, а рост: чтобы сайт, статьи, товары, пины и картинки чинились и публиковались молниеносно — без ручного Git, без «где этот файл».</p>
+      <nav class="docs">
+        <a href="./01-audit-plan.html">1. План аудита</a>
+        <a href="./02-audit-report.html">2. Полный аудит + решения</a>
+        <a href="./03-fix-plan.html">3. План исправлений</a>
+        <a href="./04-roadmap.html">4. План развития</a>
+        <a href="./05-before-after.html">5. Было → стало</a>
+      </nav>
+    </header>
+
+    <div class="goal">
+      <p class="prio">North star</p>
+      <p style="margin:0"><strong>Владелец за 60 секунд</strong> может: заменить обложку, поправить Amazon/Walmart, проверить офлайн-превью и нажать Publish — без Cursor и без SSH.</p>
+    </div>
+
+    <h2>A. Молниеносные картинки</h2>
+    <div class="grid">
+      <div class="card">
+        <h4>A1. Media Library 2.0</h4>
+        <ul class="fine">
+          <li>Upload drag-drop + multi-file</li>
+          <li>Поиск по имени / alt / дате</li>
+          <li>«Используется в…» (home/pins/products/article)</li>
+          <li>Копировать: Worker URL / <code>/wp-content/…</code> / Markdown</li>
+          <li>Replace-in-place: новая версия файла, тот же SEO-path (опционально confirm overwrite)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>A2. Быстрая замена на карточке</h4>
+        <ul class="fine">
+          <li>Кнопка «Заменить» рядом с thumb (не только Upload)</li>
+          <li>Превью до Save (object URL)</li>
+          <li>«Взять из Media» picker modal</li>
+          <li>Авто-alt из title товара/пина (editable)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>A3. Cover pipeline статей</h4>
+        <ul class="fine">
+          <li>Проверка ≤250KB / 16:9 прямо в Studio</li>
+          <li>Генерация slug-cover имени</li>
+          <li>Показ OG-preview (как в Facebook/Telegram)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>A4. Мелочи картинок</h4>
+        <ul class="fine">
+          <li>Индикатор «Pages ещё не подхватил» vs Worker OK</li>
+          <li>Кнопка «Открыть оригинал»</li>
+          <li>Запрет hotlink Amazon CDN с красным флагом</li>
+          <li>Массовый «пересжать WebP»</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>B. Статьи — скорость правок</h2>
+    <div class="grid">
+      <div class="card">
+        <h4>B1. Open anything</h4>
+        <ul class="fine">
+          <li>Импорт live статьи → draft</li>
+          <li>Поиск по slug/title в Studio</li>
+          <li>Duplicate article</li>
+          <li>Archive / unpublish (noindex + hub remove)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>B2. Блоки</h4>
+        <ul class="fine">
+          <li>Duplicate block (код уже почти есть)</li>
+          <li>Templates библиотека (microwave / vs / mistakes)</li>
+          <li>Вставка affiliate из Media+Products picker</li>
+          <li>Autosave каждые N сек + «восстановить»</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>B3. SEO cockpit</h4>
+        <ul class="fine">
+          <li>Live preview title/description length meter</li>
+          <li>Internal link suggester (существующие slugs)</li>
+          <li>Chips UI (checkbox 1–3) вместо сырого текста</li>
+          <li>Sitemap include/exclude toggle</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>B4. Мелочи статей</h4>
+        <ul class="fine">
+          <li>Keyboard: Ctrl+S save, Esc close settings</li>
+          <li>Dirty-state «есть несохранённое»</li>
+          <li>Сравнение draft vs live (diff)</li>
+          <li>Чеклист before seo_ready компактной полосой</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>C. Products / Pins / Home — один язык</h2>
+    <div class="grid">
+      <div class="card">
+        <h4>C1. Единый Buy Links</h4>
+        <ul class="fine">
+          <li>Один компонент на Products, Pins, Home, Article blocks</li>
+          <li>Пресеты: Amazon / Walmart / Best Buy / Other</li>
+          <li>Проверка HEAD из Studio (reuse links/check)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>C2. Offline везде</h4>
+        <ul class="fine">
+          <li>Home offline (уже в fix-plan)</li>
+          <li>Pins offline</li>
+          <li>Articles hub card preview</li>
+          <li>«Сравнить с Live» split view</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>C3. Products power</h4>
+        <ul class="fine">
+          <li>Bulk paste 5 товаров из SEO-агента (JSON/CSV)</li>
+          <li>Duplicate product across hubs</li>
+          <li>Hide product without delete</li>
+          <li>Sort: manual / rating / title</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>C4. Pins power</h4>
+        <ul class="fine">
+          <li>Structured pin products UI</li>
+          <li>Reorder + pin «featured»</li>
+          <li>Отключить random shuffle на live (настройка)</li>
+          <li>Фильтры редактировать в UI (сейчас в JSON)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>C5. Home power</h4>
+        <ul class="fine">
+          <li>Не только 4 reviews — N слотов</li>
+          <li>Drag-and-drop order Top picks</li>
+          <li>Schedule «показать с даты»</li>
+          <li>Quick-swap cover from Articles catalog</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>C6. Мелочи каталога</h4>
+        <ul class="fine">
+          <li>Счётчик «черновик ≠ live» badge на вкладке</li>
+          <li>Confirm перед Delete section</li>
+          <li>Undo последнего delete (session)</li>
+          <li>Empty-state с CTA «добавить первый товар»</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>D. Publish / качество live</h2>
+    <div class="grid">
+      <div class="card">
+        <h4>D1. Safe Publish</h4>
+        <ul class="fine">
+          <li>Preflight для всех модулей</li>
+          <li>Dry-run: показать diff file list</li>
+          <li>«Publish selected hub only»</li>
+          <li>Прогресс: uploading… commit… Pages</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>D2. Rollback UX</h4>
+        <ul class="fine">
+          <li>Превью что откатится</li>
+          <li>Имя снимка («before pets refresh»)</li>
+          <li>Сравнение snapshot vs now</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>D3. Links & SEO ops</h4>
+        <ul class="fine">
+          <li>Check >20 links (очередь)</li>
+          <li>Авто-рескан после Save</li>
+          <li>Отчёт «битые на live HTML» (crawl sitemap)</li>
+          <li>Amazon short-link health digest в Status</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>D4. Мелочи ship</h4>
+        <ul class="fine">
+          <li>Кнопка «Открыть commit на GitHub»</li>
+          <li>Показывать Pages build delay tip</li>
+          <li>One-click «purge CF cache» если появится</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>E. Команда, доступ, доверие</h2>
+    <div class="grid">
+      <div class="card">
+        <h4>E1. Team</h4>
+        <ul class="fine">
+          <li>Роли: owner / editor / viewer</li>
+          <li>Viewer = только preview</li>
+          <li>Activity: кто что сохранил</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>E2. Safety</h4>
+        <ul class="fine">
+          <li>2FA позже (если нужно)</li>
+          <li>Session expiry banner</li>
+          <li>Не показывать owner login в HTML</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>E3. Мелочи доверия</h4>
+        <ul class="fine">
+          <li>«Вы вошли как … · Owner»</li>
+          <li>Last save time на каждой панели</li>
+          <li>Environment badge: Live API vs Local :8787</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>F. UX-полировка (мелочи, которые бесят каждый день)</h2>
+    <ul class="fine">
+      <li>Sticky actions уже у Products — такой же паттерн для Home/Pins/Articles Save</li>
+      <li>Toast вместо только pill-status (успех 2 сек)</li>
+      <li>Disable Save button пока нет dirty</li>
+      <li>Confirm leave page if dirty</li>
+      <li>Мобильный sidebar: закрывать после выбора раздела (частично есть)</li>
+      <li>Фокус-ловушка в art-settings drawer</li>
+      <li>Скелетоны загрузки списков</li>
+      <li>Единые empty states с иллюстрацией-текстом</li>
+      <li>Все hardcoded EN labels («Pros», «Badge») → i18n</li>
+      <li>Dash: реальные счётчики (N drafts, N broken links) вместо статики</li>
+      <li>Клавиатура: <code>?</code> — шпаргалка хоткеев</li>
+      <li>Тёмная тема — <em>не приоритет</em> (сайт светлый; Studio может остаться светлой)</li>
+    </ul>
+
+    <h2>G. Интеграции «агент → Studio»</h2>
+    <div class="goal">
+      <p>SEO-агент уже отдаёт 5×4 товаров текстом. Нужен приёмник:</p>
+      <ul class="fine">
+        <li>Import JSON paste → Products hub</li>
+        <li>Import brief → Articles draft skeleton</li>
+        <li>«Apply agent pack» с preview diff</li>
+        <li>Не авто-Publish — только draft</li>
+      </ul>
+    </div>
+
+    <h2>H. Приоритеты на квартал (предложение)</h2>
+    <table>
+      <thead><tr><th>Слой</th><th>Что</th><th>Зачем владельцу</th></tr></thead>
+      <tbody>
+        <tr><td>Сейчас</td><td>Документ 3 фазы 0–3 (баги)</td><td>Не ломается Team/ссылки/preview</td></tr>
+        <tr><td>Месяц 1</td><td>A1–A2, C1–C2, D1</td><td>Картинки и offline везде</td></tr>
+        <tr><td>Месяц 2</td><td>B1–B3, C3–C5, G import</td><td>Статьи и каталог без Cursor</td></tr>
+        <tr><td>Месяц 3</td><td>D2–D3, E1, F polish</td><td>Команда + спокойный ship</td></tr>
+      </tbody>
+    </table>
+
+    <h2>I. Definition of «молниеносно»</h2>
+    <table>
+      <thead><tr><th>Сценарий</th><th>Целевое время</th><th>Сейчас (примерно)</th></tr></thead>
+      <tbody>
+        <tr><td>Заменить фото товара и увидеть offline</td><td>&lt; 1 мин</td><td>2–5 мин (ок на Products)</td></tr>
+        <tr><td>Починить битую Amazon на Home</td><td>&lt; 2 мин + Publish</td><td>есть, но без preview</td></tr>
+        <tr><td>Выпустить правку статьи</td><td>&lt; 10 мин</td><td>ок, если draft уже есть</td></tr>
+        <tr><td>Добавить Walmart рядом с Amazon</td><td>&lt; 1 мин</td><td>Products да / Home Pins слабо</td></tr>
+        <tr><td>Откатить провальный Publish</td><td>&lt; 2 мин</td><td>есть Rollback ×5</td></tr>
+      </tbody>
+    </table>
+
+    <footer>
+      Старт: закрыть <a href="./03-fix-plan.html">план исправлений</a>, затем брать из этого roadmap пакетами A1→C2→D1.
+      Файлы лежат в <code>pk-studio/audit/</code> — открывать локально или через Live после commit.
+    </footer>
+  </div>
+</body>
+</html>

@@ -19,6 +19,10 @@
     $$("[data-i18n]").forEach((el) => {
       el.textContent = t(el.getAttribute("data-i18n"));
     });
+    $$("[data-i18n-placeholder]").forEach((el) => {
+      const key = el.getAttribute("data-i18n-placeholder");
+      if (key) el.setAttribute("placeholder", t(key));
+    });
     document.title = t("metaTitle");
     const langBtn = $("#btn-lang");
     if (langBtn) langBtn.textContent = t("langSwitch");
@@ -122,10 +126,15 @@
   function imgSrc(path) {
     if (!path) return "";
     const p = String(path).trim();
-    // Broken relative media paths from catalog strip — point at Worker
+    const mediaBase =
+      (window.PK_AUTH?.API || "https://pickora-admin-api.pickara-admin.workers.dev").replace(
+        /\/$/,
+        ""
+      ) + "/api/media/file/";
+    // Broken relative media paths from catalog strip — point at API Worker
     if (/^\/?api\/media\/file\//i.test(p) || /^https?:\/\/pickora\.shop\/api\/media\/file\//i.test(p)) {
       const key = p.replace(/^https?:\/\/pickora\.shop/i, "").replace(/^\/?api\/media\/file\//i, "");
-      return "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/" + key;
+      return mediaBase + key;
     }
     if (p.startsWith("http://") || p.startsWith("https://")) return p;
     return p.startsWith("/") ? p : "/" + p;
@@ -150,15 +159,6 @@
     el.classList.remove("pk-hidden", "ok", "warn");
     el.textContent = msg;
     if (kind) el.classList.add(kind);
-  }
-
-  function fileToDataUrl(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
   }
 
   async function uploadImage(file, preferredName) {
@@ -343,9 +343,7 @@
               <div class="field"><label>Pros (1/line)</label><textarea data-tp="pros" rows="2">${escapeAttr(
                 (p.pros || []).join("\n")
               )}</textarea></div>
-              <div class="field"><label>Amazon</label><input data-tp="amazonUrl" value="${escapeAttr(
-                p.amazonUrl || ""
-              )}" placeholder="https://link.amazon/…"></div>
+              ${buyLinksEditorHtml(normalizeBuyLinks({ ...p, url: p.amazonUrl }), `data-tp-links="${i}"`)}
               <div class="field"><label>Guide URL</label><input data-tp="guideUrl" value="${escapeAttr(
                 p.guideUrl || ""
               )}" placeholder="/best-…/"></div>
@@ -405,6 +403,7 @@
         }
       });
     });
+    bindBuyLinksEditor(wrap);
   }
 
   function readTopPicksForm() {
@@ -416,6 +415,9 @@
       const prev = homeData.topPicks.picks[i] || {};
       const g = (k) => card.querySelector(`[data-tp="${k}"]`)?.value || "";
       const title = g("title").trim();
+      const links = readBuyLinksFrom(card.querySelector(".buy-links"));
+      const amazonUrl =
+        links.find((l) => l.style === "amazon")?.url || links[0]?.url || prev.amazonUrl || "";
       picks.push({
         ...prev,
         id: prev.id || slugify(title) || "pick-" + (i + 1),
@@ -425,7 +427,8 @@
         category: g("category").trim(),
         blurb: g("blurb").trim(),
         pros: linesToList(g("pros")),
-        amazonUrl: g("amazonUrl").trim(),
+        links,
+        amazonUrl,
         guideUrl: g("guideUrl").trim(),
         imageAlt: g("imageAlt").trim() || title,
         image: prev.image || "",
@@ -493,10 +496,56 @@
     show("home");
   }
 
+  function isGoodBuyUrl(u) {
+    const s = String(u || "").trim();
+    if (!s || /TODO/i.test(s)) return false;
+    if (!/^https:\/\//i.test(s)) return false;
+    // Placeholder stubs from "add product" / new blocks
+    if (/^https:\/\/link\.amazon\/?$/i.test(s)) return false;
+    if (/^https:\/\/(www\.)?amzn\.to\/?$/i.test(s)) return false;
+    return true;
+  }
+
   async function saveHome() {
     const status = $("#home-status");
     const latestReviews = readHomeForm();
     const topPicks = readTopPicksForm();
+    const bad = [];
+    (topPicks.picks || []).forEach((p, i) => {
+      const links = normalizeBuyLinks({ ...p, url: p.amazonUrl }).filter((l) => l.url);
+      if (!links.length) return;
+      links.forEach((l) => {
+        if (!isGoodBuyUrl(l.url)) bad.push((p.title || "pick#" + (i + 1)) + ": " + l.url);
+      });
+    });
+    if (bad.length) {
+      setStatus(
+        status,
+        t("productsBadLinks").replace("{n}", String(bad.length)) + ": " + bad.slice(0, 3).join(", "),
+        "warn"
+      );
+      return;
+    }
+    const urlSlots = new Map();
+    (latestReviews || []).forEach((r, i) => {
+      const u = normalizeUrl(r.url);
+      if (!u) return;
+      if (!urlSlots.has(u)) urlSlots.set(u, []);
+      urlSlots.get(u).push(i + 1);
+    });
+    const dupReviews = [...urlSlots.entries()].filter(([, slots]) => slots.length > 1);
+    if (dupReviews.length) {
+      const detail = dupReviews
+        .slice(0, 3)
+        .map(([u, slots]) => "#" + slots.join(", #") + ": " + u)
+        .join("; ");
+      setStatus(
+        status,
+        t("homeDupReviewUrls").replace("{n}", String(dupReviews.length)) + " — " + detail,
+        "warn"
+      );
+      return;
+    }
     const res = await fetch(window.PK_AUTH.API + "/api/content/home", {
       method: "POST",
       headers: authHeaders(),
@@ -548,7 +597,7 @@
         },
       ];
     }
-    return [{ label: "Amazon", url: "https://link.amazon/", style: "amazon" }];
+    return [{ label: "Amazon", url: "", style: "amazon" }];
   }
 
   function buyLinksEditorHtml(links, rowAttr) {
@@ -682,18 +731,99 @@
       .join("");
   }
 
+  function pinProductsEditorHtml(pinIndex, products) {
+    const list = products && products.length ? products : [{ name: "", url: "", links: [] }];
+    const items = list
+      .map((prod, pj) => {
+        const links = normalizeBuyLinks(prod);
+        return `<div class="product-item panel product-item--compact" data-pin-product="${pinIndex}:${pj}" style="margin-top:10px">
+          <div class="review-card-head">
+            <h4>${escapeAttr(t("labelProduct"))} #${pj + 1}</h4>
+            <button type="button" class="btn btn-ghost btn-sm" data-pin-product-del="${pinIndex}:${pj}">${escapeAttr(
+              t("btnDeleteProduct")
+            )}</button>
+          </div>
+          <div class="field" style="margin-bottom:0"><label>${escapeAttr(t("labelTitle"))}</label>
+            <input data-pk="name" value="${escapeAttr(prod.name || "")}" placeholder="Product name"></div>
+          ${buyLinksEditorHtml(links, `data-pin-product-links="${pinIndex}:${pj}"`)}
+        </div>`;
+      })
+      .join("");
+    return `<div class="pin-products">
+        <span class="block-legend">${escapeAttr(t("labelPinProducts"))}</span>
+        <p class="block-hint">${escapeAttr(t("pinProductsHint"))}</p>
+        ${items}
+        <button type="button" class="btn btn-ghost btn-sm" data-pin-product-add="${pinIndex}" style="margin-top:10px;width:auto">${escapeAttr(
+          t("btnAddProduct")
+        )}</button>
+      </div>`;
+  }
+
   function renderPinsEditor() {
     const wrap = $("#pins-list");
     if (!wrap || !pinsData) return;
 
+    const shuffleEl = $("#pins-shuffle-load");
+    if (shuffleEl) shuffleEl.checked = pinsData.shuffleOnLoad !== false;
+
+    // A-36: editable category filters
+    const filtersBox = $("#pins-filters");
+    if (filtersBox) {
+      if (!Array.isArray(pinsData.filters)) pinsData.filters = [];
+      filtersBox.innerHTML =
+        `<div class="review-card-head" style="margin-bottom:10px"><h3 style="margin:0">${escapeAttr(
+          t("pinsFiltersTitle")
+        )}</h3>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-filter-add">+ ${escapeAttr(
+          t("btnAddFilter")
+        )}</button></div>` +
+        pinsData.filters
+          .map((f, fi) => {
+            const locked = f.id === "all";
+            return `<div class="buy-row" data-filter-row="${fi}" style="margin-bottom:8px">
+              <input data-f="fid" ${locked ? "readonly" : ""} placeholder="id" value="${escapeAttr(
+                f.id || ""
+              )}" style="max-width:140px">
+              <input data-f="flabel" placeholder="Label" value="${escapeAttr(f.label || "")}">
+              <button type="button" class="block-tool block-tool-del" data-filter-del="${fi}" ${
+                locked ? "disabled" : ""
+              } title="×">×</button>
+            </div>`;
+          })
+          .join("");
+      $("#btn-filter-add")?.addEventListener("click", () => {
+        readPinsFiltersForm();
+        pinsData.filters.push({ id: "cat-" + Date.now().toString(36), label: "New" });
+        renderPinsEditor();
+      });
+      filtersBox.querySelectorAll("[data-filter-del]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          readPinsFiltersForm();
+          const i = Number(btn.getAttribute("data-filter-del"));
+          if (pinsData.filters[i]?.id === "all") return;
+          pinsData.filters.splice(i, 1);
+          renderPinsEditor();
+        });
+      });
+    }
+
     wrap.innerHTML = pinsData.pins
       .map((p, i) => {
+        const pinCount = pinsData.pins.length;
         return `<div class="review-card panel" data-pin-index="${i}">
           <div class="review-card-head">
             <h3>#${p.id} · ${escapeAttr(p.title || "")}</h3>
-            <button type="button" class="btn btn-ghost btn-sm" data-pin-del="${i}">${escapeAttr(
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <button type="button" class="btn btn-ghost btn-sm" data-pin-up="${i}" ${
+                i === 0 ? "disabled" : ""
+              }>↑</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-pin-down="${i}" ${
+                i === pinCount - 1 ? "disabled" : ""
+              }>↓</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-pin-del="${i}">${escapeAttr(
               t("btnDeletePin")
             )}</button>
+            </div>
           </div>
           <div class="review-card-body pin-card-body">
             <div class="review-thumb-col">
@@ -723,17 +853,57 @@
                 <textarea data-k="popupDesc" rows="3">${escapeAttr(p.popupDesc || "")}</textarea></div>
               <div class="field"><label>${escapeAttr(t("labelImageAlt"))}</label>
                 <input data-k="imageAlt" value="${escapeAttr(p.imageAlt || "")}"></div>
-              <div class="field"><label>${escapeAttr(t("labelPinProducts"))}</label>
-                <textarea data-k="productsText" rows="5" placeholder="${escapeAttr(
-                  t("pinProductsPlaceholder")
-                )}">${escapeAttr(productsToText(p.products))}</textarea>
-                <p class="block-hint">${escapeAttr(t("pinProductsHint"))}</p>
-              </div>
+              ${pinProductsEditorHtml(i, p.products)}
             </div>
           </div>
         </div>`;
       })
       .join("");
+
+    bindBuyLinksEditor(wrap);
+
+    $$("[data-pin-up]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const idx = Number(btn.getAttribute("data-pin-up"));
+        readPinsForm();
+        if (idx < 1 || !pinsData.pins[idx]) return;
+        [pinsData.pins[idx - 1], pinsData.pins[idx]] = [pinsData.pins[idx], pinsData.pins[idx - 1]];
+        renderPinsEditor();
+      });
+    });
+    $$("[data-pin-down]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const idx = Number(btn.getAttribute("data-pin-down"));
+        readPinsForm();
+        if (idx >= pinsData.pins.length - 1) return;
+        [pinsData.pins[idx], pinsData.pins[idx + 1]] = [pinsData.pins[idx + 1], pinsData.pins[idx]];
+        renderPinsEditor();
+      });
+    });
+
+    $$("[data-pin-product-add]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const idx = Number(btn.getAttribute("data-pin-product-add"));
+        readPinsForm();
+        const pin = pinsData.pins[idx];
+        if (!pin) return;
+        if (!Array.isArray(pin.products)) pin.products = [];
+        pin.products.push({ name: "", url: "", links: [{ label: "Amazon", url: "", style: "amazon" }] });
+        renderPinsEditor();
+      });
+    });
+
+    $$("[data-pin-product-del]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const [pi, pj] = btn.getAttribute("data-pin-product-del").split(":").map(Number);
+        if (!confirm(t("confirmDeleteProduct"))) return;
+        readPinsForm();
+        const pin = pinsData.pins[pi];
+        if (!pin?.products) return;
+        pin.products.splice(pj, 1);
+        renderPinsEditor();
+      });
+    });
 
     $$("[data-pin-del]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -754,8 +924,20 @@
     });
   }
 
+  function readPinsFiltersForm() {
+    if (!pinsData) return;
+    const rows = $$("#pins-filters [data-filter-row]");
+    if (!rows.length) return;
+    pinsData.filters = rows.map((row) => {
+      const id = (row.querySelector("[data-f=fid]")?.value || "").trim().toLowerCase();
+      const label = (row.querySelector("[data-f=flabel]")?.value || "").trim();
+      return { id: id || "cat", label: label || id || "Category" };
+    });
+  }
+
   function readPinsForm() {
     if (!pinsData) return;
+    readPinsFiltersForm();
     $$("#pins-list [data-pin-index]").forEach((card) => {
       const i = Number(card.getAttribute("data-pin-index"));
       const prev = pinsData.pins[i];
@@ -764,6 +946,16 @@
         const el = card.querySelector(`[data-k="${k}"]`);
         return el ? el.value : "";
       };
+      const products = [];
+      card.querySelectorAll("[data-pin-product]").forEach((pCard) => {
+        const name =
+          pCard.querySelector('[data-pk="name"]')?.value?.trim() || "";
+        const links = readBuyLinksFrom(pCard.querySelector(".buy-links"));
+        const url =
+          links.find((l) => l.style === "amazon")?.url || links[0]?.url || "";
+        if (!name && !links.length) return;
+        products.push({ name, url, links });
+      });
       pinsData.pins[i] = {
         ...prev,
         title: get("title").trim() || prev.title,
@@ -771,7 +963,7 @@
         boardDesc: get("boardDesc").trim(),
         popupDesc: get("popupDesc").trim(),
         imageAlt: get("imageAlt").trim() || prev.imageAlt,
-        products: textToProducts(get("productsText")),
+        products,
         image: prev.image,
         id: prev.id,
         width: prev.width,
@@ -835,6 +1027,26 @@
   async function savePins() {
     const status = $("#pins-status");
     readPinsForm();
+    const bad = [];
+    (pinsData.pins || []).forEach((pin) => {
+      (pin.products || []).forEach((prod) => {
+        const links = normalizeBuyLinks(prod).filter((l) => l.url);
+        links.forEach((l) => {
+          if (!isGoodBuyUrl(l.url)) {
+            bad.push(`${pin.title || "pin"} / ${prod.name || "?"}: ${l.url}`);
+          }
+        });
+      });
+    });
+    if (bad.length) {
+      setStatus(
+        status,
+        t("productsBadLinks").replace("{n}", String(bad.length)) + ": " + bad.slice(0, 3).join(", "),
+        "warn"
+      );
+      return;
+    }
+    pinsData.shuffleOnLoad = $("#pins-shuffle-load")?.checked !== false;
     const res = await fetch(window.PK_AUTH.API + "/api/content/pins", {
       method: "POST",
       headers: authHeaders(),
@@ -842,6 +1054,7 @@
       body: JSON.stringify({
         filters: pinsData.filters,
         pins: pinsData.pins,
+        shuffleOnLoad: pinsData.shuffleOnLoad,
       }),
     });
     if (!res.ok) {
@@ -1115,8 +1328,8 @@
           pros: [],
           cons: [],
           verdict: "",
-          amazonUrl: "https://link.amazon/",
-          links: [{ label: "Amazon", url: "https://link.amazon/", style: "amazon" }],
+          amazonUrl: "",
+          links: [{ label: "Amazon", url: "", style: "amazon" }],
           ratingStars: 0,
         });
         productsActiveHub = idx;
@@ -1174,23 +1387,9 @@
     });
   }
 
-  async function openProductsOfflinePreview() {
-    const status = $("#products-status");
-    if (!productsData) return;
-    readProductsForm();
-    clampProductsActiveHub();
-    const hub = productsData.hubCategories[productsActiveHub];
-    if (!hub?.id) {
-      setStatus(status, t("previewFail"), "warn");
-      return;
-    }
-    const list = productsData.categoryProducts[hub.id] || [];
-    if (!list.length) {
-      setStatus(status, t("productsOfflineNeedProducts"), "warn");
-      return;
-    }
-
-    const win = window.open("", "pk-products-preview");
+  async function openHtmlOfflinePreview({ apiPath, body, statusEl, windowName }) {
+    const status = statusEl;
+    const win = window.open("", windowName || "pk-offline-preview");
     if (!win) {
       setStatus(status, t("previewPopupBlocked"), "warn");
       return;
@@ -1206,14 +1405,12 @@
       /* ignore */
     }
     setStatus(status, t("previewOpening"));
-    const draft = productsDraftPayload();
-    delete draft.categoryProducts._note;
     try {
-      const res = await fetch(window.PK_AUTH.API + "/api/preview/products", {
+      const res = await fetch(window.PK_AUTH.API + apiPath, {
         method: "POST",
         headers: authHeaders(),
         credentials: "include",
-        body: JSON.stringify({ hubId: hub.id, draft }),
+        body: JSON.stringify(body),
       });
       const html = await res.text();
       if (!res.ok) {
@@ -1251,6 +1448,67 @@
       }
       setStatus(status, t("previewFail") + (err?.message ? ": " + err.message : ""), "warn");
     }
+  }
+
+  async function openHomeOfflinePreview() {
+    if (!homeData) return;
+    const status = $("#home-status");
+    const latestReviews = readHomeForm();
+    if (!Array.isArray(latestReviews) || latestReviews.length !== 4) {
+      setStatus(status, t("homeOfflineNeedFour"), "warn");
+      return;
+    }
+    const topPicks = readTopPicksForm();
+    await openHtmlOfflinePreview({
+      apiPath: "/api/preview/home",
+      body: { draft: { latestReviews, topPicks } },
+      statusEl: status,
+      windowName: "pk-home-preview",
+    });
+  }
+
+  async function openPinsOfflinePreview() {
+    if (!pinsData) return;
+    const status = $("#pins-status");
+    readPinsForm();
+    pinsData.shuffleOnLoad = $("#pins-shuffle-load")?.checked !== false;
+    await openHtmlOfflinePreview({
+      apiPath: "/api/preview/pins",
+      body: {
+        draft: {
+          filters: pinsData.filters,
+          pins: pinsData.pins,
+          shuffleOnLoad: pinsData.shuffleOnLoad,
+        },
+      },
+      statusEl: status,
+      windowName: "pk-pins-preview",
+    });
+  }
+
+  async function openProductsOfflinePreview() {
+    const status = $("#products-status");
+    if (!productsData) return;
+    readProductsForm();
+    clampProductsActiveHub();
+    const hub = productsData.hubCategories[productsActiveHub];
+    if (!hub?.id) {
+      setStatus(status, t("previewFail"), "warn");
+      return;
+    }
+    const list = productsData.categoryProducts[hub.id] || [];
+    if (!list.length) {
+      setStatus(status, t("productsOfflineNeedProducts"), "warn");
+      return;
+    }
+    const draft = productsDraftPayload();
+    delete draft.categoryProducts._note;
+    await openHtmlOfflinePreview({
+      apiPath: "/api/preview/products",
+      body: { hubId: hub.id, draft },
+      statusEl: status,
+      windowName: "pk-products-preview",
+    });
   }
 
   function readProductsForm() {
@@ -1402,15 +1660,6 @@
     show("products");
   }
 
-  function isGoodBuyUrl(u) {
-    const s = String(u || "").trim();
-    if (!s || /TODO/i.test(s)) return false;
-    if (!/^https:\/\//i.test(s)) return false;
-    // Placeholder stubs from "add product"
-    if (/^https:\/\/link\.amazon\/?$/i.test(s)) return false;
-    return true;
-  }
-
   async function saveProducts() {
     const status = $("#products-status");
     readProductsForm();
@@ -1435,6 +1684,28 @@
         "warn"
       );
       return;
+    }
+    // A-43: warn if hub category page is missing on GitHub
+    const hubs = productsData.hubCategories || [];
+    const ids = hubs.map((h) => String(h?.id || "").trim()).filter(Boolean);
+    if (ids.length) {
+      try {
+        const probe = await fetch(window.PK_AUTH.API + "/api/probe/hubs", {
+          method: "POST",
+          headers: authHeaders(),
+          credentials: "include",
+          body: JSON.stringify({ ids }),
+        });
+        const pdata = await probe.json().catch(() => ({}));
+        if (probe.ok && Array.isArray(pdata.missing) && pdata.missing.length) {
+          const msg = t("productsHubPageMissing")
+            .replace("{n}", String(pdata.missing.length))
+            .replace("{ids}", pdata.missing.slice(0, 6).join(", "));
+          if (!confirm(msg + "\n\nSave anyway?")) return;
+        }
+      } catch {
+        /* probe optional — still allow save */
+      }
     }
     const payload = productsDraftPayload();
     delete payload.categoryProducts._note;
@@ -1623,6 +1894,7 @@
       if (id) setActiveNav(id);
       if (id === "home" && homeData) {
         homeData.latestReviews = readHomeForm();
+        readTopPicksForm();
         renderHomeEditor();
       }
       if (id === "pins" && pinsData) {
@@ -1650,13 +1922,15 @@
         imageAlt: "",
         blurb: "",
         pros: [],
-        amazonUrl: "https://link.amazon/",
+        amazonUrl: "",
         guideUrl: "/articles/",
       });
       renderTopPicksEditor();
     });
     $("#btn-pins-save")?.addEventListener("click", () => savePins());
     $("#btn-products-save")?.addEventListener("click", () => saveProducts());
+    $("#btn-home-offline")?.addEventListener("click", () => openHomeOfflinePreview());
+    $("#btn-pins-offline")?.addEventListener("click", () => openPinsOfflinePreview());
     $("#btn-products-offline")?.addEventListener("click", () => openProductsOfflinePreview());
     $("#btn-pin-add")?.addEventListener("click", () => addPin());
     $("#btn-hub-add")?.addEventListener("click", () => addHubSection());

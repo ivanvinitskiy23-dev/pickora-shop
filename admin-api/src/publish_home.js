@@ -17,6 +17,7 @@
  */
 
 import { getFile, putFile } from "./github.js";
+import { injectStudioPreviewChrome } from "./publish_products.js";
 
 // Marker preserved after the 4 cards (mirrors Python KEEP_COMMENT)
 const KEEP_COMMENT =
@@ -143,7 +144,7 @@ export function patchTopPickShell(html, pick) {
     .join("\n");
 
   html = html.replace(
-    /(<img class="pk-top-pick-img" src=")[^"]+(")/, `$1${img}$2`
+    /(<img class="pk-top-pick-img" src=")[^"]*(")/, `$1${img}$2`
   );
   html = html.replace(
     /(class="pk-top-pick-img"[^>]*alt=")[^"]*(")/,  `$1${alt}$2`
@@ -172,6 +173,63 @@ export function patchTopPickShell(html, pick) {
   );
 
   return html;
+}
+
+// ---------------------------------------------------------------------------
+// Offline preview (same patchers as publish; no GitHub write)
+// ---------------------------------------------------------------------------
+
+export function applyHomeDraftToHtml(html, draft) {
+  const reviews = draft.latestReviews;
+  if (!Array.isArray(reviews) || reviews.length !== 4) {
+    throw new Error(
+      `latestReviews must be exactly 4 items, got ${
+        Array.isArray(reviews) ? reviews.length : "non-array"
+      }`
+    );
+  }
+  const cards = reviews.map((r) => buildRevCard(r)).join("\n\n");
+  let updated = replaceReviewsGrid(html, cards);
+  if (draft.topPicks) {
+    const first = draft.topPicks.picks?.[0] || {
+      title: "",
+      image: "",
+      imageAlt: "",
+      category: "",
+      tagline: "",
+      blurb: "",
+      amazonUrl: "#",
+      guideUrl: "#",
+      pros: [],
+    };
+    updated = patchTopPickShell(updated, first);
+  }
+  return updated;
+}
+
+export async function loadHomeTemplateHtml(env) {
+  if (env?.GITHUB_TOKEN) {
+    try {
+      const file = await getFile(env, "index.html");
+      if (file?.content) return { html: file.content, source: "github" };
+    } catch {
+      /* fall through to live */
+    }
+  }
+  const res = await fetch("https://pickora.shop/", {
+    headers: { "User-Agent": "pickora-admin-api/preview" },
+  });
+  if (!res.ok) throw new Error("template_unavailable");
+  return { html: await res.text(), source: "live" };
+}
+
+export function buildHomePreviewHtml(templateHtml, draft, meta = {}) {
+  const html = applyHomeDraftToHtml(templateHtml, draft);
+  return injectStudioPreviewChrome(html, {
+    title: "Home",
+    label: "home",
+    previewBy: meta.previewBy,
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -218,12 +276,7 @@ export async function publishHomeDraft(env, draft) {
   const homePage = await getFile(env, "index.html");
   if (!homePage) throw new Error("index.html missing on GitHub");
 
-  const cards      = reviews.map((r) => buildRevCard(r)).join("\n\n");
-  let updatedHome  = replaceReviewsGrid(homePage.content, cards);
-
-  if (draft.topPicks?.picks?.length > 0) {
-    updatedHome = patchTopPickShell(updatedHome, draft.topPicks.picks[0]);
-  }
+  let updatedHome = applyHomeDraftToHtml(homePage.content, draft);
 
   const homeResult = await putFile(
     env, "index.html",

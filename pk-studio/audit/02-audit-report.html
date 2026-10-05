@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Полный аудит — Pickora Studio</title>
+  <style>
+    :root {
+      --ink: #0f172a; --muted: #475569; --line: #e2e8f0; --bg: #f8fafc; --card: #fff;
+      --blue: #1d4ed8; --accent: #0f766e; --p0: #b91c1c; --p1: #c2410c; --p2: #a16207; --p3: #475569;
+      --ok: #047857;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font: 15px/1.55 "Segoe UI", system-ui, sans-serif; color: var(--ink);
+      background: radial-gradient(900px 420px at 0% -5%, #fee2e2 0%, transparent 50%),
+                  radial-gradient(800px 400px at 100% 0%, #dbeafe 0%, transparent 45%), var(--bg);
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 36px 18px 90px; }
+    header { border-bottom: 1px solid var(--line); padding-bottom: 22px; margin-bottom: 22px; }
+    .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 8px; }
+    h1 { font-size: clamp(1.5rem, 3vw, 2.1rem); margin: 0 0 10px; line-height: 1.2; }
+    .dek { color: var(--muted); max-width: 68ch; margin: 0; }
+    nav.docs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    nav.docs a { text-decoration: none; color: var(--blue); background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 650; }
+    h2 { margin: 34px 0 12px; font-size: 1.28rem; }
+    h3 { margin: 20px 0 8px; font-size: 1.05rem; }
+    .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: 16px 0; }
+    .stat { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+    .stat b { display: block; font-size: 1.6rem; line-height: 1; margin-bottom: 4px; }
+    .stat span { font-size: 12px; color: var(--muted); }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+    th, td { border-bottom: 1px solid var(--line); padding: 10px 10px; text-align: left; vertical-align: top; }
+    th { background: #f1f5f9; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+    code { font-family: ui-monospace, Consolas, monospace; font-size: .88em; background: #f1f5f9; padding: 1px 5px; border-radius: 4px; }
+    .finding {
+      background: var(--card); border: 1px solid var(--line); border-left-width: 4px;
+      border-radius: 12px; padding: 14px 16px; margin: 12px 0;
+    }
+    .finding.p0 { border-left-color: var(--p0); }
+    .finding.p1 { border-left-color: var(--p1); }
+    .finding.p2 { border-left-color: var(--p2); }
+    .finding.p3 { border-left-color: var(--p3); }
+    .finding h3 { margin: 0 0 8px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .tag { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px; color: #fff; }
+    .tag.p0 { background: var(--p0); }
+    .tag.p1 { background: var(--p1); }
+    .tag.p2 { background: var(--p2); }
+    .tag.p3 { background: var(--p3); }
+    .tag.mod { background: #334155; }
+    .sol { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 10px 12px; margin-top: 10px; }
+    .sol strong { color: var(--ok); }
+    .muted { color: var(--muted); }
+    ul.compact li { margin: 4px 0; }
+    footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+    details { margin: 10px 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; }
+    summary { cursor: pointer; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">Pickora Studio · Документ 2/4</p>
+      <h1>Полный аудит админ-панели + решения</h1>
+      <p class="dek">Инвентаризация экранов, кнопок, API и найденных дыр. У каждой проблемы — конкретное решение. Цель: видеть, что упущено, что не работает, что чинить первым.</p>
+      <nav class="docs">
+        <a href="./01-audit-plan.html">1. План аудита</a>
+        <a href="./02-audit-report.html">2. Полный аудит + решения</a>
+        <a href="./03-fix-plan.html">3. План исправлений</a>
+        <a href="./04-roadmap.html">4. План развития</a>
+        <a href="./05-before-after.html">5. Было → стало</a>
+      </nav>
+    </header>
+
+    <div class="summary">
+      <div class="stat"><b>12</b><span>экранов (login + 11 панелей)</span></div>
+      <div class="stat"><b>~40</b><span>статических кнопок/ссылок</span></div>
+      <div class="stat"><b>~22</b><span>API-путей из Studio</span></div>
+      <div class="stat"><b>43</b><span>находок A-01…A-43 (память FINDINGS.md)</span></div>
+    </div>
+
+    <h2>1. Карта экранов</h2>
+    <table>
+      <thead><tr><th>data-view</th><th>Меню</th><th>Открытие</th><th>Главные действия</th></tr></thead>
+      <tbody>
+        <tr><td><code>login</code></td><td>—</td><td>без сессии</td><td>Войти</td></tr>
+        <tr><td><code>dash</code></td><td>Обзор</td><td>после login</td><td>Shortcuts Publish / Articles / Home</td></tr>
+        <tr><td><code>home</code></td><td>Главная</td><td>openHome</td><td>Reviews×4, Top picks, Save, Live/Lab</td></tr>
+        <tr><td><code>articles</code></td><td>Статьи</td><td>PK_ARTICLES.open</td><td>Drafts, blocks, SEO gate, preview, seo_ready</td></tr>
+        <tr><td><code>products</code></td><td>Товары</td><td>openProducts</td><td>Hubs, products, buy links, offline, Save</td></tr>
+        <tr><td><code>pins</code></td><td>Pins</td><td>openPins</td><td>Pins CRUD, products text, Save, Live</td></tr>
+        <tr><td><code>media</code></td><td>Медиа</td><td>PK_OPS.openMedia</td><td>List + Delete (нет Upload)</td></tr>
+        <tr><td><code>publish</code></td><td>Publish</td><td>PK_OPS.openPublish</td><td>Publish modules/articles, Rollback</td></tr>
+        <tr><td><code>seo</code></td><td>SEO</td><td>PK_OPS.openSeo</td><td>Сбор ссылок, check ≤20, audit</td></tr>
+        <tr><td><code>status</code></td><td>Статус</td><td>PK_OPS.openStatus</td><td>Refresh snapshot</td></tr>
+        <tr><td><code>team</code></td><td>Команда</td><td>PK_OPS.openTeam</td><td>Invite / remove (owner)</td></tr>
+        <tr><td><code>panel</code></td><td>fallback</td><td>ошибка модуля</td><td>«Скоро» (текст устарел)</td></tr>
+      </tbody>
+    </table>
+
+    <h2>2. API, которые дергает Studio</h2>
+    <details open>
+      <summary>Список endpoints</summary>
+      <ul class="compact">
+        <li><code>POST /api/login</code>, <code>POST /api/logout</code>, <code>GET /api/me</code></li>
+        <li><code>GET/POST /api/content/home|pins|products|articles</code>, <code>GET .../articles/:slug</code></li>
+        <li><code>POST /api/preview/article</code>, <code>POST /api/preview/products</code> — <em>нет preview/home, preview/pins</em></li>
+        <li><code>POST /api/publish/:mod</code>, <code>POST /api/publish/article</code>, snapshots, rollback</li>
+        <li><code>POST /api/media/upload</code>, <code>GET /api/media/list</code>, <code>GET/DELETE /api/media/file/…</code></li>
+        <li><code>POST /api/links/check</code>, <code>GET /api/audit</code>, <code>GET /api/status</code></li>
+        <li><code>GET /api/team</code>, <code>POST /api/team/invite|remove</code></li>
+      </ul>
+    </details>
+
+    <h2>3. Паритет модулей (что упущено)</h2>
+    <table>
+      <thead><tr><th>Возможность</th><th>Articles</th><th>Products</th><th>Pins</th><th>Home</th></tr></thead>
+      <tbody>
+        <tr><td>Draft offline preview</td><td>да</td><td>да</td><td><strong>нет</strong></td><td><strong>нет</strong></td></tr>
+        <tr><td>SEO gate перед publish</td><td>да</td><td>нет</td><td>нет</td><td>нет</td></tr>
+        <tr><td>Мульти-магазины UI</td><td>в блоках</td><td>да</td><td>только текст</td><td>1 поле Amazon</td></tr>
+        <tr><td>Валидация ссылок на Save</td><td>через gate</td><td>да</td><td><strong>нет</strong></td><td><strong>нет</strong></td></tr>
+        <tr><td>Reorder ↑↓</td><td>блоки</td><td>товары</td><td><strong>нет</strong></td><td>top picks</td></tr>
+        <tr><td>Upload картинки</td><td>cover+blocks</td><td>hub+product</td><td>pin</td><td>review+pick</td></tr>
+        <tr><td>Media-панель upload</td><td colspan="4">только list/delete — upload только из редакторов</td></tr>
+      </tbody>
+    </table>
+
+    <h2>4. Находки и решения</h2>
+
+    <article class="finding p0">
+      <h3><span class="tag p0">P0</span><span class="tag mod">Team</span> A-01 · Owner-проверка сломана</h3>
+      <p><strong>Факт:</strong> <code>sessionIsOwner()</code> смотрит <code>s.user.owner</code>, а сессия кладётся плоско: <code>{ token, login, role, owner }</code> в <code>auth.js</code>.</p>
+      <p class="muted">Файл: <code>pk-studio/js/ops.js</code> (~647), <code>auth.js</code> (~47–52).</p>
+      <p><strong>Почему важно:</strong> invite/remove админов могут быть скрыты даже у owner — «я не могу управлять командой».</p>
+      <div class="sol"><strong>Решение:</strong> <code>return !!(s?.owner || s?.user?.owner || s?.role === "owner");</code> + smoke-тест после login.</div>
+    </article>
+
+    <article class="finding p1">
+      <h3><span class="tag p1">P1</span><span class="tag mod">Home/Pins</span> A-02 · Нет draft-preview</h3>
+      <p><strong>Факт:</strong> Articles и Products имеют blob-preview API. Home и Pins — только Live/Lab. Live = последний publish, не Cloudflare-черновик.</p>
+      <p><strong>Почему важно:</strong> правки «Сохранить черновик» нельзя увидеть до Publish → страх и лишние коммиты.</p>
+      <div class="sol"><strong>Решение:</strong> <code>POST /api/preview/home</code> и <code>/api/preview/pins</code> по образцу products (template с GitHub/live + inject draft + banner). Кнопки «Проверить офлайн» в Home/Pins.</div>
+    </article>
+
+    <article class="finding p1">
+      <h3><span class="tag p1">P1</span><span class="tag mod">Home/Pins</span> A-03 · Нет валидации affiliate-ссылок на Save</h3>
+      <p><strong>Факт:</strong> Products блокирует placeholder <code>https://link.amazon/</code>. Home Top picks и Pins products text — нет. Можно сохранить stubs и опубликовать.</p>
+      <div class="sol"><strong>Решение:</strong> общий <code>isGoodBuyUrl()</code> на Save Home/Pins; для Pins парсить <code>links[]</code>; предупреждение до Publish module.</div>
+    </article>
+
+    <article class="finding p1">
+      <h3><span class="tag p1">P1</span><span class="tag mod">Publish</span> A-04 · Module publish без клиентского гейта</h3>
+      <p><strong>Факт:</strong> Articles → SEO gate → seo_ready. Home/Pins/Products → один клик Publish без проверки ссылок/картинок/пустых карточек.</p>
+      <div class="sol"><strong>Решение:</strong> preflight checklist в Publish (битые amzn, пустые image, TODO) с блокировкой или явной «Publish anyway».</div>
+    </article>
+
+    <article class="finding p1">
+      <h3><span class="tag p1">P1</span><span class="tag mod">Media</span> A-05 · Удаление файла не чистит черновики</h3>
+      <p><strong>Факт:</strong> Media delete убирает файл из D1/списка, но пути в home/pins/products/articles остаются → битые картинки на live после publish.</p>
+      <div class="sol"><strong>Решение:</strong> перед delete — scan drafts на path/key; warn «используется в N местах»; опционально null-out references.</div>
+    </article>
+
+    <article class="finding p1">
+      <h3><span class="tag p1">P1</span><span class="tag mod">Media</span> A-06 · В панели Media нет Upload</h3>
+      <p><strong>Факт:</strong> Upload только из карточек редакторов. Владелец не может «просто залить картинку в библиотеку».</p>
+      <div class="sol"><strong>Решение:</strong> кнопка Upload в Media + preferredName/SEO filename + копирование path в clipboard.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Pins</span> A-07 · Multi-store только текстом</h3>
+      <p><strong>Факт:</strong> Products имеют UI buy-links. Pins — textarea <code>Name | Amazon | url | …</code>. Легко ошибиться форматом.</p>
+      <div class="sol"><strong>Решение:</strong> тот же <code>buyLinksEditorHtml</code> + список товаров пина как мини-карточки (не только textarea).</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Home</span> A-08 · Top pick = один Amazon</h3>
+      <p><strong>Факт:</strong> После multi-store в Products/Articles, Home carousel всё ещё одно поле Amazon.</p>
+      <div class="sol"><strong>Решение:</strong> <code>links[]</code> у top picks + render нескольких CTA на главной (или primary + secondary).</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Articles</span> A-09 · Live-статьи нельзя открыть в редакторе</h3>
+      <p><strong>Факт:</strong> Список «Уже на сайте» только для просмотра. Править опубликованную статью = нет пути «open from live».</p>
+      <div class="sol"><strong>Решение:</strong> «Импорт в черновик» из live HTML/slug или sync draft from GitHub page.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">UX</span> A-10 · Placeholder stubs размножаются</h3>
+      <p><strong>Факт:</strong> New product / top pick / blocks стартуют с <code>https://link.amazon/</code> или <code>https://amzn.to/</code> без кода.</p>
+      <div class="sol"><strong>Решение:</strong> пустой url + placeholder hint; Save/seo_ready блокируют пустое; не писать stub в JSON.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Ops</span> A-11 · Мёртвые кнопки Back</h3>
+      <p><strong>Факт:</strong> <code>ops.js</code> вешает listeners на <code>#btn-back-from-publish|seo|team|status|media</code> — в HTML их нет.</p>
+      <div class="sol"><strong>Решение:</strong> удалить мёртвый код или вернуть кнопки «← Обзор» в шапки панелей.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">i18n</span> A-12 · Placeholders не переводятся</h3>
+      <p><strong>Факт:</strong> <code>data-i18n-placeholder</code> на art-title/dek есть, <code>applyI18n</code> меняет только textContent.</p>
+      <div class="sol"><strong>Решение:</strong> в applyI18n: если attr placeholder — ставить <code>el.placeholder = t(key)</code>.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Media</span> A-13 · Hardcoded Worker host в imgSrc</h3>
+      <p><strong>Факт:</strong> Studio всегда тянет media с production Worker, даже при local API <code>:8787</code>.</p>
+      <div class="sol"><strong>Решение:</strong> строить media base из <code>PK_AUTH.API</code>.</div>
+    </article>
+
+    <article class="finding p3">
+      <h3><span class="tag p3">P3</span><span class="tag mod">Security UX</span> A-14 · Prefill логина owner в HTML</h3>
+      <p><strong>Факт:</strong> <code>value="qwiqlyowner@pickora"</code> в login form.</p>
+      <div class="sol"><strong>Решение:</strong> убрать value; помнить login в localStorage после успешного входа (опционально).</div>
+    </article>
+
+    <article class="finding p3">
+      <h3><span class="tag p3">P3</span><span class="tag mod">Cache</span> A-15 · Разный cache-bust JS/CSS</h3>
+      <p><strong>Факт:</strong> CSS/app <code>?v=20261005a</code>, часть скриптов всё ещё <code>20261003d/i</code> → риск старого ops/i18n в браузере.</p>
+      <div class="sol"><strong>Решение:</strong> один <code>STUDIO_ASSET_V</code> на все script/link при каждом релизе Studio.</div>
+    </article>
+
+    <article class="finding p3">
+      <h3><span class="tag p3">P3</span><span class="tag mod">Copy</span> A-16 · Fallback panel «скоро»</h3>
+      <p><strong>Факт:</strong> <code>data-view="panel"</code> говорит что Publish/SEO/Team ещё впереди — они уже есть.</p>
+      <div class="sol"><strong>Решение:</strong> текст «модуль не загрузился / ошибка» + retry.</div>
+    </article>
+
+    <article class="finding p3">
+      <h3><span class="tag p3">P3</span><span class="tag mod">Code</span> A-17 · Мёртвый код</h3>
+      <p><strong>Факт:</strong> <code>fileToDataUrl</code> (app.js), <code>duplicateAt</code> (blocks.js), i18n <code>productsBadAmazon</code> неиспользуемый.</p>
+      <div class="sol"><strong>Решение:</strong> удалить или довести (duplicate block button).</div>
+    </article>
+
+    <article class="finding p3">
+      <h3><span class="tag p3">P3</span><span class="tag mod">Pins</span> A-18 · Нет reorder пинов</h3>
+      <p><strong>Факт:</strong> Новые пины сверху (unshift), но нет ↑↓ как у products/top picks. Порядок на доске ещё и shuffle на live.</p>
+      <div class="sol"><strong>Решение:</strong> ↑↓ в Studio + опция «не шаффлить» на categories (или seed shuffle).</div>
+    </article>
+
+    <h2>4b. Pass 2 — доп. находки (дешёвый dig)</h2>
+    <p class="muted">Память агента: <code>pk-studio/audit/FINDINGS.md</code> (+ Agent Store). Ниже — новые ID после A-18.</p>
+
+    <article class="finding p1">
+      <h3><span class="tag p1">P1</span><span class="tag mod">SEO</span> A-19 · listArticleDrafts без blocks</h3>
+      <p><strong>Факт:</strong> SEO-сканер в Studio читает <code>d.blocks</code>, а список черновиков API отдаёт только slug/title/status/affiliateLinks/cover — блоки не приходят → ссылки из блоков статей могут не попасть в очередь.</p>
+      <div class="sol"><strong>Решение:</strong> отдавать blocks (или link-extract) в list API, либо догружать каждый slug в <code>loadSeo</code>.</div>
+    </article>
+
+    <article class="finding p3">
+      <h3><span class="tag p3">P3</span><span class="tag mod">Media</span> A-20 · Public GET media (by design)</h3>
+      <p><strong>Факт:</strong> <code>GET /api/media/file/*</code> без auth — нужно для <code>&lt;img&gt;</code> на live. Не баг само по себе, но ключи угадываемые.</p>
+      <div class="sol"><strong>Решение:</strong> задокументировать; позже signed URL / только публичный CDN path.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Security</span> A-21 · links/check SSRF</h3>
+      <p><strong>Факт:</strong> сервер fetch’ит произвольные URL из body (для авторизованного админа).</p>
+      <div class="sol"><strong>Решение:</strong> allowlist доменов + блок private/link-local + лимит редиректов.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">SEO UX</span> A-22 · 401 → «0 ссылок»</h3>
+      <p><strong>Факт:</strong> <code>loadSeo</code> не проверяет <code>res.ok</code>.</p>
+      <div class="sol"><strong>Решение:</strong> fail + logout на 401.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">SEO UX</span> A-23 · Check только первых 20</h3>
+      <div class="sol"><strong>Решение:</strong> батчи или явная подпись «проверено 20 из N».</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Team</span> A-24 · Audit actor = target</h3>
+      <div class="sol"><strong>Решение:</strong> в audit_log писать login актёра; target — в detail.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Team</span> A-25 · Trim OWNER_* рассинхрон</h3>
+      <div class="sol"><strong>Решение:</strong> один helper trim для login и requireOwner.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Media</span> A-26 · Delete всегда ok</h3>
+      <div class="sol"><strong>Решение:</strong> 404 если строки не было.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Media</span> A-27 · ON CONFLICT overwrite</h3>
+      <div class="sol"><strong>Решение:</strong> insert-only + суффикс / 409.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Media</span> A-28 · Delete не трогает GitHub</h3>
+      <div class="sol"><strong>Решение:</strong> удалять wp-content blob при наличии token.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Auth</span> A-29 · Offline me() фейковый user</h3>
+      <div class="sol"><strong>Решение:</strong> при сетевой ошибке возвращать null, не синтезировать user.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Ops</span> A-30 · Нет единого 401→logout</h3>
+      <div class="sol"><strong>Решение:</strong> shared fetch wrapper во всех ops.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Auth API</span> A-31 · verifyPassword без null-guard</h3>
+      <div class="sol"><strong>Решение:</strong> валидировать hash; 401 вместо 500.</div>
+    </article>
+
+    <article class="finding p1">
+      <h3><span class="tag p1">P1</span><span class="tag mod">Publish</span> A-32 · absUrl pins/products без media rewrite</h3>
+      <p><strong>Факт:</strong> Home publish переписывает <code>/api/media/file/…</code> на Worker. Pins/Products — нет → битые картинки на Pages при относительных media-путях.</p>
+      <div class="sol"><strong>Решение:</strong> общий helper как в <code>publish_home.js</code>.</div>
+    </article>
+
+    <article class="finding p1">
+      <h3><span class="tag p1">P1</span><span class="tag mod">Home</span> A-33 · Смена языка сбрасывает Top picks</h3>
+      <p><strong>Факт:</strong> <code>#btn-lang</code> делает <code>readHomeForm</code> + <code>renderHomeEditor</code> без <code>readTopPicksForm</code>.</p>
+      <div class="sol"><strong>Решение:</strong> вызвать <code>readTopPicksForm()</code> перед render.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">SEO gate</span> A-34 · Richtext ссылки не в collect</h3>
+      <div class="sol"><strong>Решение:</strong> парсить affiliate URL из bodyHtml/richtext.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Publish home</span> A-35 · Пустые top picks → stale HTML</h3>
+      <div class="sol"><strong>Решение:</strong> патчить пустой shell при length 0.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Pins</span> A-36 · Filters не редактируются</h3>
+      <div class="sol"><strong>Решение:</strong> UI редактора filters.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Articles</span> A-37 · Reopen сбрасывает черновик</h3>
+      <div class="sol"><strong>Решение:</strong> сохранять current или confirm.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Articles</span> A-38 · Cover preview без imgSrc</h3>
+      <div class="sol"><strong>Решение:</strong> тот же normalizer, что у Home/Products.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Products</span> A-39 · replaceProductCards ломается без кнопок</h3>
+      <div class="sol"><strong>Решение:</strong> endRe без btns + Studio требует ≥1 link.</div>
+    </article>
+
+    <article class="finding p3">
+      <h3><span class="tag p3">P3</span><span class="tag mod">Articles</span> A-40 · Live list cap 20</h3>
+      <div class="sol"><strong>Решение:</strong> pagination/search.</div>
+    </article>
+
+    <article class="finding p3">
+      <h3><span class="tag p3">P3</span><span class="tag mod">Blocks</span> A-41 · html block без sanitize</h3>
+      <div class="sol"><strong>Решение:</strong> sanitize/disallow on publish.</div>
+    </article>
+
+    <article class="finding p3">
+      <h3><span class="tag p3">P3</span><span class="tag mod">Home</span> A-42 · Дубли URL в Latest Reviews</h3>
+      <div class="sol"><strong>Решение:</strong> warn/block duplicates.</div>
+    </article>
+
+    <article class="finding p2">
+      <h3><span class="tag p2">P2</span><span class="tag mod">Products</span> A-43 · Save без проверки страницы хаба</h3>
+      <div class="sol"><strong>Решение:</strong> preflight существования <code>{hub}/index.html</code> до Publish.</div>
+    </article>
+
+    <h2>5. Что уже хорошо (не ломать)</h2>
+    <ul class="compact">
+      <li>Products: hub tabs, offline preview 1:1, multi-store buttons, prepend new items.</li>
+      <li>Articles: block constructor, SEO gate, preview, seo_ready → Publish.</li>
+      <li>Media upload: SEO filename владельца + unique suffix при конфликте; Worker URL сразу.</li>
+      <li>Publish rollback ×5 + audit log.</li>
+      <li>RU/EN переключатель.</li>
+    </ul>
+
+    <h2>6. Быстрый ответ владельцу</h2>
+    <table>
+      <thead><tr><th>Вопрос</th><th>Ответ аудита</th></tr></thead>
+      <tbody>
+        <tr><td>Что упустил?</td><td>Preview Home/Pins; валидация ссылок вне Products; Media upload; edit live articles; owner Team bug.</td></tr>
+        <tr><td>Что не работает?</td><td>Team owner UI (A-01); мёртвые Back; placeholders i18n; риск битых картинок после Media delete.</td></tr>
+        <tr><td>Что улучшить срочно?</td><td>A-01…A-06 (см. документ 3).</td></tr>
+      </tbody>
+    </table>
+
+    <footer>
+      Дальше → <a href="./03-fix-plan.html">План исправления проблем</a> · затем <a href="./04-roadmap.html">План развития</a>
+    </footer>
+  </div>
+</body>
+</html>

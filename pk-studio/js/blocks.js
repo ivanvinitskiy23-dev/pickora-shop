@@ -182,7 +182,7 @@ window.PK_BLOCKS = (function () {
           pros: [],
           cons: [],
           verdict: "",
-          links: [{ label: "Amazon", url: "https://amzn.to/", style: "amazon" }],
+          links: [{ label: "Amazon", url: "", style: "amazon" }],
         };
       case "cta":
         return {
@@ -191,7 +191,7 @@ window.PK_BLOCKS = (function () {
           variant: "amazon",
           title: "",
           links: [
-            { label: "Amazon", url: "https://amzn.to/", style: "amazon" },
+            { label: "Amazon", url: "", style: "amazon" },
             { label: "Walmart", url: "", style: "walmart" },
           ],
         };
@@ -383,7 +383,8 @@ window.PK_BLOCKS = (function () {
         return `<div class="pk-mw-verdict pk-block-verdict pk-mw-verdict--${v}">${richToHtml(b.text)}</div>`;
       }
       case "html":
-        return String(b.html || "");
+        // Never ship unsanitized raw HTML from drafts (A-41)
+        return sanitizeRichHtml(b.html || "");
       default:
         return "";
     }
@@ -488,16 +489,6 @@ window.PK_BLOCKS = (function () {
       const b = createBlock(type);
       if (afterIndex == null || afterIndex < 0) list.push(b);
       else list.splice(afterIndex + 1, 0, b);
-      paint({ skipDomRead: true });
-      emit();
-    }
-
-    function duplicateAt(i) {
-      const src = list[i];
-      if (!src) return;
-      const copy = JSON.parse(JSON.stringify(src));
-      copy.id = uid();
-      list.splice(i + 1, 0, copy);
       paint({ skipDomRead: true });
       emit();
     }
@@ -976,7 +967,7 @@ window.PK_BLOCKS = (function () {
         card.querySelector("[data-link-add]")?.addEventListener("click", () => {
           readDomIntoList();
           b.links = Array.isArray(b.links) ? b.links : [];
-          b.links.push({ label: "Amazon", url: "https://amzn.to/", style: "amazon" });
+          b.links.push({ label: "Amazon", url: "", style: "amazon" });
           paint({ skipDomRead: true });
           emit();
         });

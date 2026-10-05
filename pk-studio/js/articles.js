@@ -7,6 +7,35 @@
   let drafts = [];
   let current = null;
   let blocksApi = null;
+  let lastSyncedFingerprint = "";
+
+  function draftFingerprint(d) {
+    const x = d || {};
+    return JSON.stringify({
+      slug: x.slug || "",
+      type: x.type || 2,
+      title: x.title || "",
+      metaDescription: x.metaDescription || "",
+      h1: x.h1 || "",
+      dek: x.dek || "",
+      hubCategory: x.hubCategory || "",
+      chips: x.chips || [],
+      coverImage: x.coverImage || "",
+      coverAlt: x.coverAlt || "",
+      affiliateLinks: x.affiliateLinks || [],
+      internalLinks: x.internalLinks || [],
+      blocks: x.blocks || [],
+    });
+  }
+
+  function isDraftDirty() {
+    if (!current) return false;
+    try {
+      return draftFingerprint(readForm()) !== lastSyncedFingerprint;
+    } catch {
+      return true;
+    }
+  }
 
   function t(key) {
     const lang = localStorage.getItem("pk_studio_lang") || "ru";
@@ -26,6 +55,21 @@
       .replace(/&/g, "&amp;")
       .replace(/"/g, "&quot;")
       .replace(/</g, "&lt;");
+  }
+
+  function mediaSrc(path) {
+    if (!path) return "";
+    const p = String(path).trim();
+    const mediaBase =
+      (window.PK_AUTH?.API || "https://pickora-admin-api.pickara-admin.workers.dev").replace(
+        /\/$/,
+        ""
+      ) + "/api/media/file/";
+    if (/^\/?api\/media\/file\//i.test(p) || /^https?:\/\/pickora\.shop\/api\/media\/file\//i.test(p)) {
+      const key = p.replace(/^https?:\/\/pickora\.shop/i, "").replace(/^\/?api\/media\/file\//i, "");
+      return mediaBase + key;
+    }
+    return p;
   }
 
   /** Hub category → Articles filter tab (never product hubs). */
@@ -222,27 +266,52 @@
     const thumb = $("#art-cover-preview");
     if (thumb) {
       if (current.coverImage) {
-        thumb.innerHTML = `<img src="${escapeAttr(current.coverImage)}" alt="">`;
+        const src = mediaSrc(current.coverImage);
+        thumb.innerHTML = `<img src="${escapeAttr(src)}" alt="">`;
       } else {
         thumb.innerHTML = `<div class="review-thumb-empty">${escapeAttr(t("noImage"))}</div>`;
       }
     }
     syncBlocksEditor(current.blocks);
+    lastSyncedFingerprint = draftFingerprint(current);
   }
 
   function renderLists() {
     const live = $("#articles-live");
     const draftBox = $("#articles-drafts");
+    const q = String($("#articles-live-search")?.value || "")
+      .trim()
+      .toLowerCase();
+    const filtered = !q
+      ? liveArticles
+      : liveArticles.filter(
+          (a) =>
+            String(a.title || "")
+              .toLowerCase()
+              .includes(q) ||
+            String(a.url || "")
+              .toLowerCase()
+              .includes(q)
+        );
     if (live) {
-      live.innerHTML = liveArticles
-        .slice(0, 20)
+      live.innerHTML = filtered
         .map(
-          (a) => `<div class="panel" style="padding:14px">
+          (a) => `<div class="panel" style="padding:14px;display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px">
+          <div>
           <strong>${escapeAttr(a.title)}</strong>
           <p class="path-hint" style="margin:6px 0 0">${escapeAttr(a.url)}</p>
+          </div>
+          <button type="button" class="btn btn-ghost btn-xs" data-import-live="${escapeAttr(
+            a.slug
+          )}">${escapeAttr(t("btnImportLiveArticle"))}</button>
         </div>`
         )
-        .join("");
+        .join("") || `<p class="hint">${escapeAttr(t("articlesLiveEmpty") || "—")}</p>`;
+      $$("[data-import-live]", live).forEach((btn) => {
+        btn.addEventListener("click", () =>
+          importLiveArticle(btn.getAttribute("data-import-live"))
+        );
+      });
     }
     if (draftBox) {
       draftBox.innerHTML = drafts.length
@@ -298,6 +367,42 @@
     const data = await res.json();
     fillForm(data);
     showWizard(true);
+  }
+
+  async function importLiveArticle(slug) {
+    if (!slug) return;
+    const existing = drafts.find((d) => d.slug === slug);
+    if (existing && !confirm(t("articlesImportOverwrite").replace("{slug}", slug))) {
+      return;
+    }
+    if (isDraftDirty() && !confirm(t("articlesImportDiscardDirty"))) {
+      return;
+    }
+    setStatus(t("loading"));
+    try {
+      const res = await fetch(
+        window.PK_AUTH.API + "/api/articles/" + encodeURIComponent(slug) + "/live",
+        { headers: authHeaders(), credentials: "include" }
+      );
+      const data = await res.json();
+      if (!res.ok) {
+        setStatus(data.error || t("articlesImportFail"), "warn");
+        return;
+      }
+      const draft = {
+        ...data,
+        slug: data.slug || slug,
+        status: "draft",
+      };
+      delete draft.publishedAt;
+      delete draft.note;
+      current = draft;
+      fillForm(draft);
+      showWizard(true);
+      setStatus(t("articlesImportOk"), "ok");
+    } catch (err) {
+      setStatus(t("articlesImportFail") + (err?.message ? ": " + err.message : ""), "warn");
+    }
   }
 
   function setSettingsOpen(on) {
@@ -462,6 +567,9 @@
   }
 
   async function open() {
+    if (isDraftDirty() && !confirm(t("articlesDiscardUnsaved"))) {
+      throw new Error("cancelled");
+    }
     await loadLists();
     showWizard(false);
     fillForm(emptyDraft());
@@ -474,6 +582,7 @@
       fillForm(emptyDraft());
       showWizard(true);
     });
+    $("#articles-live-search")?.addEventListener("input", () => renderLists());
     $("#btn-article-cancel")?.addEventListener("click", () => showWizard(false));
     $("#btn-article-save")?.addEventListener("click", () => saveDraft());
     $("#btn-article-gate")?.addEventListener("click", () => runGate());

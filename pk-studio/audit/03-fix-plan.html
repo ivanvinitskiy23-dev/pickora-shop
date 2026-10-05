@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>План исправлений — Pickora Studio</title>
+  <style>
+    :root { --ink:#0f172a; --muted:#475569; --line:#e2e8f0; --bg:#f8fafc; --card:#fff; --blue:#1d4ed8; --accent:#0f766e; --p0:#b91c1c; --p1:#c2410c; --p2:#a16207; }
+    * { box-sizing: border-box; }
+    body { margin:0; font:15px/1.55 "Segoe UI",system-ui,sans-serif; color:var(--ink);
+      background: radial-gradient(800px 380px at 100% -10%, #ffedd5 0%, transparent 50%), var(--bg); }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 36px 18px 90px; }
+    header { border-bottom:1px solid var(--line); padding-bottom:22px; margin-bottom:22px; }
+    .eyebrow { font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin:0 0 8px; }
+    h1 { font-size: clamp(1.5rem, 3vw, 2.1rem); margin:0 0 10px; line-height:1.2; }
+    .dek { color:var(--muted); max-width:68ch; margin:0; }
+    nav.docs { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+    nav.docs a { text-decoration:none; color:var(--blue); background:#eff6ff; border:1px solid #bfdbfe; border-radius:999px; padding:6px 12px; font-size:13px; font-weight:650; }
+    h2 { margin:32px 0 12px; font-size:1.25rem; }
+    table { width:100%; border-collapse:collapse; font-size:13.5px; background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:12px 0; }
+    th, td { border-bottom:1px solid var(--line); padding:10px; text-align:left; vertical-align:top; }
+    th { background:#f1f5f9; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+    code { font-family:ui-monospace,Consolas,monospace; font-size:.88em; background:#f1f5f9; padding:1px 5px; border-radius:4px; }
+    .phase { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin:14px 0; }
+    .phase h3 { margin:0 0 10px; }
+    .badge { display:inline-block; font-size:11px; font-weight:800; padding:2px 8px; border-radius:999px; color:#fff; margin-right:6px; }
+    .b0 { background:var(--p0); } .b1 { background:var(--p1); } .b2 { background:var(--p2); }
+    ol.tasks > li { margin: 8px 0; }
+    .check { color: var(--muted); font-size: 13px; }
+    footer { margin-top:48px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">Pickora Studio · Документ 3/4</p>
+      <h1>План исправления проблем</h1>
+      <p class="dek">Очередь работ по аудиту A-01…A-18: что чинить в каком спринте, где трогать код, как проверить «готово».</p>
+      <nav class="docs">
+        <a href="./01-audit-plan.html">1. План аудита</a>
+        <a href="./02-audit-report.html">2. Полный аудит + решения</a>
+        <a href="./03-fix-plan.html">3. План исправлений</a>
+        <a href="./04-roadmap.html">4. План развития</a>
+        <a href="./05-before-after.html">5. Было → стало</a>
+      </nav>
+    </header>
+
+    <h2>Правила выполнения</h2>
+    <ul>
+      <li>Один PR/коммит = одна фаза или одна P0/P1 тема (не мешать с roadmap-фичами).</li>
+      <li>После Studio UI — bump <code>?v=</code> на всех затронутых assets.</li>
+      <li>После admin-api — <code>wrangler deploy</code>.</li>
+      <li>Не публиковать на live без вашей явной команды Publish.</li>
+    </ul>
+
+    <div class="phase">
+      <h3><span class="badge b0">Фаза 0</span> Срочно (1 сессия)</h3>
+      <ol class="tasks">
+        <li>
+          <strong>A-01 Team owner</strong> — починить <code>sessionIsOwner</code> в <code>ops.js</code>.
+          <div class="check">Проверка: войти owner → видны Invite + Remove.</div>
+        </li>
+        <li>
+          <strong>A-33</strong> — lang switch: <code>readTopPicksForm()</code> перед render Home.
+          <div class="check">Проверка: правка Top pick → сменить язык → текст на месте.</div>
+        </li>
+        <li>
+          <strong>A-11 + A-17</strong> — удалить мёртвые <code>btn-back-from-*</code> bindings и неиспользуемые функции (или вернуть Back в UI).
+          <div class="check">Проверка: нет ошибок в консоли на открытии Publish/SEO/Team.</div>
+        </li>
+        <li>
+          <strong>A-14</strong> — убрать prefill логина из HTML.
+          <div class="check">Проверка: поле login пустое на холодном заходе.</div>
+        </li>
+        <li>
+          <strong>A-15</strong> — единый cache-bust для css/js Studio.
+          <div class="check">Проверка: hard-refresh подтягивает новый ops/app.</div>
+        </li>
+      </ol>
+      <p><em>Файлы:</em> <code>ops.js</code>, <code>auth.js</code> (если нужно), <code>index.html</code>, <code>app.js</code>, <code>blocks.js</code>.</p>
+    </div>
+
+    <div class="phase">
+      <h3><span class="badge b1">Фаза 1</span> Ссылки и «не опубликовать мусор» (1–2 сессии)</h3>
+      <ol class="tasks">
+        <li>
+          <strong>A-03 + A-10</strong> — общий валидатор URL на Save для Home Top picks и Pins; пустые stubs вместо fake <code>link.amazon/</code> в new items.
+          <div class="check">Проверка: Save с пустой/stub ссылкой → warn; Save с amzn.to/walmart → ok.</div>
+        </li>
+        <li>
+          <strong>A-04 + A-43</strong> — preflight перед Publish + проверка страницы хаба.
+          <div class="check">Проверка: Publish с stub / missing hub page → блокер или confirm.</div>
+        </li>
+        <li>
+          <strong>A-32</strong> — общий media absUrl rewrite в publish_pins/products.
+          <div class="check">Проверка: товар/пин с Worker media path → живая картинка на Pages.</div>
+        </li>
+        <li>
+          <strong>A-19 + A-34</strong> — SEO сбор ссылок из blocks/richtext.
+        </li>
+        <li>
+          <strong>A-12</strong> — i18n placeholders.
+        </li>
+      </ol>
+      <p><em>Файлы:</em> <code>app.js</code>, <code>ops.js</code>, <code>blocks.js</code>, <code>i18n.js</code>, <code>seo-gate.js</code>, <code>publish_*.js</code>, <code>admin-api/src/index.js</code>.</p>
+    </div>
+
+    <div class="phase">
+      <h3><span class="badge b1">Фаза 2</span> Preview паритет (2–3 сессии)</h3>
+      <ol class="tasks">
+        <li>
+          <strong>A-02</strong> — <code>POST /api/preview/home</code> + кнопка Offline в Home.
+          <div class="check">Проверка: черновик Top picks виден в blob до Publish.</div>
+        </li>
+        <li>
+          <strong>A-02</strong> — <code>POST /api/preview/pins</code> + offline в Pins (с banner, как products).
+          <div class="check">Проверка: новый pin сверху в preview; multi-store links в popup.</div>
+        </li>
+        <li>
+          <strong>A-13</strong> — media base из <code>PK_AUTH.API</code>.
+          <div class="check">Проверка: local Studio показывает local Worker media.</div>
+        </li>
+      </ol>
+      <p><em>Файлы:</em> <code>admin-api/src/index.js</code>, <code>publish_home.js</code>, <code>publish_pins.js</code>, <code>app.js</code>, <code>index.html</code>.</p>
+      <p><em>Деплой:</em> обязателен <code>wrangler deploy</code>.</p>
+    </div>
+
+    <div class="phase">
+      <h3><span class="badge b1">Фаза 3</span> Media reliability (1–2 сессии)</h3>
+      <ol class="tasks">
+        <li>
+          <strong>A-06</strong> — Upload в панели Media + copy path.
+          <div class="check">Проверка: залил webp → вижу в grid → path в clipboard.</div>
+        </li>
+        <li>
+          <strong>A-05</strong> — перед delete: usage scan по drafts.
+          <div class="check">Проверка: удаление используемого файла → предупреждение со списком модулей.</div>
+        </li>
+      </ol>
+      <p><em>Файлы:</em> <code>ops.js</code>, <code>index.html</code>, <code>admin-api</code> (optional <code>/api/media/usage</code>).</p>
+    </div>
+
+    <div class="phase">
+      <h3><span class="badge b2">Фаза 4</span> UX-паритет (после P0/P1)</h3>
+      <ol class="tasks">
+        <li><strong>A-07</strong> — UI buy-links в Pins как в Products.</li>
+        <li><strong>A-08</strong> — multi-store у Top picks (+ publish_home CTA).</li>
+        <li><strong>A-09</strong> — «Открыть live статью как черновик».</li>
+        <li><strong>A-16</strong> — честный fallback panel.</li>
+        <li><strong>A-18</strong> — reorder пинов + контроль shuffle.</li>
+      </ol>
+    </div>
+
+    <h2>Матрица «готово»</h2>
+    <table>
+      <thead><tr><th>ID</th><th>Фаза</th><th>Критерий done</th><th>Deploy</th></tr></thead>
+      <tbody>
+        <tr><td>A-01</td><td>0</td><td>Owner видит Team invite</td><td>Pages</td></tr>
+        <tr><td>A-02</td><td>2</td><td>Offline Home+Pins blob</td><td>Worker+Pages</td></tr>
+        <tr><td>A-03</td><td>1</td><td>Save блокирует stubs</td><td>Pages</td></tr>
+        <tr><td>A-04</td><td>1</td><td>Publish preflight</td><td>Pages</td></tr>
+        <tr><td>A-05</td><td>3</td><td>Delete warn usage</td><td>Worker±</td></tr>
+        <tr><td>A-06</td><td>3</td><td>Media upload UI</td><td>Pages</td></tr>
+        <tr><td>A-07…18</td><td>4 / 0</td><td>по пунктам аудита</td><td>по зоне</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Рекомендуемый порядок коммитов</h2>
+    <ol>
+      <li><code>fix(studio): owner session check + asset cache bust + remove dead back buttons</code></li>
+      <li><code>fix(studio): validate buy links on Home/Pins save; stop stub defaults</code></li>
+      <li><code>feat(studio): publish preflight for modules</code></li>
+      <li><code>feat(api+studio): offline preview for home and pins</code></li>
+      <li><code>feat(studio): media library upload + delete usage warning</code></li>
+      <li>Далее фаза 4 отдельными коммитами</li>
+    </ol>
+
+    <footer>
+      Roadmap улучшений (не баги, а рост) → <a href="./04-roadmap.html">Документ 4</a>
+    </footer>
+  </div>
+</body>
+</html>

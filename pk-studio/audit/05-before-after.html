@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Как было → как стало — Pickora Studio</title>
+  <style>
+    :root { --ink:#0f172a; --muted:#475569; --line:#e2e8f0; --bg:#f8fafc; --card:#fff; --blue:#1d4ed8; --accent:#0f766e; --was:#9f1239; --now:#047857; }
+    * { box-sizing: border-box; }
+    body { margin:0; font:15px/1.55 "Segoe UI",system-ui,sans-serif; color:var(--ink);
+      background: radial-gradient(900px 420px at 0% 0%, #ccfbf1 0%, transparent 55%),
+                  radial-gradient(700px 360px at 100% 0%, #e0e7ff 0%, transparent 50%), var(--bg); }
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 36px 18px 100px; }
+    header { border-bottom:1px solid var(--line); padding-bottom:22px; margin-bottom:22px; }
+    .eyebrow { font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin:0 0 8px; }
+    h1 { font-size: clamp(1.5rem, 3vw, 2.15rem); margin:0 0 10px; line-height:1.15; }
+    .dek { color:var(--muted); max-width:72ch; margin:0; }
+    nav.docs { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+    nav.docs a { text-decoration:none; color:var(--blue); background:#eff6ff; border:1px solid #bfdbfe; border-radius:999px; padding:6px 12px; font-size:13px; font-weight:650; }
+    .sum { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; margin:18px 0 8px; }
+    .sum div { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; }
+    .sum strong { display:block; font-size:1.4rem; line-height:1.1; }
+    .sum span { font-size:12px; color:var(--muted); }
+    h2 { margin:34px 0 12px; font-size:1.22rem; }
+    .pair { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:10px 0 16px; }
+    @media (max-width:720px) { .pair { grid-template-columns:1fr; } }
+    .box { border-radius:12px; padding:12px 14px; border:1px solid var(--line); background:var(--card); font-size:13.5px; }
+    .box.was { border-color:#fecdd3; background:#fff1f2; }
+    .box.now { border-color:#a7f3d0; background:#ecfdf5; }
+    .box .lbl { font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; margin:0 0 6px; }
+    .box.was .lbl { color:var(--was); }
+    .box.now .lbl { color:var(--now); }
+    .id { font-family:ui-monospace,Consolas,monospace; font-size:12px; font-weight:700; color:var(--muted); }
+    table { width:100%; border-collapse:collapse; font-size:13px; background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+    th, td { border-bottom:1px solid var(--line); padding:9px 10px; text-align:left; vertical-align:top; }
+    th { background:#f1f5f9; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+    code { font-family:ui-monospace,Consolas,monospace; font-size:.88em; background:#f1f5f9; padding:1px 5px; border-radius:4px; }
+    .note { background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:12px 14px; font-size:13.5px; margin:16px 0; }
+    footer { margin-top:48px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">Pickora Studio · Документ 5/5</p>
+      <h1>Как было → как стало</h1>
+      <p class="dek">Итог фикс-пасса аудита A-01…A-43 (2026-10-05). Колонка «было» — состояние на момент отчёта; «стало» — после правок в Studio + admin-api.</p>
+      <nav class="docs">
+        <a href="./01-audit-plan.html">1. План аудита</a>
+        <a href="./02-audit-report.html">2. Аудит + решения</a>
+        <a href="./03-fix-plan.html">3. План исправлений</a>
+        <a href="./04-roadmap.html">4. План развития</a>
+        <a href="./05-before-after.html">5. Было → стало</a>
+        <a href="./FINDINGS.md">FINDINGS.md</a>
+      </nav>
+    </header>
+
+    <div class="sum">
+      <div><strong>43</strong><span>находок закрыто</span></div>
+      <div><strong>0</strong><span>OPEN в FINDINGS</span></div>
+      <div><strong>?v=20261005c</strong><span>cache-bust Studio</span></div>
+      <div><strong>Worker</strong><span>нужен wrangler deploy</span></div>
+    </div>
+
+    <div class="note">
+      <strong>Важно после пуша:</strong> UI Studio на GitHub Pages обновится сам. Новые API
+      (<code>/api/preview/home|pins</code>, <code>/api/articles/:slug/live</code>, <code>/api/probe/hubs</code>, delete GitHub media, SSRF allowlist)
+      заработают на проде только после <code>npx wrangler deploy</code> в <code>admin-api/</code>.
+    </div>
+
+    <h2>Критичные и P1</h2>
+
+    <p class="id">A-01 · Team owner</p>
+    <div class="pair">
+      <div class="box was"><p class="lbl">Было</p>Invite-панель не видела owner: <code>sessionIsOwner</code> ждал <code>s.user.owner</code>, а сессия плоская.</div>
+      <div class="box now"><p class="lbl">Стало</p>Читает <code>s.owner</code> / <code>s.user.owner</code> / role — invite и remove работают у владельца.</div>
+    </div>
+
+    <p class="id">A-02 · Offline preview Home/Pins</p>
+    <div class="pair">
+      <div class="box was"><p class="lbl">Было</p>Офлайн-превью только у Products/Articles. Home и Pins — только Live.</div>
+      <div class="box now"><p class="lbl">Стало</p><code>POST /api/preview/home|pins</code> + кнопки «Проверить офлайн» в Studio.</div>
+    </div>
+
+    <p class="id">A-03 · Buy URL на Save</p>
+    <div class="pair">
+      <div class="box was"><p class="lbl">Было</p>Можно сохранить пустые <code>amzn.to/</code> / <code>link.amazon/</code>.</div>
+      <div class="box now"><p class="lbl">Стало</p><code>isGoodBuyUrl</code> на saveHome / savePins / products.</div>
+    </div>
+
+    <p class="id">A-04 · Publish preflight</p>
+    <div class="pair">
+      <div class="box was"><p class="lbl">Было</p>Publish модуля сразу бил в GitHub без чеклиста.</div>
+      <div class="box now"><p class="lbl">Стало</p>Confirm с счётчиками (picks/reviews/hubs) перед publish.</div>
+    </div>
+
+    <p class="id">A-05 · Media delete refs</p>
+    <div class="pair">
+      <div class="box was"><p class="lbl">Было</p>Delete файла без предупреждения, что он в черновиках.</div>
+      <div class="box now"><p class="lbl">Стало</p>Скан home/pins/products/articles → confirm со списком usages.</div>
+    </div>
+
+    <p class="id">A-06 · Media upload UI</p>
+    <div class="pair">
+      <div class="box was"><p class="lbl">Было</p>В Media только список и delete.</div>
+      <div class="box now"><p class="lbl">Стало</p>Upload + показ path + Copy path.</div>
+    </div>
+
+    <h2>Контент-редакторы</h2>
+
+    <p class="id">A-07 / A-08 · Multi-store Pins + Top picks</p>
+    <div class="pair">
+      <div class="box was"><p class="lbl">Было</p>Пины — textarea; top picks — один Amazon URL.</div>
+      <div class="box now"><p class="lbl">Стало</p>Один редактор <code>buyLinksEditorHtml</code>; карусель рендерит несколько CTA из <code>links[]</code>.</div>
+    </div>
+
+    <p class="id">A-09 · Import live article</p>
+    <div class="pair">
+      <div class="box was"><p class="lbl">Было</p>Live-список статей только для просмотра.</div>
+      <div class="box now"><p class="lbl">Стало</p>«Импорт в черновик» через <code>GET /api/articles/:slug/live</code> (нужен JSON на GitHub).</div>
+    </div>
+
+    <p class="id">A-18 / A-36 · Pins UX</p>
+    <div class="pair">
+      <div class="box was"><p class="lbl">Было</p>Нет reorder; shuffle всегда; filters не редактируются.</div>
+      <div class="box now"><p class="lbl">Стало</p>↑↓, чекбокс shuffleOnLoad, редактор фильтров категорий.</div>
+    </div>
+
+    <p class="id">A-33 / A-37 / A-42 · Не терять правки</p>
+    <div class="pair">
+      <div class="box was"><p class="lbl">Было</p>Смена языка сбрасывала top picks; reopen Articles — черновик; дубли URL reviews проходили.</div>
+      <div class="box now"><p class="lbl">Стало</p><code>readTopPicksForm</code> перед re-render; confirm dirty; блок дублей URL.</div>
+    </div>
+
+    <p class="id">A-40 · Live articles list</p>
+    <div class="pair">
+      <div class="box was"><p class="lbl">Было</p>Только первые 20 live-статей.</div>
+      <div class="box now"><p class="lbl">Стало</p>Все + поиск.</div>
+    </div>
+
+    <h2>API / безопасность / publish</h2>
+
+    <p class="id">A-21 · SSRF links/check</p>
+    <div class="pair">
+      <div class="box was"><p class="lbl">Было</p>Worker fetch’ил любые URL от авторизованного админа.</div>
+      <div class="box now"><p class="lbl">Стало</p>Allowlist Amazon/Walmart/BestBuy/Target/Pickora + блок private IP.</div>
+    </div>
+
+    <p class="id">A-24…A-31 · Team / auth / media API</p>
+    <div class="pair">
+      <div class="box was"><p class="lbl">Было</p>Audit log писал target; OWNER trim рассинхрон; delete 200 на missing; ON CONFLICT overwrite; orphan на GitHub; 401 без logout; verifyPassword падал на null salt.</div>
+      <div class="box now"><p class="lbl">Стало</p>Actor в audit; общий <code>ownerEnvCredentials</code>; 404; insert-only+retry; <code>deleteFile</code> на GH; <code>apiFetch</code> 401→reload; null-guard на hash.</div>
+    </div>
+
+    <p class="id">A-35 / A-39 · Publish HTML patch</p>
+    <div class="pair">
+      <div class="box was"><p class="lbl">Было</p>Пустые top picks оставляли stale shell; карточка продукта без buy-кнопок ломала replace.</div>
+      <div class="box now"><p class="lbl">Стало</p>Всегда patch shell (в т.ч. clear); depth-walk конца карточки без кнопок.</div>
+    </div>
+
+    <p class="id">A-41 / A-43 · HTML blocks + hubs</p>
+    <div class="pair">
+      <div class="box was"><p class="lbl">Было</p>Блок <code>html</code> без sanitize; hub без страницы молча skip только на publish.</div>
+      <div class="box now"><p class="lbl">Стало</p><code>sanitizeRichHtml</code> на compile; <code>/api/probe/hubs</code> + confirm на Save.</div>
+    </div>
+
+    <h2>Сводная таблица</h2>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Было (кратко)</th><th>Стало</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>A-01</td><td>owner session broken</td><td>flat session fix</td></tr>
+        <tr><td>A-02</td><td>no home/pins preview</td><td>preview APIs + buttons</td></tr>
+        <tr><td>A-03</td><td>bad buy URLs saved</td><td>isGoodBuyUrl gate</td></tr>
+        <tr><td>A-04</td><td>blind publish</td><td>preflight confirm</td></tr>
+        <tr><td>A-05</td><td>delete blind</td><td>usage scan warn</td></tr>
+        <tr><td>A-06</td><td>no media upload</td><td>upload + copy path</td></tr>
+        <tr><td>A-07</td><td>pins textarea</td><td>multi-store editor</td></tr>
+        <tr><td>A-08</td><td>1 amazon CTA</td><td>links[] + carousel</td></tr>
+        <tr><td>A-09</td><td>live read-only</td><td>import to draft</td></tr>
+        <tr><td>A-10…A-17</td><td>stubs / dead UI / i18n / cache</td><td>cleaned / wired</td></tr>
+        <tr><td>A-18</td><td>no reorder/shuffle ctrl</td><td>↑↓ + shuffleOnLoad</td></tr>
+        <tr><td>A-19…A-34</td><td>SEO/media/session gaps</td><td>fixed / accepted</td></tr>
+        <tr><td>A-20</td><td>public media GET</td><td>accepted by design</td></tr>
+        <tr><td>A-35…A-43</td><td>publish/UI edge cases</td><td>patched &amp; verified</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Где смотреть код</h2>
+    <ul>
+      <li>Studio UI: <code>pk-studio/js/{app,ops,articles,auth,blocks,i18n}.js</code>, <code>pk-studio/index.html</code></li>
+      <li>Worker: <code>admin-api/src/{index,github,publish_home,publish_pins,publish_products,article_blocks}.js</code></li>
+      <li>Live top picks: <code>assets/js/pickora-top-picks.js</code> (?v=8)</li>
+      <li>Память агента: <a href="./FINDINGS.md">FINDINGS.md</a></li>
+    </ul>
+
+    <footer>
+      Документ 5/5 · создан после фикс-пасса 2026-10-05 · не индексировать
+    </footer>
+  </div>
+</body>
+</html>

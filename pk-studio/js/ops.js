@@ -15,6 +15,12 @@
     return h;
   }
 
+  /** Ops fetch with shared 401 → logout (A-30) */
+  function apiFetch(path, opts = {}) {
+    const headers = { ...authHeaders(), ...(opts.headers || {}) };
+    return window.PK_AUTH.apiFetch(path, { ...opts, headers });
+  }
+
   function escapeHtml(s) {
     return String(s ?? "")
       .replace(/&/g, "&amp;")
@@ -74,9 +80,7 @@
     /* ── Article cards (seo_ready + published) ───────────────────── */
     let articlesHtml = "";
     try {
-      const res = await fetch(window.PK_AUTH.API + "/api/content/articles", {
-        headers: authHeaders(),
-        credentials: "include",
+      const res = await apiFetch("/api/content/articles",{
       });
       const data = await res.json();
       const ready = (data.drafts || []).filter(
@@ -157,13 +161,51 @@
 
   async function publishModule(mod, btn) {
     if (!mod) return;
+    // A-04: client preflight checklist before publish
+    try {
+      const draftRes = await apiFetch("/api/content/" + mod, {});
+      const draft = await draftRes.json().catch(() => ({}));
+      if (!draftRes.ok) {
+        setPill("#publish-status", draft.error || t("publishFail"), "warn");
+        return;
+      }
+      const checks = [];
+      if (mod === "home") {
+        const picks = draft.topPicks?.picks || [];
+        const reviews = draft.latestReviews || draft.reviews || [];
+        checks.push(`Top picks: ${picks.length}`);
+        checks.push(`Latest reviews: ${reviews.length}`);
+        const badBuy = picks.filter((p) => p.amazonUrl && !/^https?:\/\//i.test(String(p.amazonUrl)));
+        if (badBuy.length) checks.push(`⚠ bad amazonUrl: ${badBuy.length}`);
+      } else if (mod === "pins") {
+        const products = draft.products || [];
+        checks.push(`Pin products: ${products.length}`);
+        const noLink = products.filter(
+          (p) => !(p.links || []).some((l) => l && l.url) && !p.amazonUrl && !p.url
+        );
+        if (noLink.length) checks.push(`⚠ without buy link: ${noLink.length}`);
+      } else if (mod === "products") {
+        const hubs = draft.hubCategories || [];
+        const cp = draft.categoryProducts || {};
+        checks.push(`Hubs: ${hubs.length}`);
+        const empty = hubs.filter((h) => !(cp[h.id] || []).length);
+        if (empty.length) checks.push(`⚠ hubs with 0 products: ${empty.map((h) => h.id).join(", ")}`);
+      }
+      const msg =
+        t("publishPreflightConfirm")
+          .replace("{mod}", mod)
+          .replace("{checks}", checks.join("\n")) ||
+        `Publish ${mod}?\n\n${checks.join("\n")}`;
+      if (!confirm(msg)) return;
+    } catch (err) {
+      setPill("#publish-status", t("publishFail") + ": " + err.message, "warn");
+      return;
+    }
     if (btn) btn.disabled = true;
     setPill("#publish-status", t("publishing"), null);
     try {
-      const res = await fetch(window.PK_AUTH.API + "/api/publish/" + mod, {
+      const res = await apiFetch("/api/publish/" + mod,{
         method: "POST",
-        headers: authHeaders(),
-        credentials: "include",
         body: "{}",
       });
       const data = await res.json();
@@ -196,10 +238,8 @@
     if (btn) btn.disabled = true;
     setPill("#publish-status", t("publishing"), null);
     try {
-      const res = await fetch(window.PK_AUTH.API + "/api/publish/article", {
+      const res = await apiFetch("/api/publish/article",{
         method: "POST",
-        headers: authHeaders(),
-        credentials: "include",
         body: JSON.stringify({ slug }),
       });
       const data = await res.json();
@@ -230,9 +270,7 @@
     const box = $("#publish-snapshots");
     if (!box) return;
     try {
-      const res = await fetch(window.PK_AUTH.API + "/api/publish/snapshots", {
-        headers: authHeaders(),
-        credentials: "include",
+      const res = await apiFetch("/api/publish/snapshots",{
       });
       const data = await res.json();
       const rows = data.snapshots || [];
@@ -290,10 +328,8 @@
     if (btn) btn.disabled = true;
     setPill("#publish-status", t("rollbackInProgress"), null);
     try {
-      const res = await fetch(window.PK_AUTH.API + "/api/publish/rollback", {
+      const res = await apiFetch("/api/publish/rollback",{
         method: "POST",
-        headers: authHeaders(),
-        credentials: "include",
         body: JSON.stringify({ id }),
       });
       const data = await res.json();
@@ -327,9 +363,7 @@
     const box = $("#status-content");
     setPill("#status-status", t("loading"), null);
     try {
-      const res = await fetch(window.PK_AUTH.API + "/api/status", {
-        headers: authHeaders(),
-        credentials: "include",
+      const res = await apiFetch("/api/status",{
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "status_failed");
@@ -407,11 +441,63 @@
   }
 
   /* —— Media gallery —— */
+  async function copyText(text) {
+    const s = String(text || "");
+    if (!s) return false;
+    try {
+      await navigator.clipboard.writeText(s);
+      return true;
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = s;
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try {
+        ok = document.execCommand("copy");
+      } catch {
+        ok = false;
+      }
+      ta.remove();
+      return ok;
+    }
+  }
+
+  function showMediaUploadPath(path) {
+    const box = $("#media-upload-result");
+    const code = $("#media-upload-path");
+    if (!box || !code || !path) return;
+    code.textContent = path;
+    box.classList.remove("pk-hidden");
+  }
+
+  async function uploadMedia(file) {
+    if (!file) return;
+    setPill("#media-status", t("uploading"), null);
+    try {
+      const preferred = String(file.name || "upload")
+        .replace(/\.[^.]+$/, "")
+        .trim();
+      let data;
+      if (window.PK_MEDIA?.upload) {
+        data = await window.PK_MEDIA.upload(file, preferred || "upload");
+      } else {
+        throw new Error("media_unavailable");
+      }
+      const path = data.path || data.url || "";
+      showMediaUploadPath(path);
+      setPill("#media-status", t("uploadOk"), "ok");
+      await loadMedia();
+    } catch (err) {
+      const msg =
+        window.PK_MEDIA?.errorMessage?.(err, t) || err.message || "upload_failed";
+      setPill("#media-status", msg, "warn");
+    }
+  }
+
   async function loadMedia() {
     setPill("#media-status", t("loading"), null);
-    const res = await fetch(window.PK_AUTH.API + "/api/media/list", {
-      headers: authHeaders(),
-      credentials: "include",
+    const res = await apiFetch("/api/media/list",{
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "media_list_failed");
@@ -429,15 +515,28 @@
         const key = escapeHtml(f.key);
         const src = api + "/api/media/file/" + encodeURIComponent(f.key);
         const kb = Math.round((f.bytes || 0) / 1024);
+        const path = "/api/media/file/" + f.key;
         return `<div class="media-card panel">
           <div class="media-thumb"><img src="${src}" alt="${key}" loading="lazy"></div>
           <p class="path-hint">${key} \u00b7 ${kb} KB</p>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button type="button" class="btn btn-ghost btn-sm" data-media-copy="${escapeHtml(path)}" style="width:auto">${escapeHtml(
+          t("btnCopyPath")
+        )}</button>
           <button type="button" class="btn btn-ghost btn-sm" data-media-del="${key}" style="width:auto">${escapeHtml(
           t("btnDeleteMedia")
         )}</button>
+          </div>
         </div>`;
       })
       .join("");
+    wrap.querySelectorAll("[data-media-copy]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const path = btn.getAttribute("data-media-copy");
+        const ok = await copyText(path);
+        setPill("#media-status", ok ? t("mediaCopyOk") : t("mediaCopyFail"), ok ? "ok" : "warn");
+      });
+    });
     wrap.querySelectorAll("[data-media-del]").forEach((btn) => {
       btn.addEventListener("click", () =>
         deleteMedia(btn.getAttribute("data-media-del"), btn)
@@ -446,13 +545,84 @@
     setPill("#media-status", t("mediaFilesCount") + ": " + files.length, "ok");
   }
 
+  function draftJsonReferencesMedia(obj, mediaKey) {
+    if (!mediaKey) return false;
+    const path = "/api/media/file/" + mediaKey;
+    const enc = encodeURIComponent(mediaKey);
+    const s = JSON.stringify(obj ?? "");
+    return s.includes(mediaKey) || s.includes(path) || s.includes(enc);
+  }
+
+  async function findMediaDraftUsages(mediaKey) {
+    const usages = [];
+    try {
+      const hr = await apiFetch("/api/content/home");
+      if (hr.ok) {
+        const hd = await hr.json();
+        if (draftJsonReferencesMedia(hd, mediaKey)) usages.push(t("mediaUsedHome"));
+      }
+    } catch {
+      /* ignore */
+    }
+    try {
+      const pr = await apiFetch("/api/content/pins");
+      if (pr.ok) {
+        const pd = await pr.json();
+        if (draftJsonReferencesMedia(pd, mediaKey)) usages.push(t("mediaUsedPins"));
+      }
+    } catch {
+      /* ignore */
+    }
+    try {
+      const prodRes = await apiFetch("/api/content/products");
+      if (prodRes.ok) {
+        const prod = await prodRes.json();
+        if (draftJsonReferencesMedia(prod, mediaKey)) usages.push(t("mediaUsedProducts"));
+      }
+    } catch {
+      /* ignore */
+    }
+    try {
+      const listRes = await apiFetch("/api/content/articles");
+      if (listRes.ok) {
+        const { drafts } = await listRes.json();
+        for (const d of drafts || []) {
+          const slug = d.slug;
+          if (!slug) continue;
+          let payload = d;
+          try {
+            const fullRes = await apiFetch(
+              "/api/content/articles/" + encodeURIComponent(slug)
+            );
+            if (fullRes.ok) payload = await fullRes.json();
+          } catch {
+            /* use list row */
+          }
+          if (draftJsonReferencesMedia(payload, mediaKey)) {
+            usages.push(t("mediaUsedArticle").replace("{slug}", slug));
+          }
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+    return usages;
+  }
+
   async function deleteMedia(key, btn) {
-    if (!key || !confirm(t("confirmDeleteMedia"))) return;
+    if (!key) return;
+    const usages = await findMediaDraftUsages(key);
+    if (usages.length) {
+      const list = usages.map((u) => "• " + u).join("\n");
+      const msg = t("confirmDeleteMediaInUse").replace("{list}", list);
+      if (!confirm(msg)) return;
+    } else if (!confirm(t("confirmDeleteMedia"))) {
+      return;
+    }
     if (btn) btn.disabled = true;
-    const res = await fetch(
-      window.PK_AUTH.API + "/api/media/file/" + encodeURIComponent(key),
-      { method: "DELETE", headers: authHeaders(), credentials: "include" }
-    );
+    const res = await apiFetch("/api/media/file/" + encodeURIComponent(key), {
+      method: "DELETE",
+    });
     const data = await res.json();
     if (!res.ok) {
       setPill("#media-status", data.error || t("mediaDeleteFail"), "warn");
@@ -468,9 +638,7 @@
     const box = $(sel);
     if (!box) return;
     try {
-      const res = await fetch(window.PK_AUTH.API + "/api/audit", {
-        headers: authHeaders(),
-        credentials: "include",
+      const res = await apiFetch("/api/audit",{
       });
       const data = await res.json();
       if (!res.ok) {
@@ -512,10 +680,17 @@
   /* —— SEO / links —— */
   async function loadSeo() {
     setPill("#seo-status", t("loading"), null);
-    const res = await fetch(window.PK_AUTH.API + "/api/content/articles", {
-      headers: authHeaders(),
-      credentials: "include",
+    const res = await apiFetch("/api/content/articles",{
     });
+    if (!res.ok) {
+      if (res.status === 401) {
+        await window.PK_AUTH.logout?.();
+        setPill("#seo-status", t("loginError") || "unauthorized", "warn");
+        return;
+      }
+      setPill("#seo-status", "seo_load_failed", "warn");
+      return;
+    }
     const data = await res.json();
     const drafts = data.drafts || [];
     const links = [];
@@ -543,9 +718,7 @@
     });
     // Products draft: categoryProducts map (not hub.products)
     try {
-      const pr = await fetch(window.PK_AUTH.API + "/api/content/products", {
-        headers: authHeaders(),
-        credentials: "include",
+      const pr = await apiFetch("/api/content/products",{
       });
       const pd = await pr.json();
       const map = pd.categoryProducts || {};
@@ -565,9 +738,7 @@
     }
     // Pins draft: product store links
     try {
-      const pinRes = await fetch(window.PK_AUTH.API + "/api/content/pins", {
-        headers: authHeaders(),
-        credentials: "include",
+      const pinRes = await apiFetch("/api/content/pins",{
       });
       const pinData = await pinRes.json();
       (pinData.pins || []).forEach((pin) => {
@@ -586,9 +757,7 @@
     }
     // Home top picks
     try {
-      const hr = await fetch(window.PK_AUTH.API + "/api/content/home", {
-        headers: authHeaders(),
-        credentials: "include",
+      const hr = await apiFetch("/api/content/home",{
       });
       const hd = await hr.json();
       ((hd.topPicks && hd.topPicks.picks) || []).forEach((p) => {
@@ -610,12 +779,16 @@
       setPill("#seo-status", t("seoNoLinks"), "warn");
       return;
     }
-    setPill("#seo-status", t("seoChecking"), null);
-    const res = await fetch(window.PK_AUTH.API + "/api/links/check", {
+    const total = links.length;
+    const batch = links.slice(0, 20);
+    setPill(
+      "#seo-status",
+      t("seoCheckingBatch").replace("{n}", String(batch.length)).replace("{total}", String(total)),
+      null
+    );
+    const res = await apiFetch("/api/links/check",{
       method: "POST",
-      headers: authHeaders(),
-      credentials: "include",
-      body: JSON.stringify({ links: links.slice(0, 20) }),
+      body: JSON.stringify({ links: batch }),
     });
     const data = await res.json();
     if (!res.ok) {
@@ -632,13 +805,13 @@
           } (${r.status})${r.error ? " " + escapeHtml(r.error) : ""}</li>`
       )
       .join("");
-    setPill(
-      "#seo-status",
-      bad.length
-        ? t("seoBrokenCount").replace("{n}", String(bad.length))
-        : t("seoAllOk"),
-      bad.length ? "warn" : "ok"
-    );
+    const okMsg =
+      bad.length === 0
+        ? t("seoAllOkChecked")
+            .replace("{n}", String(batch.length))
+            .replace("{total}", String(total))
+        : t("seoBrokenCount").replace("{n}", String(bad.length));
+    setPill("#seo-status", okMsg, bad.length ? "warn" : "ok");
   }
 
   /* —— Team —— */
@@ -646,15 +819,14 @@
   // Determine if current session user is owner (for showing invite panel + remove buttons)
   function sessionIsOwner() {
     const s = window.PK_AUTH.getSession();
-    return !!(s?.user?.owner);
+    // Session is flat: { token, login, role, owner } — not nested under .user
+    return !!(s?.owner || s?.user?.owner || s?.role === "owner");
   }
 
   async function loadTeam() {
     setPill("#team-status", t("loading"), null);
     try {
-      const res = await fetch(window.PK_AUTH.API + "/api/team", {
-        headers: authHeaders(),
-        credentials: "include",
+      const res = await apiFetch("/api/team",{
       });
       const data = await res.json();
       if (!res.ok) {
@@ -712,10 +884,8 @@
     if (btn) btn.disabled = true;
     setPill("#team-invite-status", t("teamInviting"), null);
     try {
-      const res = await fetch(window.PK_AUTH.API + "/api/team/invite", {
+      const res = await apiFetch("/api/team/invite",{
         method: "POST",
-        headers: authHeaders(),
-        credentials: "include",
         body: JSON.stringify({ login, password, role }),
       });
       const data = await res.json();
@@ -746,10 +916,8 @@
     if (!confirm(t("teamRemoveConfirm").replace("{login}", login))) return;
     setPill("#team-status", t("loading"), null);
     try {
-      const res = await fetch(window.PK_AUTH.API + "/api/team/remove", {
+      const res = await apiFetch("/api/team/remove",{
         method: "POST",
-        headers: authHeaders(),
-        credentials: "include",
         body: JSON.stringify({ login }),
       });
       const data = await res.json();
@@ -801,18 +969,22 @@
       $("#btn-media-refresh")?.addEventListener("click", () =>
         loadMedia().catch((e) => setPill("#media-status", e.message, "warn"))
       );
+      $("#media-upload-input")?.addEventListener("change", (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (file) uploadMedia(file);
+        e.target.value = "";
+      });
+      $("#btn-media-copy-path")?.addEventListener("click", async () => {
+        const path = $("#media-upload-path")?.textContent?.trim();
+        if (!path) return;
+        const ok = await copyText(path);
+        setPill("#media-status", ok ? t("mediaCopyOk") : t("mediaCopyFail"), ok ? "ok" : "warn");
+      });
       $("#team-invite-form")?.addEventListener("submit", (e) => {
         e.preventDefault();
         inviteAdmin(e.target).catch((err) =>
           setPill("#team-invite-status", err.message, "warn")
         );
-      });
-      ["publish", "seo", "team", "status", "media"].forEach((view) => {
-        $(`#btn-back-from-${view}`)?.addEventListener("click", () => {
-          document.querySelectorAll("[data-view]").forEach((el) => {
-            el.classList.toggle("pk-hidden", el.getAttribute("data-view") !== "dash");
-          });
-        });
       });
     },
   };

@@ -16,6 +16,7 @@
  */
 
 import { getFile, putFile } from "./github.js";
+import { injectStudioPreviewChrome } from "./publish_products.js";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -23,9 +24,23 @@ import { getFile, putFile } from "./github.js";
 
 function absUrl(path) {
   if (!path) return "";
-  if (path.startsWith("http://") || path.startsWith("https://")) return path;
-  if (path.startsWith("/")) return "https://pickora.shop" + path;
-  return path;
+  const p = String(path).trim();
+  const WORKER_MEDIA =
+    "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/";
+  if (/\/api\/media\/file\//i.test(p)) {
+    try {
+      if (/^https?:\/\//i.test(p)) {
+        const u = new URL(p);
+        return WORKER_MEDIA + u.pathname.replace(/^\/api\/media\/file\//i, "");
+      }
+    } catch {
+      /* fall through */
+    }
+    return WORKER_MEDIA + p.replace(/^\/?api\/media\/file\//i, "");
+  }
+  if (p.startsWith("http://") || p.startsWith("https://")) return p;
+  if (p.startsWith("/")) return "https://pickora.shop" + p;
+  return p;
 }
 
 function escHtml(str) {
@@ -147,6 +162,79 @@ export function buildPinDataJs(pins) {
 }
 
 // ---------------------------------------------------------------------------
+// Offline preview (same patchers as publish; no GitHub write)
+// ---------------------------------------------------------------------------
+
+export function applyPinsDraftToHtml(html, draft) {
+  const pins = draft.pins;
+  if (!Array.isArray(pins)) {
+    throw new Error("draft.pins must be an array");
+  }
+
+  const filtersHtml = buildFiltersHtml(draft.filters || []);
+  const filtersRe =
+    /(<div class="pickora-filters">\s*)[\s\S]*?(<\/div>\s*\n\s*<div class="pickora-board-grid")/;
+  if (!filtersRe.test(html)) {
+    throw new Error("pickora-filters block not found in categories/index.html");
+  }
+  html = html.replace(filtersRe, (_, g1, g2) => g1 + "\n" + filtersHtml + "\n  " + g2);
+
+  const board = pins.map((p, i) => buildBoardPin(p, i === 0)).join("\n\n");
+  const gridRe =
+    /(<div class="pickora-board-grid" id="pins-grid">\s*)[\s\S]*?(<\/div>\s*<\/div>\s*\n\s*<div class="pickora-popup-overlay")/;
+  if (!gridRe.test(html)) {
+    throw new Error("pickora-board-grid#pins-grid not found in categories/index.html");
+  }
+  html = html.replace(gridRe, (_, g1, g2) => g1 + "\n" + board + "\n\n  " + g2);
+
+  const shuffleOnLoad = draft.shuffleOnLoad !== false;
+  if (/const PICKORA_SHUFFLE_PINS = (true|false);/.test(html)) {
+    html = html.replace(
+      /const PICKORA_SHUFFLE_PINS = (true|false);/,
+      `const PICKORA_SHUFFLE_PINS = ${shuffleOnLoad};`
+    );
+  }
+
+  const pinDataJs = buildPinDataJs(pins);
+  const innerRe = /(const pinData = \{)[\s\S]*?(\n  \};)/;
+  if (innerRe.test(html)) {
+    const inner = pinDataJs.slice(1, -1);
+    html = html.replace(innerRe, (_, g1, g2) => g1 + "\n" + inner + "\n  " + g2);
+  } else {
+    html = html.replace(
+      /const pinData = \{[\s\S]*?\n  \};/,
+      `const pinData = ${pinDataJs};`
+    );
+  }
+  return html;
+}
+
+export async function loadPinsTemplateHtml(env) {
+  if (env?.GITHUB_TOKEN) {
+    try {
+      const file = await getFile(env, "categories/index.html");
+      if (file?.content) return { html: file.content, source: "github" };
+    } catch {
+      /* fall through */
+    }
+  }
+  const res = await fetch("https://pickora.shop/categories/", {
+    headers: { "User-Agent": "pickora-admin-api/preview" },
+  });
+  if (!res.ok) throw new Error("template_unavailable");
+  return { html: await res.text(), source: "live" };
+}
+
+export function buildPinsPreviewHtml(templateHtml, draft, meta = {}) {
+  const html = applyPinsDraftToHtml(templateHtml, draft);
+  return injectStudioPreviewChrome(html, {
+    title: "Categories / Pins",
+    label: "pins",
+    previewBy: meta.previewBy,
+  });
+}
+
+// ---------------------------------------------------------------------------
 // publishPinsDraft
 // ---------------------------------------------------------------------------
 
@@ -185,40 +273,7 @@ export async function publishPinsDraft(env, draft) {
   const catFile = await getFile(env, catPath);
   if (!catFile) throw new Error("categories/index.html missing on GitHub");
 
-  let html = catFile.content;
-
-  // ── 2a. Replace filter buttons ────────────────────────────────────────
-  const filtersHtml = buildFiltersHtml(draft.filters || []);
-  const filtersRe   = /(<div class="pickora-filters">\s*)[\s\S]*?(<\/div>\s*\n\s*<div class="pickora-board-grid")/;
-  if (!filtersRe.test(html)) {
-    throw new Error("pickora-filters block not found in categories/index.html");
-  }
-  html = html.replace(filtersRe, (_, g1, g2) => g1 + "\n" + filtersHtml + "\n  " + g2);
-
-  // ── 2b. Replace board pins ────────────────────────────────────────────
-  const board  = pins.map((p, i) => buildBoardPin(p, i === 0)).join("\n\n");
-  const gridRe = /(<div class="pickora-board-grid" id="pins-grid">\s*)[\s\S]*?(<\/div>\s*<\/div>\s*\n\s*<div class="pickora-popup-overlay")/;
-  if (!gridRe.test(html)) {
-    throw new Error("pickora-board-grid#pins-grid not found in categories/index.html");
-  }
-  html = html.replace(gridRe, (_, g1, g2) => g1 + "\n" + board + "\n\n  " + g2);
-
-  // ── 2c. Replace pinData JS object ─────────────────────────────────────
-  const pinDataJs  = buildPinDataJs(pins);
-  // Strategy mirrors Python: capture inner of "const pinData = {…\n  };"
-  // group 2 starts with the newline so replacement matches Python's \1\n{inner}\n  \2
-  const innerRe = /(const pinData = \{)[\s\S]*?(\n  \};)/;
-  if (innerRe.test(html)) {
-    // pinDataJs = "{ … }" — strip outer braces to get inner content
-    const inner = pinDataJs.slice(1, -1);
-    html = html.replace(innerRe, (_, g1, g2) => g1 + "\n" + inner + "\n  " + g2);
-  } else {
-    // Fallback: replace whole assignment
-    html = html.replace(
-      /const pinData = \{[\s\S]*?\n  \};/,
-      `const pinData = ${pinDataJs};`
-    );
-  }
+  const html = applyPinsDraftToHtml(catFile.content, draft);
 
   const catResult = await putFile(
     env, catPath, html,

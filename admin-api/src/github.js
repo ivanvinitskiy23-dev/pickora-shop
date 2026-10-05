@@ -178,6 +178,44 @@ export async function putFile(env, path, content, message, sha) {
   };
 }
 
+/**
+ * Delete a file from the repo (Contents API). No-op if file missing (404).
+ * @returns {{ ok: true, deleted: boolean, path: string }}
+ */
+export async function deleteFile(env, path, message) {
+  const repo   = env.GITHUB_REPO   || DEFAULT_REPO;
+  const branch = env.GITHUB_BRANCH || DEFAULT_BRANCH;
+  const token  = env.GITHUB_TOKEN;
+  if (!token) throw new Error("GITHUB_TOKEN env binding is missing");
+
+  const sha = await getFileSha(env, path);
+  if (!sha) return { ok: true, deleted: false, path };
+
+  const url = `https://api.github.com/repos/${repo}/contents/${encodeURIPath(path)}`;
+  const res = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      Authorization:  `Bearer ${token}`,
+      Accept:         "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "User-Agent":   "pickora-admin-api/1.0",
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+    body: JSON.stringify({
+      message: message || `delete ${path}`,
+      sha,
+      branch,
+    }),
+  });
+
+  if (res.status === 404) return { ok: true, deleted: false, path };
+  if (!res.ok) {
+    const errBody = await res.text().catch(() => "");
+    throw new Error(`GitHub deleteFile ${path} → ${res.status}: ${errBody.slice(0, 200)}`);
+  }
+  return { ok: true, deleted: true, path };
+}
+
 // ---------------------------------------------------------------------------
 // Internal helpers
 // ---------------------------------------------------------------------------

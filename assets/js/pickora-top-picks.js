@@ -46,6 +46,7 @@
     var pros = $('.pk-check-list', root);
     var amazonBtn = $('.pk-btn-amazon', root);
     var guideBtn = $('.pk-btn-guide', root);
+    var actions = $('.pk-pick-actions', root);
     var dots = $('.pk-pick-dots', root);
     var thumbs = $('.pk-pick-thumbs', root);
     var count = $('.pk-pick-count', root);
@@ -58,6 +59,51 @@
     var index = 0;
     var timer = null;
     var AUTO_MS = 7000;
+
+    function storeLinks(pick) {
+      if (Array.isArray(pick.links) && pick.links.length) {
+        return pick.links.filter(function (l) {
+          return l && l.url;
+        });
+      }
+      if (pick.amazonUrl) {
+        return [{ label: 'Amazon', url: pick.amazonUrl, style: 'amazon' }];
+      }
+      return [];
+    }
+
+    function renderStoreButtons(pick) {
+      var links = storeLinks(pick);
+      if (!actions) {
+        amazonBtn.href = (links[0] && links[0].url) || pick.amazonUrl || '#';
+        guideBtn.href = pick.guideUrl || '#';
+        return;
+      }
+      var html = links
+        .map(function (l, i) {
+          var cls =
+            (l.style === 'amazon' || i === 0 ? 'pk-btn-blue pk-btn-amazon' : 'pk-btn-ghost') +
+            (i === 0 ? ' pk-btn-amazon' : '');
+          var label = escapeHtml(l.label || 'Buy') + (i === 0 ? ' <span>→</span>' : '');
+          return (
+            '<a href="' +
+            escapeHtml(l.url) +
+            '" class="' +
+            cls +
+            '" rel="sponsored nofollow noopener noreferrer" target="_blank">' +
+            label +
+            '</a>'
+          );
+        })
+        .join('');
+      html +=
+        '<a href="' +
+        escapeHtml(pick.guideUrl || '#') +
+        '" class="pk-btn-ghost pk-btn-guide">Read guide</a>';
+      actions.innerHTML = html;
+      amazonBtn = $('.pk-btn-amazon', root) || amazonBtn;
+      guideBtn = $('.pk-btn-guide', root) || guideBtn;
+    }
 
     function renderPros(list) {
       pros.innerHTML = (list || [])
@@ -136,8 +182,7 @@
       if (blurb) blurb.textContent = pick.blurb || '';
       renderPros(pick.pros);
 
-      amazonBtn.href = pick.amazonUrl;
-      guideBtn.href = pick.guideUrl;
+      renderStoreButtons(pick);
 
       updateChrome();
 

@@ -51,7 +51,14 @@
       const s = String(u || "").trim();
       if (s && !out.includes(s)) out.push(s);
     };
+    const scrapeText = (text) => {
+      const s = String(text || "");
+      const re = /https?:\/\/(?:amzn\.to\/[A-Za-z0-9]+|link\.amazon\/[A-Za-z0-9_-]+)/gi;
+      let m;
+      while ((m = re.exec(s))) push(m[0]);
+    };
     (Array.isArray(d.affiliateLinks) ? d.affiliateLinks : []).forEach(push);
+    scrapeText(d.bodyHtml);
     (Array.isArray(d.blocks) ? d.blocks : []).forEach((b) => {
       if (!b) return;
       if (b.type === "product" || b.type === "cta") {
@@ -66,6 +73,9 @@
             else if (/^https?:\/\//i.test(c.trim())) push(c.trim());
           });
         });
+      }
+      if (b.type === "richtext" || b.type === "intro" || b.type === "html") {
+        scrapeText(b.html || b.text || b.body || "");
       }
     });
     return out;

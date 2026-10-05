@@ -8,15 +8,23 @@ import {
   buildArticlePage,
   resolveArticlesHubUrl,
 } from "./publish_article.js";
-import { publishHomeDraft }    from "./publish_home.js";
-import { publishPinsDraft }    from "./publish_pins.js";
+import {
+  publishHomeDraft,
+  buildHomePreviewHtml,
+  loadHomeTemplateHtml,
+} from "./publish_home.js";
+import {
+  publishPinsDraft,
+  buildPinsPreviewHtml,
+  loadPinsTemplateHtml,
+} from "./publish_pins.js";
 import {
   publishProductsDraft,
   buildCategoryPreviewHtml,
   loadCategoryTemplateHtml,
 } from "./publish_products.js";
 import { validateArticleDraft } from "./seo_gate.js";
-import { getFileSha, putBinaryFile } from "./github.js";
+import { getFile, getFileSha, putBinaryFile, deleteFile } from "./github.js";
 
 const SESSION_TTL_SEC = 60 * 60 * 12;
 const RAW_CONTENT =
@@ -86,6 +94,15 @@ export default {
         return cors(await handleArticles(), request);
       }
 
+      const liveArticleMatch = url.pathname.match(/^\/api\/articles\/([^/]+)\/live$/);
+      if (liveArticleMatch && request.method === "GET") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(
+          await getLiveArticleJson(env, decodeURIComponent(liveArticleMatch[1])),
+          request
+        );
+      }
+
       if (url.pathname === "/api/articles/validate" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
         return cors(json(validateArticleDraft(await readJson(request))), request);
@@ -104,6 +121,21 @@ export default {
       if (url.pathname === "/api/preview/products" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
         return cors(await handlePreviewProducts(env, await readJson(request), user), request);
+      }
+
+      if (url.pathname === "/api/preview/home" && request.method === "POST") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(await handlePreviewHome(env, await readJson(request), user), request);
+      }
+
+      if (url.pathname === "/api/preview/pins" && request.method === "POST") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(await handlePreviewPins(env, await readJson(request), user), request);
+      }
+
+      if (url.pathname === "/api/probe/hubs" && request.method === "POST") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        return cors(await handleProbeHubs(env, await readJson(request)), request);
       }
 
       if (url.pathname === "/api/publish/home" && request.method === "POST") {
@@ -157,13 +189,13 @@ export default {
       if (url.pathname === "/api/team/invite" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
         if (!requireOwner(user, env)) return cors(json({ error: "forbidden" }, 403), request);
-        return cors(await handleTeamInvite(env, await readJson(request)), request);
+        return cors(await handleTeamInvite(env, await readJson(request), user), request);
       }
 
       if (url.pathname === "/api/team/remove" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
         if (!requireOwner(user, env)) return cors(json({ error: "forbidden" }, 403), request);
-        return cors(await handleTeamRemove(env, await readJson(request)), request);
+        return cors(await handleTeamRemove(env, await readJson(request), user), request);
       }
 
       if (url.pathname === "/api/media/upload" && request.method === "POST") {
@@ -255,6 +287,7 @@ async function listArticleDrafts(env) {
       updatedAt: row.updated_at,
       updatedBy: row.updated_by,
       affiliateLinks: Array.isArray(meta.affiliateLinks) ? meta.affiliateLinks : [],
+      blocks: Array.isArray(meta.blocks) ? meta.blocks : [],
       coverImage: meta.coverImage || "",
     };
   });
@@ -551,30 +584,40 @@ async function handleMediaUpload(request, env, user) {
   try {
     await env.DB.prepare(
       `INSERT INTO media_files (key, content_type, data_b64, bytes, uploaded_by)
-       VALUES (?, ?, ?, ?, ?)
-       ON CONFLICT(key) DO UPDATE SET
-         content_type = excluded.content_type,
-         data_b64 = excluded.data_b64,
-         bytes = excluded.bytes,
-         uploaded_by = excluded.uploaded_by`
+       VALUES (?, ?, ?, ?, ?)`
     )
       .bind(finalKey, contentType, raw, bytes.length, user.login)
       .run();
   } catch (err) {
     const msg = String(err?.message || err);
-    if (/too large|max.*size|SQLITE_TOOBIG|string or blob too big/i.test(msg)) {
+    if (/UNIQUE|constraint|already exists/i.test(msg)) {
+      // Race after probe: retry once with suffix, else 409
+      base = `${baseStem}-${Date.now().toString(36)}`.slice(0, 60);
+      finalKey = `uploads/${yyyy}/${mm}/${base}.${ext}`;
+      try {
+        await env.DB.prepare(
+          `INSERT INTO media_files (key, content_type, data_b64, bytes, uploaded_by)
+           VALUES (?, ?, ?, ?, ?)`
+        )
+          .bind(finalKey, contentType, raw, bytes.length, user.login)
+          .run();
+      } catch (err2) {
+        return json({ error: "key_conflict", detail: String(err2?.message || err2), key: finalKey }, 409);
+      }
+      // retry succeeded — continue below with new finalKey
+    } else if (/too large|max.*size|SQLITE_TOOBIG|string or blob too big/i.test(msg)) {
       return json(
         { error: "file_too_large", detail: msg, hint: "D1 row limit — compress more" },
         400
       );
-    }
-    if (/no such table: media_files/i.test(msg)) {
+    } else if (/no such table: media_files/i.test(msg)) {
       return json(
         { error: "media_table_missing", detail: "Run schema.sql on D1", hint: msg },
         500
       );
+    } else {
+      return json({ error: "media_write_failed", detail: msg }, 500);
     }
-    return json({ error: "media_write_failed", detail: msg }, 500);
   }
 
   // Always return Worker URL for Studio/preview (D1 is live immediately).
@@ -886,13 +929,28 @@ async function handleMediaList(env) {
 async function handleMediaDelete(pathname, env, user) {
   const key = decodeURIComponent(pathname.replace(/^\/api\/media\/file\//, ""));
   if (!key || key.includes("..")) return json({ error: "bad_key" }, 400);
-  await env.DB.prepare(`DELETE FROM media_files WHERE key = ?`).bind(key).run();
+  const del = await env.DB.prepare(`DELETE FROM media_files WHERE key = ?`).bind(key).run();
+  if (!del.meta?.changes) return json({ error: "not_found" }, 404);
   await env.DB.prepare(
     `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'media_delete', ?)`
   )
     .bind(user.login, key)
     .run();
-  return json({ ok: true, key });
+
+  // Also remove GitHub wp-content mirror when token present (key: uploads/… → wp-content/uploads/…)
+  let githubDeleted = false;
+  let githubError = null;
+  if (env.GITHUB_TOKEN && key.startsWith("uploads/")) {
+    const ghPath = `wp-content/${key}`;
+    try {
+      const result = await deleteFile(env, ghPath, `studio: delete media ${key}`);
+      githubDeleted = !!result.deleted;
+    } catch (err) {
+      githubError = String(err?.message || err);
+    }
+  }
+
+  return json({ ok: true, key, githubDeleted, githubError });
 }
 
 async function normalizePreviewDraft(payload) {
@@ -931,6 +989,130 @@ async function normalizePreviewDraft(payload) {
  * Body: { hubId, draft?: { hubCategories, categoryProducts } }
  * If draft omitted, uses D1 content_drafts key "products".
  */
+async function getLiveArticleJson(env, slug) {
+  const s = String(slug || "").trim();
+  if (!s) return json({ error: "slug_required" }, 400);
+  const jsonPath = `content/articles/${s}.json`;
+  if (env?.GITHUB_TOKEN) {
+    try {
+      const file = await getFile(env, jsonPath);
+      if (file?.content) {
+        try {
+          return json(JSON.parse(file.content));
+        } catch {
+          return json({ error: "live_json_corrupt" }, 500);
+        }
+      }
+    } catch {
+      /* fall through */
+    }
+  }
+  try {
+    const res = await fetch(`${RAW_CONTENT}/articles/${encodeURIComponent(s)}.json`, {
+      cf: { cacheTtl: 60 },
+    });
+    if (res.ok) return json(await res.json());
+  } catch {
+    /* fall through */
+  }
+  return json(
+    {
+      error: "not_found",
+      hint: "No content/articles/{slug}.json on GitHub for this live article",
+    },
+    404
+  );
+}
+
+async function handlePreviewHome(env, body, user) {
+  if (!body || typeof body !== "object") {
+    return json({ error: "invalid_payload" }, 400);
+  }
+  let draft = body.draft;
+  if (!draft || typeof draft !== "object") {
+    const row = await env.DB.prepare(`SELECT json FROM content_drafts WHERE key = ?`)
+      .bind("home")
+      .first();
+    if (!row?.json) return json({ error: "draft_not_found" }, 404);
+    try {
+      draft = JSON.parse(row.json);
+    } catch {
+      return json({ error: "draft_corrupt" }, 500);
+    }
+  }
+  const reviews = draft.latestReviews;
+  if (!Array.isArray(reviews) || reviews.length !== 4) {
+    return json(
+      {
+        error: "latestReviews_must_be_4",
+        hint: "Home offline preview needs exactly 4 latest review cards",
+      },
+      400
+    );
+  }
+  try {
+    const tpl = await loadHomeTemplateHtml(env);
+    const html = buildHomePreviewHtml(tpl.html, draft, {
+      previewBy: user?.login || "studio",
+    });
+    return new Response(html, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/html; charset=utf-8",
+        "Cache-Control": "no-store",
+        "X-Robots-Tag": "noindex, nofollow",
+        "X-Pickora-Preview-Source": tpl.source,
+      },
+    });
+  } catch (err) {
+    return json(
+      { error: "preview_failed", detail: String(err?.message || err) },
+      500
+    );
+  }
+}
+
+async function handlePreviewPins(env, body, user) {
+  if (!body || typeof body !== "object") {
+    return json({ error: "invalid_payload" }, 400);
+  }
+  let draft = body.draft;
+  if (!draft || typeof draft !== "object") {
+    const row = await env.DB.prepare(`SELECT json FROM content_drafts WHERE key = ?`)
+      .bind("pins")
+      .first();
+    if (!row?.json) return json({ error: "draft_not_found" }, 404);
+    try {
+      draft = JSON.parse(row.json);
+    } catch {
+      return json({ error: "draft_corrupt" }, 500);
+    }
+  }
+  if (!Array.isArray(draft.pins)) {
+    return json({ error: "pins_required", hint: "draft.pins must be an array" }, 400);
+  }
+  try {
+    const tpl = await loadPinsTemplateHtml(env);
+    const html = buildPinsPreviewHtml(tpl.html, draft, {
+      previewBy: user?.login || "studio",
+    });
+    return new Response(html, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/html; charset=utf-8",
+        "Cache-Control": "no-store",
+        "X-Robots-Tag": "noindex, nofollow",
+        "X-Pickora-Preview-Source": tpl.source,
+      },
+    });
+  } catch (err) {
+    return json(
+      { error: "preview_failed", detail: String(err?.message || err) },
+      500
+    );
+  }
+}
+
 async function handlePreviewProducts(env, body, user) {
   if (!body || typeof body !== "object") {
     return json({ error: "invalid_payload" }, 400);
@@ -1084,12 +1266,74 @@ async function handleAuditList(env) {
   return json({ entries: results || [] });
 }
 
+async function handleProbeHubs(env, body) {
+  const ids = Array.isArray(body?.ids) ? body.ids.map((x) => String(x || "").trim()).filter(Boolean) : [];
+  const present = [];
+  const missing = [];
+  if (!env.GITHUB_TOKEN) {
+    return json({ error: "github_token_missing", present, missing: ids }, 503);
+  }
+  for (const id of ids.slice(0, 40)) {
+    if (!/^[a-z0-9][a-z0-9-]{0,62}$/i.test(id)) {
+      missing.push(id);
+      continue;
+    }
+    try {
+      const sha = await getFileSha(env, `${id}/index.html`);
+      if (sha) present.push(id);
+      else missing.push(id);
+    } catch {
+      missing.push(id);
+    }
+  }
+  return json({ present, missing });
+}
+
 async function handleLinkCheck(body) {
   const links = Array.isArray(body.links) ? body.links : [];
   const out = [];
+  const ALLOW_HOST =
+    /^(?:[a-z0-9-]+\.)*(?:amazon\.com|amazon\.[a-z]{2,3}|amzn\.to|walmart\.com|bestbuy\.com|target\.com|pickora\.shop)$/i;
+
+  function isPrivateHost(hostname) {
+    const h = String(hostname || "").toLowerCase();
+    if (!h || h === "localhost" || h.endsWith(".local") || h.endsWith(".internal")) return true;
+    // Block literal IPs (incl. private / link-local / metadata)
+    if (/^\d{1,3}(?:\.\d{1,3}){3}$/.test(h)) {
+      const parts = h.split(".").map(Number);
+      const [a, b] = parts;
+      if (a === 10 || a === 127 || a === 0) return true;
+      if (a === 169 && b === 254) return true;
+      if (a === 172 && b >= 16 && b <= 31) return true;
+      if (a === 192 && b === 168) return true;
+      return true; // deny all raw IPs
+    }
+    if (h.includes(":")) return true; // IPv6
+    return false;
+  }
+
   for (const raw of links.slice(0, 20)) {
     const url = String(raw || "").trim();
     if (!url) continue;
+    let parsed;
+    try {
+      parsed = new URL(url);
+    } catch {
+      out.push({ url, ok: false, status: 0, error: "invalid_url" });
+      continue;
+    }
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      out.push({ url, ok: false, status: 0, error: "bad_protocol" });
+      continue;
+    }
+    if (isPrivateHost(parsed.hostname)) {
+      out.push({ url, ok: false, status: 0, error: "blocked_host" });
+      continue;
+    }
+    if (!ALLOW_HOST.test(parsed.hostname)) {
+      out.push({ url, ok: false, status: 0, error: "host_not_allowed" });
+      continue;
+    }
     try {
       const res = await fetch(url, {
         method: "HEAD",
@@ -1118,9 +1362,7 @@ async function handleLogin(request, env) {
   const body = await readJson(request);
   const login = String(body.login || "").trim();
   const password = String(body.password || "");
-  // Secrets sometimes get a trailing newline from `wrangler secret put` paste
-  const ownerLogin = String(env.OWNER_LOGIN || "").trim();
-  const ownerPassword = String(env.OWNER_PASSWORD || "").trim();
+  const { login: ownerLogin, password: ownerPassword } = ownerEnvCredentials(env);
 
   // ── Path 1: Owner via environment secrets ────────────────────────────────
   if (timingSafeEqual(login, ownerLogin) && timingSafeEqual(password, ownerPassword)) {
@@ -1205,7 +1447,7 @@ async function handleTeamList(env) {
   return json({ admins: results || [] });
 }
 
-async function handleTeamInvite(env, body) {
+async function handleTeamInvite(env, body, actor) {
   const login = String(body.login || "").trim().toLowerCase();
   const password = String(body.password || "");
   const role = String(body.role || "admin").trim();
@@ -1234,21 +1476,22 @@ async function handleTeamInvite(env, body) {
     .bind(login, hash, role)
     .run();
 
+  // user_login = actor; detail = invited login + role
   await env.DB.prepare(
     `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'team_invite', ?)`
   )
-    .bind(login, role)
+    .bind(actor?.login || "unknown", `${login}:${role}`)
     .run();
 
   return json({ ok: true, login, role });
 }
 
-async function handleTeamRemove(env, body) {
+async function handleTeamRemove(env, body, actor) {
   const login = String(body.login || "").trim();
   if (!login) return json({ error: "login_required" }, 400);
 
   // Cannot remove the owner secret account or any is_owner=1 row
-  if (login === env.OWNER_LOGIN) {
+  if (login === ownerEnvCredentials(env).login) {
     return json({ error: "cannot_remove_owner_secret" }, 403);
   }
   const row = await env.DB.prepare(`SELECT is_owner FROM users WHERE login = ?`)
@@ -1262,10 +1505,11 @@ async function handleTeamRemove(env, body) {
     .bind(login)
     .run();
 
+  // user_login = actor; detail = removed login
   await env.DB.prepare(
     `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'team_remove', ?)`
   )
-    .bind(login, login)
+    .bind(actor?.login || "unknown", login)
     .run();
 
   return json({ ok: true, removed: login });
@@ -1297,7 +1541,9 @@ async function verifyPassword(password, stored) {
   const [, , iterStr, saltHex, expectedHex] = parts;
   const iterations = parseInt(iterStr, 10);
   if (!iterations || isNaN(iterations)) return false;
-  const saltBytes = new Uint8Array(saltHex.match(/.{2}/g).map((h) => parseInt(h, 16)));
+  const saltPairs = saltHex.match(/.{2}/g);
+  if (!saltPairs) return false;
+  const saltBytes = new Uint8Array(saltPairs.map((h) => parseInt(h, 16)));
   const enc = new TextEncoder();
   const keyMat = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, [
     "deriveBits",
@@ -1311,11 +1557,19 @@ async function verifyPassword(password, stored) {
   return timingSafeEqual(hex, expectedHex);
 }
 
+/** Trim OWNER_* secrets (wrangler paste often adds trailing newline). */
+function ownerEnvCredentials(env) {
+  return {
+    login: String(env.OWNER_LOGIN || "").trim(),
+    password: String(env.OWNER_PASSWORD || "").trim(),
+  };
+}
+
 /* ── Owner check helper ─────────────────────────────────────────────────── */
 function requireOwner(user, env) {
   if (!user) return false;
   // owner if they logged in via OWNER_LOGIN secret OR is_owner flag set in DB
-  return user.owner || user.login === env.OWNER_LOGIN;
+  return user.owner || user.login === ownerEnvCredentials(env).login;
 }
 
 async function handleLogout(request, env) {

@@ -37,6 +37,9 @@ npx.cmd wrangler deploy
 - `GET /api/health` — `hasGithub`, `hasOwner`, `hasDb`
 - `POST /api/preview/article` — live-identical article HTML (no Git write)
 - `POST /api/preview/products` — `{ hubId, draft? }` category page offline (same cards as publish, real chrome + `<base>`)
+- `POST /api/preview/home` — `{ draft? }` home page offline (reviews grid + top pick shell, no Git write)
+- `POST /api/preview/pins` — `{ draft? }` categories board offline (filters + pins + pinData, no Git write)
+- `GET /api/articles/:slug/live` — published article JSON from `content/articles/{slug}.json` (GitHub / raw)
 - `GET /api/audit`, `POST /api/links/check`
 - `GET/POST /api/team` — roster / invites (multi-admin)
 - `GET /api/status` — digest counts

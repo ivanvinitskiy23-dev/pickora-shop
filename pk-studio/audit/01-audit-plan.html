@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>План аудита — Pickora Studio</title>
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #475569;
+      --line: #e2e8f0;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --blue: #1d4ed8;
+      --accent: #0f766e;
+      --warn: #b45309;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.55 "Segoe UI", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 400px at 10% -10%, #dbeafe 0%, transparent 55%),
+        radial-gradient(700px 360px at 100% 0%, #ccfbf1 0%, transparent 50%),
+        var(--bg);
+    }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 40px 20px 80px; }
+    header {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 24px;
+      margin-bottom: 28px;
+    }
+    .eyebrow {
+      font-size: 12px; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--accent); margin: 0 0 8px;
+    }
+    h1 { font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.2; margin: 0 0 10px; }
+    .dek { color: var(--muted); margin: 0; max-width: 62ch; }
+    nav.docs {
+      display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0;
+    }
+    nav.docs a {
+      text-decoration: none; color: var(--blue); background: #eff6ff;
+      border: 1px solid #bfdbfe; border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 650;
+    }
+    h2 { font-size: 1.25rem; margin: 36px 0 12px; }
+    h3 { font-size: 1.05rem; margin: 22px 0 8px; }
+    p, li { color: var(--ink); }
+    .muted { color: var(--muted); }
+    .card {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 14px; padding: 18px 18px 8px; margin: 14px 0;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { border-bottom: 1px solid var(--line); text-align: left; padding: 10px 8px; vertical-align: top; }
+    th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+    code { font-family: ui-monospace, Consolas, monospace; font-size: .9em; background: #f1f5f9; padding: 1px 5px; border-radius: 4px; }
+    ol.steps > li { margin: 8px 0; }
+    .badge {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      padding: 2px 8px; border-radius: 999px; background: #ecfdf5; color: #065f46;
+    }
+    footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">Pickora Studio · Документ 1/4</p>
+      <h1>План аудита админ-панели</h1>
+      <p class="dek">Как именно проверяем Studio: что входит в scope, по каким осям идём (каждая кнопка, каждый модуль, каждый API), и какие HTML-отчёты появятся после аудита.</p>
+      <nav class="docs" aria-label="Документы аудита">
+        <a href="./01-audit-plan.html">1. План аудита</a>
+        <a href="./02-audit-report.html">2. Полный аудит + решения</a>
+        <a href="./03-fix-plan.html">3. План исправлений</a>
+        <a href="./04-roadmap.html">4. План развития</a>
+        <a href="./05-before-after.html">5. Было → стало</a>
+      </nav>
+    </header>
+
+    <div class="card">
+      <p><span class="badge">Цель</span> Уверенность владельца: ничего важного не «потеряно» в Studio — сломанное видно, отсутствующее названо, улучшения разложены до мелочей.</p>
+      <p class="muted">Дата плана: 5 октября 2026 · Объект: <code>pk-studio/</code> + Worker <code>admin-api/</code> (только то, что дергает Studio).</p>
+    </div>
+
+    <h2>1. Порядок работ</h2>
+    <ol class="steps">
+      <li><strong>Этот документ</strong> — метод и чеклисты (без правок кода).</li>
+      <li><strong>Аудит</strong> — инвентаризация UI/JS/API + находки + предложенные решения → <code>02-audit-report.html</code>.</li>
+      <li><strong>План исправлений</strong> — очередь задач по критичности → <code>03-fix-plan.html</code>.</li>
+      <li><strong>План развития</strong> — что добавить, чтобы править сайт/статьи/картинки «молниеносно» → <code>04-roadmap.html</code>.</li>
+    </ol>
+
+    <h2>2. Scope (что проверяем)</h2>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>Зона</th><th>Включено</th><th>Не в этом аудите</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Studio UI</td>
+            <td>Все <code>data-view</code>, сайдбар, кнопки, формы, i18n, sticky/actions</td>
+            <td>Визуальный ребренд сайта pickora.shop</td>
+          </tr>
+          <tr>
+            <td>Клиентский JS</td>
+            <td><code>app.js</code>, <code>articles.js</code>, <code>blocks.js</code>, <code>ops.js</code>, <code>media.js</code>, <code>auth.js</code>, <code>seo-gate.js</code>, <code>i18n.js</code></td>
+            <td>Python-скрипты рендера вне Worker</td>
+          </tr>
+          <tr>
+            <td>API (только вызовы Studio)</td>
+            <td>login/me, content/*, preview/*, publish/*, media/*, links/check, team/*, status, audit</td>
+            <td>Полный рефакторинг Cloudflare infrastructure</td>
+          </tr>
+          <tr>
+            <td>Потоки</td>
+            <td>Home, Pins, Products, Articles, Publish, SEO, Media, Team, Status</td>
+            <td>Telegram CMS / unpaid social plans</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>3. Оси аудита (как идём)</h2>
+    <h3>Ось A — Навигация и экраны</h3>
+    <ul>
+      <li>Каждый пункт меню → открывается ли панель.</li>
+      <li>Login / logout / lang / mobile sidebar.</li>
+      <li>Dash shortcuts vs сайдбар (дубли).</li>
+    </ul>
+    <h3>Ось B — Кнопки и действия</h3>
+    <ul>
+      <li>Статические <code>id</code> в HTML → есть ли listener.</li>
+      <li>Динамические <code>data-*</code> (products/pins/home/blocks) → bind после render.</li>
+      <li>«Мёртвые» bindings (listener без кнопки) и кнопки без handler.</li>
+    </ul>
+    <h3>Ось C — Данные и сохранение</h3>
+    <ul>
+      <li>Draft save (D1) vs Publish (GitHub).</li>
+      <li>Валидация ссылок/картинок на Save.</li>
+      <li>Legacy-поля (<code>amazonUrl</code>) vs <code>links[]</code>.</li>
+    </ul>
+    <h3>Ось D — Preview</h3>
+    <ul>
+      <li>Есть ли offline/draft preview (Articles/Products да; Home/Pins — нет).</li>
+      <li>Live vs Lab vs blob preview.</li>
+      <li>Картинки Worker URL vs Pages path.</li>
+    </ul>
+    <h3>Ось E — Паритет модулей</h3>
+    <ul>
+      <li>Что умеют Articles, но нет у Products/Pins/Home (SEO gate, блоки, multi-store UI…).</li>
+      <li>Что мешает «молниеносно» чинить картинки/статьи/карточки.</li>
+    </ul>
+    <h3>Ось F — Безопасность / UX владельца</h3>
+    <ul>
+      <li>Owner checks, prefilled login, cache-bust, i18n holes.</li>
+      <li>Опасные one-click publish без гейтов.</li>
+    </ul>
+
+    <h2>4. Чеклист по модулям</h2>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>Модуль</th><th>Проверить обязательно</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Dash</td><td>Shortcuts, статусы, вход в Publish/Articles/Home</td></tr>
+          <tr><td>Home</td><td>4 Latest Reviews, article picker, Top picks CRUD, upload, Save, Live/Lab</td></tr>
+          <tr><td>Pins</td><td>Add/delete, upload, products text multi-store, Save, Live</td></tr>
+          <tr><td>Products</td><td>Hub tabs, add section/product, buy links, upload, offline preview, Save</td></tr>
+          <tr><td>Articles</td><td>Drafts, blocks, settings, SEO gate, preview, seo_ready, Publish list</td></tr>
+          <tr><td>Publish</td><td>Module cards, article publish, rollback ×5, audit</td></tr>
+          <tr><td>SEO</td><td>Сбор ссылок из drafts + products + pins + home, check ≤20</td></tr>
+          <tr><td>Media</td><td>List, delete, отсутствие upload в панели</td></tr>
+          <tr><td>Team</td><td>Invite/remove только для owner</td></tr>
+          <tr><td>Status</td><td>Snapshot refresh, осмысленность пиллов</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>5. Критерии «проблемы»</h2>
+    <ul>
+      <li><strong>P0 Critical</strong> — ломает publish / деньги / доступ owner / данные теряются.</li>
+      <li><strong>P1 High</strong> — кнопка не работает, preview врёт, картинка/ссылка уходит битой на live.</li>
+      <li><strong>P2 Medium</strong> — неудобство, дубли UI, нет валидации, нет preview.</li>
+      <li><strong>P3 Low / polish</strong> — i18n, cache-bust, мёртвый код, копирайт.</li>
+    </ul>
+
+    <h2>6. Формат отчёта аудита</h2>
+    <p>В <code>02-audit-report.html</code> каждая находка:</p>
+    <ul>
+      <li>ID (A-01…), severity, модуль</li>
+      <li>Что сломано / чего нет (факт)</li>
+      <li>Где в коде (файл)</li>
+      <li>Почему важно для владельца</li>
+      <li><strong>Решение</strong> (конкретный фикс)</li>
+    </ul>
+
+    <h2>7. Источники правды</h2>
+    <ul>
+      <li><code>pk-studio/index.html</code> — DOM кнопок</li>
+      <li><code>pk-studio/js/*.js</code> — поведение</li>
+      <li><code>admin-api/src/index.js</code> + <code>publish_*.js</code> — сервер</li>
+      <li><code>pk-studio/OWNER.md</code> — ожидания оператора</li>
+      <li>Live: <code>https://pickora.shop/pk-studio/</code></li>
+    </ul>
+
+    <footer>
+      Следующий шаг → <a href="./02-audit-report.html">Полный аудит и решения</a>
+    </footer>
+  </div>
+</body>
+</html>

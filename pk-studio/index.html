@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/pk-studio/css/studio.css?v=20261005a">
+  <link rel="stylesheet" href="/pk-studio/css/studio.css?v=20261005c">
 </head>
 <body>
   
@@ -30,7 +30,7 @@
       <form id="login-form" method="post" action="#" autocomplete="on">
         <div class="field">
           <label for="field-login" data-i18n="labelLogin">Логин</label>
-          <input id="field-login" name="login" type="text" required autocomplete="username" value="qwiqlyowner@pickora">
+          <input id="field-login" name="login" type="text" required autocomplete="username" value="">
         </div>
         <div class="field">
           <label for="field-password" data-i18n="labelPassword">Пароль</label>
@@ -139,7 +139,8 @@
 
       <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
         <button type="button" class="btn btn-primary" id="btn-home-save" style="width:auto;padding-inline:28px" data-i18n="btnSaveHome">Сохранить черновик</button>
-        <div class="preview-bar"><a class="btn btn-ghost" id="link-preview-home" href="/" target="_blank" rel="noopener" data-i18n="btnOpenLiveHome">Открыть Live</a>
+        <div class="preview-bar"><button type="button" class="btn btn-ghost" id="btn-home-offline" data-i18n="btnOfflineHub">Проверить офлайн</button>
+        <a class="btn btn-ghost" id="link-preview-home" href="/" target="_blank" rel="noopener" data-i18n="btnOpenLiveHome">Открыть Live</a>
         <a class="btn btn-ghost pk-hidden" id="link-lab-home" href="http://127.0.0.1:8765/admin-lab/site/" target="_blank" rel="noopener" data-i18n="btnOpenLab">Открыть Lab</a></div>
       </div>
       </section>
@@ -153,9 +154,15 @@
       <div id="pins-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
       <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
         <button type="button" class="btn btn-primary" id="btn-pin-add" style="width:auto;padding-inline:22px" data-i18n="btnAddPin">+ Добавить pin</button>
+        <label class="field-hint" style="display:inline-flex;align-items:center;gap:8px;margin:0;cursor:pointer">
+          <input type="checkbox" id="pins-shuffle-load" checked>
+          <span data-i18n="pinsShuffleOnLoad">Перемешивать пины на Live при загрузке</span>
+        </label>
+        <button type="button" class="btn btn-ghost" id="btn-pins-offline" data-i18n="btnOfflineHub">Проверить офлайн</button>
         <a class="btn btn-ghost" id="link-preview-pins" href="/categories/" target="_blank" rel="noopener" data-i18n="btnOpenLivePins">Открыть Live</a>
         <a class="btn btn-ghost pk-hidden" id="link-lab-pins" href="http://127.0.0.1:8765/admin-lab/site/categories/" target="_blank" rel="noopener" data-i18n="btnOpenLabPins">Открыть Lab</a>
       </div>
+      <div id="pins-filters" class="panel" style="margin-bottom:14px;padding:14px"></div>
       <div id="pins-list" class="module-grid" style="grid-template-columns:1fr"></div>
       <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
         <button type="button" class="btn btn-primary" id="btn-pins-save" style="width:auto;padding-inline:28px" data-i18n="btnSavePins">Сохранить черновик</button>
@@ -178,6 +185,9 @@
         <h3 data-i18n="articlesDraftsTitle">Черновики</h3>
         <div id="articles-drafts" class="module-grid" style="grid-template-columns:1fr;margin-bottom:24px"></div>
         <h3 data-i18n="articlesLiveTitle">Уже на сайте</h3>
+        <div style="margin-bottom:10px">
+          <input id="articles-live-search" type="search" placeholder="Search live…" style="max-width:320px">
+        </div>
         <div id="articles-live" class="module-grid" style="grid-template-columns:1fr"></div>
       </div>
 
@@ -364,8 +374,17 @@
         <p data-i18n="mediaDek">Все загруженные файлы (D1). Просмотр и удаление.</p>
       </div>
       <div id="media-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
-      <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <label class="btn btn-ghost upload-btn" style="width:auto;padding-inline:22px">
+          <span data-i18n="btnUploadImage">Загрузить фото</span>
+          <input type="file" accept="image/*" id="media-upload-input" hidden>
+        </label>
         <button type="button" class="btn btn-ghost" id="btn-media-refresh" style="width:auto" data-i18n="btnRefresh">Обновить</button>
+      </div>
+      <div id="media-upload-result" class="panel pk-hidden" style="margin-bottom:14px;padding:12px 14px">
+        <p class="field-hint" style="margin:0 0 8px" data-i18n="mediaUploadPathLabel">Путь для вставки в статью / блок:</p>
+        <code id="media-upload-path" class="path-hint" style="display:block;word-break:break-all;margin-bottom:10px"></code>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-media-copy-path" style="width:auto" data-i18n="btnCopyPath">Копировать путь</button>
       </div>
       <div id="media-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px"></div>
       </section>
@@ -401,13 +420,13 @@
     </div>
   </div>
 
-  <script src="/pk-studio/js/i18n.js?v=20261003i"></script>
-  <script src="/pk-studio/js/seo-gate.js?v=20261003d"></script>
-  <script src="/pk-studio/js/auth.js?v=20261003d"></script>
-  <script src="/pk-studio/js/media.js?v=20261003d"></script>
-  <script src="/pk-studio/js/blocks.js?v=20261003d"></script>
-  <script src="/pk-studio/js/articles.js?v=20261003d"></script>
-  <script src="/pk-studio/js/ops.js?v=20261003i"></script>
-  <script src="/pk-studio/js/app.js?v=20261005a"></script>
+  <script src="/pk-studio/js/i18n.js?v=20261005c"></script>
+  <script src="/pk-studio/js/seo-gate.js?v=20261005c"></script>
+  <script src="/pk-studio/js/auth.js?v=20261005c"></script>
+  <script src="/pk-studio/js/media.js?v=20261005c"></script>
+  <script src="/pk-studio/js/blocks.js?v=20261005c"></script>
+  <script src="/pk-studio/js/articles.js?v=20261005c"></script>
+  <script src="/pk-studio/js/ops.js?v=20261005c"></script>
+  <script src="/pk-studio/js/app.js?v=20261005c"></script>
 </body>
 </html>

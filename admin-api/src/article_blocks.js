@@ -288,7 +288,8 @@ export function compileBlocksToHtml(blocks) {
           return `<div class="pk-mw-verdict pk-block-verdict pk-mw-verdict--${v}">${richToHtml(b.text)}</div>`;
         }
         case "html":
-          return String(b.html || "");
+          // Never ship unsanitized raw HTML from drafts (A-41)
+          return sanitizeRichHtml(b.html || "");
         default:
           return "";
       }
