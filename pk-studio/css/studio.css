@@ -1918,6 +1918,40 @@ body.studio-app {
   flex-shrink: 0;
 }
 
+/* White studio topbar: do NOT inherit dark-topbar ghost/lang colors */
+.studio-topbar,
+.studio-topbar .who,
+.studio-topbar .studio-topbar-title {
+  color: var(--pk-navy);
+}
+.studio-topbar .who {
+  opacity: 0.72;
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+.studio-topbar .lang-toggle {
+  background: #fff;
+  color: var(--pk-navy);
+  border: 1.5px solid var(--pk-line);
+}
+.studio-topbar .lang-toggle:hover {
+  background: var(--pk-ice, #f4f7fb);
+  border-color: #c5d0e0;
+}
+.studio-topbar .btn-ghost {
+  color: var(--pk-navy);
+  border-color: var(--pk-line);
+  background: #fff;
+}
+.studio-topbar .btn-ghost:hover {
+  color: var(--pk-navy);
+  border-color: #c5d0e0;
+  background: var(--pk-ice, #f4f7fb);
+}
+.studio-topbar #role-badge {
+  color: var(--pk-navy);
+}
+
 
 /* ----------------------------------------------------------------
    .studio-panel — content panel toggled by .pk-hidden in JS
