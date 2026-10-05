@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/pk-studio/css/studio.css?v=20261003d">
+  <link rel="stylesheet" href="/pk-studio/css/studio.css?v=20261005a">
 </head>
 <body>
   
@@ -275,17 +275,17 @@
       <div id="products-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
       <div class="hub-tabs-bar">
         <div id="products-hub-tabs" class="hub-tabs" role="tablist" aria-label="Hubs"></div>
-        <div class="hub-tabs-actions">
-          <button type="button" class="btn btn-primary btn-sm" id="btn-hub-add" data-i18n="btnAddSection">+ Новый раздел</button>
-          <a class="btn btn-ghost btn-sm" id="link-preview-products" href="/products/" target="_blank" rel="noopener" data-i18n="btnOpenLiveProducts">Открыть Live</a>
-          <a class="btn btn-ghost btn-sm pk-hidden" id="link-lab-products" href="http://127.0.0.1:8765/admin-lab/site/products/" target="_blank" rel="noopener" data-i18n="btnOpenLabProducts">Открыть Lab</a>
-        </div>
+        <aside class="hub-tabs-actions" aria-label="Products actions">
+          <button type="button" class="btn btn-primary hub-action-btn" id="btn-hub-add" data-i18n="btnAddSection">+ Новый раздел</button>
+          <div class="hub-actions-stack">
+            <button type="button" class="btn btn-primary hub-action-btn" id="btn-products-save" data-i18n="btnSaveProducts">Сохранить черновик</button>
+            <button type="button" class="btn btn-ghost hub-action-btn" id="btn-products-offline" data-i18n="btnOfflineHub">Проверить офлайн</button>
+            <a class="btn btn-ghost hub-action-btn" id="link-preview-products" href="/products/" target="_blank" rel="noopener" data-i18n="btnOpenLiveProducts">Открыть Live</a>
+            <a class="btn btn-ghost hub-action-btn pk-hidden" id="link-lab-products" href="http://127.0.0.1:8765/admin-lab/site/products/" target="_blank" rel="noopener" data-i18n="btnOpenLabProducts">Открыть Lab</a>
+          </div>
+        </aside>
       </div>
       <div id="products-list" class="module-grid" style="grid-template-columns:1fr"></div>
-      <div class="products-sticky-actions">
-        <button type="button" class="btn btn-ghost" id="btn-products-offline" style="width:auto;padding-inline:22px" data-i18n="btnOfflineHub">Проверить офлайн</button>
-        <button type="button" class="btn btn-primary" id="btn-products-save" style="width:auto;padding-inline:28px" data-i18n="btnSaveProducts">Сохранить черновик</button>
-      </div>
       </section>
 
       <section class="studio-panel pk-hidden" data-view="publish">
@@ -408,6 +408,6 @@
   <script src="/pk-studio/js/blocks.js?v=20261003d"></script>
   <script src="/pk-studio/js/articles.js?v=20261003d"></script>
   <script src="/pk-studio/js/ops.js?v=20261003i"></script>
-  <script src="/pk-studio/js/app.js?v=20261003i"></script>
+  <script src="/pk-studio/js/app.js?v=20261005a"></script>
 </body>
 </html>

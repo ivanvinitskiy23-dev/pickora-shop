@@ -1024,9 +1024,6 @@
               t("productsCount")
             )}</span></h3>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button type="button" class="btn btn-ghost btn-sm" data-hub-offline="${i}">${escapeAttr(
-                t("btnOfflineHub")
-              )}</button>
               <button type="button" class="btn btn-ghost btn-sm" data-hub-del="${i}">${escapeAttr(
                 t("btnDeleteSection")
               )}</button>
@@ -1098,13 +1095,6 @@
           productsActiveHub = Math.max(0, productsData.hubCategories.length - 1);
         }
         renderProductsEditor();
-      });
-    });
-
-    $$("[data-hub-offline]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        productsActiveHub = Number(btn.getAttribute("data-hub-offline"));
-        openProductsOfflinePreview();
       });
     });
 
