@@ -1635,22 +1635,25 @@ body.studio-app {
    ================================================================ */
 .preview-bar {
   position: sticky;
-  bottom: 0;
+  bottom: 14px;
   left: 0;
   right: 0;
-  background: rgba(255,255,255,0.97);
-  border-top: 1.5px solid var(--pk-line);
-  padding: 11px 32px;
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
-  z-index: 20;
-  box-shadow: 0 -4px 18px rgba(21,34,59,0.07);
-  /* Pull out of padding to span full width */
-  margin-left: -32px;
-  margin-right: -32px;
-  margin-bottom: -72px;
+  z-index: 30;
+  margin: 28px 0 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(21, 34, 59, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.85) inset,
+    0 8px 24px rgba(21, 34, 59, 0.1),
+    0 2px 6px rgba(21, 34, 59, 0.06);
 }
 
 .preview-bar .preview-label {
@@ -1781,10 +1784,10 @@ body.studio-app {
   }
 
   .preview-bar {
-    padding: 10px 16px;
-    margin-left: -16px;
-    margin-right: -16px;
-    margin-bottom: -52px;
+    bottom: 10px;
+    margin: 22px 0 8px;
+    padding: 11px 12px;
+    border-radius: 12px;
   }
 
   .pub-grid {
@@ -1795,7 +1798,12 @@ body.studio-app {
 @media (max-width: 480px) {
   .nav-item { padding: 5px 8px; font-size: 0.63rem; }
   .studio-content { padding: 14px 12px 44px; }
-  .preview-bar { padding: 9px 12px; margin-left: -12px; margin-right: -12px; margin-bottom: -44px; }
+  .preview-bar {
+    bottom: 8px;
+    margin: 18px 0 6px;
+    padding: 10px 10px;
+    gap: 8px;
+  }
   .pub-card { padding: 16px 16px 14px; }
   .snap-item { padding: 10px 12px; gap: 10px; }
 }
@@ -3491,15 +3499,16 @@ body.studio-app {
 }
 .module-sticky-actions {
   position: sticky;
-  bottom: 0;
-  z-index: 5;
-  padding: 12px 0 4px;
-  background: linear-gradient(180deg, transparent 0%, var(--pk-bg, #f4f7fb) 28%);
+  bottom: 14px;
+  z-index: 30;
 }
 .preview-bar.module-sticky-actions {
-  margin-top: 18px;
-  padding: 11px 32px;
-  background: rgba(255,255,255,0.97);
+  /* same polished floating strip as .preview-bar */
+  margin-top: 28px;
+}
+.studio-content {
+  /* room so last fields are not permanently hidden under sticky actions */
+  padding-bottom: 88px;
 }
 .media-dropzone.pk-readonly {
   opacity: 0.55;
