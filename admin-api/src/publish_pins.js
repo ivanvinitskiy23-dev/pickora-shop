@@ -235,6 +235,22 @@ export function buildPinsPreviewHtml(templateHtml, draft, meta = {}) {
 }
 
 // ---------------------------------------------------------------------------
+// planPinsPublish (dry-run — no GitHub writes)
+// ---------------------------------------------------------------------------
+
+export function planPinsPublish(draft) {
+  const pins = draft.pins;
+  if (!Array.isArray(pins)) {
+    throw new Error("draft.pins must be an array");
+  }
+  return {
+    ok: true,
+    files: ["content/pins.json", "categories/index.html"],
+    note: `${pins.length} pins + ${(draft.filters || []).length} filters published to categories/index.html.`,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // publishPinsDraft
 // ---------------------------------------------------------------------------
 
@@ -247,45 +263,58 @@ export function buildPinsPreviewHtml(templateHtml, draft, meta = {}) {
  * @param {object} draft - Pins draft from D1 (key 'pins')
  * @returns {Promise<{ ok, urls, commits, note }>}
  */
-export async function publishPinsDraft(env, draft) {
+export async function publishPinsDraft(env, draft, opts = {}) {
   const pins = draft.pins;
   if (!Array.isArray(pins)) {
     throw new Error("draft.pins must be an array");
   }
 
-  const commits = [];
-  const urls    = [];
+  const dryRun = !!opts.dryRun;
+  const urls = ["content/pins.json", "categories/index.html"];
 
-  // ── 1. content/pins.json ──────────────────────────────────────────────
-  const jsonPath    = "content/pins.json";
+  const catFile = await getFile(env, "categories/index.html");
+  if (!catFile) throw new Error("categories/index.html missing on GitHub");
+  applyPinsDraftToHtml(catFile.content, draft);
+
+  if (dryRun) {
+    return {
+      ok: true,
+      dryRun: true,
+      urls,
+      commits: [],
+      note: `Dry-run: would publish ${pins.length} pins → ` + urls.join(", "),
+    };
+  }
+
+  const commits = [];
+  const written = [];
+
+  const jsonPath = "content/pins.json";
   const existingJson = await getFile(env, jsonPath);
-  const jsonResult   = await putFile(
-    env, jsonPath,
+  const jsonResult = await putFile(
+    env,
+    jsonPath,
     JSON.stringify(draft, null, 2),
     "publish(pins): update content/pins.json",
     existingJson?.sha
   );
   commits.push(jsonResult.commit.sha);
-  urls.push(jsonPath);
-
-  // ── 2. categories/index.html ──────────────────────────────────────────
-  const catPath = "categories/index.html";
-  const catFile = await getFile(env, catPath);
-  if (!catFile) throw new Error("categories/index.html missing on GitHub");
+  written.push(jsonPath);
 
   const html = applyPinsDraftToHtml(catFile.content, draft);
-
   const catResult = await putFile(
-    env, catPath, html,
+    env,
+    "categories/index.html",
+    html,
     `publish(pins): update ${pins.length} pins + filters`,
     catFile.sha
   );
   commits.push(catResult.commit.sha);
-  urls.push(catPath);
+  written.push("categories/index.html");
 
   return {
-    ok:   true,
-    urls,
+    ok: true,
+    urls: written,
     commits,
     note: `${pins.length} pins + ${(draft.filters || []).length} filters published to categories/index.html.`,
   };

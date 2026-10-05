@@ -233,6 +233,30 @@ export function buildHomePreviewHtml(templateHtml, draft, meta = {}) {
 }
 
 // ---------------------------------------------------------------------------
+// planHomePublish (dry-run — no GitHub writes)
+// ---------------------------------------------------------------------------
+
+export function planHomePublish(draft) {
+  const reviews = draft.latestReviews;
+  if (!Array.isArray(reviews) || reviews.length !== 4) {
+    throw new Error(
+      `latestReviews must be exactly 4 items, got ${
+        Array.isArray(reviews) ? reviews.length : "non-array"
+      }`
+    );
+  }
+  const files = ["content/home.json", "index.html"];
+  if (draft.topPicks) files.push("assets/data/top-picks.json");
+  return {
+    ok: true,
+    files,
+    note:
+      "Reviews grid + top-pick shell patched in index.html; " +
+      "content/home.json and assets/data/top-picks.json updated.",
+  };
+}
+
+// ---------------------------------------------------------------------------
 // publishHomeDraft
 // ---------------------------------------------------------------------------
 
@@ -246,7 +270,7 @@ export function buildHomePreviewHtml(templateHtml, draft, meta = {}) {
  * @param {object} draft - Home draft from D1 (key 'home')
  * @returns {Promise<{ ok, urls, commits, note }>}
  */
-export async function publishHomeDraft(env, draft) {
+export async function publishHomeDraft(env, draft, opts = {}) {
   const reviews = draft.latestReviews;
   if (!Array.isArray(reviews) || reviews.length !== 4) {
     throw new Error(
@@ -256,61 +280,77 @@ export async function publishHomeDraft(env, draft) {
     );
   }
 
-  const today   = todayISO();
-  const commits = [];
-  const urls    = [];
+  const dryRun = !!opts.dryRun;
+  const today = todayISO();
+  const urls = ["content/home.json", "index.html"];
+  if (draft.topPicks) urls.push("assets/data/top-picks.json");
 
-  // ── 1. content/home.json ────────────────────────────────────────────────
-  const jsonPath    = "content/home.json";
+  // Validate patch even on dry-run
+  const homePage = await getFile(env, "index.html");
+  if (!homePage) throw new Error("index.html missing on GitHub");
+  applyHomeDraftToHtml(homePage.content, draft);
+
+  if (dryRun) {
+    return {
+      ok: true,
+      dryRun: true,
+      urls,
+      commits: [],
+      note: "Dry-run: would update " + urls.join(", "),
+    };
+  }
+
+  const commits = [];
+  const written = [];
+
+  const jsonPath = "content/home.json";
   const existingJson = await getFile(env, jsonPath);
-  const jsonResult   = await putFile(
-    env, jsonPath,
+  const jsonResult = await putFile(
+    env,
+    jsonPath,
     JSON.stringify(draft, null, 2),
     "publish(home): update content/home.json",
     existingJson?.sha
   );
   commits.push(jsonResult.commit.sha);
-  urls.push(jsonPath);
-
-  // ── 2. index.html ─────────────────────────────────────────────────────
-  const homePage = await getFile(env, "index.html");
-  if (!homePage) throw new Error("index.html missing on GitHub");
+  written.push(jsonPath);
 
   let updatedHome = applyHomeDraftToHtml(homePage.content, draft);
-
   const homeResult = await putFile(
-    env, "index.html",
+    env,
+    "index.html",
     updatedHome,
     "publish(home): update reviews grid + top-pick shell",
     homePage.sha
   );
   commits.push(homeResult.commit.sha);
-  urls.push("index.html");
+  written.push("index.html");
 
-  // ── 3. assets/data/top-picks.json ─────────────────────────────────────
   if (draft.topPicks) {
-    const tpPath    = "assets/data/top-picks.json";
+    const tpPath = "assets/data/top-picks.json";
     const tpExisting = await getFile(env, tpPath);
-    const tpPayload  = {
+    const tpPayload = {
       updated: draft.topPicks.updated || today,
-      picks:   draft.topPicks.picks,
+      picks: draft.topPicks.picks,
     };
     const tpResult = await putFile(
-      env, tpPath,
+      env,
+      tpPath,
       JSON.stringify(tpPayload, null, 2) + "\n",
       "publish(home): update top-picks.json",
       tpExisting?.sha
     );
     commits.push(tpResult.commit.sha);
-    urls.push(tpPath);
+    written.push(tpPath);
   }
 
   return {
-    ok:   true,
-    urls,
+    ok: true,
+    urls: written,
     commits,
-    note: "Reviews grid + top-pick shell patched in index.html; " +
-          "content/home.json and assets/data/top-picks.json updated.",
+    note:
+      "Reviews grid + top-pick shell patched in index.html; " +
+      "content/home.json and assets/data/top-picks.json updated.",
   };
 }
 

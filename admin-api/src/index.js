@@ -10,16 +10,19 @@ import {
 } from "./publish_article.js";
 import {
   publishHomeDraft,
+  planHomePublish,
   buildHomePreviewHtml,
   loadHomeTemplateHtml,
 } from "./publish_home.js";
 import {
   publishPinsDraft,
+  planPinsPublish,
   buildPinsPreviewHtml,
   loadPinsTemplateHtml,
 } from "./publish_pins.js";
 import {
   publishProductsDraft,
+  planProductsPublish,
   buildCategoryPreviewHtml,
   loadCategoryTemplateHtml,
 } from "./publish_products.js";
@@ -138,17 +141,47 @@ export default {
         return cors(await handleProbeHubs(env, await readJson(request)), request);
       }
 
+      const publishDryMatch = url.pathname.match(
+        /^\/api\/publish\/(home|pins|products)\/dry-run$/
+      );
+      if (publishDryMatch && request.method === "POST") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        const body = await readJson(request);
+        body.dryRun = true;
+        const mod = publishDryMatch[1];
+        const pubMap = { home: publishHomeDraft, pins: publishPinsDraft, products: publishProductsDraft };
+        return cors(
+          await handlePublishModule(env, mod, user, pubMap[mod], body),
+          request
+        );
+      }
+
       if (url.pathname === "/api/publish/home" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
-        return cors(await handlePublishModule(env, "home", user, publishHomeDraft), request);
+        return cors(
+          await handlePublishModule(env, "home", user, publishHomeDraft, await readJson(request)),
+          request
+        );
       }
       if (url.pathname === "/api/publish/pins" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
-        return cors(await handlePublishModule(env, "pins", user, publishPinsDraft), request);
+        return cors(
+          await handlePublishModule(env, "pins", user, publishPinsDraft, await readJson(request)),
+          request
+        );
       }
       if (url.pathname === "/api/publish/products" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
-        return cors(await handlePublishModule(env, "products", user, publishProductsDraft), request);
+        return cors(
+          await handlePublishModule(
+            env,
+            "products",
+            user,
+            publishProductsDraft,
+            await readJson(request)
+          ),
+          request
+        );
       }
 
       if (url.pathname === "/api/publish/snapshots" && request.method === "GET") {
@@ -700,7 +733,39 @@ async function recordSnapshot(env, module, detail, commits, user, payloadDraft) 
   }
 }
 
-async function handlePublishModule(env, key, user, publisher) {
+async function handlePublishModule(env, key, user, publisher, body = {}) {
+  const row = await env.DB.prepare(`SELECT json FROM content_drafts WHERE key = ?`)
+    .bind(key)
+    .first();
+  if (!row?.json) return json({ error: "draft_not_found", key }, 404);
+  const draft = JSON.parse(row.json);
+  const dryRun = !!(body && body.dryRun);
+  const hubId = body && body.hubId ? String(body.hubId).trim() : "";
+
+  if (dryRun) {
+    const planMap = {
+      home: () => planHomePublish(draft),
+      pins: () => planPinsPublish(draft),
+      products: () => planProductsPublish(draft, { hubId: hubId || undefined }),
+    };
+    const planFn = planMap[key];
+    if (!planFn) return json({ error: "dry_run_unsupported", key }, 400);
+    try {
+      const plan = planFn();
+      const files = plan.files || [];
+      return json({
+        ok: true,
+        dryRun: true,
+        files,
+        urls: files,
+        note: plan.note || "",
+        skipped: plan.skipped,
+      });
+    } catch (err) {
+      return json({ error: "dry_run_failed", detail: String(err?.message || err) }, 400);
+    }
+  }
+
   if (!env.GITHUB_TOKEN) {
     return json(
       {
@@ -710,19 +775,15 @@ async function handlePublishModule(env, key, user, publisher) {
       503
     );
   }
-  const row = await env.DB.prepare(`SELECT json FROM content_drafts WHERE key = ?`)
-    .bind(key)
-    .first();
-  if (!row?.json) return json({ error: "draft_not_found", key }, 404);
-  const draft = JSON.parse(row.json);
   try {
-    const result = await publisher(env, draft);
+    const pubOpts = key === "products" ? { hubId: hubId || undefined } : {};
+    const result = await publisher(env, draft, pubOpts);
     await env.DB.prepare(
       `INSERT INTO audit_log (user_login, action, detail) VALUES (?, ?, ?)`
     )
-      .bind(user.login, `publish_${key}`, key)
+      .bind(user.login, `publish_${key}`, hubId ? `${key}:${hubId}` : key)
       .run();
-    await recordSnapshot(env, key, key, result.commits, user, draft);
+    await recordSnapshot(env, key, hubId ? `${key}:${hubId}` : key, result.commits, user, draft);
     return json(result);
   } catch (err) {
     return json({ error: "publish_failed", detail: String(err?.message || err) }, 500);

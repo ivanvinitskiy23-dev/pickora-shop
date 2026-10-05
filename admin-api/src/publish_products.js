@@ -544,6 +544,44 @@ export async function loadCategoryTemplateHtml(env, catId) {
 }
 
 // ---------------------------------------------------------------------------
+// planProductsPublish (dry-run — no GitHub writes)
+// ---------------------------------------------------------------------------
+
+export function planProductsPublish(draft, options = {}) {
+  const hubIdFilter = options.hubId ? String(options.hubId).trim() : "";
+  const cats = draft.hubCategories;
+  if (!Array.isArray(cats)) throw new Error("hubCategories must be an array");
+
+  const files = ["content/products.json", "products/index.html"];
+  const catProducts = draft.categoryProducts || {};
+  const skipped = [];
+
+  if (hubIdFilter && !cats.some((h) => h.id === hubIdFilter)) {
+    skipped.push(`${hubIdFilter}: hub not in draft`);
+  }
+
+  for (const hub of cats) {
+    if (hubIdFilter && hub.id !== hubIdFilter) continue;
+    const catId = hub.id;
+    if (!catId) continue;
+    const products = catProducts[catId];
+    if (!Array.isArray(products) || products.length === 0) {
+      skipped.push(`${catId}: no products in categoryProducts`);
+      continue;
+    }
+    files.push(`${catId}/index.html`);
+  }
+
+  const note =
+    (hubIdFilter
+      ? `Hub "${hubIdFilter}": content/products.json, products/index.html, and that category page only. `
+      : `${cats.length} hub category cards + each category page with products. `) +
+    (skipped.length > 0 ? `Skipped: ${skipped.join("; ")}.` : "No skips.");
+
+  return { ok: true, files, skipped, note };
+}
+
+// ---------------------------------------------------------------------------
 // publishProductsDraft
 // ---------------------------------------------------------------------------
 
@@ -560,19 +598,66 @@ export async function loadCategoryTemplateHtml(env, catId) {
  * @param {object} draft - Products draft from D1 (key 'products')
  * @returns {Promise<{ ok, urls, commits, skipped, note }>}
  */
-export async function publishProductsDraft(env, draft) {
+export async function publishProductsDraft(env, draft, opts = {}) {
   const cats = draft.hubCategories;
   if (!Array.isArray(cats)) throw new Error("hubCategories must be an array");
 
+  const dryRun = !!opts.dryRun;
+  const onlyHub = opts.hubId ? String(opts.hubId).trim() : "";
   const commits = [];
-  const urls    = [];
+  const urls = [];
   const skipped = [];
+  const catProducts = draft.categoryProducts || {};
+
+  const planned = ["content/products.json", "products/index.html"];
+  for (const hub of cats) {
+    const catId = hub.id;
+    if (!catId) continue;
+    if (onlyHub && catId !== onlyHub) continue;
+    const products = catProducts[catId];
+    if (!Array.isArray(products) || products.length === 0) continue;
+    planned.push(`${catId}/index.html`);
+  }
+
+  if (dryRun) {
+    // Validate hub page + optional category pages exist / patchable
+    const hubFile = await getFile(env, "products/index.html");
+    if (!hubFile) throw new Error("products/index.html missing on GitHub");
+    for (const path of planned) {
+      if (path === "content/products.json" || path === "products/index.html") continue;
+      const catId = path.replace(/\/index\.html$/, "");
+      const products = catProducts[catId];
+      const page = await getFile(env, path);
+      if (!page) {
+        skipped.push(`${catId}: page not found on GitHub`);
+        continue;
+      }
+      try {
+        replaceProductCards(page.content, products);
+      } catch (err) {
+        skipped.push(`${catId}: ${err.message}`);
+      }
+    }
+    return {
+      ok: true,
+      dryRun: true,
+      urls: planned,
+      commits: [],
+      skipped,
+      note:
+        "Dry-run: would update " +
+        planned.join(", ") +
+        (onlyHub ? ` (hub-only: ${onlyHub})` : "") +
+        (skipped.length ? `; issues: ${skipped.join("; ")}` : ""),
+    };
+  }
 
   // ── 1. content/products.json ───────────────────────────────────────────
-  const jsonPath     = "content/products.json";
+  const jsonPath = "content/products.json";
   const existingJson = await getFile(env, jsonPath);
-  const jsonResult   = await putFile(
-    env, jsonPath,
+  const jsonResult = await putFile(
+    env,
+    jsonPath,
     JSON.stringify(draft, null, 2),
     "publish(products): update content/products.json",
     existingJson?.sha
@@ -585,16 +670,17 @@ export async function publishProductsDraft(env, draft) {
   const hubFile = await getFile(env, hubPath);
   if (!hubFile) throw new Error("products/index.html missing on GitHub");
 
-  const inner  = cats.map((c, i) => buildCatCard(c, i === 0)).join("\n\n");
-  const gridRe = /(<div class="pk-category-grid" id="pk-category-grid">\s*)[\s\S]*?(<\/div>\s*\n\s*<!-- Review guides rail)/;
+  const inner = cats.map((c, i) => buildCatCard(c, i === 0)).join("\n\n");
+  const gridRe =
+    /(<div class="pk-category-grid" id="pk-category-grid">\s*)[\s\S]*?(<\/div>\s*\n\s*<!-- Review guides rail)/;
   if (!gridRe.test(hubFile.content)) {
     throw new Error("pk-category-grid not found in products/index.html");
   }
-  const updatedHub = hubFile.content.replace(
-    gridRe, (_, g1, g2) => g1 + "\n" + inner + "\n\n    " + g2
-  );
+  const updatedHub = hubFile.content.replace(gridRe, (_, g1, g2) => g1 + "\n" + inner + "\n\n    " + g2);
   const hubResult = await putFile(
-    env, hubPath, updatedHub,
+    env,
+    hubPath,
+    updatedHub,
     `publish(products): update ${cats.length} category cards`,
     hubFile.sha
   );
@@ -602,11 +688,13 @@ export async function publishProductsDraft(env, draft) {
   urls.push(hubPath);
 
   // ── 3. Category pages — product cards ─────────────────────────────────
-  const catProducts = draft.categoryProducts || {};
-
   for (const hub of cats) {
-    const catId    = hub.id;
+    const catId = hub.id;
     if (!catId) continue;
+    if (onlyHub && catId !== onlyHub) {
+      skipped.push(`${catId}: skipped (hub-only ${onlyHub})`);
+      continue;
+    }
 
     const products = catProducts[catId];
     if (!Array.isArray(products) || products.length === 0) {
@@ -615,7 +703,7 @@ export async function publishProductsDraft(env, draft) {
     }
 
     const catPagePath = `${catId}/index.html`;
-    const catPage     = await getFile(env, catPagePath);
+    const catPage = await getFile(env, catPagePath);
     if (!catPage) {
       skipped.push(`${catId}: page not found on GitHub`);
       continue;
@@ -623,8 +711,10 @@ export async function publishProductsDraft(env, draft) {
 
     try {
       const updatedCat = replaceProductCards(catPage.content, products);
-      const catResult  = await putFile(
-        env, catPagePath, updatedCat,
+      const catResult = await putFile(
+        env,
+        catPagePath,
+        updatedCat,
         `publish(products): update ${products.length} products in ${catId}`,
         catPage.sha
       );
@@ -643,6 +733,7 @@ export async function publishProductsDraft(env, draft) {
     note:
       `${cats.length} hub category cards updated in products/index.html. ` +
       `Category pages updated: ${urls.length - 2}. ` +
+      (onlyHub ? `Hub-only: ${onlyHub}. ` : "") +
       (skipped.length > 0 ? `Skipped: ${skipped.join("; ")}` : "No skips."),
   };
 }

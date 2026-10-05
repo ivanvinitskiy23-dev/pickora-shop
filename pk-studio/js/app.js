@@ -161,6 +161,60 @@
     if (kind) el.classList.add(kind);
   }
 
+  function ensureAltFromTitle(existingAlt, title) {
+    const a = String(existingAlt || "").trim();
+    if (a) return a;
+    return String(title || "").trim();
+  }
+
+  function setCardThumbPreview(card, fileOrUrl) {
+    if (!card) return null;
+    const thumb = card.querySelector(".review-thumb");
+    if (!thumb) return null;
+    let url =
+      typeof fileOrUrl === "string"
+        ? fileOrUrl
+        : fileOrUrl instanceof File
+          ? URL.createObjectURL(fileOrUrl)
+          : null;
+    if (!url) return null;
+    let img = thumb.querySelector("img");
+    if (!img) {
+      thumb.innerHTML = "";
+      img = document.createElement("img");
+      thumb.appendChild(img);
+    }
+    img.src = url;
+    img.alt = "";
+    return url.startsWith("blob:") ? url : null;
+  }
+
+  function thumbImageActionsHtml(replaceDataAttr, pickerDataAttr) {
+    return `<div class="thumb-actions" style="display:flex;gap:6px;flex-wrap:wrap">
+      <label class="btn btn-ghost btn-sm upload-btn">${escapeAttr(t("btnReplaceImage"))}
+        <input type="file" accept="image/*" ${replaceDataAttr} hidden>
+      </label>
+      <button type="button" class="btn btn-ghost btn-sm" ${pickerDataAttr}>${escapeAttr(
+      t("btnFromMedia")
+    )}</button>
+    </div>`;
+  }
+
+  function mediaPickPath(pick) {
+    return pick?.path || pick?.workerUrl || "";
+  }
+
+  function bindMediaPickerButtons(selector, onPickForButton) {
+    $$(selector).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (!window.PK_MEDIA?.openPicker) return;
+        window.PK_MEDIA.openPicker({
+          onPick: (pick) => onPickForButton(btn, pick),
+        });
+      });
+    });
+  }
+
   async function uploadImage(file, preferredName) {
     return window.PK_MEDIA.upload(file, preferredName);
   }
@@ -318,9 +372,7 @@
                     : `<div class="review-thumb-empty">${escapeAttr(t("noImage"))}</div>`
                 }
               </div>
-              <label class="btn btn-ghost btn-sm upload-btn">${escapeAttr(t("btnUploadImage"))}
-                <input type="file" accept="image/*" data-tp-upload="${i}" hidden>
-              </label>
+              ${thumbImageActionsHtml(`data-tp-upload="${i}"`, `data-tp-media="${i}"`)}
             </div>
             <div class="review-fields">
               <div class="field-row" style="display:flex;gap:10px;flex-wrap:wrap">
@@ -389,19 +441,37 @@
         const file = input.files && input.files[0];
         input.value = "";
         if (!file) return;
+        const card = input.closest("[data-top-pick]");
         const status = $("#home-status");
+        const blobUrl = setCardThumbPreview(card, file);
         setStatus(status, t("uploading"));
         try {
           readTopPicksForm();
-          const id = homeData.topPicks.picks[i]?.id || "top-pick";
+          const pick = homeData.topPicks.picks[i] || {};
+          const id = pick.id || "top-pick";
           const data = await uploadImage(file, "top-pick-" + id);
           homeData.topPicks.picks[i].image = data.path;
+          homeData.topPicks.picks[i].imageAlt = ensureAltFromTitle(
+            pick.imageAlt,
+            pick.title || file.name
+          );
+          if (blobUrl) URL.revokeObjectURL(blobUrl);
           renderTopPicksEditor();
           setStatus(status, t("uploadOk"), "ok");
         } catch (err) {
+          if (blobUrl) URL.revokeObjectURL(blobUrl);
           setStatus(status, window.PK_MEDIA.errorMessage(err, t), "warn");
         }
       });
+    });
+    bindMediaPickerButtons("[data-tp-media]", (btn, pick) => {
+      const i = Number(btn.getAttribute("data-tp-media"));
+      readTopPicksForm();
+      const p = homeData.topPicks.picks[i];
+      if (!p) return;
+      p.image = mediaPickPath(pick);
+      p.imageAlt = ensureAltFromTitle(p.imageAlt, p.title);
+      renderTopPicksEditor();
     });
     bindBuyLinksEditor(wrap);
   }
@@ -567,6 +637,12 @@
 
   /* —— Pins —— */
   const BUY_LINK_STYLES = ["amazon", "blue", "outline", "walmart", "dark"];
+  const BUY_LINK_PRESETS = [
+    { key: "amazon", label: "Amazon", style: "amazon" },
+    { key: "walmart", label: "Walmart", style: "walmart" },
+    { key: "bestbuy", label: "Best Buy", style: "blue" },
+    { key: "other", label: "Other", style: "outline" },
+  ];
 
   function detectBuyStyle(url, explicit) {
     const st = String(explicit || "").trim();
@@ -600,30 +676,97 @@
     return [{ label: "Amazon", url: "", style: "amazon" }];
   }
 
+  function buyLinkRowInnerHtml(l) {
+    const st = detectBuyStyle(l.url, l.style);
+    const styleOpts = BUY_LINK_STYLES.map(
+      (s) =>
+        `<option value="${s}"${s === st ? " selected" : ""}>${escapeAttr(t("linkStyle_" + s))}</option>`
+    ).join("");
+    return `<input class="buy-store" data-f="llabel" placeholder="Amazon" value="${escapeAttr(l.label || "")}">
+          <input class="buy-url" data-f="lurl" placeholder="https://amzn.to/… or store URL" value="${escapeAttr(l.url || "")}" inputmode="url" spellcheck="false">
+          <select class="buy-style" data-f="lstyle" title="${escapeAttr(t("linkStyle"))}" aria-label="${escapeAttr(t("linkStyle"))}">${styleOpts}</select>
+          <button type="button" class="btn btn-ghost btn-xs buy-check-btn" data-link-check title="${escapeAttr(t("btnCheckLink"))}">${escapeAttr(t("btnCheckLink"))}</button>
+          <span class="buy-check-status pk-hidden" data-link-check-status aria-live="polite"></span>
+          <button type="button" class="block-tool block-tool-del" data-link-del title="${escapeAttr(t("btnDeletePin"))}" aria-label="${escapeAttr(t("btnDeletePin"))}">×</button>`;
+  }
+
   function buyLinksEditorHtml(links, rowAttr) {
     const list = links && links.length ? links : [{ label: "Amazon", url: "", style: "amazon" }];
-    const styleOpts = (cur) =>
-      BUY_LINK_STYLES.map(
-        (s) =>
-          `<option value="${s}"${s === cur ? " selected" : ""}>${escapeAttr(t("linkStyle_" + s))}</option>`
-      ).join("");
+    const presetBtns = BUY_LINK_PRESETS.map(
+      (p) =>
+        `<button type="button" class="btn btn-ghost btn-xs buy-preset" data-link-preset="${escapeAttr(p.key)}" data-preset-label="${escapeAttr(p.label)}" data-preset-style="${escapeAttr(p.style)}">${escapeAttr(t("linkPreset_" + p.key))}</button>`
+    ).join("");
     const rows = list
-      .map((l, i) => {
-        const st = detectBuyStyle(l.url, l.style);
-        return `<div class="buy-row" data-link-row>
-          <input class="buy-store" data-f="llabel" placeholder="Amazon" value="${escapeAttr(l.label || "")}">
-          <input class="buy-url" data-f="lurl" placeholder="https://amzn.to/… or store URL" value="${escapeAttr(l.url || "")}" inputmode="url" spellcheck="false">
-          <select class="buy-style" data-f="lstyle" title="${escapeAttr(t("linkStyle"))}" aria-label="${escapeAttr(t("linkStyle"))}">${styleOpts(st)}</select>
-          <button type="button" class="block-tool block-tool-del" data-link-del="${i}" title="${escapeAttr(t("btnDeletePin"))}" aria-label="${escapeAttr(t("btnDeletePin"))}">×</button>
-        </div>`;
-      })
+      .map((l) => `<div class="buy-row" data-link-row>${buyLinkRowInnerHtml(l)}</div>`)
       .join("");
     return `<div class="buy-links" ${rowAttr || ""}>
         <span class="block-legend">${escapeAttr(t("blockBuyLinks"))}</span>
+        <div class="buy-presets">${presetBtns}</div>
         <p class="block-hint">${escapeAttr(t("hintBuyLinkMulti"))}</p>
         <div class="buy-rows">${rows}</div>
         <button type="button" class="btn btn-ghost btn-sm" data-link-add>+ ${escapeAttr(t("blockAddLink"))}</button>
       </div>`;
+  }
+
+  function appendBuyLinkRow(rows, preset) {
+    const div = document.createElement("div");
+    div.className = "buy-row";
+    div.setAttribute("data-link-row", "");
+    const label = preset?.label || "Walmart";
+    const style = preset?.style || "walmart";
+    div.innerHTML = buyLinkRowInnerHtml({ label, url: "", style });
+    rows.appendChild(div);
+    bindBuyLinkRowTools(div);
+  }
+
+  function flashBuyLinkCheck(row, ok, detail) {
+    const el = row?.querySelector("[data-link-check-status]");
+    if (!el) return;
+    el.classList.remove("pk-hidden", "ok", "warn");
+    el.textContent = ok ? t("linkCheckOk") : t("linkCheckFail") + (detail ? `: ${detail}` : "");
+    el.classList.add(ok ? "ok" : "warn");
+    clearTimeout(el._pkCheckT);
+    el._pkCheckT = setTimeout(() => {
+      el.classList.add("pk-hidden");
+      el.textContent = "";
+    }, 3200);
+  }
+
+  async function checkBuyLinkRow(row) {
+    const url = row.querySelector("[data-f=lurl]")?.value?.trim() || "";
+    if (!url) {
+      flashBuyLinkCheck(row, false, t("linkCheckEmpty"));
+      return;
+    }
+    const btn = row.querySelector("[data-link-check]");
+    if (btn) btn.disabled = true;
+    try {
+      const res = await window.PK_AUTH.apiFetch("/api/links/check", {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({ links: [url] }),
+      });
+      const data = await res.json().catch(() => ({}));
+      const r = (data.results || []).find((x) => x.url === url) || data.results?.[0];
+      if (!res.ok) {
+        flashBuyLinkCheck(row, false, data.error || "");
+        return;
+      }
+      flashBuyLinkCheck(row, !!r?.ok, r?.error || (r?.status ? String(r.status) : ""));
+    } catch (err) {
+      flashBuyLinkCheck(row, false, err?.message || "");
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  function bindBuyLinkRowTools(row) {
+    row.querySelector("[data-link-del]")?.addEventListener("click", () => {
+      const rows = row.closest(".buy-rows");
+      if (!rows) return;
+      if (rows.querySelectorAll("[data-link-row]").length > 1) row.remove();
+    });
+    row.querySelector("[data-link-check]")?.addEventListener("click", () => checkBuyLinkRow(row));
   }
 
   function readBuyLinksFrom(el) {
@@ -642,30 +785,31 @@
     if (!root) return;
     root.querySelectorAll("[data-link-add]").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const wrap = btn.closest(".buy-links");
-        const rows = wrap?.querySelector(".buy-rows");
+        const rows = btn.closest(".buy-links")?.querySelector(".buy-rows");
+        if (rows) appendBuyLinkRow(rows, { label: "Walmart", style: "walmart" });
+      });
+    });
+    root.querySelectorAll("[data-link-preset]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const rows = btn.closest(".buy-links")?.querySelector(".buy-rows");
         if (!rows) return;
-        const div = document.createElement("div");
-        div.className = "buy-row";
-        div.setAttribute("data-link-row", "");
-        div.innerHTML = `<input class="buy-store" data-f="llabel" placeholder="Walmart" value="Walmart">
-          <input class="buy-url" data-f="lurl" placeholder="https://…" value="" inputmode="url" spellcheck="false">
-          <select class="buy-style" data-f="lstyle"><option value="amazon">Amazon</option><option value="blue">Blue</option><option value="outline">Outline</option><option value="walmart" selected>Walmart</option><option value="dark">Dark</option></select>
-          <button type="button" class="block-tool block-tool-del" data-link-del title="×">×</button>`;
-        rows.appendChild(div);
-        div.querySelector("[data-link-del]")?.addEventListener("click", () => {
-          if (rows.querySelectorAll("[data-link-row]").length > 1) div.remove();
+        appendBuyLinkRow(rows, {
+          label: btn.getAttribute("data-preset-label") || "Buy",
+          style: btn.getAttribute("data-preset-style") || "blue",
         });
       });
     });
-    root.querySelectorAll("[data-link-del]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const row = btn.closest("[data-link-row]");
-        const rows = btn.closest(".buy-rows");
-        if (!row || !rows) return;
-        if (rows.querySelectorAll("[data-link-row]").length > 1) row.remove();
-      });
-    });
+    root.querySelectorAll("[data-link-row]").forEach((row) => bindBuyLinkRowTools(row));
+  }
+
+  function liveSiteUrl(path) {
+    const p = path.startsWith("/") ? path : `/${path}`;
+    return isLocalHost() ? `https://pickora.shop${p}` : p;
+  }
+
+  function compareLiveWithOffline(livePath, offlineFn) {
+    window.open(liveSiteUrl(livePath), "_blank", "noopener,noreferrer");
+    offlineFn();
   }
 
   /** Pin textarea: Name | Amazon | url | Walmart | url  OR legacy Name | url */
@@ -836,10 +980,7 @@
                     : `<div class="review-thumb-empty">${escapeAttr(t("noImage"))}</div>`
                 }
               </div>
-              <label class="btn btn-ghost btn-sm upload-btn">
-                ${escapeAttr(t("btnUploadImage"))}
-                <input type="file" accept="image/*" data-pin-upload="${i}" hidden>
-              </label>
+              ${thumbImageActionsHtml(`data-pin-upload="${i}"`, `data-pin-media="${i}"`)}
               <p class="path-hint">${escapeAttr(p.image || "—")}</p>
             </div>
             <div class="review-fields">
@@ -918,9 +1059,19 @@
       input.addEventListener("change", () => {
         const idx = Number(input.getAttribute("data-pin-upload"));
         const file = input.files && input.files[0];
-        if (file) uploadPinImage(idx, file);
+        const card = input.closest("[data-pin-index]");
+        if (file) uploadPinImage(idx, file, card);
         input.value = "";
       });
+    });
+    bindMediaPickerButtons("[data-pin-media]", (btn, pick) => {
+      const idx = Number(btn.getAttribute("data-pin-media"));
+      readPinsForm();
+      const pin = pinsData.pins[idx];
+      if (!pin) return;
+      pin.image = mediaPickPath(pick);
+      pin.imageAlt = ensureAltFromTitle(pin.imageAlt, pin.title);
+      renderPinsEditor();
     });
   }
 
@@ -972,23 +1123,28 @@
     });
   }
 
-  async function uploadPinImage(index, file) {
+  async function uploadPinImage(index, file, card) {
     const status = $("#pins-status");
+    const blobUrl = setCardThumbPreview(card, file);
     setStatus(status, t("uploading"));
     try {
       readPinsForm();
+      const pin = pinsData.pins[index];
       // SEO filename from owner's file; API adds suffix only on name conflict.
       const preferred = String(file?.name || "pin")
         .replace(/\.[^.]+$/, "")
         .trim();
       const data = await uploadImage(file, preferred || "pin");
       pinsData.pins[index].image = data.path;
+      pinsData.pins[index].imageAlt = ensureAltFromTitle(pin?.imageAlt, pin?.title || file.name);
       if (data.width) pinsData.pins[index].width = data.width;
       if (data.height) pinsData.pins[index].height = data.height;
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
       renderPinsEditor();
       const okMsg = data.note ? `${t("uploadOk")} — ${data.note}` : t("uploadOk");
       setStatus(status, okMsg, data.sitePath ? "ok" : "warn");
     } catch (err) {
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
       setStatus(status, window.PK_MEDIA.errorMessage(err, t), "warn");
     }
   }
@@ -1186,10 +1342,10 @@
                         : `<div class="review-thumb-empty">${escapeAttr(t("noImage"))}</div>`
                     }
                   </div>
-                  <label class="btn btn-ghost btn-sm upload-btn">
-                    ${escapeAttr(t("btnUploadImage"))}
-                    <input type="file" accept="image/*" data-product-upload="${i}:${pi}" hidden>
-                  </label>
+                  ${thumbImageActionsHtml(
+                    `data-product-upload="${i}:${pi}"`,
+                    `data-product-media="${i}:${pi}"`
+                  )}
                   <p class="path-hint">${escapeAttr(p.image || "—")}</p>
                 </div>
                 <div class="review-fields">
@@ -1253,10 +1409,7 @@
                     : `<div class="review-thumb-empty">${escapeAttr(t("noImage"))}</div>`
                 }
               </div>
-              <label class="btn btn-ghost btn-sm upload-btn">
-                ${escapeAttr(t("btnUploadImage"))}
-                <input type="file" accept="image/*" data-hub-upload="${i}" hidden>
-              </label>
+              ${thumbImageActionsHtml(`data-hub-upload="${i}"`, `data-hub-media="${i}"`)}
               <p class="path-hint">${escapeAttr(c.image || "—")}</p>
             </div>
             <div class="review-fields">
@@ -1291,9 +1444,32 @@
       input.addEventListener("change", () => {
         const idx = Number(input.getAttribute("data-hub-upload"));
         const file = input.files && input.files[0];
-        if (file) uploadHubImage(idx, file);
+        const card = input.closest("[data-hub-index]");
+        if (file) uploadHubImage(idx, file, card);
         input.value = "";
       });
+    });
+    bindMediaPickerButtons("[data-hub-media]", (btn, pick) => {
+      const idx = Number(btn.getAttribute("data-hub-media"));
+      readProductsForm();
+      const hub = productsData.hubCategories[idx];
+      if (!hub) return;
+      hub.image = mediaPickPath(pick);
+      hub.imageAlt = ensureAltFromTitle(hub.imageAlt, hub.title);
+      productsActiveHub = idx;
+      renderProductsEditor();
+    });
+    bindMediaPickerButtons("[data-product-media]", (btn, pick) => {
+      const [hi, pi] = btn.getAttribute("data-product-media").split(":").map(Number);
+      readProductsForm();
+      const hub = productsData.hubCategories[hi];
+      if (!hub) return;
+      const prod = productsData.categoryProducts[hub.id]?.[pi];
+      if (!prod) return;
+      prod.image = mediaPickPath(pick);
+      prod.imageAlt = ensureAltFromTitle(prod.imageAlt, prod.title);
+      productsActiveHub = hi;
+      renderProductsEditor();
     });
 
     $$("[data-hub-del]").forEach((btn) => {
@@ -1381,7 +1557,8 @@
       input.addEventListener("change", () => {
         const [hi, pi] = input.getAttribute("data-product-upload").split(":").map(Number);
         const file = input.files && input.files[0];
-        if (file) uploadProductImage(hi, pi, file);
+        const card = input.closest("[data-product-index]");
+        if (file) uploadProductImage(hi, pi, file, card);
         input.value = "";
       });
     });
@@ -1581,29 +1758,39 @@
     });
   }
 
-  async function uploadHubImage(index, file) {
+  async function uploadHubImage(index, file, card) {
     const status = $("#products-status");
+    const blobUrl = setCardThumbPreview(card, file);
     setStatus(status, t("uploading"));
     try {
       readProductsForm();
-      const preferred = (productsData.hubCategories[index]?.id || "hub") + "-cover";
+      const hub = productsData.hubCategories[index];
+      const preferred = (hub?.id || "hub") + "-cover";
       const data = await uploadImage(file, preferred);
       productsData.hubCategories[index].image = data.path;
+      productsData.hubCategories[index].imageAlt = ensureAltFromTitle(
+        hub?.imageAlt,
+        hub?.title || file.name
+      );
       if (data.width) productsData.hubCategories[index].width = data.width;
       if (data.height) productsData.hubCategories[index].height = data.height;
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
       renderProductsEditor();
       setStatus(status, t("uploadOk"), "ok");
     } catch (err) {
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
       setStatus(status, window.PK_MEDIA.errorMessage(err, t), "warn");
     }
   }
 
-  async function uploadProductImage(hubIndex, productIndex, file) {
+  async function uploadProductImage(hubIndex, productIndex, file, card) {
     const status = $("#products-status");
+    const blobUrl = setCardThumbPreview(card, file);
     setStatus(status, t("uploading"));
     try {
       readProductsForm();
       const hub = productsData.hubCategories[hubIndex];
+      const prod = productsData.categoryProducts[hub.id][productIndex];
       // SEO filename from owner's file (e.g. airpods-pro-3); API adds suffix only on conflict.
       const preferred = String(file?.name || "product")
         .replace(/\.[^.]+$/, "")
@@ -1611,11 +1798,17 @@
       const data = await uploadImage(file, preferred || "product");
       // Worker URL works immediately; sitePath is SEO path on Pages (may lag).
       productsData.categoryProducts[hub.id][productIndex].image = data.path;
+      productsData.categoryProducts[hub.id][productIndex].imageAlt = ensureAltFromTitle(
+        prod?.imageAlt,
+        prod?.title || file.name
+      );
       productsActiveHub = hubIndex;
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
       renderProductsEditor();
       const okMsg = data.note ? `${t("uploadOk")} — ${data.note}` : t("uploadOk");
       setStatus(status, okMsg, data.sitePath ? "ok" : "warn");
     } catch (err) {
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
       setStatus(status, window.PK_MEDIA.errorMessage(err, t), "warn");
     }
   }
@@ -1932,6 +2125,15 @@
     $("#btn-home-offline")?.addEventListener("click", () => openHomeOfflinePreview());
     $("#btn-pins-offline")?.addEventListener("click", () => openPinsOfflinePreview());
     $("#btn-products-offline")?.addEventListener("click", () => openProductsOfflinePreview());
+    $("#btn-home-compare-live")?.addEventListener("click", () =>
+      compareLiveWithOffline("/", () => openHomeOfflinePreview())
+    );
+    $("#btn-pins-compare-live")?.addEventListener("click", () =>
+      compareLiveWithOffline("/categories/", () => openPinsOfflinePreview())
+    );
+    $("#btn-products-compare-live")?.addEventListener("click", () =>
+      compareLiveWithOffline("/products/", () => openProductsOfflinePreview())
+    );
     $("#btn-pin-add")?.addEventListener("click", () => addPin());
     $("#btn-hub-add")?.addEventListener("click", () => addHubSection());
 

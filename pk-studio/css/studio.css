@@ -1004,6 +1004,99 @@ a.hub-action-btn {
   object-fit: cover;
   display: block;
 }
+.media-dropzone {
+  margin-bottom: 14px;
+  padding: 18px 16px;
+  border: 2px dashed rgba(21, 34, 59, 0.18);
+  transition: border-color 0.15s, background 0.15s;
+}
+.media-dropzone.is-dragover {
+  border-color: var(--pk-blue);
+  background: var(--pk-blue-pale);
+}
+.media-card-key {
+  font-size: 0.82rem;
+  word-break: break-all;
+  margin: 0 0 6px;
+  color: var(--pk-navy);
+}
+.media-card-bytes {
+  font-size: 0.78rem;
+  color: var(--pk-muted);
+  margin: 0 0 8px;
+}
+.media-card-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.media-picker-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.media-picker-modal {
+  width: min(920px, 100%);
+  max-height: min(88vh, 900px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+.media-picker-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(21, 34, 59, 0.08);
+}
+.media-picker-head h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.media-picker-toolbar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 12px 18px;
+}
+.media-picker-toolbar .field-input {
+  flex: 1;
+  min-width: 180px;
+}
+.media-picker-grid {
+  padding: 0 18px 18px;
+  overflow-y: auto;
+  max-height: 55vh;
+}
+.media-picker-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(21, 34, 59, 0.1);
+  border-radius: 12px;
+  padding: 8px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.media-picker-item:hover {
+  border-color: var(--pk-blue);
+  box-shadow: 0 4px 14px rgba(21, 34, 59, 0.08);
+}
+.media-picker-item .path-hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.75rem;
+  word-break: break-all;
+}
 
 
 /* ================================================================
@@ -2515,6 +2608,11 @@ body.studio-app {
   background: #f8fafc;
 }
 .buy-links .block-legend { margin-top: 0; }
+.buy-presets { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 8px; }
+.buy-check-btn { flex: 0 0 auto; padding: 4px 8px; font-size: 0.72rem; }
+.buy-check-status { flex: 0 0 auto; font-size: 0.72rem; font-weight: 600; }
+.buy-check-status.ok { color: #15803d; }
+.buy-check-status.warn { color: #b91c1c; }
 .buy-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
 .buy-row {
   display: flex;

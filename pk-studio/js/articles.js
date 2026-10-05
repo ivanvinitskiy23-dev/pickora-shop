@@ -485,6 +485,28 @@
     await loadLists();
   }
 
+  function liveArticleUrl(slug) {
+    const s = String(slug || "")
+      .trim()
+      .replace(/^\/+|\/+$/g, "");
+    if (!s) return "";
+    const path = `/${s}/`;
+    const host = window.location.hostname;
+    if (host === "localhost" || host === "127.0.0.1") return `https://pickora.shop${path}`;
+    return path;
+  }
+
+  function openCompareLive() {
+    const slug = readForm().slug?.trim();
+    if (!slug) {
+      setStatus(t("articleCompareNeedSlug"), "warn");
+      return;
+    }
+    const live = liveArticleUrl(slug);
+    if (live) window.open(live, "_blank", "noopener,noreferrer");
+    openPreview();
+  }
+
   async function openPreview() {
     const d = readForm();
     if (!d.title && !d.h1 && !(d.blocks || []).length) {
@@ -587,6 +609,7 @@
     $("#btn-article-save")?.addEventListener("click", () => saveDraft());
     $("#btn-article-gate")?.addEventListener("click", () => runGate());
     $("#btn-article-preview")?.addEventListener("click", () => openPreview());
+    $("#btn-article-compare-live")?.addEventListener("click", () => openCompareLive());
     $("#btn-article-seo-ready")?.addEventListener("click", () => markSeoReady());
     $("#btn-art-settings")?.addEventListener("click", () => {
       setSettingsOpen(!$("#art-settings")?.classList.contains("is-open"));

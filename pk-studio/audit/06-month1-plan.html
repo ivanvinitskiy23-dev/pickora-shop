@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Месяц 1 — план исполнения</title>
+  <style>
+    :root { --ink:#0f172a; --muted:#475569; --line:#e2e8f0; --bg:#f8fafc; --card:#fff; --blue:#1d4ed8; --ok:#047857; --warn:#b45309; }
+    * { box-sizing:border-box; }
+    body { margin:0; font:15px/1.55 "Segoe UI",system-ui,sans-serif; color:var(--ink);
+      background: radial-gradient(800px 400px at 0% 0%, #dbeafe 0%, transparent 55%), var(--bg); }
+    .wrap { max-width:960px; margin:0 auto; padding:36px 18px 90px; }
+    header { border-bottom:1px solid var(--line); padding-bottom:20px; margin-bottom:22px; }
+    .eyebrow { font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ok); }
+    h1 { font-size:clamp(1.4rem,3vw,2rem); margin:8px 0 10px; }
+    .dek { color:var(--muted); max-width:70ch; }
+    nav.docs { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    nav.docs a { text-decoration:none; color:var(--blue); background:#eff6ff; border:1px solid #bfdbfe; border-radius:999px; padding:6px 12px; font-size:13px; font-weight:650; }
+    h2 { margin:28px 0 10px; font-size:1.2rem; }
+    .gate { background:#ecfdf5; border:1px solid #a7f3d0; border-radius:12px; padding:12px 14px; margin:12px 0; font-size:13.5px; }
+    .phase { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin:14px 0; }
+    .phase h3 { margin:0 0 8px; }
+    table { width:100%; border-collapse:collapse; font-size:13px; background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+    th, td { border-bottom:1px solid var(--line); padding:9px 10px; text-align:left; vertical-align:top; }
+    th { background:#f1f5f9; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+    code { font-family:ui-monospace,Consolas,monospace; font-size:.88em; background:#f1f5f9; padding:1px 5px; border-radius:4px; }
+    .done { color:var(--ok); font-weight:700; }
+    .todo { color:var(--warn); font-weight:700; }
+    ul.fine li { margin:6px 0; }
+    footer { margin-top:40px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">Pickora Studio · Execution plan</p>
+      <h1>Слой «сейчас» + Месяц 1</h1>
+      <p class="dek">Цель: картинки и offline/publish без поломок. Баги A-01…A-43 уже FIXED — здесь только roadmap A1–A2, C1–C2, D1.</p>
+      <nav class="docs">
+        <a href="./04-roadmap.html">Roadmap</a>
+        <a href="./05-before-after.html">Было → стало</a>
+        <a href="./06-month1-plan.html">Месяц 1 план</a>
+        <a href="./FINDINGS.md">FINDINGS</a>
+      </nav>
+    </header>
+
+    <div class="gate">
+      <strong>Status 2026-10-05:</strong> <span class="done">EXECUTED</span> — A1 Media 2.0, A2 picker/replace, C1 presets+check, C2 Compare Live, D1 dry-run + hub-only. Smoke: <code>node --check</code> OK.
+    </div>
+
+    <div class="gate">
+      <strong>Definition of Done (перед commit/push/deploy):</strong>
+      <ul class="fine">
+        <li>Studio открывается, login, Home/Pins/Products/Articles/Media/Publish не падают в console</li>
+        <li>Upload 1–2 картинок, поиск, used-in, copy path работают</li>
+        <li>Replace на карточке + picker из Media не ломают Save</li>
+        <li>Buy-links presets + check одного URL OK</li>
+        <li>Offline Home/Pins/Products + Compare Live открываются</li>
+        <li>Publish dry-run показывает файлы; полный publish модулей не регрессит</li>
+        <li><code>node --check</code> на изменённых JS; health Worker после deploy</li>
+      </ul>
+    </div>
+
+    <div class="phase">
+      <h3>Слой «сейчас» — статус</h3>
+      <p><span class="done">DONE</span> — аудит A-01…A-43, commit <code>76633bf</code>, wrangler deploy. Регрессии ловить только как защиту при новых правках.</p>
+    </div>
+
+    <h2>Пакеты Месяц 1</h2>
+    <table>
+      <thead><tr><th>ID</th><th>Что строим</th><th>Где код</th><th>Проверка</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>A1</strong></td>
+          <td>Media Library 2.0: drag-drop, multi-upload, search, Used in…, copy Worker / wp-content / MD</td>
+          <td><code>ops.js</code>, <code>index.html</code>, i18n</td>
+          <td>3 файла → grid; search фильтрует; Used in показывает модули</td>
+        </tr>
+        <tr>
+          <td><strong>A2</strong></td>
+          <td>Replace на thumb + Media picker modal + objectURL preview + auto-alt</td>
+          <td><code>media.js</code> picker API, <code>app.js</code> cards</td>
+          <td>Замена на product/pin/top-pick без Save crash</td>
+        </tr>
+        <tr>
+          <td><strong>C1</strong></td>
+          <td>Пресеты магазинов + Check link на строке buy-links (уже единый editor)</td>
+          <td><code>app.js</code> buyLinks*, ops links/check</td>
+          <td>Amazon/Walmart preset; HEAD ok/fail pill</td>
+        </tr>
+        <tr>
+          <td><strong>C2</strong></td>
+          <td>Offline уже есть; добавить Compare Live + лёгкий hub-card preview статей</td>
+          <td><code>app.js</code>, <code>articles.js</code></td>
+          <td>Кнопка открывает Live рядом с offline</td>
+        </tr>
+        <tr>
+          <td><strong>D1</strong></td>
+          <td>Publish dry-run (список файлов), progress steps, products hub-only</td>
+          <td><code>admin-api</code> + <code>ops.js</code></td>
+          <td>Dry-run без Git write; hub-only пишет 1 категорию</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Порядок исполнения</h2>
+    <ol>
+      <li>A1 Media (фундамент picker для A2)</li>
+      <li>A2 Replace + picker на карточках</li>
+      <li>C1 presets + link check</li>
+      <li>C2 Compare Live</li>
+      <li>D1 dry-run / hub-only / progress</li>
+      <li>Smoke verify → commit → push → wrangler deploy</li>
+    </ol>
+
+    <h2>Out of scope (Месяц 2+)</h2>
+    <p>Replace-in-place overwrite того же SEO-path на GitHub без нового имени, роли Team, autosave, bulk JSON import агента, check &gt;20 batch queue — не в этом пакете (A1 copy/search/used-in достаточно; overwrite = новый upload с суффиксом, как сейчас безопасно).</p>
+
+    <footer>Файл: <code>pk-studio/audit/06-month1-plan.html</code> · обновлять статусы по мере закрытия пакетов</footer>
+  </div>
+</body>
+</html>

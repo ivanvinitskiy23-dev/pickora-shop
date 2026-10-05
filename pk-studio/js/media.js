@@ -169,5 +169,170 @@ window.PK_MEDIA = (function () {
     return t("uploadFail");
   }
 
-  return { compressImage, upload, errorMessage };
+  function t(key) {
+    const lang = localStorage.getItem("pk_studio_lang") || "ru";
+    const pack = window.PK_I18N[lang] || window.PK_I18N.ru;
+    return pack[key] || window.PK_I18N.en[key] || key;
+  }
+
+  function escapeHtml(s) {
+    return String(s ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function mediaPickPayload(key) {
+    const api = String(window.PK_AUTH?.API || "").replace(/\/$/, "");
+    const workerUrl = api + "/api/media/file/" + encodeURIComponent(key);
+    return { key, workerUrl, path: workerUrl };
+  }
+
+  let pickerKeyHandler = null;
+
+  function closePicker() {
+    const el = document.getElementById("pk-media-picker");
+    if (el) el.remove();
+    if (pickerKeyHandler) {
+      document.removeEventListener("keydown", pickerKeyHandler);
+      pickerKeyHandler = null;
+    }
+  }
+
+  /**
+   * Modal media picker: grid from /api/media/list, optional upload, Escape/backdrop close.
+   * @param {{ onPick: (pick: { path: string, key: string, workerUrl: string }) => void }} opts
+   */
+  async function openPicker({ onPick }) {
+    if (typeof onPick !== "function") return;
+    closePicker();
+
+    const backdrop = document.createElement("div");
+    backdrop.id = "pk-media-picker";
+    backdrop.className = "media-picker-backdrop";
+    backdrop.innerHTML = `<div class="media-picker-modal panel" role="dialog" aria-modal="true">
+        <div class="media-picker-head">
+          <h3>${escapeHtml(t("mediaPickerTitle"))}</h3>
+          <button type="button" class="btn btn-ghost btn-sm" data-picker-close aria-label="Close">×</button>
+        </div>
+        <div class="media-picker-toolbar">
+          <input type="search" class="field-input" data-picker-search placeholder="${escapeHtml(
+            t("mediaSearchPlaceholder")
+          )}">
+          <label class="btn btn-ghost btn-sm upload-btn">${escapeHtml(t("btnUploadImage"))}
+            <input type="file" accept="image/*" data-picker-upload hidden>
+          </label>
+        </div>
+        <div class="pill pk-hidden" data-picker-status style="margin:0 18px 10px"></div>
+        <div class="media-picker-grid media-grid" data-picker-grid></div>
+      </div>`;
+    document.body.appendChild(backdrop);
+
+    const modal = backdrop.querySelector(".media-picker-modal");
+    backdrop.addEventListener("click", (e) => {
+      if (e.target === backdrop) closePicker();
+    });
+    modal?.addEventListener("click", (e) => e.stopPropagation());
+    backdrop.querySelector("[data-picker-close]")?.addEventListener("click", closePicker);
+    pickerKeyHandler = (e) => {
+      if (e.key === "Escape") closePicker();
+    };
+    document.addEventListener("keydown", pickerKeyHandler);
+
+    let filesCache = [];
+
+    function setPickerStatus(msg, kind) {
+      const el = backdrop.querySelector("[data-picker-status]");
+      if (!el) return;
+      el.classList.remove("pk-hidden", "ok", "warn");
+      el.textContent = msg;
+      if (kind) el.classList.add(kind);
+    }
+
+    function finishPick(key) {
+      if (!key) return;
+      onPick(mediaPickPayload(key));
+      closePicker();
+    }
+
+    function renderPickerGrid(files, query) {
+      const grid = backdrop.querySelector("[data-picker-grid]");
+      if (!grid) return;
+      const q = String(query || "").trim().toLowerCase();
+      const filtered = !q
+        ? files
+        : files.filter((f) => {
+            const key = String(f.key || "").toLowerCase();
+            return key.includes(q) || ("/api/media/file/" + key).includes(q);
+          });
+      if (!filtered.length) {
+        grid.innerHTML = `<p class="hint">${escapeHtml(t("mediaSearchEmpty"))}</p>`;
+        return;
+      }
+      const api = window.PK_AUTH.API;
+      grid.innerHTML = filtered
+        .map((f) => {
+          const keyEnc = encodeURIComponent(f.key);
+          const src = api + "/api/media/file/" + encodeURIComponent(f.key);
+          return `<button type="button" class="media-picker-item" data-pick-key="${keyEnc}">
+            <div class="media-thumb"><img src="${src}" alt="" loading="lazy"></div>
+            <span class="path-hint">${escapeHtml(f.key)}</span>
+          </button>`;
+        })
+        .join("");
+      grid.querySelectorAll("[data-pick-key]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          finishPick(decodeURIComponent(btn.getAttribute("data-pick-key") || ""));
+        });
+      });
+    }
+
+    async function loadPickerMedia() {
+      setPickerStatus(t("loading"), null);
+      const res = await fetch(window.PK_AUTH.API + "/api/media/list", {
+        headers: authHeaders(),
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "media_list_failed");
+      filesCache = data.files || [];
+      const q = backdrop.querySelector("[data-picker-search]")?.value || "";
+      renderPickerGrid(filesCache, q);
+      setPickerStatus(t("mediaFilesCount") + ": " + filesCache.length, "ok");
+    }
+
+    backdrop.querySelector("[data-picker-search]")?.addEventListener("input", (e) => {
+      renderPickerGrid(filesCache, e.target.value);
+    });
+
+    backdrop.querySelector("[data-picker-upload]")?.addEventListener("change", async (e) => {
+      const file = e.target.files && e.target.files[0];
+      e.target.value = "";
+      if (!file) return;
+      setPickerStatus(t("uploading"), null);
+      try {
+        const preferred = String(file.name || "upload")
+          .replace(/\.[^.]+$/, "")
+          .trim();
+        const data = await upload(file, preferred || "upload");
+        if (data.key) {
+          finishPick(data.key);
+          return;
+        }
+        await loadPickerMedia();
+        setPickerStatus(t("uploadOk"), "ok");
+      } catch (err) {
+        setPickerStatus(errorMessage(err, t), "warn");
+      }
+    });
+
+    try {
+      await loadPickerMedia();
+    } catch (err) {
+      setPickerStatus(err.message, "warn");
+    }
+  }
+
+  return { compressImage, upload, errorMessage, openPicker };
 })();

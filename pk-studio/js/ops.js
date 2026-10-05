@@ -60,6 +60,10 @@
             "</div>" +
             '<p class="publish-card__hint">' + hint + "</p>" +
             '<div class="publish-card__actions">' +
+              '<button type="button" class="btn btn-ghost btn-sm"' +
+              ' data-dry-run-mod="' + mod + '">' +
+              escapeHtml(t("btnDryRun")) +
+              "</button>" +
               '<button type="button" class="btn btn-primary btn-sm"' +
               ' data-publish-mod="' + mod + '">' +
               cta + "</button>" +
@@ -145,6 +149,11 @@
 
     wrap.innerHTML = modulesHtml + articlesHtml;
 
+    wrap.querySelectorAll("[data-dry-run-mod]").forEach((btn) =>
+      btn.addEventListener("click", () =>
+        dryRunModule(btn.getAttribute("data-dry-run-mod"), btn)
+      )
+    );
     wrap.querySelectorAll("[data-publish-mod]").forEach((btn) =>
       btn.addEventListener("click", () =>
         publishModule(btn.getAttribute("data-publish-mod"), btn)
@@ -159,10 +168,53 @@
     await loadSnapshots();
   }
 
+  async function runPublishDryRun(mod, publishBody) {
+    const res = await apiFetch("/api/publish/" + mod + "/dry-run", {
+      method: "POST",
+      body: JSON.stringify(publishBody || {}),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.detail || data.error || t("publishFail"));
+    }
+    return data;
+  }
+
+  async function dryRunModule(mod, btn) {
+    if (!mod) return;
+    if (btn) btn.disabled = true;
+    try {
+      setPill("#publish-status", t("publishLoadingDraft"), null);
+      const publishBody = {};
+      if (mod === "products") {
+        const hubId = window.prompt(t("publishHubOnlyPrompt"), "");
+        if (hubId === null) return;
+        if (String(hubId).trim()) publishBody.hubId = String(hubId).trim();
+      }
+      setPill("#publish-status", t("publishDryRunning"), null);
+      const dry = await runPublishDryRun(mod, publishBody);
+      const files = dry.files || dry.urls || [];
+      setPill(
+        "#publish-status",
+        (t("publishDryRunOk") || "Dry-run OK ({n} files)").replace("{n}", String(files.length)) +
+          (dry.note ? " \u2014 " + dry.note : ""),
+        "ok"
+      );
+      if (files.length) {
+        alert((t("publishDryRunFiles") || "Files:") + "\n" + files.join("\n"));
+      }
+    } catch (err) {
+      setPill("#publish-status", t("publishFail") + ": " + err.message, "warn");
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
   async function publishModule(mod, btn) {
     if (!mod) return;
-    // A-04: client preflight checklist before publish
+    // A-04 + D1: preflight + dry-run file list before publish
     try {
+      setPill("#publish-status", t("publishLoadingDraft") || "Loading draft…", null);
       const draftRes = await apiFetch("/api/content/" + mod, {});
       const draft = await draftRes.json().catch(() => ({}));
       if (!draftRes.ok) {
@@ -178,12 +230,14 @@
         const badBuy = picks.filter((p) => p.amazonUrl && !/^https?:\/\//i.test(String(p.amazonUrl)));
         if (badBuy.length) checks.push(`⚠ bad amazonUrl: ${badBuy.length}`);
       } else if (mod === "pins") {
-        const products = draft.products || [];
-        checks.push(`Pin products: ${products.length}`);
-        const noLink = products.filter(
-          (p) => !(p.links || []).some((l) => l && l.url) && !p.amazonUrl && !p.url
+        const products = draft.pins || [];
+        checks.push(`Pin cards: ${products.length}`);
+        const noLink = products.filter((pin) =>
+          (pin.products || []).every(
+            (p) => !(p.links || []).some((l) => l && l.url) && !p.amazonUrl && !p.url
+          )
         );
-        if (noLink.length) checks.push(`⚠ without buy link: ${noLink.length}`);
+        if (noLink.length) checks.push(`⚠ pins weak links: ${noLink.length}`);
       } else if (mod === "products") {
         const hubs = draft.hubCategories || [];
         const cp = draft.categoryProducts || {};
@@ -191,22 +245,38 @@
         const empty = hubs.filter((h) => !(cp[h.id] || []).length);
         if (empty.length) checks.push(`⚠ hubs with 0 products: ${empty.map((h) => h.id).join(", ")}`);
       }
+
+      setPill("#publish-status", t("publishDryRunning") || "Dry-run…", null);
+      const publishBody = {};
+      if (mod === "products") {
+        const hubId = window.prompt(
+          t("publishHubOnlyPrompt") ||
+            "Hub-only publish? Enter hub id (e.g. home-kitchen) or leave empty for all:",
+          ""
+        );
+        if (hubId === null) return; // cancelled
+        if (String(hubId).trim()) publishBody.hubId = String(hubId).trim();
+      }
+
+      const dry = await runPublishDryRun(mod, publishBody);
+      const fileList = dry.files || dry.urls || [];
+      const files = fileList.join("\n");
       const msg =
-        t("publishPreflightConfirm")
+        (t("publishPreflightConfirm") || "Publish {mod}?\n\n{checks}")
           .replace("{mod}", mod)
-          .replace("{checks}", checks.join("\n")) ||
-        `Publish ${mod}?\n\n${checks.join("\n")}`;
+          .replace("{checks}", checks.join("\n")) +
+        "\n\n" +
+        (t("publishDryRunFiles") || "Files:") +
+        "\n" +
+        files +
+        (dry.note ? "\n\n" + dry.note : "");
       if (!confirm(msg)) return;
-    } catch (err) {
-      setPill("#publish-status", t("publishFail") + ": " + err.message, "warn");
-      return;
-    }
-    if (btn) btn.disabled = true;
-    setPill("#publish-status", t("publishing"), null);
-    try {
-      const res = await apiFetch("/api/publish/" + mod,{
+
+      if (btn) btn.disabled = true;
+      setPill("#publish-status", t("publishing"), null);
+      const res = await apiFetch("/api/publish/" + mod, {
         method: "POST",
-        body: "{}",
+        body: JSON.stringify(publishBody),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -471,9 +541,140 @@
     box.classList.remove("pk-hidden");
   }
 
-  async function uploadMedia(file) {
-    if (!file) return;
-    setPill("#media-status", t("uploading"), null);
+  let mediaFilesCache = [];
+  let mediaSearchQuery = "";
+
+  function formatMediaBytes(bytes) {
+    const b = Number(bytes) || 0;
+    if (b < 1024) return b + " B";
+    const kb = b / 1024;
+    if (kb < 1024) return Math.round(kb) + " KB";
+    return (kb / 1024).toFixed(1) + " MB";
+  }
+
+  function mediaWorkerPath(key) {
+    return "/api/media/file/" + String(key || "").replace(/^\/+/, "");
+  }
+
+  function mediaWpContentPath(key) {
+    const k = String(key || "").replace(/^\/+/, "");
+    if (k.startsWith("uploads/")) return "/wp-content/" + k;
+    return "/wp-content/uploads/" + k.replace(/^uploads\//, "");
+  }
+
+  function mediaMarkdownForKey(key) {
+    return `![](${mediaWpContentPath(key)})`;
+  }
+
+  function filterMediaFiles(files, query) {
+    const q = String(query || "").trim().toLowerCase();
+    if (!q) return files;
+    return files.filter((f) => {
+      const key = String(f.key || "").toLowerCase();
+      const worker = mediaWorkerPath(f.key).toLowerCase();
+      const wp = mediaWpContentPath(f.key).toLowerCase();
+      return key.includes(q) || worker.includes(q) || wp.includes(q);
+    });
+  }
+
+  function bindMediaGridActions(wrap) {
+    if (!wrap) return;
+    wrap.querySelectorAll("[data-media-used]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        showMediaUsages(decodeURIComponent(btn.getAttribute("data-media-used") || "")).catch(
+          (e) => setPill("#media-status", e.message, "warn")
+        );
+      });
+    });
+    wrap.querySelectorAll("[data-media-copy-worker]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const key = decodeURIComponent(btn.getAttribute("data-media-copy-worker") || "");
+        const ok = await copyText(mediaWorkerPath(key));
+        setPill("#media-status", ok ? t("mediaCopyOk") : t("mediaCopyFail"), ok ? "ok" : "warn");
+      });
+    });
+    wrap.querySelectorAll("[data-media-copy-wp]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const key = decodeURIComponent(btn.getAttribute("data-media-copy-wp") || "");
+        const ok = await copyText(mediaWpContentPath(key));
+        setPill("#media-status", ok ? t("mediaCopyOk") : t("mediaCopyFail"), ok ? "ok" : "warn");
+      });
+    });
+    wrap.querySelectorAll("[data-media-copy-md]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const key = decodeURIComponent(btn.getAttribute("data-media-copy-md") || "");
+        const ok = await copyText(mediaMarkdownForKey(key));
+        setPill("#media-status", ok ? t("mediaCopyOk") : t("mediaCopyFail"), ok ? "ok" : "warn");
+      });
+    });
+    wrap.querySelectorAll("[data-media-del]").forEach((btn) => {
+      btn.addEventListener("click", () =>
+        deleteMedia(decodeURIComponent(btn.getAttribute("data-media-del") || ""), btn)
+      );
+    });
+  }
+
+  function renderMediaGrid(files) {
+    const wrap = $("#media-grid");
+    if (!wrap) return;
+    if (!files.length) {
+      wrap.innerHTML = `<p class="hint">${escapeHtml(t("mediaSearchEmpty"))}</p>`;
+      return;
+    }
+    const api = window.PK_AUTH.API;
+    wrap.innerHTML = files
+      .map((f) => {
+        const rawKey = f.key || "";
+        const keyEnc = encodeURIComponent(rawKey);
+        const keyLabel = escapeHtml(rawKey);
+        const src = api + "/api/media/file/" + encodeURIComponent(rawKey);
+        const bytesLabel = formatMediaBytes(f.bytes);
+        return `<div class="media-card panel">
+          <div class="media-thumb"><img src="${src}" alt="${keyLabel}" loading="lazy"></div>
+          <p class="media-card-key">${keyLabel}</p>
+          <p class="media-card-bytes">${escapeHtml(bytesLabel)}</p>
+          <div class="media-card-actions">
+          <button type="button" class="btn btn-ghost btn-sm" data-media-used="${keyEnc}" style="width:auto">${escapeHtml(
+            t("btnMediaUsedIn")
+          )}</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-media-copy-worker="${keyEnc}" style="width:auto">${escapeHtml(
+            t("btnCopyWorkerPath")
+          )}</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-media-copy-wp="${keyEnc}" style="width:auto">${escapeHtml(
+            t("btnCopyWpPath")
+          )}</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-media-copy-md="${keyEnc}" style="width:auto">${escapeHtml(
+            t("btnCopyMarkdown")
+          )}</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-media-del="${keyEnc}" style="width:auto">${escapeHtml(
+            t("btnDeleteMedia")
+          )}</button>
+          </div>
+        </div>`;
+      })
+      .join("");
+    bindMediaGridActions(wrap);
+  }
+
+  async function showMediaUsages(key) {
+    if (!key) return;
+    setPill("#media-status", t("loading"), null);
+    const usages = await findMediaDraftUsages(key);
+    if (!usages.length) {
+      setPill("#media-status", t("mediaUsedNone"), "warn");
+      return;
+    }
+    alert(t("mediaUsedInTitle") + ":\n\n" + usages.map((u) => "• " + u).join("\n"));
+    setPill(
+      "#media-status",
+      t("mediaUsedCount").replace("{n}", String(usages.length)),
+      "ok"
+    );
+  }
+
+  async function uploadMedia(file, opts = {}) {
+    if (!file) return null;
+    if (!opts.skipStatus) setPill("#media-status", t("uploading"), null);
     try {
       const preferred = String(file.name || "upload")
         .replace(/\.[^.]+$/, "")
@@ -485,64 +686,70 @@
         throw new Error("media_unavailable");
       }
       const path = data.path || data.url || "";
-      showMediaUploadPath(path);
-      setPill("#media-status", t("uploadOk"), "ok");
-      await loadMedia();
+      if (!opts.silentResult) showMediaUploadPath(path);
+      if (!opts.skipStatus) setPill("#media-status", t("uploadOk"), "ok");
+      if (!opts.skipReload) await loadMedia();
+      return data;
     } catch (err) {
       const msg =
         window.PK_MEDIA?.errorMessage?.(err, t) || err.message || "upload_failed";
-      setPill("#media-status", msg, "warn");
+      if (!opts.skipStatus) setPill("#media-status", msg, "warn");
+      throw err;
     }
+  }
+
+  async function uploadMediaBatch(fileList) {
+    const list = Array.from(fileList || []).filter((f) => f && f.type.startsWith("image/"));
+    if (!list.length) {
+      setPill("#media-status", t("uploadBadFormat"), "warn");
+      return;
+    }
+    let okCount = 0;
+    for (let i = 0; i < list.length; i++) {
+      setPill(
+        "#media-status",
+        t("mediaUploadProgress")
+          .replace("{current}", String(i + 1))
+          .replace("{total}", String(list.length)),
+        null
+      );
+      try {
+        await uploadMedia(list[i], { skipReload: true, silentResult: true, skipStatus: true });
+        okCount++;
+      } catch {
+        /* continue batch */
+      }
+    }
+    await loadMedia();
+    setPill(
+      "#media-status",
+      t("mediaUploadBatchOk").replace("{n}", String(okCount)).replace("{total}", String(list.length)),
+      okCount === list.length ? "ok" : "warn"
+    );
   }
 
   async function loadMedia() {
     setPill("#media-status", t("loading"), null);
-    const res = await apiFetch("/api/media/list",{
-    });
+    const res = await apiFetch("/api/media/list", {});
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "media_list_failed");
+    mediaFilesCache = data.files || [];
+    const filtered = filterMediaFiles(mediaFilesCache, mediaSearchQuery);
     const wrap = $("#media-grid");
     if (!wrap) return;
-    const files = data.files || [];
-    if (!files.length) {
+    if (!mediaFilesCache.length) {
       wrap.innerHTML = `<p class="hint">${escapeHtml(t("mediaEmpty"))}</p>`;
       setPill("#media-status", t("mediaEmpty"), "warn");
       return;
     }
-    const api = window.PK_AUTH.API;
-    wrap.innerHTML = files
-      .map((f) => {
-        const key = escapeHtml(f.key);
-        const src = api + "/api/media/file/" + encodeURIComponent(f.key);
-        const kb = Math.round((f.bytes || 0) / 1024);
-        const path = "/api/media/file/" + f.key;
-        return `<div class="media-card panel">
-          <div class="media-thumb"><img src="${src}" alt="${key}" loading="lazy"></div>
-          <p class="path-hint">${key} \u00b7 ${kb} KB</p>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <button type="button" class="btn btn-ghost btn-sm" data-media-copy="${escapeHtml(path)}" style="width:auto">${escapeHtml(
-          t("btnCopyPath")
-        )}</button>
-          <button type="button" class="btn btn-ghost btn-sm" data-media-del="${key}" style="width:auto">${escapeHtml(
-          t("btnDeleteMedia")
-        )}</button>
-          </div>
-        </div>`;
-      })
-      .join("");
-    wrap.querySelectorAll("[data-media-copy]").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const path = btn.getAttribute("data-media-copy");
-        const ok = await copyText(path);
-        setPill("#media-status", ok ? t("mediaCopyOk") : t("mediaCopyFail"), ok ? "ok" : "warn");
-      });
-    });
-    wrap.querySelectorAll("[data-media-del]").forEach((btn) => {
-      btn.addEventListener("click", () =>
-        deleteMedia(btn.getAttribute("data-media-del"), btn)
-      );
-    });
-    setPill("#media-status", t("mediaFilesCount") + ": " + files.length, "ok");
+    renderMediaGrid(filtered);
+    const statusMsg =
+      filtered.length === mediaFilesCache.length
+        ? t("mediaFilesCount") + ": " + mediaFilesCache.length
+        : t("mediaSearchShowing")
+            .replace("{n}", String(filtered.length))
+            .replace("{total}", String(mediaFilesCache.length));
+    setPill("#media-status", statusMsg, "ok");
   }
 
   function draftJsonReferencesMedia(obj, mediaKey) {
@@ -969,9 +1176,46 @@
       $("#btn-media-refresh")?.addEventListener("click", () =>
         loadMedia().catch((e) => setPill("#media-status", e.message, "warn"))
       );
+      $("#media-search")?.addEventListener("input", (e) => {
+        mediaSearchQuery = e.target.value || "";
+        renderMediaGrid(filterMediaFiles(mediaFilesCache, mediaSearchQuery));
+        const filtered = filterMediaFiles(mediaFilesCache, mediaSearchQuery);
+        if (mediaFilesCache.length) {
+          const statusMsg =
+            filtered.length === mediaFilesCache.length
+              ? t("mediaFilesCount") + ": " + mediaFilesCache.length
+              : t("mediaSearchShowing")
+                  .replace("{n}", String(filtered.length))
+                  .replace("{total}", String(mediaFilesCache.length));
+          setPill("#media-status", statusMsg, "ok");
+        }
+      });
+      const dropzone = $("#media-dropzone");
+      const onDragOver = (e) => {
+        e.preventDefault();
+        dropzone?.classList.add("is-dragover");
+      };
+      const onDragLeave = () => dropzone?.classList.remove("is-dragover");
+      const onDrop = (e) => {
+        e.preventDefault();
+        dropzone?.classList.remove("is-dragover");
+        const files = e.dataTransfer?.files;
+        if (files?.length) {
+          uploadMediaBatch(files).catch((err) =>
+            setPill("#media-status", err.message, "warn")
+          );
+        }
+      };
+      dropzone?.addEventListener("dragover", onDragOver);
+      dropzone?.addEventListener("dragleave", onDragLeave);
+      dropzone?.addEventListener("drop", onDrop);
       $("#media-upload-input")?.addEventListener("change", (e) => {
-        const file = e.target.files && e.target.files[0];
-        if (file) uploadMedia(file);
+        const files = e.target.files;
+        if (files?.length) {
+          uploadMediaBatch(files).catch((err) =>
+            setPill("#media-status", err.message, "warn")
+          );
+        }
         e.target.value = "";
       });
       $("#btn-media-copy-path")?.addEventListener("click", async () => {
