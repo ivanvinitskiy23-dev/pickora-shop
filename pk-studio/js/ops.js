@@ -61,46 +61,72 @@
     wrap.className = "publish-grid";
     wrap.style.gridTemplateColumns = "1fr";
 
-    /* ── Module cards ────────────────────────────────────────────── */
-    const modCardsHtml = ["home", "pins", "products"]
-      .map((mod) => {
-        const name = escapeHtml(t("pubMod_" + mod));
-        const hint = escapeHtml(t("pubModHint_" + mod));
-        const cta = escapeHtml(t("btnPublishNow"));
-        return (
-          '<div class="publish-card publish-card__mod">' +
-            '<div class="publish-card__head">' +
-              "<h3>" + name + "</h3>" +
-              '<span class="pill">draft\u2192live</span>' +
-            "</div>" +
-            '<p class="publish-card__hint">' + hint + "</p>" +
-            '<div class="publish-card__actions">' +
-              '<button type="button" class="btn btn-ghost btn-sm"' +
-              ' data-dry-run-mod="' + mod + '">' +
-              escapeHtml(t("btnDryRun")) +
-              "</button>" +
-              '<button type="button" class="btn btn-ghost btn-sm btn-delete"' +
-              ' data-reset-mod="' + mod + '"' +
-              (canWriteOps() ? "" : " disabled") +
-              ">" +
-              escapeHtml(t("btnResetModuleDraft")) +
-              "</button>" +
-              '<button type="button" class="btn btn-primary btn-sm"' +
-              ' data-publish-mod="' + mod + '">' +
-              cta + "</button>" +
-            "</div>" +
-          "</div>"
-        );
-      })
-      .join("");
-
-    const modulesHtml =
-      '<h3 class="ops-section-title">' +
-      escapeHtml(t("publishModulesTitle")) +
-      "</h3>" +
-      '<div class="publish-grid">' +
-      modCardsHtml +
-      "</div>";
+    /* ── Module cards (only when saved to D1 from Home/Pins/Products) ── */
+    let modulesHtml = "";
+    try {
+      const modRes = await apiFetch("/api/content/modules", {});
+      const modData = await modRes.json().catch(() => ({}));
+      const moduleDrafts = modRes.ok ? modData.modules || [] : [];
+      const modLabel =
+        '<h3 class="ops-section-title">' +
+        escapeHtml(t("publishModulesTitle")) +
+        "</h3>";
+      if (moduleDrafts.length) {
+        const modCardsHtml = moduleDrafts
+          .map((row) => {
+            const mod = String(row.key || "").trim();
+            if (!mod) return "";
+            const name = escapeHtml(t("pubMod_" + mod) || mod);
+            const hint = escapeHtml(t("pubModHint_" + mod));
+            const cta = escapeHtml(t("btnPublishNow"));
+            const when = escapeHtml(row.updatedAt || "");
+            return (
+              '<div class="publish-card publish-card__mod">' +
+                '<div class="publish-card__head">' +
+                  "<h3>" + name + "</h3>" +
+                  '<span class="pill">draft\u2192live</span>' +
+                "</div>" +
+                '<p class="publish-card__hint">' +
+                hint +
+                (when ? " \u00b7 " + when : "") +
+                "</p>" +
+                '<div class="publish-card__actions">' +
+                  '<button type="button" class="btn btn-ghost btn-sm"' +
+                  ' data-dry-run-mod="' + mod + '">' +
+                  escapeHtml(t("btnDryRun")) +
+                  "</button>" +
+                  '<button type="button" class="btn btn-ghost btn-sm btn-delete"' +
+                  ' data-reset-mod="' + mod + '"' +
+                  (canWriteOps() ? "" : " disabled") +
+                  ">" +
+                  escapeHtml(t("btnResetModuleDraft")) +
+                  "</button>" +
+                  '<button type="button" class="btn btn-primary btn-sm"' +
+                  ' data-publish-mod="' + mod + '">' +
+                  cta + "</button>" +
+                "</div>" +
+              "</div>"
+            );
+          })
+          .join("");
+        modulesHtml =
+          modLabel + '<div class="publish-grid">' + modCardsHtml + "</div>";
+      } else {
+        modulesHtml =
+          modLabel +
+          '<p class="hint">' +
+          escapeHtml(t("publishModulesEmpty")) +
+          "</p>";
+      }
+    } catch (err) {
+      modulesHtml =
+        '<h3 class="ops-section-title">' +
+        escapeHtml(t("publishModulesTitle")) +
+        "</h3>" +
+        '<p class="hint">' +
+        escapeHtml(err.message || t("publishFail")) +
+        "</p>";
+    }
 
     /* ── Article cards (seo_ready + published) ───────────────────── */
     let articlesHtml = "";

@@ -322,6 +322,13 @@ export default {
         }
       }
 
+      if (url.pathname === "/api/content/modules") {
+        if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        if (request.method === "GET") {
+          return cors(await listModuleDrafts(env), request);
+        }
+      }
+
       // Article drafts: /api/content/articles and /api/content/articles/:slug
       if (url.pathname === "/api/content/articles") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
@@ -360,6 +367,20 @@ export default {
     }
   },
 };
+
+async function listModuleDrafts(env) {
+  const { results } = await env.DB.prepare(
+    `SELECT key, updated_at, updated_by FROM content_drafts
+     WHERE key IN ('home', 'pins', 'products')
+     ORDER BY updated_at DESC`
+  ).all();
+  const modules = (results || []).map((row) => ({
+    key: row.key,
+    updatedAt: row.updated_at,
+    updatedBy: row.updated_by,
+  }));
+  return json({ modules, mode: "cloudflare" });
+}
 
 async function listArticleDrafts(env) {
   const { results } = await env.DB.prepare(
