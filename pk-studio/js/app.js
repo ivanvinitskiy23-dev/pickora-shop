@@ -2653,6 +2653,25 @@
     $("#studio-content")?.addEventListener("input", () => updateDirtyUi());
     $("#studio-content")?.addEventListener("change", () => updateDirtyUi());
 
+    $$("details.studio-help[data-help-key]").forEach((el) => {
+      const key = el.getAttribute("data-help-key");
+      if (!key) return;
+      const storageKey = "pk_studio_help_" + key;
+      try {
+        if (localStorage.getItem(storageKey) === "1") el.open = true;
+        if (localStorage.getItem(storageKey) === "0") el.open = false;
+      } catch {
+        /* ignore */
+      }
+      el.addEventListener("toggle", () => {
+        try {
+          localStorage.setItem(storageKey, el.open ? "1" : "0");
+        } catch {
+          /* ignore */
+        }
+      });
+    });
+
     window.addEventListener("beforeunload", (e) => {
       if (isAnyDirty()) {
         e.preventDefault();

@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/pk-studio/css/studio.css?v=20261005h">
+  <link rel="stylesheet" href="/pk-studio/css/studio.css?v=20261005i">
 </head>
 <body>
   
@@ -108,15 +108,16 @@
           <button type="button" class="btn btn-ghost" data-module="Articles" data-i18n="modArticles">Статьи</button>
           <button type="button" class="btn btn-ghost" data-module="Home" data-i18n="modHome">Главная</button>
         </div>
-        <div class="panel dash-help">
-          <h3 data-i18n="dashFlowTitle">Рабочий поток</h3>
-          <ol class="list-plain dash-flow">
-            <li data-i18n="dashFlow1">Правите Home / Articles / Products / Pins</li>
-            <li data-i18n="dashFlow2">Save = черновик в Cloudflare</li>
-            <li data-i18n="dashFlow3">Publish = выкладка на pickora.shop</li>
-            <li data-i18n="dashFlow4">Lab (:8765) — только локальный превью</li>
+        <details class="studio-help" data-help-key="dash" open>
+          <summary data-i18n="helpSummary">Как это работает</summary>
+          <ol class="studio-help-list">
+            <li data-i18n="helpDash1"></li>
+            <li data-i18n="helpDash2"></li>
+            <li data-i18n="helpDash3"></li>
+            <li data-i18n="helpDash4"></li>
+            <li data-i18n="helpDash5"></li>
           </ol>
-        </div>
+        </details>
 
       </section>
 
@@ -125,6 +126,16 @@
         <div class="eyebrow">Home</div>
         <h2 data-i18n="homeEditorTitle">Latest Reviews</h2>
         <p data-i18n="homeEditorDek">3–6 карточек Latest Reviews на главной. Newest сверху.</p>
+      <details class="studio-help" data-help-key="home">
+        <summary data-i18n="helpSummary">Как это работает</summary>
+        <ol class="studio-help-list">
+          <li data-i18n="helpHome1"></li>
+          <li data-i18n="helpHome2"></li>
+          <li data-i18n="helpHome3"></li>
+          <li data-i18n="helpHome4"></li>
+          <li data-i18n="helpHome5"></li>
+        </ol>
+      </details>
       </div>
       <div id="home-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
       <div id="home-reviews-toolbar" style="margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
@@ -157,6 +168,16 @@
         <div class="eyebrow">Categories</div>
         <h2 data-i18n="pinsEditorTitle">Pins / Ideas</h2>
         <p data-i18n="pinsEditorDek">Картинка, фильтр, текст и Amazon-товары. Save пересобирает lab Categories.</p>
+      <details class="studio-help" data-help-key="pins">
+        <summary data-i18n="helpSummary">Как это работает</summary>
+        <ol class="studio-help-list">
+          <li data-i18n="helpPins1"></li>
+          <li data-i18n="helpPins2"></li>
+          <li data-i18n="helpPins3"></li>
+          <li data-i18n="helpPins4"></li>
+          <li data-i18n="helpPins5"></li>
+        </ol>
+      </details>
       </div>
       <div id="pins-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
       <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
@@ -184,6 +205,17 @@
         <div class="dash-hero">
           <h2 data-i18n="articlesTitle">Статьи</h2>
           <p data-i18n="articlesDek">Черновик → SEO-шлюз → seo_ready → Publish.</p>
+      <details class="studio-help" data-help-key="articles">
+        <summary data-i18n="helpSummary">Как это работает</summary>
+        <ol class="studio-help-list">
+          <li data-i18n="helpArticles1"></li>
+          <li data-i18n="helpArticles2"></li>
+          <li data-i18n="helpArticles3"></li>
+          <li data-i18n="helpArticles4"></li>
+          <li data-i18n="helpArticles5"></li>
+          <li data-i18n="helpArticles6"></li>
+        </ol>
+      </details>
         </div>
         <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
           <button type="button" class="btn btn-primary" id="btn-article-new" data-requires-write style="width:auto;padding-inline:22px" data-i18n="btnNewArticle">+ Новый черновик</button>
@@ -329,7 +361,18 @@
 <div class="dash-hero">
         <div class="eyebrow">Products hub</div>
         <h2 data-i18n="productsEditorTitle">Категории товаров</h2>
-        <p data-i18n="productsEditorDek">Вкладки хабов сверху. Офлайн-проверка = как Live, без коммита в Git.</p>
+        <p data-i18n="productsEditorDek">Вкладки хабов сверху. Save = черновик; Live обновится только после Publish → Products.</p>
+      <details class="studio-help" data-help-key="products">
+        <summary data-i18n="helpSummary">Как это работает</summary>
+        <ol class="studio-help-list">
+          <li data-i18n="helpProducts1"></li>
+          <li data-i18n="helpProducts2"></li>
+          <li data-i18n="helpProducts3"></li>
+          <li data-i18n="helpProducts4"></li>
+          <li data-i18n="helpProducts5"></li>
+          <li data-i18n="helpProducts6"></li>
+        </ol>
+      </details>
       </div>
       <div id="products-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
       <div class="hub-tabs-bar">
@@ -368,6 +411,16 @@
 <div class="dash-hero">
         <h2 data-i18n="publishTitle">Publish</h2>
         <p data-i18n="publishDek">Home / Pins / Products / Articles → GitHub Pages.</p>
+      <details class="studio-help" data-help-key="publish">
+        <summary data-i18n="helpSummary">Как это работает</summary>
+        <ol class="studio-help-list">
+          <li data-i18n="helpPublish1"></li>
+          <li data-i18n="helpPublish2"></li>
+          <li data-i18n="helpPublish3"></li>
+          <li data-i18n="helpPublish4"></li>
+          <li data-i18n="helpPublish5"></li>
+        </ol>
+      </details>
       </div>
       <div id="publish-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
       <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
@@ -385,7 +438,16 @@
       <section class="studio-panel pk-hidden" data-view="seo">
 <div class="dash-hero">
         <h2 data-i18n="seoOpsTitle">SEO и Amazon-ссылки</h2>
-        <p data-i18n="seoOpsDek">Собираем amzn.to из черновиков статей и Products, проверяем HEAD (до 20).</p>
+        <p data-i18n="seoOpsDek">Собираем amzn.to из черновиков и Products, проверяем пакетами до 50.</p>
+      <details class="studio-help" data-help-key="seo">
+        <summary data-i18n="helpSummary">Как это работает</summary>
+        <ol class="studio-help-list">
+          <li data-i18n="helpSeo1"></li>
+          <li data-i18n="helpSeo2"></li>
+          <li data-i18n="helpSeo3"></li>
+          <li data-i18n="helpSeo4"></li>
+        </ol>
+      </details>
       </div>
       <div id="seo-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
       <p class="hint"><span data-i18n="seoLinkCountLabel">Ссылок в очереди:</span> <strong id="seo-link-count">0</strong></p>
@@ -404,6 +466,15 @@
 <div class="dash-hero">
         <h2 data-i18n="teamTitle">Команда</h2>
         <p data-i18n="teamDek">Owner через Cloudflare secrets. Ниже — пригласить / удалить админов (только owner).</p>
+      <details class="studio-help" data-help-key="team">
+        <summary data-i18n="helpSummary">Как это работает</summary>
+        <ol class="studio-help-list">
+          <li data-i18n="helpTeam1"></li>
+          <li data-i18n="helpTeam2"></li>
+          <li data-i18n="helpTeam3"></li>
+          <li data-i18n="helpTeam4"></li>
+        </ol>
+      </details>
       </div>
       <div id="team-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
       <button type="button" class="btn btn-ghost" id="btn-team-refresh" style="width:auto;margin-bottom:14px" data-i18n="btnRefresh">Обновить</button>
@@ -440,6 +511,15 @@
         <div class="eyebrow">Media</div>
         <h2 data-i18n="mediaTitle">Медиа</h2>
         <p data-i18n="mediaDek">Все загруженные файлы (D1). Просмотр и удаление.</p>
+      <details class="studio-help" data-help-key="media">
+        <summary data-i18n="helpSummary">Как это работает</summary>
+        <ol class="studio-help-list">
+          <li data-i18n="helpMedia1"></li>
+          <li data-i18n="helpMedia2"></li>
+          <li data-i18n="helpMedia3"></li>
+          <li data-i18n="helpMedia4"></li>
+        </ol>
+      </details>
       </div>
       <div id="media-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
       <div id="media-dropzone" class="media-dropzone panel">
@@ -468,6 +548,14 @@
         <div class="eyebrow">Status</div>
         <h2 data-i18n="statusTitle">Статус сайта</h2>
         <p data-i18n="statusDek">Текущий снапшот системы.</p>
+      <details class="studio-help" data-help-key="status">
+        <summary data-i18n="helpSummary">Как это работает</summary>
+        <ol class="studio-help-list">
+          <li data-i18n="helpStatus1"></li>
+          <li data-i18n="helpStatus2"></li>
+          <li data-i18n="helpStatus3"></li>
+        </ol>
+      </details>
       </div>
       <div id="status-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
       <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
@@ -496,13 +584,13 @@
 
   <div id="pk-toast" class="pk-toast" role="status" aria-live="polite"></div>
 
-  <script src="/pk-studio/js/i18n.js?v=20261005g"></script>
-  <script src="/pk-studio/js/seo-gate.js?v=20261005g"></script>
-  <script src="/pk-studio/js/auth.js?v=20261005g"></script>
-  <script src="/pk-studio/js/media.js?v=20261005g"></script>
-  <script src="/pk-studio/js/blocks.js?v=20261005g"></script>
-  <script src="/pk-studio/js/articles.js?v=20261005g"></script>
-  <script src="/pk-studio/js/ops.js?v=20261005g"></script>
-  <script src="/pk-studio/js/app.js?v=20261005g"></script>
+  <script src="/pk-studio/js/i18n.js?v=20261005i"></script>
+  <script src="/pk-studio/js/seo-gate.js?v=20261005i"></script>
+  <script src="/pk-studio/js/auth.js?v=20261005i"></script>
+  <script src="/pk-studio/js/media.js?v=20261005i"></script>
+  <script src="/pk-studio/js/blocks.js?v=20261005i"></script>
+  <script src="/pk-studio/js/articles.js?v=20261005i"></script>
+  <script src="/pk-studio/js/ops.js?v=20261005i"></script>
+  <script src="/pk-studio/js/app.js?v=20261005i"></script>
 </body>
 </html>
