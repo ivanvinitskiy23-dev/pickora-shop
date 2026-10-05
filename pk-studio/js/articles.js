@@ -485,6 +485,7 @@
               .includes(q)
         );
     if (live) {
+      const canWrite = window.PK_STUDIO?.canWrite?.() !== false;
       live.innerHTML = filtered
         .map(
           (a) => `<div class="panel" style="padding:14px;display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px">
@@ -494,7 +495,7 @@
           </div>
           <button type="button" class="btn btn-ghost btn-xs" data-import-live="${escapeAttr(
             a.slug
-          )}">${escapeAttr(t("btnImportLiveArticle"))}</button>
+          )}"${canWrite ? "" : " disabled"}>${escapeAttr(t("btnImportLiveArticle"))}</button>
         </div>`
         )
         .join("") || `<p class="hint">${escapeAttr(t("articlesLiveEmpty") || "—")}</p>`;
@@ -505,6 +506,7 @@
       });
     }
     if (draftBox) {
+      const canWrite = window.PK_STUDIO?.canWrite?.() !== false;
       const dq = String($("#articles-draft-search")?.value || "")
         .trim()
         .toLowerCase();
@@ -536,15 +538,15 @@
               <div class="draft-card-actions">
                 <button type="button" class="btn btn-ghost btn-xs" data-dup-draft="${escapeAttr(
                   d.slug
-                )}">${escapeAttr(t("btnDuplicateDraft"))}</button>
+                )}"${canWrite ? "" : " disabled"}>${escapeAttr(t("btnDuplicateDraft"))}</button>
                 ${
                   d.status === "archived"
                     ? `<button type="button" class="btn btn-ghost btn-xs" data-restore-draft="${escapeAttr(
                         d.slug
-                      )}">${escapeAttr(t("btnRestoreDraft"))}</button>`
+                      )}"${canWrite ? "" : " disabled"}>${escapeAttr(t("btnRestoreDraft"))}</button>`
                     : `<button type="button" class="btn btn-ghost btn-xs" data-archive-draft="${escapeAttr(
                         d.slug
-                      )}">${escapeAttr(t("btnArchiveDraft"))}</button>`
+                      )}"${canWrite ? "" : " disabled"}>${escapeAttr(t("btnArchiveDraft"))}</button>`
                 }
               </div>
             </div>`
@@ -614,6 +616,10 @@
 
   async function duplicateDraft(sourceSlug) {
     if (!sourceSlug) return;
+    if (window.PK_STUDIO?.canWrite?.() === false) {
+      setStatus(t("viewerReadOnly"), "warn");
+      return;
+    }
     if (isDraftDirty() && !confirm(t("articlesDiscardUnsaved"))) return;
     setStatus(t("loading"));
     try {
@@ -669,6 +675,10 @@
 
   async function setDraftArchived(slug, archived) {
     if (!slug) return;
+    if (window.PK_STUDIO?.canWrite?.() === false) {
+      setStatus(t("viewerReadOnly"), "warn");
+      return;
+    }
     if (archived && !confirm(t("articlesArchiveConfirm"))) return;
     setStatus(t("loading"));
     try {
@@ -682,7 +692,10 @@
       }
       const draft = await res.json();
       draft.status = archived ? "archived" : "draft";
-      if (archived) draft.seoReadyAt = null;
+      if (archived) {
+        draft.seoReadyAt = null;
+        draft.includeInSitemap = false;
+      }
       const saveRes = await fetch(window.PK_AUTH.API + "/api/content/articles", {
         method: "POST",
         headers: authHeaders(),
@@ -706,6 +719,10 @@
 
   async function importLiveArticle(slug) {
     if (!slug) return;
+    if (window.PK_STUDIO?.canWrite?.() === false) {
+      setStatus(t("viewerReadOnly"), "warn");
+      return;
+    }
     const existing = drafts.find((d) => d.slug === slug);
     if (existing && !confirm(t("articlesImportOverwrite").replace("{slug}", slug))) {
       return;
@@ -765,6 +782,11 @@
   }
 
   async function saveDraft() {
+    if (window.PK_STUDIO?.canWrite?.() === false) {
+      setStatus(t("viewerReadOnly"), "warn");
+      window.PK_STUDIO?.toast?.(t("viewerReadOnly"));
+      return;
+    }
     const d = readForm();
     if (!d.slug) {
       setStatus(t("articlesNeedSlug"), "warn");
@@ -779,6 +801,7 @@
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
       setStatus(data.error || t("articlesSaveFail"), "warn");
+      window.PK_STUDIO?.toast?.(data.error || t("articlesSaveFail"));
       return;
     }
     current = data.draft || d;
@@ -786,6 +809,8 @@
     clearAutosaveForSlug(current.slug);
     updateAutosaveBanner();
     setStatus(t("articlesSaved"), "ok");
+    window.PK_STUDIO?.toast?.(t("articlesSaved"));
+    window.PK_STUDIO?.updateDirtyUi?.();
     await loadLists();
   }
 
@@ -801,6 +826,10 @@
   }
 
   async function markSeoReady() {
+    if (window.PK_STUDIO?.canWrite?.() === false) {
+      setStatus(t("viewerReadOnly"), "warn");
+      return;
+    }
     if (readForm().status === "archived") {
       setStatus(t("articlesArchivedNoSeo"), "warn");
       return;

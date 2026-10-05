@@ -102,10 +102,13 @@
       const res = await apiFetch("/api/content/articles",{
       });
       const data = await res.json();
+      // seo_ready / published for normal ship; archived for soft-archive republish
+      // (noindex + hub remove + sitemap remove).
       const ready = (data.drafts || []).filter(
         (d) =>
-          (d.status === "seo_ready" || d.status === "published") &&
-          d.status !== "archived"
+          d.status === "seo_ready" ||
+          d.status === "published" ||
+          d.status === "archived"
       );
 
       const artLabel =
@@ -119,8 +122,18 @@
             const slug = escapeHtml(d.slug);
             const title = escapeHtml(d.title || d.slug);
             const st = escapeHtml(d.status || "");
-            const pillCls = d.status === "published" ? "pill ok" : "pill";
-            const cta = escapeHtml(t("btnPublishNow"));
+            const isArchived = d.status === "archived";
+            const pillCls = isArchived
+              ? "pill warn"
+              : d.status === "published"
+                ? "pill ok"
+                : "pill";
+            const cta = escapeHtml(
+              isArchived ? t("btnPublishArchive") : t("btnPublishNow")
+            );
+            const hintExtra = isArchived
+              ? " \u00b7 " + escapeHtml(t("publishArchiveHint"))
+              : "";
             return (
               '<div class="publish-card publish-card__article">' +
                 '<div class="publish-card__head">' +
@@ -131,12 +144,15 @@
                 slug +
                 "/ \u00b7 " +
                 escapeHtml(d.updatedAt || "") +
+                hintExtra +
                 "</p>" +
                 '<div class="publish-card__actions">' +
                   '<button type="button" class="btn btn-primary btn-sm"' +
                   ' data-publish-slug="' +
                   slug +
-                  '">' +
+                  '"' +
+                  (canWriteOps() ? "" : " disabled") +
+                  ">" +
                   cta +
                   "</button>" +
                 "</div>" +
@@ -1080,8 +1096,8 @@
       return;
     }
     const total = links.length;
-    // API handleLinkCheck caps at 20 per request (SSRF safety) — must match.
-    const chunkSize = 20;
+    // API handleLinkCheck caps at 50 per request (SSRF safety) — must match.
+    const chunkSize = 50;
     const batches = [];
     for (let i = 0; i < links.length; i += chunkSize) {
       batches.push(links.slice(i, i + chunkSize));
@@ -1113,7 +1129,6 @@
       allRows.push(...rows);
       badTotal += rows.filter((r) => !r.ok).length;
       checkedSoFar += rows.length;
-      void from;
     }
     $("#seo-results").innerHTML = allRows
       .map(

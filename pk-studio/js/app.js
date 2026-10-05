@@ -2516,7 +2516,7 @@
 
     $("#btn-home-save")?.addEventListener("click", () => saveHome());
     $("#btn-top-pick-add")?.addEventListener("click", () => {
-      if (!homeData) return;
+      if (!homeData || !canWriteSession()) return;
       readTopPicksForm();
       ensureTopPicks();
       homeData.topPicks.picks.push({
@@ -2548,12 +2548,21 @@
     $("#btn-products-compare-live")?.addEventListener("click", () =>
       compareLiveWithOffline("/products/", () => openProductsOfflinePreview())
     );
-    $("#btn-pin-add")?.addEventListener("click", () => addPin());
-    $("#btn-hub-add")?.addEventListener("click", () => addHubSection());
+    $("#btn-pin-add")?.addEventListener("click", () => {
+      if (!canWriteSession()) return;
+      addPin();
+    });
+    $("#btn-hub-add")?.addEventListener("click", () => {
+      if (!canWriteSession()) return;
+      addHubSection();
+    });
 
     $("#btn-products-bulk-apply")?.addEventListener("click", () => {
       const status = $("#products-status");
-      if (!productsData) return;
+      if (!productsData || !canWriteSession()) {
+        if (!canWriteSession()) toast(t("viewerReadOnly"));
+        return;
+      }
       readProductsForm();
       clampProductsActiveHub();
       const hub = productsData.hubCategories[productsActiveHub];
@@ -2594,7 +2603,10 @@
 
     $("#btn-products-import-apply")?.addEventListener("click", () => {
       const status = $("#products-status");
-      if (!productsData) return;
+      if (!productsData || !canWriteSession()) {
+        if (!canWriteSession()) toast(t("viewerReadOnly"));
+        return;
+      }
       readProductsForm();
       const text = $("#products-import-json")?.value || "";
       try {

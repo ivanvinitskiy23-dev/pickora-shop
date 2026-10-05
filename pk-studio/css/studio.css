@@ -3462,6 +3462,11 @@ body.studio-app {
   padding: 12px 0 4px;
   background: linear-gradient(180deg, transparent 0%, var(--pk-bg, #f4f7fb) 28%);
 }
+.preview-bar.module-sticky-actions {
+  margin-top: 18px;
+  padding: 11px 32px;
+  background: rgba(255,255,255,0.97);
+}
 .media-dropzone.pk-readonly {
   opacity: 0.55;
   pointer-events: none;

@@ -4,67 +4,153 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
-  <title>Месяц 2–3 — re-audit</title>
+  <title>Месяц 2–3 — re-audit (bug hunt)</title>
   <style>
-    :root { --ink:#0f172a; --muted:#475569; --line:#e2e8f0; --bg:#f8fafc; --ok:#047857; --warn:#b45309; }
-    body { margin:0; font:15px/1.55 "Segoe UI",system-ui,sans-serif; color:var(--ink); background:var(--bg); }
-    .wrap { max-width:920px; margin:0 auto; padding:32px 18px 80px; }
-    h1 { font-size:1.6rem; margin:0 0 8px; }
-    .dek { color:var(--muted); }
-    table { width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:16px 0; font-size:13.5px; }
-    th, td { border-bottom:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top; }
+    :root { --ink:#0f172a; --muted:#475569; --line:#e2e8f0; --bg:#f8fafc; --card:#fff; --blue:#1d4ed8; --ok:#047857; --warn:#b45309; --p0:#b91c1c; }
+    * { box-sizing:border-box; }
+    body { margin:0; font:15px/1.55 "Segoe UI",system-ui,sans-serif; color:var(--ink);
+      background: radial-gradient(900px 420px at 100% 0%, #dcfce7 0%, transparent 50%),
+                  radial-gradient(800px 400px at 0% 0%, #dbeafe 0%, transparent 55%), var(--bg); }
+    .wrap { max-width:960px; margin:0 auto; padding:36px 18px 100px; }
+    header { border-bottom:1px solid var(--line); padding-bottom:20px; margin-bottom:22px; }
+    .eyebrow { font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ok); }
+    h1 { font-size:clamp(1.35rem,3vw,1.9rem); margin:8px 0 10px; }
+    .dek { color:var(--muted); max-width:72ch; }
+    nav.docs { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    nav.docs a { text-decoration:none; color:var(--blue); background:#eff6ff; border:1px solid #bfdbfe; border-radius:999px; padding:6px 12px; font-size:13px; font-weight:650; }
+    h2 { margin:28px 0 10px; font-size:1.2rem; }
+    table { width:100%; border-collapse:collapse; font-size:13.5px; background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:10px 0; }
+    th, td { border-bottom:1px solid var(--line); padding:9px 11px; text-align:left; vertical-align:top; }
     th { background:#f1f5f9; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
-    .ok { color:var(--ok); font-weight:650; }
-    .warn { color:var(--warn); font-weight:650; }
     code { font-family:ui-monospace,Consolas,monospace; font-size:.88em; background:#f1f5f9; padding:1px 5px; border-radius:4px; }
-    ul { padding-left:1.2em; }
-    a { color:#1d4ed8; }
+    .ok { color:var(--ok); font-weight:650; }
+    .fix { color:var(--p0); font-weight:650; }
+    .risk { color:var(--warn); font-weight:650; }
+    .box { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin:12px 0; }
+    ul.fine > li { margin:6px 0; }
+    footer { margin-top:40px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <p><a href="./07-month2-3-plan.html">← План М2–3</a> · <a href="./index.html">Audit hub</a></p>
-    <h1>Re-audit Месяц 2 + 3</h1>
-    <p class="dek">Проход после имплементации. Цель: баги → фикс → ship.</p>
+    <header>
+      <p class="eyebrow">Pickora Studio · Re-audit</p>
+      <h1>Месяц 2–3 — bug hunt (no deploy)</h1>
+      <p class="dek">Scope: B1–B3, C3–C5, G, D2–D3, E1, F per
+        <a href="./07-month2-3-plan.html">07-month2-3-plan.html</a>.
+        Method: read Studio/API code + <code>node --check</code>. Fixes applied locally; <strong>no commit / push / deploy</strong>.</p>
+      <nav class="docs">
+        <a href="./07-month2-3-plan.html">План М2–3</a>
+        <a href="./08-month2-3-reaudit.html">Re-audit</a>
+        <a href="./index.html">Оглавление</a>
+      </nav>
+    </header>
 
-    <h2>Acceptance map</h2>
+    <div class="box">
+      <strong>Verdict:</strong> 6 real bugs fixed. Known checklist items (duplicate IDs, canWrite helpers,
+      home-reviews toolbar, hidden products filter, cache-bust) were already sound or aligned after fixes.
+      <code>node --check</code> passes on all Studio JS + admin-api publish modules.
+    </div>
+
+    <h2>Bugs found + fixed</h2>
     <table>
-      <tr><th>Пакет</th><th>Статус</th><th>Доказательство</th></tr>
-      <tr><td>B1 search / dup / archive</td><td class="ok">OK</td><td><code>articles.js</code> draft search, duplicateDraft, setDraftArchived; publish_article removeHub/noindex</td></tr>
-      <tr><td>B2 blocks / templates / autosave</td><td class="ok">OK</td><td><code>blocks.js</code> templateBlocks + duplicateAt; autosave banner in wizard</td></tr>
-      <tr><td>B3 SEO cockpit</td><td class="ok">OK</td><td>meters, chips checkboxes, includeInSitemap, internal suggester</td></tr>
-      <tr><td>C3–C5 catalog</td><td class="ok">OK</td><td>bulk paste, product.hidden, pin.featured, home reviews 3–6, top picks drag</td></tr>
-      <tr><td>G import</td><td class="ok">OK</td><td>products JSON pack preview/apply</td></tr>
-      <tr><td>D2 rollback UX</td><td class="ok">OK</td><td>confirm detail + snapshot label + file counts</td></tr>
-      <tr><td>D3 links batch</td><td class="ok">OK</td><td>API slice 50 + client chunkSize 50 + progress i18n</td></tr>
-      <tr><td>E1 roles</td><td class="ok">OK</td><td>canWrite/canPublish/forbidWrite; invite editor/viewer; role-badge + data-requires-write</td></tr>
-      <tr><td>F polish</td><td class="ok">OK</td><td>toast, dirty Save, beforeunload, Ctrl+S, sticky actions</td></tr>
+      <tr><th>#</th><th>Severity</th><th>Bug</th><th>Fix</th></tr>
+      <tr>
+        <td>R-01</td>
+        <td class="fix">P0</td>
+        <td><code>POST /api/publish/article</code> always set <code>draft.status = "published"</code>
+          after soft-archive publish → archived page got noindex/hub-remove once, then draft flipped
+          back to published (next publish would re-index).</td>
+        <td><code>admin-api/src/index.js</code>: keep <code>archived</code>, force
+          <code>includeInSitemap=false</code>; audit/snapshot detail <code>archive:slug</code>.</td>
+      </tr>
+      <tr>
+        <td>R-02</td>
+        <td class="fix">P0</td>
+        <td>Publish UI filtered out <code>archived</code> drafts → no way to ship soft-archive
+          (hub − / sitemap − / noindex) from Studio.</td>
+        <td><code>ops.js</code>: include archived cards with CTA <code>btnPublishArchive</code> + hint;
+          disable publish buttons for viewers.</td>
+      </tr>
+      <tr>
+        <td>R-03</td>
+        <td class="risk">P1</td>
+        <td>Links checker Studio batch size was <code>20</code> while API allows <code>50</code>
+          (plan D3); copy still said “batches of 20”.</td>
+        <td><code>ops.js</code> <code>chunkSize = 50</code>; i18n <code>seoOpsDek</code> updated RU/EN.</td>
+      </tr>
+      <tr>
+        <td>R-04</td>
+        <td class="risk">P1</td>
+        <td>Missing i18n key <code>articlesLiveEmpty</code> (live list empty state showed raw key).</td>
+        <td>Added RU/EN in <code>i18n.js</code>. Also added archive publish strings.</td>
+      </tr>
+      <tr>
+        <td>R-05</td>
+        <td class="risk">P1</td>
+        <td>Viewer could still click mutate controls that lacked guards
+          (import pack apply, some list actions) even though API returned 403.</td>
+        <td>Client guards on import-apply / bulk / top-pick / hub / pin;
+          draft list dup/archive/restore/import-live disabled when <code>!canWrite</code>;
+          archive sets <code>includeInSitemap=false</code>.</td>
+      </tr>
+      <tr>
+        <td>R-06</td>
+        <td class="risk">P2</td>
+        <td>Status digest counted <code>archived</code> as <code>other</code>.</td>
+        <td><code>handleStatus</code> now tracks <code>archived</code> separately.</td>
+      </tr>
     </table>
 
-    <h2>Bugs found &amp; fixed this pass</h2>
-    <ul>
-      <li class="ok">FIXED: orphan <code>#btn-review-add</code> / count after toolbar-only HTML — restored controls + bind-once click.</li>
-      <li class="ok">FIXED: API hard-4 → assert 3–6 in publish_home + content save + preview.</li>
-      <li class="ok">FIXED: duplicate draft-search / hide-archived IDs in index.html.</li>
-      <li class="ok">FIXED: missing canWrite helpers referenced by route guards.</li>
-      <li class="ok">FIXED: links check raised 20→50; seoOpsDek copy updated.</li>
-      <li class="ok">FIXED: duplicate i18n keys for leave/seo dek cleaned.</li>
+    <h2>Checklist verification</h2>
+    <table>
+      <tr><th>Item</th><th>Result</th></tr>
+      <tr><td>1. Duplicate IDs / broken selectors in <code>index.html</code></td>
+        <td class="ok">OK — 0 duplicate IDs; dynamic IDs (<code>#top-picks-updated</code>, <code>#btn-filter-add</code>, <code>#pk-media-picker</code>) created at runtime.</td></tr>
+      <tr><td>2. <code>canWrite</code> / <code>canPublish</code> / <code>forbidWrite</code> once + consistent</td>
+        <td class="ok">OK — single definitions at bottom of <code>index.js</code>; saves use <code>canWrite</code>, module publish/rollback use <code>canPublish</code>, article publish uses <code>forbidWrite</code>.</td></tr>
+      <tr><td>3. Home reviews toolbar / orphan <code>#btn-review-add</code></td>
+        <td class="ok">OK — button lives inside <code>#home-reviews-toolbar</code>; wired + capped 3–6.</td></tr>
+      <tr><td>4. Archived → noindex + hub remove + sitemap remove + <code>includeInSitemap=false</code></td>
+        <td class="ok">OK after R-01/R-02 — <code>publish_article.js</code> already had robots/hub/sitemap logic; API + Studio publish path now keep archived.</td></tr>
+      <tr><td>5. i18n missing keys</td>
+        <td class="ok">OK after R-04 — re-scan: 0 missing keys (ru=en=472).</td></tr>
+      <tr><td>6. Viewer cannot save/publish</td>
+        <td class="ok">OK — API 403 + Studio disable/guards (R-05).</td></tr>
+      <tr><td>7. Products <code>hidden</code> filtered on publish</td>
+        <td class="ok">OK — <code>publish_products.js</code> <code>visible = filter(!hidden)</code>.</td></tr>
+      <tr><td>8. Cache-bust <code>?v=</code> consistent</td>
+        <td class="ok">OK — all Studio CSS/JS at <code>?v=20261005g</code>.</td></tr>
+    </table>
+
+    <h2>Remaining risks</h2>
+    <ul class="fine">
+      <li><span class="risk">Hub card regex:</span> <code>removeHubCard</code> expects <code>&lt;article class="pk-card"…&gt;</code>.
+        Hand-edited hub cards with different class order may not remove.</li>
+      <li><span class="risk">Dry-run for viewers:</span> module dry-run endpoints do not call <code>canPublish</code>
+        (read-only plan). Intentional for preview, but stricter “viewer = GET only” would need a guard.</li>
+      <li><span class="risk">Team invite button:</span> has <code>data-requires-write</code> (editors see enabled UI)
+        while API is owner-only — editor gets 403. Cosmetic.</li>
+      <li><span class="risk">Deploy lag:</span> Worker (<code>admin-api</code>) + Studio static assets must both ship
+        for R-01/R-02 to work on prod. Local fixes only until commit/push/wrangler deploy.</li>
+      <li><span class="risk">All-hidden category:</span> category with only <code>hidden</code> products still patches
+        the page to an empty card list (correct), but dry-run still lists that hub page.</li>
     </ul>
 
-    <h2>Residual risks (acceptable for ship)</h2>
-    <ul>
-      <li class="warn">A-20 public media GET remains by design.</li>
-      <li class="warn">Import HTML-only live articles without draft still out of scope.</li>
-      <li class="warn">Viewer dry-run allowed (read-like); actual Publish blocked.</li>
+    <h2>Files touched</h2>
+    <ul class="fine">
+      <li><code>admin-api/src/index.js</code></li>
+      <li><code>pk-studio/js/ops.js</code></li>
+      <li><code>pk-studio/js/app.js</code></li>
+      <li><code>pk-studio/js/articles.js</code></li>
+      <li><code>pk-studio/js/i18n.js</code></li>
+      <li><code>pk-studio/index.html</code> (cache bust <code>g</code>)</li>
+      <li><code>pk-studio/audit/08-month2-3-reaudit.html</code> (this file)</li>
     </ul>
 
-    <h2>Ship gate</h2>
-    <ol>
-      <li><code>node --check</code> API + Studio JS — pass</li>
-      <li>Bump Studio assets <code>?v=20261005e</code></li>
-      <li>commit + push main</li>
-      <li><code>npx wrangler deploy</code> in admin-api → <code>/api/health</code> ok</li>
-    </ol>
+    <footer>
+      Re-audit 2026-10-05 · bug hunt only · do not treat as shipped until commit + API deploy.
+    </footer>
   </div>
 </body>
 </html>

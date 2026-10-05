@@ -996,7 +996,7 @@ async function handleStatus(env) {
     artResults = r.results || [];
   } catch {}
 
-  const statusCounts = { draft: 0, seo_ready: 0, published: 0, other: 0 };
+  const statusCounts = { draft: 0, seo_ready: 0, published: 0, archived: 0, other: 0 };
   for (const r of artResults) {
     try {
       const d = JSON.parse(r.json);
@@ -1381,8 +1381,15 @@ async function handlePublishArticle(env, body, user) {
   }
   try {
     const result = await publishArticleDraft(env, draft);
-    draft.status = "published";
-    draft.publishedAt = new Date().toISOString();
+    // Soft-archive publish: keep status archived + force sitemap off.
+    // Do NOT flip archived → published (that would re-index on next publish).
+    if (st === "archived") {
+      draft.status = "archived";
+      draft.includeInSitemap = false;
+    } else {
+      draft.status = "published";
+      draft.publishedAt = new Date().toISOString();
+    }
     await env.DB.prepare(
       `INSERT INTO content_drafts (key, json, updated_at, updated_by)
        VALUES (?, ?, datetime('now'), ?)
@@ -1393,9 +1400,12 @@ async function handlePublishArticle(env, body, user) {
     await env.DB.prepare(
       `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'publish_article', ?)`
     )
-      .bind(user.login, slug)
+      .bind(user.login, st === "archived" ? `archive:${slug}` : slug)
       .run();
-    const snapDetail = composeSnapshotDetail(body, slug);
+    const snapDetail = composeSnapshotDetail(
+      body,
+      st === "archived" ? `archive:${slug}` : slug
+    );
     await recordSnapshot(env, "article", snapDetail, result.commits, user, draft);
     return json(result);
   } catch (err) {
