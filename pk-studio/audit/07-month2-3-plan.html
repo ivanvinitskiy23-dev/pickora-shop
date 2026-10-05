@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Месяц 2–3 — детальный план исполнения</title>
+  <style>
+    :root { --ink:#0f172a; --muted:#475569; --line:#e2e8f0; --bg:#f8fafc; --card:#fff; --blue:#1d4ed8; --ok:#047857; --warn:#b45309; --p0:#b91c1c; }
+    * { box-sizing:border-box; }
+    body { margin:0; font:15px/1.55 "Segoe UI",system-ui,sans-serif; color:var(--ink);
+      background: radial-gradient(900px 420px at 100% 0%, #fce7f3 0%, transparent 50%),
+                  radial-gradient(800px 400px at 0% 0%, #dbeafe 0%, transparent 55%), var(--bg); }
+    .wrap { max-width:1040px; margin:0 auto; padding:36px 18px 100px; }
+    header { border-bottom:1px solid var(--line); padding-bottom:20px; margin-bottom:22px; }
+    .eyebrow { font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ok); }
+    h1 { font-size:clamp(1.4rem,3vw,2rem); margin:8px 0 10px; }
+    .dek { color:var(--muted); max-width:72ch; }
+    nav.docs { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    nav.docs a { text-decoration:none; color:var(--blue); background:#eff6ff; border:1px solid #bfdbfe; border-radius:999px; padding:6px 12px; font-size:13px; font-weight:650; }
+    h2 { margin:32px 0 12px; font-size:1.25rem; }
+    h3 { margin:18px 0 8px; font-size:1.05rem; }
+    .gate { background:#ecfdf5; border:1px solid #a7f3d0; border-radius:12px; padding:14px 16px; margin:14px 0; font-size:13.5px; }
+    .warnbox { background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:14px 16px; margin:14px 0; font-size:13.5px; }
+    .pkg { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin:14px 0; }
+    .pkg h3 { margin:0 0 10px; }
+    .tag { display:inline-block; font-size:11px; font-weight:800; padding:2px 8px; border-radius:999px; color:#fff; margin-right:6px; }
+    .t2 { background:#1d4ed8; } .t3 { background:#7c3aed; }
+    table { width:100%; border-collapse:collapse; font-size:13px; background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:10px 0; }
+    th, td { border-bottom:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top; }
+    th { background:#f1f5f9; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+    code { font-family:ui-monospace,Consolas,monospace; font-size:.88em; background:#f1f5f9; padding:1px 5px; border-radius:4px; }
+    ul.fine > li { margin:6px 0; }
+    ol.steps > li { margin:8px 0; }
+    .ac { color:var(--ok); font-weight:650; }
+    .risk { color:var(--p0); font-weight:650; }
+    footer { margin-top:48px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">Pickora Studio · Execution plan</p>
+      <h1>Месяц 2 + Месяц 3 — план до мелочей</h1>
+      <p class="dek">База: аудит A-01…A-43 FIXED + Месяц 1 (Media/Compare/dry-run) на проде.
+        Цель: статьи и каталог без Cursor (М2), затем роли + спокойный ship + polish (М3).
+        Inventarization: explore agent 2026-10-05.</p>
+      <nav class="docs">
+        <a href="./04-roadmap.html">Roadmap</a>
+        <a href="./06-month1-plan.html">Месяц 1</a>
+        <a href="./07-month2-3-plan.html">Месяц 2–3</a>
+        <a href="./05-before-after.html">Было → стало</a>
+        <a href="./FINDINGS.md">FINDINGS</a>
+      </nav>
+    </header>
+
+    <div class="gate">
+      <strong>North star:</strong> владелец правит статью/товары/пины, импортирует JSON от SEO-агента,
+      публикует с dry-run, откатывает с пониманием, viewer не может писать — без SSH/Cursor.
+    </div>
+
+    <div class="warnbox">
+      <strong>Риски / границы:</strong>
+      <ul class="fine">
+        <li><span class="risk">C5 N reviews:</span> сейчас hard = 4 в API + live grid. Делаем <strong>3–6 слотов</strong> (не бесконечно): обновить Studio + <code>publish_home</code> + preview; live CSS grid уже flex — проверить визуально.</li>
+        <li><span class="risk">E1 roles:</span> новые роли <code>editor</code>/<code>viewer</code>; owner/admin как сейчас. Viewer: GET + preview only. Editor: save drafts, no team invite, publish только если owner разрешит (MVP: editor = save+publish modules, viewer = read/preview).</li>
+        <li><span class="risk">Archive article:</span> status <code>archived</code>, noindex meta, убрать карточку с articles hub при следующем publish; не удалять файлы с GitHub в MVP (soft archive).</li>
+        <li>Не трогаем Telegram CMS / unpaid social. Не scrape Amazon.</li>
+      </ul>
+    </div>
+
+    <h2>Порядок исполнения</h2>
+    <ol class="steps">
+      <li>М2-P1 Articles B1 (search drafts, duplicate, archive)</li>
+      <li>М2-P2 Blocks B2 (duplicate block, 3 templates, autosave localStorage)</li>
+      <li>М2-P3 SEO B3 (meters, chips checkboxes, internal suggester, sitemap toggle)</li>
+      <li>М2-P4 Catalog C3–C5 (bulk paste, hide, featured pin, reviews 3–6, drag top picks)</li>
+      <li>М2-P5 G import (products JSON paste, brief→article skeleton)</li>
+      <li>М3-P1 Rollback D2 UX</li>
+      <li>М3-P2 Links queue D3</li>
+      <li>М3-P3 Team E1 roles + API guards</li>
+      <li>М3-P4 F polish (toast, dirty Save, beforeunload, sticky Home/Pins, Ctrl+S)</li>
+      <li>Re-audit → fix bugs → commit/push/deploy</li>
+    </ol>
+
+    <!-- ========== MONTH 2 ========== -->
+    <h2>Месяц 2 — пакеты</h2>
+
+    <div class="pkg">
+      <h3><span class="tag t2">M2-P1</span> B1 Open anything</h3>
+      <table>
+        <tr><th>Фича</th><th>Как</th><th>Файлы</th><th>Acceptance</th></tr>
+        <tr>
+          <td>Поиск drafts</td>
+          <td><code>#articles-draft-search</code> фильтрует список черновиков по slug/title (как live)</td>
+          <td><code>articles.js</code>, <code>index.html</code>, i18n</td>
+          <td class="ac">Ввод «air» оставляет только matching drafts</td>
+        </tr>
+        <tr>
+          <td>Duplicate</td>
+          <td>Кнопка на draft-карточке → confirm → clone JSON с новым slug <code>{slug}-copy</code> / prompt → POST save → open wizard</td>
+          <td><code>articles.js</code>; API уже POST content/articles</td>
+          <td class="ac">Две записи; оригинал не меняется; status=draft</td>
+        </tr>
+        <tr>
+          <td>Archive</td>
+          <td>status=<code>archived</code>; при publish_article: robots noindex; hub card skip/remove; UI фильтр «скрыть archived»</td>
+          <td><code>articles.js</code>, <code>publish_article.js</code>, i18n</td>
+          <td class="ac">Archived не в seo_ready list; live page noindex после publish</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="pkg">
+      <h3><span class="tag t2">M2-P2</span> B2 Blocks</h3>
+      <table>
+        <tr><th>Фича</th><th>Как</th><th>Файлы</th><th>Acceptance</th></tr>
+        <tr>
+          <td>Duplicate block</td>
+          <td>Кнопка ⧉ на блоке → deep clone с новым id рядом</td>
+          <td><code>blocks.js</code></td>
+          <td class="ac">Два одинаковых блока; правка одного не ломает другой</td>
+        </tr>
+        <tr>
+          <td>Templates</td>
+          <td>Dropdown: Blank / Microwave guide / VS compare / Mistakes — подставляет starter block sets</td>
+          <td><code>blocks.js</code>, <code>articles.js</code>, i18n</td>
+          <td class="ac">Выбор Mistakes даёт FAQ+list структуру; confirm если dirty</td>
+        </tr>
+        <tr>
+          <td>Autosave</td>
+          <td>Каждые 30с если dirty → <code>localStorage pk_art_autosave_{slug}</code>; баннер «Восстановить»</td>
+          <td><code>articles.js</code></td>
+          <td class="ac">Reload страницы → баннер → restore заполняет форму</td>
+        </tr>
+        <tr>
+          <td>Affiliate picker</td>
+          <td>В product/cta блоке: «Из Products» подтягивает title+links из текущего products draft (fetch API)</td>
+          <td><code>blocks.js</code>, app products cache optional</td>
+          <td class="ac">Выбор товара заполняет links[]</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="pkg">
+      <h3><span class="tag t2">M2-P3</span> B3 SEO cockpit</h3>
+      <table>
+        <tr><th>Фича</th><th>Как</th><th>Файлы</th><th>Acceptance</th></tr>
+        <tr>
+          <td>Char meters</td>
+          <td>Live counters под title/meta/h1/dek с зелёный/жёлтый/красный по правилам seo-gate</td>
+          <td><code>articles.js</code>, <code>index.html</code>, css</td>
+          <td class="ac">Счётчик обновляется на input</td>
+        </tr>
+        <tr>
+          <td>Chips UI</td>
+          <td>Checkbox group из ALLOWED_CHIPS (max 3); sync в hidden/chips field</td>
+          <td><code>articles.js</code>, <code>seo-gate.js</code> export list</td>
+          <td class="ac">Нельзя выбрать 4-й; save пишет chips[]</td>
+        </tr>
+        <tr>
+          <td>Internal suggester</td>
+          <td>Кнопки из liveArticles slugs «+ add»; dedupe</td>
+          <td><code>articles.js</code></td>
+          <td class="ac">Клик добавляет URL в internal list</td>
+        </tr>
+        <tr>
+          <td>Sitemap toggle</td>
+          <td><code>includeInSitemap</code> bool на draft; publish_article уважает флаг</td>
+          <td><code>articles.js</code>, <code>publish_article.js</code>, index.html</td>
+          <td class="ac">false → slug не в sitemap после publish</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="pkg">
+      <h3><span class="tag t2">M2-P4</span> C3–C5 Catalog</h3>
+      <table>
+        <tr><th>Фича</th><th>Как</th><th>Файлы</th><th>Acceptance</th></tr>
+        <tr>
+          <td>C3 Bulk paste</td>
+          <td>Textarea JSON/CSV → parse → unshift в categoryProducts[hub]; reuse textToProducts / JSON array</td>
+          <td><code>app.js</code>, index.html products panel</td>
+          <td class="ac">Вставка 5 JSON товаров → 5 карточек сверху</td>
+        </tr>
+        <tr>
+          <td>C3 Hide</td>
+          <td>Флаг <code>hidden:true</code> на product; publish_products пропускает hidden в cards</td>
+          <td><code>app.js</code>, <code>publish_products.js</code></td>
+          <td class="ac">Hidden не на live category page после publish</td>
+        </tr>
+        <tr>
+          <td>C4 Featured pin</td>
+          <td><code>featured:true</code> checkbox; publish ставит data-attr / class first; optional pin to top on load if shuffle off</td>
+          <td><code>app.js</code>, <code>publish_pins.js</code></td>
+          <td class="ac">Featured pin виден с badge в Studio; HTML получает класс</td>
+        </tr>
+        <tr>
+          <td>C5 Reviews 3–6</td>
+          <td>Add/remove review slots; API validate length 3..6; replaceReviewsGrid N cards</td>
+          <td><code>app.js</code>, <code>publish_home.js</code>, <code>index.js</code> saveDraft</td>
+          <td class="ac">Save 5 reviews OK; dry-run/preview OK; 2 → reject</td>
+        </tr>
+        <tr>
+          <td>C5 Drag top picks</td>
+          <td>HTML5 drag-and-drop reorder (в дополнение к ↑↓)</td>
+          <td><code>app.js</code>, css</td>
+          <td class="ac">Перетащили → порядок в save совпадает</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="pkg">
+      <h3><span class="tag t2">M2-P5</span> G Agent → Studio</h3>
+      <table>
+        <tr><th>Фича</th><th>Как</th><th>Файлы</th><th>Acceptance</th></tr>
+        <tr>
+          <td>Products JSON import</td>
+          <td>Panel «Import agent pack»: paste JSON <code>{ hubId, products:[] }</code> → preview table → Apply to draft (no publish)</td>
+          <td><code>app.js</code>, i18n</td>
+          <td class="ac">Apply добавляет товары; Publish не вызывается</td>
+        </tr>
+        <tr>
+          <td>Brief → article</td>
+          <td>Paste markdown brief → parse H1/title/sections → emptyDraft + richtext/h2 blocks skeleton</td>
+          <td><code>articles.js</code></td>
+          <td class="ac">Paste brief → wizard с title + 3+ blocks; status draft</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- ========== MONTH 3 ========== -->
+    <h2>Месяц 3 — пакеты</h2>
+
+    <div class="pkg">
+      <h3><span class="tag t3">M3-P1</span> D2 Rollback UX</h3>
+      <ul class="fine">
+        <li>Поле имени снимка при publish (detail/label)</li>
+        <li>В списке snapshots: показать urls/files count из payload если есть</li>
+        <li>Confirm: «Откатит module X, snapshot name, дата»</li>
+        <li>После rollback — toast + reload module list</li>
+      </ul>
+      <p><strong>Файлы:</strong> <code>ops.js</code>, <code>index.js</code> recordSnapshot, i18n</p>
+      <p class="ac">Acceptance: rollback confirm показывает module+time; успех обновляет audit</p>
+    </div>
+
+    <div class="pkg">
+      <h3><span class="tag t3">M3-P2</span> D3 Links queue</h3>
+      <ul class="fine">
+        <li>Клиент: батчи по 20, очередь, прогресс «batch 2/5»</li>
+        <li>Сервер: оставить cap 20 на request (SSRF safety)</li>
+        <li>После Save Home/Pins/Products — optional soft rescan status (не блокировать)</li>
+      </ul>
+      <p class="ac">Acceptance: 45 ссылок → 3 батча; итог показывает all checked count</p>
+    </div>
+
+    <div class="pkg">
+      <h3><span class="tag t3">M3-P3</span> E1 Team roles</h3>
+      <ul class="fine">
+        <li>Invite role select: admin | editor | viewer</li>
+        <li>API: <code>requireWrite(user)</code> — viewer 403 на POST content/publish/media delete</li>
+        <li>Studio: session.role → hide Save/Publish/Team invite for viewer; show badge</li>
+        <li>Activity: audit list already exists — показать на Status «кто сохранил»</li>
+      </ul>
+      <p class="ac">Acceptance: viewer login → Save disabled; POST content → 403</p>
+    </div>
+
+    <div class="pkg">
+      <h3><span class="tag t3">M3-P4</span> F UX polish</h3>
+      <ul class="fine">
+        <li>Toast helper (2с success) поверх pill</li>
+        <li>Disable Save когда !dirty (Home/Pins/Products fingerprints + Articles)</li>
+        <li><code>beforeunload</code> + nav click confirm если dirty</li>
+        <li>Sticky save bar для Home/Pins (как Products)</li>
+        <li>Ctrl/Cmd+S → save активного модуля; Esc → close art-settings</li>
+        <li>Dash counters: N drafts, N media (из API)</li>
+      </ul>
+      <p class="ac">Acceptance: без правок Save disabled; dirty leave → confirm; Ctrl+S сохраняет</p>
+    </div>
+
+    <h2>Definition of Done + Re-audit</h2>
+    <div class="gate">
+      <ol class="steps">
+        <li><code>node --check</code> на всех изменённых JS</li>
+        <li>Ручной чеклист: login → каждая вкладка открывается без console error</li>
+        <li>Articles: search, duplicate, archive, chips, meters, autosave restore, template, Ctrl+S</li>
+        <li>Products: bulk paste, hide, import JSON; Pins: featured; Home: 5 reviews + drag picks</li>
+        <li>Publish dry-run still works; rollback confirm shows label</li>
+        <li>Viewer session: cannot save (если тестовый user есть — иначе code-review guards)</li>
+        <li>SEO links: 25+ URLs batch progress</li>
+        <li>Bug hunt pass → fix all found → commit/push → wrangler deploy → health OK</li>
+      </ol>
+    </div>
+
+    <h2>Явно не в этом релизе (Месяц 4+)</h2>
+    <ul class="fine">
+      <li>Полный diff draft vs live HTML</li>
+      <li>2FA, CF cache purge</li>
+      <li>Crawl всего sitemap на битые ссылки</li>
+      <li>Replace-in-place overwrite того же SEO filename на GitHub</li>
+      <li>Тёмная тема</li>
+    </ul>
+
+    <footer>
+      Файл: <code>pk-studio/audit/07-month2-3-plan.html</code> ·
+      Статус исполнения обновлять после каждого пакета ·
+      Inventarization: <a href="#">explore agent</a>
+    </footer>
+  </div>
+</body>
+</html>

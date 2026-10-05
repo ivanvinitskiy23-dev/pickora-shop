@@ -116,7 +116,10 @@ export function buildBoardPin(pin, eager = false) {
   const width  = pin.width  || 896;
   const height = pin.height || 1200;
 
-  return `    <div class="pickora-board-pin" data-category="${cat}" onclick="openPin(${id})">
+  const featCls = pin.featured ? " pickora-board-pin--featured" : "";
+  const featAttr = pin.featured ? ' data-featured="true"' : "";
+
+  return `    <div class="pickora-board-pin${featCls}" data-category="${cat}"${featAttr} onclick="openPin(${id})">
       <img src="${img}" alt="${alt}" width="${width}" height="${height}" ${loading} decoding="async">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">${title}</h4>
@@ -179,7 +182,11 @@ export function applyPinsDraftToHtml(html, draft) {
   }
   html = html.replace(filtersRe, (_, g1, g2) => g1 + "\n" + filtersHtml + "\n  " + g2);
 
-  const board = pins.map((p, i) => buildBoardPin(p, i === 0)).join("\n\n");
+  let pinsForBoard = [...pins];
+  if (draft.shuffleOnLoad === false) {
+    pinsForBoard.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+  }
+  const board = pinsForBoard.map((p, i) => buildBoardPin(p, i === 0)).join("\n\n");
   const gridRe =
     /(<div class="pickora-board-grid" id="pins-grid">\s*)[\s\S]*?(<\/div>\s*<\/div>\s*\n\s*<div class="pickora-popup-overlay")/;
   if (!gridRe.test(html)) {

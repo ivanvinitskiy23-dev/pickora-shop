@@ -24,6 +24,31 @@
     "Pet Supplies",
   ];
 
+  /** Character ranges for live SEO meters (title/meta = gate blockers). */
+  const SEO_FIELD_LIMITS = {
+    title: { min: 25, max: 70, label: "25–70" },
+    metaDescription: { min: 110, max: 170, label: "110–170" },
+    h1: { min: 25, max: 70, label: "25–70" },
+    dek: { min: 80, max: 220, label: "80–220" },
+  };
+
+  function charMeterState(field, length) {
+    const rules = SEO_FIELD_LIMITS[field];
+    if (!rules) return "neutral";
+    const n = Number(length) || 0;
+    if (n >= rules.min && n <= rules.max) return "ok";
+    const softMin = rules.min - Math.max(5, Math.floor((rules.max - rules.min) * 0.08));
+    const softMax = rules.max + Math.max(5, Math.floor((rules.max - rules.min) * 0.08));
+    if (n >= softMin && n <= softMax) return "warn";
+    return "bad";
+  }
+
+  function formatCharMeter(field, length) {
+    const rules = SEO_FIELD_LIMITS[field];
+    if (!rules) return String(length);
+    return `${length} / ${rules.label}`;
+  }
+
   const BANNED = [
     /we (spent|tested|lab[- ]?tested)/i,
     /hours? (of )?testing/i,
@@ -85,6 +110,13 @@
     const blockers = [];
     const warnings = [];
     const d = draft || {};
+
+    if (String(d.status || "").trim() === "archived") {
+      blockers.push({
+        id: "archived",
+        label: "Archived drafts cannot pass SEO gate until restored",
+      });
+    }
 
     const slug = String(d.slug || "").trim();
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
@@ -237,6 +269,9 @@
   root.PK_SEO_GATE = {
     ALLOWED_CHIPS,
     HUBS,
+    SEO_FIELD_LIMITS,
+    charMeterState,
+    formatCharMeter,
     validateArticleDraft,
   };
 })(typeof window !== "undefined" ? window : globalThis);

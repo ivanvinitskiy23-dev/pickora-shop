@@ -6,7 +6,7 @@
  * Ports render_home.py logic to JS (no Python subprocess).
  *
  * draft shape (from D1 key 'home'):
- *   latestReviews: Array<{ url, image, imageAlt, category, title, excerpt, badge }>  — exactly 4
+ *   latestReviews: Array<{ url, image, imageAlt, category, title, excerpt, badge }>  — 3..6
  *   topPicks: { updated, picks: Array<{ image, imageAlt, category, tagline, title,
  *               blurb, pros, amazonUrl, guideUrl }> }
  *
@@ -26,6 +26,20 @@ const KEEP_COMMENT =
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+
+export const LATEST_REVIEWS_MIN = 3;
+export const LATEST_REVIEWS_MAX = 6;
+
+export function assertLatestReviewsCount(reviews) {
+  const n = Array.isArray(reviews) ? reviews.length : -1;
+  if (n < LATEST_REVIEWS_MIN || n > LATEST_REVIEWS_MAX) {
+    throw new Error(
+      `latestReviews must be ${LATEST_REVIEWS_MIN}..${LATEST_REVIEWS_MAX} items, got ${
+        Array.isArray(reviews) ? n : "non-array"
+      }`
+    );
+  }
+}
 
 const WORKER_MEDIA =
   "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/";
@@ -181,13 +195,7 @@ export function patchTopPickShell(html, pick) {
 
 export function applyHomeDraftToHtml(html, draft) {
   const reviews = draft.latestReviews;
-  if (!Array.isArray(reviews) || reviews.length !== 4) {
-    throw new Error(
-      `latestReviews must be exactly 4 items, got ${
-        Array.isArray(reviews) ? reviews.length : "non-array"
-      }`
-    );
-  }
+  assertLatestReviewsCount(reviews);
   const cards = reviews.map((r) => buildRevCard(r)).join("\n\n");
   let updated = replaceReviewsGrid(html, cards);
   if (draft.topPicks) {
@@ -237,14 +245,7 @@ export function buildHomePreviewHtml(templateHtml, draft, meta = {}) {
 // ---------------------------------------------------------------------------
 
 export function planHomePublish(draft) {
-  const reviews = draft.latestReviews;
-  if (!Array.isArray(reviews) || reviews.length !== 4) {
-    throw new Error(
-      `latestReviews must be exactly 4 items, got ${
-        Array.isArray(reviews) ? reviews.length : "non-array"
-      }`
-    );
-  }
+  assertLatestReviewsCount(draft.latestReviews);
   const files = ["content/home.json", "index.html"];
   if (draft.topPicks) files.push("assets/data/top-picks.json");
   return {
@@ -271,14 +272,7 @@ export function planHomePublish(draft) {
  * @returns {Promise<{ ok, urls, commits, note }>}
  */
 export async function publishHomeDraft(env, draft, opts = {}) {
-  const reviews = draft.latestReviews;
-  if (!Array.isArray(reviews) || reviews.length !== 4) {
-    throw new Error(
-      `latestReviews must be exactly 4 items, got ${
-        Array.isArray(reviews) ? reviews.length : "non-array"
-      }`
-    );
-  }
+  assertLatestReviewsCount(draft.latestReviews);
 
   const dryRun = !!opts.dryRun;
   const today = todayISO();

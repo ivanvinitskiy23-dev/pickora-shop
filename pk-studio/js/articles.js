@@ -8,6 +8,8 @@
   let current = null;
   let blocksApi = null;
   let lastSyncedFingerprint = "";
+  let autosaveTimer = null;
+  const AUTOSAVE_MS = 30_000;
 
   function draftFingerprint(d) {
     const x = d || {};
@@ -25,7 +27,176 @@
       affiliateLinks: x.affiliateLinks || [],
       internalLinks: x.internalLinks || [],
       blocks: x.blocks || [],
+      includeInSitemap: x.includeInSitemap !== false,
+      status: x.status || "draft",
     });
+  }
+
+  function autosaveStorageKey(slug) {
+    const s = String(slug || "").trim().toLowerCase();
+    return s ? `pk_art_autosave_${s}` : "";
+  }
+
+  function updateCharMeters() {
+    const gate = window.PK_SEO_GATE;
+    if (!gate?.charMeterState) return;
+    const fields = [
+      { id: "art-title", meter: "art-title-meter", field: "title" },
+      { id: "art-meta", meter: "art-meta-meter", field: "metaDescription" },
+      { id: "art-h1", meter: "art-h1-meter", field: "h1" },
+      { id: "art-dek", meter: "art-dek-meter", field: "dek" },
+    ];
+    fields.forEach(({ id, meter, field }) => {
+      const el = $(`#${id}`);
+      const m = $(`#${meter}`);
+      if (!el || !m) return;
+      const len = String(el.value || "").length;
+      const state = gate.charMeterState(field, len);
+      m.textContent = gate.formatCharMeter(field, len);
+      m.classList.remove("is-ok", "is-warn", "is-bad");
+      if (state !== "neutral") m.classList.add("is-" + state);
+    });
+  }
+
+  function readChipsFromUi() {
+    const picked = $$("#art-chips-checkboxes input[type=checkbox]:checked").map((cb) =>
+      String(cb.value || "").trim()
+    );
+    const hidden = $("#art-chips");
+    if (hidden) hidden.value = picked.join(" ");
+    return picked.filter(Boolean);
+  }
+
+  function renderChipsCheckboxes(selected) {
+    const host = $("#art-chips-checkboxes");
+    if (!host || !window.PK_SEO_GATE) return;
+    const sel = new Set((selected || []).map((c) => String(c).trim()).filter(Boolean));
+    const allowed = window.PK_SEO_GATE.ALLOWED_CHIPS || [];
+    host.innerHTML = allowed
+      .map((slug) => {
+        const on = sel.has(slug);
+        const label = t("chip_" + slug) || slug;
+        return `<label><input type="checkbox" value="${escapeAttr(slug)}"${
+          on ? " checked" : ""
+        }><span>${escapeAttr(label)}</span></label>`;
+      })
+      .join("");
+    const syncDisabled = () => {
+      const checked = $$("#art-chips-checkboxes input:checked");
+      $$("#art-chips-checkboxes input:not(:checked)").forEach((cb) => {
+        cb.disabled = checked.length >= 3;
+      });
+    };
+    syncDisabled();
+    $$("#art-chips-checkboxes input").forEach((cb) => {
+      cb.addEventListener("change", () => {
+        const checked = $$("#art-chips-checkboxes input:checked");
+        if (checked.length > 3) {
+          cb.checked = false;
+          setStatus(t("chipsMaxThree"), "warn");
+        }
+        syncDisabled();
+        readChipsFromUi();
+        updateCharMeters();
+      });
+    });
+    readChipsFromUi();
+  }
+
+  function renderInternalSuggester() {
+    const host = $("#art-internal-suggest");
+    if (!host) return;
+    const current = new Set(
+      scrubInternalLinks(($("#art-internal")?.value || "").split("\n")).map((u) => u.replace(/\/+$/, "") + "/")
+    );
+    const slugs = liveArticles
+      .map((a) => String(a.slug || "").trim())
+      .filter((s) => s && s !== ($("#art-slug")?.value || "").trim());
+    const uniq = [...new Set(slugs)].slice(0, 24);
+    if (!uniq.length) {
+      host.innerHTML = "";
+      return;
+    }
+    host.innerHTML =
+      `<span class="hint">${escapeAttr(t("internalSuggestLabel"))}</span>` +
+      uniq
+        .map((slug) => {
+          const path = `/${slug}/`;
+          const norm = path.replace(/\/+$/, "") + "/";
+          if (current.has(norm)) return "";
+          return `<button type="button" class="btn btn-ghost btn-xs" data-add-internal="${escapeAttr(
+            path
+          )}">+ ${escapeAttr(slug)}</button>`;
+        })
+        .join("");
+    $$("[data-add-internal]", host).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const path = btn.getAttribute("data-add-internal");
+        const ta = $("#art-internal");
+        if (!ta || !path) return;
+        const lines = scrubInternalLinks(ta.value.split("\n"));
+        const norm = path.replace(/\/+$/, "") + "/";
+        if (!lines.some((u) => (u.replace(/\/+$/, "") + "/") === norm)) {
+          lines.push(path);
+          ta.value = lines.join("\n");
+        }
+        renderInternalSuggester();
+      });
+    });
+  }
+
+  function persistAutosave() {
+    if (!isDraftDirty()) return;
+    const d = readForm();
+    if (!d.slug) return;
+    const key = autosaveStorageKey(d.slug);
+    if (!key) return;
+    try {
+      localStorage.setItem(
+        key,
+        JSON.stringify({ savedAt: new Date().toISOString(), draft: d })
+      );
+    } catch {
+      /* quota */
+    }
+  }
+
+  function clearAutosaveForSlug(slug) {
+    const key = autosaveStorageKey(slug);
+    if (key) {
+      try {
+        localStorage.removeItem(key);
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+
+  function peekAutosave(slug) {
+    const key = autosaveStorageKey(slug);
+    if (!key) return null;
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  }
+
+  function updateAutosaveBanner() {
+    const banner = $("#art-autosave-banner");
+    if (!banner) return;
+    const slug = ($("#art-slug")?.value || current?.slug || "").trim().toLowerCase();
+    const snap = slug ? peekAutosave(slug) : null;
+    const show =
+      snap?.draft && slug && draftFingerprint(snap.draft) !== lastSyncedFingerprint;
+    banner.classList.toggle("pk-hidden", !show);
+  }
+
+  function startAutosaveLoop() {
+    if (autosaveTimer) clearInterval(autosaveTimer);
+    autosaveTimer = setInterval(() => persistAutosave(), AUTOSAVE_MS);
   }
 
   function isDraftDirty() {
@@ -129,7 +300,21 @@
       faq: [],
       updatedAt: null,
       seoReadyAt: null,
+      includeInSitemap: true,
     };
+  }
+
+  function applyBlockTemplate(templateId) {
+    if (!window.PK_BLOCKS?.templateBlocks) return;
+    const next = window.PK_BLOCKS.templateBlocks(templateId);
+    if (blocksApi?.setBlocks) blocksApi.setBlocks(next);
+    else syncBlocksEditor(next);
+    if (current) {
+      current.blocks = next;
+      current.bodyHtml = window.PK_BLOCKS.compileBlocksToHtml(next);
+    }
+    const tpl = $("#art-block-template");
+    if (tpl) tpl.value = "blank";
   }
 
   function setStatus(msg, kind) {
@@ -196,10 +381,7 @@
 
   function readForm() {
     if (!current) current = emptyDraft();
-    const chipsRaw = ($("#art-chips")?.value || "")
-      .split(/[\s,]+/)
-      .map((x) => x.trim())
-      .filter(Boolean);
+    const chipsRaw = readChipsFromUi();
     const hubCategory = $("#art-hub")?.value || current.hubCategory;
     const hubUrl = normalizeHubUrl(hubCategory);
     const intl = scrubInternalLinks(($("#art-internal")?.value || "").split("\n"));
@@ -239,6 +421,7 @@
       blocks,
       bodyHtml,
       status: current.status || "draft",
+      includeInSitemap: $("#art-include-sitemap")?.checked !== false,
     };
     return current;
   }
@@ -256,13 +439,20 @@
     current.hubUrl = normalizeHubUrl(current.hubCategory);
     current.internalLinks = scrubInternalLinks(current.internalLinks);
     $("#art-hub-url").value = current.hubUrl || "";
-    $("#art-chips").value = (current.chips || []).join(" ");
+    renderChipsCheckboxes(current.chips || []);
     $("#art-cover").value = current.coverImage || "";
     $("#art-cover-alt").value = current.coverAlt || "";
     $("#art-affiliate").value = (current.affiliateLinks || []).join("\n");
     $("#art-internal").value = (current.internalLinks || []).join("\n");
     $("#art-status-pill").textContent = current.status || "draft";
+    if ($("#art-include-sitemap")) {
+      $("#art-include-sitemap").checked = current.includeInSitemap !== false;
+    }
+    if ($("#art-block-template")) $("#art-block-template").value = "blank";
     renderGate(null);
+    updateCharMeters();
+    renderInternalSuggester();
+    updateAutosaveBanner();
     const thumb = $("#art-cover-preview");
     if (thumb) {
       if (current.coverImage) {
@@ -274,6 +464,7 @@
     }
     syncBlocksEditor(current.blocks);
     lastSyncedFingerprint = draftFingerprint(current);
+    window.PK_ARTICLES?.updateSaveButton?.();
   }
 
   function renderLists() {
@@ -314,21 +505,72 @@
       });
     }
     if (draftBox) {
-      draftBox.innerHTML = drafts.length
-        ? drafts
+      const dq = String($("#articles-draft-search")?.value || "")
+        .trim()
+        .toLowerCase();
+      const hideArchived = $("#articles-hide-archived")?.checked !== false;
+      let draftList = drafts.slice();
+      if (hideArchived) draftList = draftList.filter((d) => d.status !== "archived");
+      if (dq) {
+        draftList = draftList.filter(
+          (d) =>
+            String(d.slug || "")
+              .toLowerCase()
+              .includes(dq) ||
+            String(d.title || "")
+              .toLowerCase()
+              .includes(dq)
+        );
+      }
+      draftBox.innerHTML = draftList.length
+        ? draftList
             .map(
-              (d) => `<button type="button" class="panel" data-open-draft="${escapeAttr(
+              (d) => `<div class="panel draft-card-row" style="padding:14px">
+              <button type="button" class="draft-card-open" data-open-draft="${escapeAttr(
                 d.slug
-              )}" style="text-align:left;width:100%;cursor:pointer">
+              )}" style="text-align:left;flex:1;border:0;background:transparent;padding:0;cursor:pointer">
               <strong>${escapeAttr(d.title || d.slug)}</strong>
               <span class="pill" style="margin-left:8px">${escapeAttr(d.status || "draft")}</span>
               <p class="path-hint" style="margin:6px 0 0">${escapeAttr(d.slug)}</p>
-            </button>`
+              </button>
+              <div class="draft-card-actions">
+                <button type="button" class="btn btn-ghost btn-xs" data-dup-draft="${escapeAttr(
+                  d.slug
+                )}">${escapeAttr(t("btnDuplicateDraft"))}</button>
+                ${
+                  d.status === "archived"
+                    ? `<button type="button" class="btn btn-ghost btn-xs" data-restore-draft="${escapeAttr(
+                        d.slug
+                      )}">${escapeAttr(t("btnRestoreDraft"))}</button>`
+                    : `<button type="button" class="btn btn-ghost btn-xs" data-archive-draft="${escapeAttr(
+                        d.slug
+                      )}">${escapeAttr(t("btnArchiveDraft"))}</button>`
+                }
+              </div>
+            </div>`
             )
             .join("")
         : `<p class="hint">${escapeAttr(t("articlesNoDrafts"))}</p>`;
       $$("[data-open-draft]").forEach((btn) => {
         btn.addEventListener("click", () => openDraft(btn.getAttribute("data-open-draft")));
+      });
+      $$("[data-dup-draft]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          duplicateDraft(btn.getAttribute("data-dup-draft"));
+        });
+      });
+      $$("[data-archive-draft]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setDraftArchived(btn.getAttribute("data-archive-draft"), true);
+        });
+      });
+      $$("[data-restore-draft]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setDraftArchived(btn.getAttribute("data-restore-draft"), false);
+        });
       });
     }
   }
@@ -367,6 +609,99 @@
     const data = await res.json();
     fillForm(data);
     showWizard(true);
+    updateAutosaveBanner();
+  }
+
+  async function duplicateDraft(sourceSlug) {
+    if (!sourceSlug) return;
+    if (isDraftDirty() && !confirm(t("articlesDiscardUnsaved"))) return;
+    setStatus(t("loading"));
+    try {
+      const res = await fetch(
+        window.PK_AUTH.API + "/api/content/articles/" + encodeURIComponent(sourceSlug),
+        { headers: authHeaders(), credentials: "include" }
+      );
+      if (!res.ok) {
+        setStatus(t("articlesLoadFail"), "warn");
+        return;
+      }
+      const src = await res.json();
+      let newSlug = String(sourceSlug).trim().toLowerCase() + "-copy";
+      const prompted = window.prompt(t("articlesDuplicateSlugPrompt"), newSlug);
+      if (prompted == null) {
+        setStatus("", null);
+        return;
+      }
+      newSlug = String(prompted || "")
+        .trim()
+        .toLowerCase();
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(newSlug)) {
+        setStatus(t("articlesNeedSlug"), "warn");
+        return;
+      }
+      const clone = {
+        ...src,
+        slug: newSlug,
+        status: "draft",
+        seoReadyAt: null,
+        publishedAt: null,
+        canonical: `https://pickora.shop/${newSlug}/`,
+      };
+      delete clone.updatedAt;
+      const saveRes = await fetch(window.PK_AUTH.API + "/api/content/articles", {
+        method: "POST",
+        headers: authHeaders(),
+        credentials: "include",
+        body: JSON.stringify(clone),
+      });
+      const saveData = await saveRes.json().catch(() => ({}));
+      if (!saveRes.ok) {
+        setStatus(saveData.error || t("articlesSaveFail"), "warn");
+        return;
+      }
+      await loadLists();
+      await openDraft(newSlug);
+      setStatus(t("articlesDuplicateOk"), "ok");
+    } catch (err) {
+      setStatus(t("articlesSaveFail") + (err?.message ? ": " + err.message : ""), "warn");
+    }
+  }
+
+  async function setDraftArchived(slug, archived) {
+    if (!slug) return;
+    if (archived && !confirm(t("articlesArchiveConfirm"))) return;
+    setStatus(t("loading"));
+    try {
+      const res = await fetch(
+        window.PK_AUTH.API + "/api/content/articles/" + encodeURIComponent(slug),
+        { headers: authHeaders(), credentials: "include" }
+      );
+      if (!res.ok) {
+        setStatus(t("articlesLoadFail"), "warn");
+        return;
+      }
+      const draft = await res.json();
+      draft.status = archived ? "archived" : "draft";
+      if (archived) draft.seoReadyAt = null;
+      const saveRes = await fetch(window.PK_AUTH.API + "/api/content/articles", {
+        method: "POST",
+        headers: authHeaders(),
+        credentials: "include",
+        body: JSON.stringify(draft),
+      });
+      if (!saveRes.ok) {
+        setStatus(t("articlesSaveFail"), "warn");
+        return;
+      }
+      if (current?.slug === slug) {
+        current.status = draft.status;
+        $("#art-status-pill").textContent = draft.status;
+      }
+      await loadLists();
+      setStatus(archived ? t("articlesArchivedOk") : t("articlesRestoredOk"), "ok");
+    } catch (err) {
+      setStatus(t("articlesSaveFail") + (err?.message ? ": " + err.message : ""), "warn");
+    }
   }
 
   async function importLiveArticle(slug) {
@@ -448,6 +783,8 @@
     }
     current = data.draft || d;
     fillForm(current);
+    clearAutosaveForSlug(current.slug);
+    updateAutosaveBanner();
     setStatus(t("articlesSaved"), "ok");
     await loadLists();
   }
@@ -464,6 +801,10 @@
   }
 
   async function markSeoReady() {
+    if (readForm().status === "archived") {
+      setStatus(t("articlesArchivedNoSeo"), "warn");
+      return;
+    }
     const result = runGate();
     if (!result.ok) return;
     const d = readForm();
@@ -597,6 +938,85 @@
     fillForm(emptyDraft());
     setStatus("", null);
     $("#articles-status")?.classList.add("pk-hidden");
+    startAutosaveLoop();
+  }
+
+  function briefBlockId() {
+    return "b-" + Math.random().toString(36).slice(2, 11);
+  }
+
+  function importBrief(md) {
+    const text = String(md || "").trim();
+    if (!text) {
+      setStatus(t("importBriefFail"), "warn");
+      return null;
+    }
+    let title = "";
+    let h1 = "";
+    const parsed = [];
+    let para = [];
+    const flushPara = () => {
+      const chunk = para.join("\n").trim();
+      if (chunk) parsed.push({ id: briefBlockId(), type: "richtext", text: chunk });
+      para = [];
+    };
+    for (const line of text.split(/\r?\n/)) {
+      const h1m = line.match(/^#\s+(.+)/);
+      const h2m = line.match(/^##\s+(.+)/);
+      if (h1m && !title) {
+        title = h1m[1].trim();
+        h1 = title;
+        continue;
+      }
+      if (h2m) {
+        flushPara();
+        parsed.push({
+          id: briefBlockId(),
+          type: "heading",
+          level: 2,
+          text: h2m[1].trim(),
+        });
+        continue;
+      }
+      para.push(line);
+    }
+    flushPara();
+    if (!title) {
+      const first = text.split(/\r?\n/).find((l) => l.trim());
+      title = String(first || "new-article")
+        .replace(/^#+\s*/, "")
+        .trim();
+      h1 = title;
+    }
+    let blocks = window.PK_BLOCKS?.starterBlocks?.(2) || [];
+    if (parsed.length >= 3) {
+      blocks = parsed;
+    } else if (parsed.length) {
+      blocks = [...parsed, ...blocks].slice(0, Math.max(3, parsed.length));
+    }
+    while (blocks.length < 3) {
+      blocks.push({ id: briefBlockId(), type: "richtext", text: "" });
+    }
+    if (blocks[0]?.type === "intro") blocks[0].text = blocks[0].text || title;
+    const slug = String(title || "new-article")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 48);
+    const draft = {
+      ...emptyDraft(),
+      slug: slug || "new-article",
+      title,
+      h1: h1 || title,
+      dek: "",
+      blocks,
+      bodyHtml: window.PK_BLOCKS.compileBlocksToHtml(blocks),
+      affiliateLinks: window.PK_BLOCKS.collectAffiliateLinks(blocks, []),
+    };
+    fillForm(draft);
+    showWizard(true);
+    setStatus(t("importBriefOk"), "ok");
+    return draft;
   }
 
   function bind() {
@@ -604,8 +1024,52 @@
       fillForm(emptyDraft());
       showWizard(true);
     });
+    $("#btn-articles-brief-import")?.addEventListener("click", () => {
+      if (window.PK_STUDIO?.canWrite?.() === false) {
+        setStatus(t("viewerReadOnly"), "warn");
+        return;
+      }
+      const md = $("#articles-brief-text")?.value || "";
+      importBrief(md);
+    });
     $("#articles-live-search")?.addEventListener("input", () => renderLists());
-    $("#btn-article-cancel")?.addEventListener("click", () => showWizard(false));
+    $("#articles-draft-search")?.addEventListener("input", () => renderLists());
+    $("#articles-hide-archived")?.addEventListener("change", () => renderLists());
+    $("#btn-art-restore-autosave")?.addEventListener("click", () => {
+      const slug = ($("#art-slug")?.value || "").trim().toLowerCase();
+      const snap = peekAutosave(slug);
+      if (!snap?.draft) return;
+      if (isDraftDirty() && !confirm(t("articlesAutosaveOverwrite"))) return;
+      fillForm(snap.draft);
+      setStatus(t("articlesAutosaveRestored"), "ok");
+      updateAutosaveBanner();
+    });
+    $("#btn-art-dismiss-autosave")?.addEventListener("click", () => {
+      const slug = ($("#art-slug")?.value || "").trim().toLowerCase();
+      clearAutosaveForSlug(slug);
+      updateAutosaveBanner();
+    });
+    ["art-title", "art-meta", "art-h1", "art-dek"].forEach((id) => {
+      $("#" + id)?.addEventListener("input", () => updateCharMeters());
+    });
+    $("#art-slug")?.addEventListener("change", () => {
+      updateAutosaveBanner();
+      renderInternalSuggester();
+    });
+    $("#art-block-template")?.addEventListener("change", () => {
+      const val = $("#art-block-template")?.value || "blank";
+      if (val === "blank") return;
+      if (isDraftDirty() && !confirm(t("artTemplateConfirmDirty"))) {
+        $("#art-block-template").value = "blank";
+        return;
+      }
+      applyBlockTemplate(val);
+      setStatus(t("artTemplateApplied"), "ok");
+    });
+    $("#btn-article-cancel")?.addEventListener("click", () => {
+      if (isDraftDirty() && !confirm(t("confirmLeaveDirty"))) return;
+      showWizard(false);
+    });
     $("#btn-article-save")?.addEventListener("click", () => saveDraft());
     $("#btn-article-gate")?.addEventListener("click", () => runGate());
     $("#btn-article-preview")?.addEventListener("click", () => openPreview());
@@ -625,11 +1089,10 @@
       const hub = $("#art-hub").value;
       const url = articlesHubUrl(hub);
       if ($("#art-hub-url")) $("#art-hub-url").value = url;
-      // Suggest primary chip if chips empty
-      const chipsEl = $("#art-chips");
-      if (chipsEl && !String(chipsEl.value || "").trim()) {
+      const picked = readChipsFromUi();
+      if (!picked.length) {
         const chip = (url.match(/[?&]cat=([^&]+)/) || [])[1];
-        if (chip) chipsEl.value = chip;
+        if (chip) renderChipsCheckboxes([chip]);
       }
     });
     $("#art-type")?.addEventListener("change", () => {
@@ -647,7 +1110,22 @@
         syncBlocksEditor(current.blocks);
       }
     });
+    startAutosaveLoop();
   }
 
-  window.PK_ARTICLES = { open, bind, t };
+  function updateArticleSaveButton() {
+    const btn = $("#btn-article-save");
+    if (!btn) return;
+    const cw = window.PK_STUDIO?.canWrite?.() !== false;
+    btn.disabled = !cw || !isDraftDirty();
+  }
+
+  window.PK_ARTICLES = {
+    open,
+    bind,
+    t,
+    importBrief,
+    isDirty: isDraftDirty,
+    updateSaveButton: updateArticleSaveButton,
+  };
 })();

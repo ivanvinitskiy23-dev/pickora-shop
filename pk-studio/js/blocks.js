@@ -213,6 +213,130 @@ window.PK_BLOCKS = (function () {
     }
   }
 
+  function deepCloneBlock(b) {
+    const copy = JSON.parse(JSON.stringify(b || {}));
+    copy.id = uid();
+    return copy;
+  }
+
+  /** Named starter sets for the template dropdown (M2-P2). */
+  function templateBlocks(templateId) {
+    const key = String(templateId || "blank").toLowerCase();
+    if (key === "blank") return [];
+    if (key === "microwave") return starterBlocks(2);
+    if (key === "vs") return starterBlocks(3);
+    if (key === "mistakes") {
+      const intro = createBlock("intro");
+      intro.text = "Most buyers focus on the wrong specs. Here are the mistakes that waste money.";
+      const head = createBlock("heading");
+      head.text = "Mistakes to avoid";
+      const list = createBlock("richtext");
+      list.text =
+        "<p><strong>Mistake 1:</strong> …</p><p><strong>Mistake 2:</strong> …</p><p><strong>Mistake 3:</strong> …</p>";
+      const faq = createBlock("faq");
+      faq.items = [
+        { q: "Do I need the premium model?", a: "Usually no — mid-tier covers most kitchens." },
+        { q: "What size should I buy?", a: "Match counter space and household size first." },
+      ];
+      const verdict = createBlock("verdict");
+      verdict.text = "<p><strong>Bottom line:</strong> fix capacity and cleanup before chasing smart features.</p>";
+      return [intro, head, list, faq, verdict];
+    }
+    return starterBlocks(2);
+  }
+
+  let productsCatalogCache = null;
+  let productsCatalogLoading = null;
+
+  async function fetchProductsCatalog() {
+    if (productsCatalogCache) return productsCatalogCache;
+    if (productsCatalogLoading) return productsCatalogLoading;
+    productsCatalogLoading = (async () => {
+      try {
+        const api = window.PK_AUTH?.API || "";
+        const s = window.PK_AUTH?.getSession?.();
+        const h = { "Content-Type": "application/json" };
+        if (s?.token) h.Authorization = "Bearer " + s.token;
+        const res = await fetch(api + "/api/content/products", {
+          headers: h,
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error("products_load_failed");
+        productsCatalogCache = await res.json();
+        return productsCatalogCache;
+      } finally {
+        productsCatalogLoading = null;
+      }
+    })();
+    return productsCatalogLoading;
+  }
+
+  function catalogProductLinks(product) {
+    const raw = Array.isArray(product?.links) ? product.links : [];
+    const fromLinks = raw
+      .map((l) => ({
+        label: String(l?.label || "Amazon").trim() || "Amazon",
+        url: String(l?.url || "").trim(),
+        style: detectLinkStyle(l?.url, l?.style),
+      }))
+      .filter((l) => l.url);
+    if (fromLinks.length) return fromLinks;
+    const legacy = String(product?.amazonUrl || product?.url || "").trim();
+    if (legacy) {
+      return [{ label: "Amazon", url: legacy, style: detectLinkStyle(legacy) }];
+    }
+    return [{ label: "Amazon", url: "", style: "amazon" }];
+  }
+
+  async function pickProductFromCatalog(onPick) {
+    try {
+      const data = await fetchProductsCatalog();
+      const hubs = data?.hubCategories || [];
+      const byHub = data?.categoryProducts || {};
+      const lines = [];
+      hubs.forEach((h) => {
+        const id = String(h?.id || "").trim();
+        (byHub[id] || []).forEach((p, i) => {
+          if (!p?.title) return;
+          lines.push(`${id}::${i}::${String(p.title).slice(0, 80)}`);
+        });
+      });
+      if (!lines.length) {
+        alert(t("blockProductPickerEmpty"));
+        return;
+      }
+      const choice = window.prompt(t("blockProductPickerPrompt") + "\n\n" + lines.slice(0, 40).join("\n"));
+      if (!choice) return;
+      const m = choice.match(/^([^:]+)::(\d+)::/);
+      let hubId;
+      let idx;
+      if (m) {
+        hubId = m[1];
+        idx = Number(m[2]);
+      } else {
+        const hit = lines.find((ln) => ln.toLowerCase().includes(choice.trim().toLowerCase()));
+        if (!hit) return;
+        const parts = hit.split("::");
+        hubId = parts[0];
+        idx = Number(parts[1]);
+      }
+      const prod = (byHub[hubId] || [])[idx];
+      if (!prod) return;
+      onPick({
+        title: prod.title || "",
+        image: prod.image || "",
+        imageAlt: prod.imageAlt || prod.title || "",
+        description: prod.description || "",
+        pros: prod.pros || [],
+        cons: prod.cons || [],
+        verdict: prod.verdict || "",
+        links: catalogProductLinks(prod),
+      });
+    } catch {
+      alert(t("blockProductPickerFail"));
+    }
+  }
+
   /** Starter stack for article types 1–6 */
   function starterBlocks(articleType) {
     const n = Number(articleType) || 2;
@@ -485,6 +609,16 @@ window.PK_BLOCKS = (function () {
       emit();
     }
 
+    function duplicateAt(i) {
+      readDomIntoList();
+      const src = list[i];
+      if (!src) return;
+      const copy = deepCloneBlock(src);
+      list.splice(i + 1, 0, copy);
+      paint({ skipDomRead: true });
+      emit();
+    }
+
     function add(type, afterIndex) {
       const b = createBlock(type);
       if (afterIndex == null || afterIndex < 0) list.push(b);
@@ -736,6 +870,7 @@ window.PK_BLOCKS = (function () {
                 </div>
               </div>
               <div class="field"><label>${esc(t("labelVerdict"))}</label><textarea data-f="verdict" rows="2" placeholder="${esc(t("hintVerdict"))}">${esc(b.verdict || "")}</textarea></div>
+              <button type="button" class="btn btn-ghost btn-xs" data-pick-product>${esc(t("blockPickFromProducts"))}</button>
               ${linksEditor(b.links)}
             </div>
           </div>`;
@@ -743,6 +878,7 @@ window.PK_BLOCKS = (function () {
           return `<div class="cta-edit cta-edit--${variantOf(b)}">
             <div class="field"><label>${esc(t("blockCtaTitle"))}</label><input data-f="title" value="${esc(b.title || "")}" placeholder="Ready to buy?"></div>
             <div class="cta-style-preview" aria-hidden="true"><span class="pk-aff-btn pk-aff-btn--${variantOf(b)}">${esc(t("blockCtaPreview"))}</span></div>
+            <button type="button" class="btn btn-ghost btn-xs" data-pick-product>${esc(t("blockPickFromProducts"))}</button>
             ${linksEditor(b.links)}
           </div>`;
         case "faq": {
@@ -829,6 +965,7 @@ window.PK_BLOCKS = (function () {
       };
       const up = esc(t("blockMoveUp"));
       const down = esc(t("blockMoveDown"));
+      const dup = esc(t("blockDuplicate"));
       const del = esc(t("btnDeletePin"));
       container.innerHTML =
         `<div class="blocks-canvas"><div class="blocks-doc">` +
@@ -842,6 +979,7 @@ window.PK_BLOCKS = (function () {
               <span class="block-kind">${esc(typeLabel(b.type))}</span>
               ${variantPicker(b)}
               <div class="block-tools">
+                <button type="button" class="block-tool" data-dup="${i}" title="${dup}" aria-label="${dup}">⧉</button>
                 <button type="button" class="block-tool" data-up="${i}" title="${up}" aria-label="${up}" ${i === 0 ? "disabled" : ""}>↑</button>
                 <button type="button" class="block-tool" data-down="${i}" title="${down}" aria-label="${down}" ${i === list.length - 1 ? "disabled" : ""}>↓</button>
                 <button type="button" class="block-tool block-tool-del" data-del="${i}" title="${del}" aria-label="${del}">×</button>
@@ -887,6 +1025,9 @@ window.PK_BLOCKS = (function () {
           readDomIntoList();
           removeAt(Number(btn.getAttribute("data-del")));
         });
+      });
+      container.querySelectorAll("[data-dup]").forEach((btn) => {
+        btn.addEventListener("click", () => duplicateAt(Number(btn.getAttribute("data-dup"))));
       });
       container.querySelectorAll("[data-add-type]").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -963,6 +1104,20 @@ window.PK_BLOCKS = (function () {
             emit();
           });
         }
+
+        card.querySelector("[data-pick-product]")?.addEventListener("click", () => {
+          readDomIntoList();
+          pickProductFromCatalog((picked) => {
+            if (b.type === "product") {
+              Object.assign(b, picked);
+            } else if (b.type === "cta") {
+              b.title = picked.title || b.title;
+              b.links = picked.links || b.links;
+            }
+            paint({ skipDomRead: true });
+            emit();
+          });
+        });
 
         card.querySelector("[data-link-add]")?.addEventListener("click", () => {
           readDomIntoList();
@@ -1057,6 +1212,8 @@ window.PK_BLOCKS = (function () {
   return {
     CATALOG,
     createBlock,
+    deepCloneBlock,
+    templateBlocks,
     starterBlocks,
     ensureBlocks,
     migrateFromBodyHtml,

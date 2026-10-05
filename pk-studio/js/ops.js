@@ -37,6 +37,21 @@
     if (kind) el.classList.add(kind);
   }
 
+  function canWriteOps() {
+    return window.PK_STUDIO?.canWrite?.() !== false;
+  }
+
+  /** Optional snapshot name before publish (D2). undefined = user cancelled. */
+  function promptSnapshotLabel(mod) {
+    const hint = (t("snapshotLabelPrompt") || "Snapshot name for {mod} (optional):").replace(
+      "{mod}",
+      mod || ""
+    );
+    const v = window.prompt(hint, "");
+    if (v === null) return undefined;
+    return String(v).trim();
+  }
+
   /* —— Publish —— */
   async function loadPublish() {
     setPill("#publish-status", t("loading"), null);
@@ -88,7 +103,9 @@
       });
       const data = await res.json();
       const ready = (data.drafts || []).filter(
-        (d) => d.status === "seo_ready" || d.status === "published"
+        (d) =>
+          (d.status === "seo_ready" || d.status === "published") &&
+          d.status !== "archived"
       );
 
       const artLabel =
@@ -154,16 +171,21 @@
         dryRunModule(btn.getAttribute("data-dry-run-mod"), btn)
       )
     );
-    wrap.querySelectorAll("[data-publish-mod]").forEach((btn) =>
+    wrap.querySelectorAll("[data-publish-mod]").forEach((btn) => {
+      btn.disabled = !canWriteOps();
       btn.addEventListener("click", () =>
         publishModule(btn.getAttribute("data-publish-mod"), btn)
-      )
-    );
-    wrap.querySelectorAll("[data-publish-slug]").forEach((btn) =>
+      );
+    });
+    wrap.querySelectorAll("[data-publish-slug]").forEach((btn) => {
+      btn.disabled = !canWriteOps();
       btn.addEventListener("click", () =>
         publishSlug(btn.getAttribute("data-publish-slug"), btn)
-      )
-    );
+      );
+    });
+    wrap.querySelectorAll("[data-dry-run-mod]").forEach((btn) => {
+      /* dry-run is read-only */
+    });
 
     await loadSnapshots();
   }
@@ -212,6 +234,10 @@
 
   async function publishModule(mod, btn) {
     if (!mod) return;
+    if (!canWriteOps()) {
+      setPill("#publish-status", t("viewerReadOnly"), "warn");
+      return;
+    }
     // A-04 + D1: preflight + dry-run file list before publish
     try {
       setPill("#publish-status", t("publishLoadingDraft") || "Loading draft…", null);
@@ -272,6 +298,10 @@
         (dry.note ? "\n\n" + dry.note : "");
       if (!confirm(msg)) return;
 
+      const snapLabel = promptSnapshotLabel(mod);
+      if (snapLabel === undefined) return;
+      if (snapLabel) publishBody.snapshotLabel = snapLabel;
+
       if (btn) btn.disabled = true;
       setPill("#publish-status", t("publishing"), null);
       const res = await apiFetch("/api/publish/" + mod, {
@@ -305,12 +335,20 @@
 
   async function publishSlug(slug, btn) {
     if (!slug) return;
+    if (!canWriteOps()) {
+      setPill("#publish-status", t("viewerReadOnly"), "warn");
+      return;
+    }
+    const snapLabel = promptSnapshotLabel("article:" + slug);
+    if (snapLabel === undefined) return;
+    const body = { slug };
+    if (snapLabel) body.snapshotLabel = snapLabel;
     if (btn) btn.disabled = true;
     setPill("#publish-status", t("publishing"), null);
     try {
       const res = await apiFetch("/api/publish/article",{
         method: "POST",
-        body: JSON.stringify({ slug }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -353,12 +391,17 @@
         '<div class="snapshot-list">' +
         rows
           .map((s) => {
+            const counts = [];
+            if (s.file_count != null) counts.push(String(s.file_count) + " files");
+            if (s.commit_count != null) counts.push(String(s.commit_count) + " commits");
+            const countStr = counts.length ? " \u00b7 " + escapeHtml(counts.join(", ")) : "";
             const label =
               "#" +
               s.id +
               " \u00b7 " +
               escapeHtml(s.module) +
-              (s.detail ? " \u2014 " + escapeHtml(s.detail) : "");
+              (s.detail ? " \u2014 " + escapeHtml(s.detail) : "") +
+              countStr;
             return (
               '<div class="snapshot-row">' +
                 '<div class="snapshot-row__meta">' +
@@ -373,7 +416,21 @@
                   '<button type="button" class="btn btn-primary btn-sm"' +
                   ' data-rollback-id="' +
                   s.id +
-                  '">' +
+                  '"' +
+                  ' data-snap-module="' +
+                  escapeHtml(s.module || "") +
+                  '"' +
+                  ' data-snap-detail="' +
+                  escapeHtml(s.detail || "") +
+                  '"' +
+                  ' data-snap-ts="' +
+                  escapeHtml(s.created_at || "") +
+                  '"' +
+                  ' data-snap-files="' +
+                  (s.file_count != null ? String(s.file_count) : "") +
+                  '"' +
+                  (canWriteOps() ? "" : " disabled") +
+                  ">" +
                   cta +
                   "</button>" +
                 "</div>" +
@@ -394,7 +451,27 @@
 
   async function doRollback(id, btn) {
     if (!id) return;
-    if (!confirm(t("confirmRollback"))) return;
+    if (!canWriteOps()) {
+      setPill("#publish-status", t("viewerReadOnly"), "warn");
+      return;
+    }
+    const mod = btn?.getAttribute("data-snap-module") || "";
+    const detail = btn?.getAttribute("data-snap-detail") || "";
+    const ts = btn?.getAttribute("data-snap-ts") || "";
+    const filesRaw = btn?.getAttribute("data-snap-files") || "";
+    const filesLabel = filesRaw
+      ? filesRaw + " files"
+      : t("rollbackFilesUnknown") || "n/a";
+    // Optional note shown in confirm only (API rollback keeps original snapshot detail).
+    const note = promptSnapshotLabel(mod || "rollback");
+    if (note === undefined) return;
+    const detailShown = note ? (detail ? note + " · " + detail : note) : detail || "—";
+    const confirmMsg = (t("confirmRollbackDetail") || t("confirmRollback"))
+      .replace("{module}", mod || "—")
+      .replace("{detail}", detailShown)
+      .replace("{date}", ts || "—")
+      .replace("{files}", filesLabel);
+    if (!confirm(confirmMsg)) return;
     if (btn) btn.disabled = true;
     setPill("#publish-status", t("rollbackInProgress"), null);
     try {
@@ -413,12 +490,11 @@
         );
         return;
       }
-      setPill(
-        "#publish-status",
-        t("rollbackOk").replace("{mod}", data.module || "") +
-          (data.note ? " \u2014 " + data.note : ""),
-        "ok"
-      );
+      const okMsg =
+        t("rollbackOk").replace("{mod}", data.module || mod) +
+        (data.note ? " \u2014 " + data.note : "");
+      setPill("#publish-status", okMsg, "ok");
+      window.PK_STUDIO?.toast?.(okMsg);
       await loadPublish();
       await loadAuditInto("#publish-audit");
     } catch (err) {
@@ -449,6 +525,7 @@
             <span class="pill ok">${escapeHtml(t("statusPublished"))}: ${ac.published || 0}</span>
             <span class="pill">${escapeHtml(t("statusSeoReady"))}: ${ac.seo_ready || 0}</span>
             <span class="pill warn">${escapeHtml(t("statusDraft"))}: ${ac.draft || 0}</span>
+            <span class="pill">${escapeHtml(t("dashMediaCount"))}: ${data.mediaCount ?? 0}</span>
           </div>
           <p class="hint" style="margin-top:8px">${escapeHtml(t("articlesTitle"))}: ${data.totalArticles || 0}</p>
         </div>`;
@@ -646,9 +723,13 @@
           <button type="button" class="btn btn-ghost btn-sm" data-media-copy-md="${keyEnc}" style="width:auto">${escapeHtml(
             t("btnCopyMarkdown")
           )}</button>
-          <button type="button" class="btn btn-ghost btn-sm" data-media-del="${keyEnc}" style="width:auto">${escapeHtml(
-            t("btnDeleteMedia")
-          )}</button>
+          ${
+            canWriteOps()
+              ? `<button type="button" class="btn btn-ghost btn-sm" data-media-del="${keyEnc}" style="width:auto">${escapeHtml(
+                  t("btnDeleteMedia")
+                )}</button>`
+              : ""
+          }
           </div>
         </div>`;
       })
@@ -674,6 +755,10 @@
 
   async function uploadMedia(file, opts = {}) {
     if (!file) return null;
+    if (!canWriteOps()) {
+      setPill("#media-status", t("viewerReadOnly"), "warn");
+      return null;
+    }
     if (!opts.skipStatus) setPill("#media-status", t("uploading"), null);
     try {
       const preferred = String(file.name || "upload")
@@ -699,6 +784,10 @@
   }
 
   async function uploadMediaBatch(fileList) {
+    if (!canWriteOps()) {
+      setPill("#media-status", t("viewerReadOnly"), "warn");
+      return;
+    }
     const list = Array.from(fileList || []).filter((f) => f && f.type.startsWith("image/"));
     if (!list.length) {
       setPill("#media-status", t("uploadBadFormat"), "warn");
@@ -818,6 +907,10 @@
 
   async function deleteMedia(key, btn) {
     if (!key) return;
+    if (!canWriteOps()) {
+      setPill("#media-status", t("viewerReadOnly"), "warn");
+      return;
+    }
     const usages = await findMediaDraftUsages(key);
     if (usages.length) {
       const list = usages.map((u) => "• " + u).join("\n");
@@ -987,24 +1080,42 @@
       return;
     }
     const total = links.length;
-    const batch = links.slice(0, 20);
-    setPill(
-      "#seo-status",
-      t("seoCheckingBatch").replace("{n}", String(batch.length)).replace("{total}", String(total)),
-      null
-    );
-    const res = await apiFetch("/api/links/check",{
-      method: "POST",
-      body: JSON.stringify({ links: batch }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      setPill("#seo-status", data.error || t("seoCheckFail"), "warn");
-      return;
+    // API handleLinkCheck caps at 20 per request (SSRF safety) — must match.
+    const chunkSize = 20;
+    const batches = [];
+    for (let i = 0; i < links.length; i += chunkSize) {
+      batches.push(links.slice(i, i + chunkSize));
     }
-    const rows = data.results || [];
-    const bad = rows.filter((r) => !r.ok);
-    $("#seo-results").innerHTML = rows
+    const allRows = [];
+    let badTotal = 0;
+    let checkedSoFar = 0;
+    for (let bi = 0; bi < batches.length; bi++) {
+      const batch = batches[bi];
+      const from = checkedSoFar + 1;
+      const to = Math.min(checkedSoFar + batch.length, total);
+      setPill(
+        "#seo-status",
+        (t("seoCheckingBatch") || "Checking {n} of {total}…")
+          .replace("{n}", String(from) + "–" + String(to))
+          .replace("{total}", String(total)),
+        null
+      );
+      const res = await apiFetch("/api/links/check", {
+        method: "POST",
+        body: JSON.stringify({ links: batch }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setPill("#seo-status", data.error || t("seoCheckFail"), "warn");
+        return;
+      }
+      const rows = data.results || [];
+      allRows.push(...rows);
+      badTotal += rows.filter((r) => !r.ok).length;
+      checkedSoFar += rows.length;
+      void from;
+    }
+    $("#seo-results").innerHTML = allRows
       .map(
         (r) =>
           `<li class="${r.ok ? "gate-ok" : "gate-block"}">${escapeHtml(r.url)} \u2192 ${
@@ -1012,13 +1123,25 @@
           } (${r.status})${r.error ? " " + escapeHtml(r.error) : ""}</li>`
       )
       .join("");
+    const checked = allRows.length;
     const okMsg =
-      bad.length === 0
+      badTotal === 0
         ? t("seoAllOkChecked")
-            .replace("{n}", String(batch.length))
+            .replace("{n}", String(checked))
             .replace("{total}", String(total))
-        : t("seoBrokenCount").replace("{n}", String(bad.length));
-    setPill("#seo-status", okMsg, bad.length ? "warn" : "ok");
+        : t("seoBrokenCount").replace("{n}", String(badTotal)) +
+          " \u00b7 " +
+          t("seoAllOkChecked").replace("{n}", String(checked)).replace("{total}", String(total));
+    setPill("#seo-status", okMsg, badTotal ? "warn" : "ok");
+  }
+
+  /** Non-blocking link recount after module save (D3). */
+  async function softReloadSeoLinks() {
+    try {
+      await loadSeo();
+    } catch {
+      /* ignore */
+    }
   }
 
   /* —— Team —— */
@@ -1048,9 +1171,12 @@
         list.innerHTML = admins.length
           ? admins
               .map((a) => {
-                const badge = a.is_owner
-                  ? `<span class="pill" style="margin-left:6px">${escapeHtml(t("teamOwnerBadge"))}</span>`
-                  : `<span class="pill" style="margin-left:6px">${escapeHtml(t("teamAdminBadge"))}</span>`;
+                const roleKey = a.is_owner ? "teamOwnerBadge" : `teamRole_${a.role || "admin"}`;
+                const roleLabel =
+                  roleKey === "teamOwnerBadge"
+                    ? t("teamOwnerBadge")
+                    : t(roleKey) || String(a.role || "admin");
+                const badge = `<span class="pill" style="margin-left:6px">${escapeHtml(roleLabel)}</span>`;
                 const removeBtn =
                   isOwner && !a.is_owner
                     ? ` <button type="button" class="btn btn-ghost btn-sm" data-team-remove="${escapeHtml(
@@ -1140,6 +1266,7 @@
   }
 
   window.PK_OPS = {
+    softReloadSeoLinks,
     async openPublish() {
       await loadPublish();
       await loadAuditInto("#publish-audit");

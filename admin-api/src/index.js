@@ -13,6 +13,9 @@ import {
   planHomePublish,
   buildHomePreviewHtml,
   loadHomeTemplateHtml,
+  assertLatestReviewsCount,
+  LATEST_REVIEWS_MIN,
+  LATEST_REVIEWS_MAX,
 } from "./publish_home.js";
 import {
   publishPinsDraft,
@@ -75,6 +78,9 @@ export default {
         if (request.method === "DELETE") {
           const fileUser = await userFromToken(request, env);
           if (!fileUser) return cors(json({ error: "unauthorized" }, 401), request);
+          if (!canWrite(fileUser)) {
+            return cors(json({ error: "forbidden", hint: "viewer_read_only" }, 403), request);
+          }
           return cors(await handleMediaDelete(url.pathname, env, fileUser), request);
         }
         return cors(await handleMediaGet(url.pathname, env), request);
@@ -113,6 +119,8 @@ export default {
 
       if (url.pathname === "/api/publish/article" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        const fw = forbidWrite(user);
+        if (fw) return cors(fw, request);
         return cors(await handlePublishArticle(env, await readJson(request), user), request);
       }
 
@@ -158,6 +166,9 @@ export default {
 
       if (url.pathname === "/api/publish/home" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        if (!canPublish(user)) {
+          return cors(json({ error: "forbidden", hint: "viewer_read_only" }, 403), request);
+        }
         return cors(
           await handlePublishModule(env, "home", user, publishHomeDraft, await readJson(request)),
           request
@@ -165,6 +176,9 @@ export default {
       }
       if (url.pathname === "/api/publish/pins" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        if (!canPublish(user)) {
+          return cors(json({ error: "forbidden", hint: "viewer_read_only" }, 403), request);
+        }
         return cors(
           await handlePublishModule(env, "pins", user, publishPinsDraft, await readJson(request)),
           request
@@ -172,6 +186,9 @@ export default {
       }
       if (url.pathname === "/api/publish/products" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        if (!canPublish(user)) {
+          return cors(json({ error: "forbidden", hint: "viewer_read_only" }, 403), request);
+        }
         return cors(
           await handlePublishModule(
             env,
@@ -191,6 +208,9 @@ export default {
 
       if (url.pathname === "/api/publish/rollback" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        if (!canPublish(user)) {
+          return cors(json({ error: "forbidden", hint: "viewer_read_only" }, 403), request);
+        }
         return cors(await handleRollback(env, await readJson(request), user), request);
       }
 
@@ -233,6 +253,9 @@ export default {
 
       if (url.pathname === "/api/media/upload" && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        if (!canWrite(user)) {
+          return cors(json({ error: "forbidden", hint: "viewer_read_only" }, 403), request);
+        }
         return cors(await handleMediaUpload(request, env, user), request);
       }
 
@@ -242,6 +265,9 @@ export default {
           return cors(await getDraft(env, "home", `${RAW_CONTENT}/home.json`), request);
         }
         if (request.method === "POST") {
+          if (!canWrite(user)) {
+            return cors(json({ error: "forbidden", hint: "viewer_read_only" }, 403), request);
+          }
           return cors(await saveDraft(env, "home", await readJson(request), user), request);
         }
       }
@@ -252,6 +278,9 @@ export default {
           return cors(await getDraft(env, "pins", `${RAW_CONTENT}/pins.json`), request);
         }
         if (request.method === "POST") {
+          if (!canWrite(user)) {
+            return cors(json({ error: "forbidden", hint: "viewer_read_only" }, 403), request);
+          }
           return cors(await saveDraft(env, "pins", await readJson(request), user), request);
         }
       }
@@ -265,6 +294,9 @@ export default {
           );
         }
         if (request.method === "POST") {
+          if (!canWrite(user)) {
+            return cors(json({ error: "forbidden", hint: "viewer_read_only" }, 403), request);
+          }
           return cors(
             await saveDraft(env, "products", await readJson(request), user),
             request
@@ -279,6 +311,9 @@ export default {
           return cors(await listArticleDrafts(env), request);
         }
         if (request.method === "POST") {
+          if (!canWrite(user)) {
+            return cors(json({ error: "forbidden", hint: "viewer_read_only" }, 403), request);
+          }
           return cors(await saveArticleDraft(env, await readJson(request), user), request);
         }
       }
@@ -414,9 +449,16 @@ async function saveDraft(env, key, payload, user) {
     return json({ error: "invalid_payload" }, 400);
   }
   if (key === "home") {
-    const reviews = payload.latestReviews;
-    if (!Array.isArray(reviews) || reviews.length !== 4) {
-      return json({ error: "latestReviews_must_be_4" }, 400);
+    try {
+      assertLatestReviewsCount(payload.latestReviews);
+    } catch {
+      return json(
+        {
+          error: "latestReviews_invalid_count",
+          hint: `Need ${LATEST_REVIEWS_MIN}..${LATEST_REVIEWS_MAX} latest review cards`,
+        },
+        400
+      );
     }
   }
   if (key === "pins" && !Array.isArray(payload.pins)) {
@@ -783,7 +825,9 @@ async function handlePublishModule(env, key, user, publisher, body = {}) {
     )
       .bind(user.login, `publish_${key}`, hubId ? `${key}:${hubId}` : key)
       .run();
-    await recordSnapshot(env, key, hubId ? `${key}:${hubId}` : key, result.commits, user, draft);
+    const snapFallback = hubId ? `${key}:${hubId}` : key;
+    const snapDetail = composeSnapshotDetail(body, snapFallback);
+    await recordSnapshot(env, key, snapDetail, result.commits, user, draft);
     return json(result);
   } catch (err) {
     return json({ error: "publish_failed", detail: String(err?.message || err) }, 500);
@@ -792,20 +836,48 @@ async function handlePublishModule(env, key, user, publisher, body = {}) {
 
 async function handleSnapshotsList(env) {
   try {
-    const { results } = await env.DB.prepare(
-      `SELECT id, module, detail, commit_shas, created_at, created_by
-       FROM publish_snapshots ORDER BY id DESC LIMIT 5`
-    ).all();
-    const snapshots = (results || []).map((r) => ({
-      ...r,
-      commit_shas: (() => {
+    let results = [];
+    try {
+      const r = await env.DB.prepare(
+        `SELECT id, module, detail, commit_shas, payload_json, created_at, created_by
+         FROM publish_snapshots ORDER BY id DESC LIMIT 5`
+      ).all();
+      results = r.results || [];
+    } catch {
+      const r = await env.DB.prepare(
+        `SELECT id, module, detail, commit_shas, created_at, created_by
+         FROM publish_snapshots ORDER BY id DESC LIMIT 5`
+      ).all();
+      results = r.results || [];
+    }
+    const snapshots = (results || []).map((r) => {
+      const commit_shas = (() => {
         try {
           return JSON.parse(r.commit_shas);
         } catch {
           return [];
         }
-      })(),
-    }));
+      })();
+      let fileCount = null;
+      if (r.payload_json) {
+        try {
+          const draft = JSON.parse(r.payload_json);
+          fileCount = snapshotPayloadFileCount(r.module, draft);
+        } catch {
+          fileCount = null;
+        }
+      }
+      return {
+        id: r.id,
+        module: r.module,
+        detail: r.detail,
+        created_at: r.created_at,
+        created_by: r.created_by,
+        commit_shas,
+        commit_count: commit_shas.length,
+        file_count: fileCount,
+      };
+    });
     return json({ snapshots });
   } catch {
     return json({
@@ -966,9 +1038,17 @@ async function handleStatus(env) {
     }));
   } catch {}
 
+  let mediaCount = 0;
+  try {
+    const mc = await env.DB.prepare(`SELECT COUNT(*) AS n FROM media_files`).first();
+    mediaCount = Number(mc?.n) || 0;
+  } catch {}
+
   return json({
     articleCounts: statusCounts,
     totalArticles: Object.values(statusCounts).reduce((a, b) => a + b, 0),
+    draftCount: statusCounts.draft || 0,
+    mediaCount,
     moduleDrafts,
     recentAudit,
     recentSnapshots,
@@ -1101,12 +1181,13 @@ async function handlePreviewHome(env, body, user) {
       return json({ error: "draft_corrupt" }, 500);
     }
   }
-  const reviews = draft.latestReviews;
-  if (!Array.isArray(reviews) || reviews.length !== 4) {
+  try {
+    assertLatestReviewsCount(draft.latestReviews);
+  } catch {
     return json(
       {
-        error: "latestReviews_must_be_4",
-        hint: "Home offline preview needs exactly 4 latest review cards",
+        error: "latestReviews_invalid_count",
+        hint: `Home offline preview needs ${LATEST_REVIEWS_MIN}..${LATEST_REVIEWS_MAX} latest review cards`,
       },
       400
     );
@@ -1284,14 +1365,15 @@ async function handlePublishArticle(env, body, user) {
     .first();
   if (!row?.json) return json({ error: "draft_not_found" }, 404);
   const draft = JSON.parse(row.json);
-  if (draft.status !== "seo_ready" && draft.status !== "published") {
+  const st = String(draft.status || "").trim();
+  if (st !== "seo_ready" && st !== "published" && st !== "archived") {
     return json(
       { error: "not_seo_ready", hint: "Mark SEO ready in Articles wizard first" },
       400
     );
   }
   const gate = validateArticleDraft(draft);
-  if (!gate.ok) {
+  if (!gate.ok && st !== "archived") {
     return json(
       { error: "seo_gate_failed", blockers: gate.blockers, warnings: gate.warnings },
       400
@@ -1313,7 +1395,8 @@ async function handlePublishArticle(env, body, user) {
     )
       .bind(user.login, slug)
       .run();
-    await recordSnapshot(env, "article", slug, result.commits, user, draft);
+    const snapDetail = composeSnapshotDetail(body, slug);
+    await recordSnapshot(env, "article", snapDetail, result.commits, user, draft);
     return json(result);
   } catch (err) {
     return json({ error: "publish_failed", detail: String(err?.message || err) }, 500);
@@ -1373,7 +1456,7 @@ async function handleLinkCheck(body) {
     return false;
   }
 
-  for (const raw of links.slice(0, 20)) {
+  for (const raw of links.slice(0, 50)) {
     const url = String(raw || "").trim();
     if (!url) continue;
     let parsed;
@@ -1519,8 +1602,8 @@ async function handleTeamInvite(env, body, actor) {
   if (password.length < 8) {
     return json({ error: "password_too_short", hint: "Min 8 characters" }, 400);
   }
-  if (!["admin"].includes(role)) {
-    return json({ error: "invalid_role", hint: "Allowed roles: admin" }, 400);
+  if (!["admin", "editor", "viewer"].includes(role)) {
+    return json({ error: "invalid_role", hint: "Allowed roles: admin, editor, viewer" }, 400);
   }
 
   const existing = await env.DB.prepare(`SELECT login FROM users WHERE login = ?`)
@@ -1624,6 +1707,46 @@ function ownerEnvCredentials(env) {
     login: String(env.OWNER_LOGIN || "").trim(),
     password: String(env.OWNER_PASSWORD || "").trim(),
   };
+}
+
+/* ── Role helpers (E1) ──────────────────────────────────────────────────── */
+function canWrite(user) {
+  if (!user) return false;
+  if (user.owner) return true;
+  const role = String(user.role || "admin").toLowerCase();
+  return role === "admin" || role === "editor";
+}
+
+function canPublish(user) {
+  return canWrite(user);
+}
+
+/** @returns {Response|null} 403 body when viewer */
+function forbidWrite(user) {
+  if (canWrite(user)) return null;
+  return json({ error: "forbidden", hint: "viewer_read_only" }, 403);
+}
+
+function composeSnapshotDetail(body, fallback) {
+  const label = String(body?.snapshotLabel || body?.snapshotDetail || "")
+    .trim()
+    .slice(0, 120);
+  const fb = String(fallback || "").trim();
+  if (label && fb) return `${label} · ${fb}`;
+  return label || fb;
+}
+
+function snapshotPayloadFileCount(module, payloadDraft) {
+  if (!payloadDraft || typeof payloadDraft !== "object") return null;
+  try {
+    if (module === "home") return (planHomePublish(payloadDraft).files || []).length;
+    if (module === "pins") return (planPinsPublish(payloadDraft).files || []).length;
+    if (module === "products") return (planProductsPublish(payloadDraft, {}).files || []).length;
+    if (module === "article") return 2;
+  } catch {
+    return null;
+  }
+  return null;
 }
 
 /* ── Owner check helper ─────────────────────────────────────────────────── */

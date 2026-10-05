@@ -159,8 +159,8 @@ def ensure_lab_base() -> Path:
 def main() -> None:
     data = load_json("home.json")
     reviews = data["latestReviews"]
-    if len(reviews) != 4:
-        raise SystemExit(f"latestReviews must be exactly 4, got {len(reviews)}")
+    if len(reviews) < 3 or len(reviews) > 6:
+        raise SystemExit(f"latestReviews must be 3..6, got {len(reviews)}")
 
     target = ensure_lab_base()
     html = target.read_text(encoding="utf-8", errors="replace")

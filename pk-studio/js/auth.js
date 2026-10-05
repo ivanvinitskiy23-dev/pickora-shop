@@ -117,5 +117,5 @@ window.PK_AUTH = (function () {
     return /workers\.dev$/.test(API) || API.includes("pickara-admin");
   }
 
-  return { API, getSession, login, logout, me, clearSession, isCloud, apiFetch };
+  return { API, getSession, setSession, login, logout, me, clearSession, isCloud, apiFetch };
 })();

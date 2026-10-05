@@ -9,6 +9,10 @@
   let productsData = null;
   let productsActiveHub = 0;
   let articles = [];
+  let homeSavedFp = "";
+  let pinsSavedFp = "";
+  let productsSavedFp = "";
+  let toastTimer = null;
 
   function t(key) {
     const pack = window.PK_I18N[lang] || window.PK_I18N.ru;
@@ -220,6 +224,37 @@
   }
 
   /* —— Home —— */
+  const HOME_REVIEWS_MIN = 3;
+  const HOME_REVIEWS_MAX = 6;
+
+  function isValidLatestReviewsCount(arr) {
+    return Array.isArray(arr) && arr.length >= HOME_REVIEWS_MIN && arr.length <= HOME_REVIEWS_MAX;
+  }
+
+  function emptyReviewSlot() {
+    return {
+      url: "",
+      title: "",
+      excerpt: "",
+      category: "",
+      image: "",
+      imageAlt: "",
+      badge: "none",
+      slug: "",
+    };
+  }
+
+  function ensureHomeReviewSlots() {
+    if (!homeData) return;
+    if (!Array.isArray(homeData.latestReviews)) homeData.latestReviews = [];
+    while (homeData.latestReviews.length < HOME_REVIEWS_MIN) {
+      homeData.latestReviews.push(emptyReviewSlot());
+    }
+    if (homeData.latestReviews.length > HOME_REVIEWS_MAX) {
+      homeData.latestReviews = homeData.latestReviews.slice(0, HOME_REVIEWS_MAX);
+    }
+  }
+
   function applyArticleToSlot(index, article) {
     if (!homeData?.latestReviews?.[index] || !article) return;
     const prev = homeData.latestReviews[index];
@@ -242,10 +277,39 @@
     renderHomeEditor();
   }
 
+  function renderHomeReviewsToolbar() {
+    if (!homeData) return;
+    const n = homeData.latestReviews.length;
+    const countEl = $("#home-reviews-count");
+    if (countEl) {
+      countEl.textContent = t("homeReviewsCountLabel")
+        .replace("{n}", String(n))
+        .replace("{max}", String(HOME_REVIEWS_MAX));
+    }
+    const addBtn = $("#btn-review-add");
+    if (addBtn) {
+      addBtn.disabled = !canWriteSession() || n >= HOME_REVIEWS_MAX;
+      if (!addBtn.dataset.bound) {
+        addBtn.dataset.bound = "1";
+        addBtn.addEventListener("click", () => {
+          if (!homeData || !canWriteSession()) return;
+          readHomeForm();
+          if (homeData.latestReviews.length >= HOME_REVIEWS_MAX) return;
+          homeData.latestReviews.unshift(emptyReviewSlot());
+          renderHomeEditor();
+          updateDirtyUi();
+        });
+      }
+    }
+  }
+
   function renderHomeEditor() {
     const wrap = $("#home-reviews");
     if (!wrap || !homeData) return;
+    ensureHomeReviewSlots();
+    renderHomeReviewsToolbar();
     const badges = ["none", "new", "hot", "updated", "must-read", "editors-pick"];
+    const canRemoveReview = homeData.latestReviews.length > HOME_REVIEWS_MIN;
 
     wrap.innerHTML = homeData.latestReviews
       .map((r, i) => {
@@ -262,7 +326,16 @@
         return `<div class="review-card panel" data-review-index="${i}">
           <div class="review-card-head">
             <h3>#${i + 1}</h3>
-            <span class="pill">${escapeAttr(r.category || "")}</span>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+              <span class="pill">${escapeAttr(r.category || "")}</span>
+              ${
+                canRemoveReview
+                  ? `<button type="button" class="btn btn-ghost btn-sm" data-review-del="${i}">${escapeAttr(
+                      t("btnRemoveReview")
+                    )}</button>`
+                  : ""
+              }
+            </div>
           </div>
           <div class="review-card-body">
             <div class="review-thumb-col">
@@ -324,6 +397,16 @@
       });
     });
 
+    $$("[data-review-del]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const idx = Number(btn.getAttribute("data-review-del"));
+        readHomeForm();
+        if (homeData.latestReviews.length <= HOME_REVIEWS_MIN) return;
+        homeData.latestReviews.splice(idx, 1);
+        renderHomeEditor();
+      });
+    });
+
     renderTopPicksEditor();
   }
 
@@ -348,9 +431,11 @@
         )}" placeholder="2026-10-03"></div>` +
       picks
         .map((p, i) => {
-          return `<div class="review-card panel top-pick-card" data-top-pick="${i}">
+          return `<div class="review-card panel top-pick-card" data-top-pick="${i}" draggable="true">
           <div class="review-card-head">
-            <h3>#${i + 1} ${escapeAttr(p.title || "Top pick")}</h3>
+            <h3 class="tp-drag-handle" title="${escapeAttr(t("topPickDragHint"))}">⋮⋮ #${i + 1} ${escapeAttr(
+              p.title || "Top pick"
+            )}</h3>
             <div style="display:flex;gap:6px;flex-wrap:wrap">
               <button type="button" class="btn btn-ghost btn-sm" data-tp-up="${i}" ${
                 i === 0 ? "disabled" : ""
@@ -473,7 +558,49 @@
       p.imageAlt = ensureAltFromTitle(p.imageAlt, p.title);
       renderTopPicksEditor();
     });
+    bindTopPicksDragDrop(wrap);
     bindBuyLinksEditor(wrap);
+  }
+
+  function bindTopPicksDragDrop(wrap) {
+    if (!wrap) return;
+    let dragFrom = null;
+    wrap.querySelectorAll(".top-pick-card[draggable]").forEach((card) => {
+      card.addEventListener("dragstart", (e) => {
+        dragFrom = Number(card.getAttribute("data-top-pick"));
+        card.classList.add("is-dragging");
+        if (e.dataTransfer) {
+          e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", String(dragFrom));
+        }
+      });
+      card.addEventListener("dragend", () => {
+        card.classList.remove("is-dragging");
+        wrap.querySelectorAll(".top-pick-card").forEach((c) => c.classList.remove("is-drag-over"));
+        dragFrom = null;
+      });
+      card.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+        card.classList.add("is-drag-over");
+      });
+      card.addEventListener("dragleave", () => card.classList.remove("is-drag-over"));
+      card.addEventListener("drop", (e) => {
+        e.preventDefault();
+        card.classList.remove("is-drag-over");
+        const from =
+          dragFrom != null
+            ? dragFrom
+            : Number(e.dataTransfer?.getData("text/plain"));
+        const to = Number(card.getAttribute("data-top-pick"));
+        if (!Number.isFinite(from) || !Number.isFinite(to) || from === to) return;
+        readTopPicksForm();
+        const arr = homeData.topPicks.picks;
+        const [item] = arr.splice(from, 1);
+        arr.splice(to, 0, item);
+        renderTopPicksEditor();
+      });
+    });
   }
 
   function readTopPicksForm() {
@@ -561,7 +688,9 @@
     if (!homeRes.ok || !artRes.ok) throw new Error("load_failed");
     homeData = await homeRes.json();
     articles = (await artRes.json()).articles || [];
+    ensureHomeReviewSlots();
     renderHomeEditor();
+    syncSavedFingerprints();
     applyI18n();
     show("home");
   }
@@ -577,6 +706,10 @@
   }
 
   async function saveHome() {
+    if (!canWriteSession()) {
+      toast(t("viewerReadOnly"));
+      return;
+    }
     const status = $("#home-status");
     const latestReviews = readHomeForm();
     const topPicks = readTopPicksForm();
@@ -616,6 +749,10 @@
       );
       return;
     }
+    if (!isValidLatestReviewsCount(latestReviews)) {
+      setStatus(status, t("homeReviewsCountInvalid"), "warn");
+      return;
+    }
     const res = await fetch(window.PK_AUTH.API + "/api/content/home", {
       method: "POST",
       headers: authHeaders(),
@@ -624,15 +761,16 @@
     });
     if (!res.ok) {
       setStatus(status, t("homeSaveFail"), "warn");
+      toast(t("homeSaveFail"));
       return;
     }
     homeData.latestReviews = latestReviews;
     homeData.topPicks = topPicks;
-    setStatus(
-      status,
-      window.PK_AUTH.isCloud?.() ? t("homeSavedCloud") : t("homeSaved"),
-      "ok"
-    );
+    const okMsg = window.PK_AUTH.isCloud?.() ? t("homeSavedCloud") : t("homeSaved");
+    setStatus(status, okMsg, "ok");
+    toast(okMsg);
+    syncSavedFingerprints();
+    window.PK_OPS?.softReloadSeoLinks?.();
   }
 
   /* —— Pins —— */
@@ -864,6 +1002,83 @@
       .filter((p) => p.name);
   }
 
+  function normalizeHubProduct(raw, hubId, index) {
+    const title = String(raw?.title || raw?.name || "").trim();
+    const links = normalizeBuyLinks(raw);
+    const amazonUrl =
+      links.find((l) => l.style === "amazon")?.url || links[0]?.url || raw?.amazonUrl || "";
+    const pros = Array.isArray(raw?.pros) ? raw.pros : linesToList(raw?.pros);
+    const cons = Array.isArray(raw?.cons) ? raw.cons : linesToList(raw?.cons);
+    const starsRaw = raw?.ratingStars;
+    const ratingStars =
+      starsRaw === 0 || starsRaw === "0" || starsRaw == null
+        ? 0
+        : Math.min(5, Math.max(0, Number(starsRaw) || 0));
+    return {
+      id: String(raw?.id || `${hubId}-${Date.now().toString(36)}-${index}`),
+      title,
+      image: raw?.image || "",
+      imageAlt: raw?.imageAlt || title,
+      description: raw?.description || "",
+      pros,
+      cons,
+      verdict: raw?.verdict || "",
+      amazonUrl,
+      links: links.length
+        ? links
+        : [{ label: "Amazon", url: amazonUrl || "", style: "amazon" }],
+      ratingStars,
+      hidden: !!raw?.hidden,
+    };
+  }
+
+  function parseBulkProductsInput(text, hubId) {
+    const trimmed = String(text || "").trim();
+    if (!trimmed) return [];
+    if (trimmed.startsWith("[")) {
+      const arr = JSON.parse(trimmed);
+      if (!Array.isArray(arr)) throw new Error("expected_array");
+      return arr.map((p, i) => normalizeHubProduct(p, hubId, i));
+    }
+    return textToProducts(trimmed).map((p, i) =>
+      normalizeHubProduct({ title: p.name, links: p.links, url: p.url }, hubId, i)
+    );
+  }
+
+  function applyBulkProductsToHub(hubId, items) {
+    if (!productsData || !hubId || !items.length) return 0;
+    ensureCategoryProducts();
+    const list = productsData.categoryProducts[hubId] || [];
+    productsData.categoryProducts[hubId] = [...items, ...list];
+    return items.length;
+  }
+
+  function renderAgentImportPreview(rows) {
+    const box = $("#products-import-preview");
+    if (!box) return;
+    if (!rows.length) {
+      box.innerHTML = `<p class="hint">${escapeAttr(t("productsImportPreviewEmpty"))}</p>`;
+      return;
+    }
+    box.innerHTML =
+      `<table class="import-preview-table"><thead><tr><th>#</th><th>${escapeAttr(
+        t("labelTitle")
+      )}</th><th>${escapeAttr(t("labelProductHidden"))}</th></tr></thead><tbody>` +
+      rows
+        .slice(0, 30)
+        .map(
+          (p, i) =>
+            `<tr><td>${i + 1}</td><td>${escapeAttr(p.title || "—")}</td><td>${
+              p.hidden ? "✓" : ""
+            }</td></tr>`
+        )
+        .join("") +
+      (rows.length > 30
+        ? `<tr><td colspan="3">… +${rows.length - 30}</td></tr>`
+        : "") +
+      `</tbody></table>`;
+  }
+
   function filterOptions(selected) {
     const filters = pinsData?.filters || [];
     return filters
@@ -956,7 +1171,9 @@
         const pinCount = pinsData.pins.length;
         return `<div class="review-card panel" data-pin-index="${i}">
           <div class="review-card-head">
-            <h3>#${p.id} · ${escapeAttr(p.title || "")}</h3>
+            <h3>#${p.id} · ${escapeAttr(p.title || "")}${
+              p.featured ? ` <span class="pill ok">${escapeAttr(t("pinFeaturedBadge"))}</span>` : ""
+            }</h3>
             <div style="display:flex;gap:6px;flex-wrap:wrap">
               <button type="button" class="btn btn-ghost btn-sm" data-pin-up="${i}" ${
                 i === 0 ? "disabled" : ""
@@ -994,6 +1211,10 @@
                 <textarea data-k="popupDesc" rows="3">${escapeAttr(p.popupDesc || "")}</textarea></div>
               <div class="field"><label>${escapeAttr(t("labelImageAlt"))}</label>
                 <input data-k="imageAlt" value="${escapeAttr(p.imageAlt || "")}"></div>
+              <label class="field-hint" style="display:inline-flex;align-items:center;gap:8px;margin:0;cursor:pointer">
+                <input type="checkbox" data-k="featured" ${p.featured ? "checked" : ""}>
+                <span>${escapeAttr(t("labelPinFeatured"))}</span>
+              </label>
               ${pinProductsEditorHtml(i, p.products)}
             </div>
           </div>
@@ -1107,6 +1328,7 @@
         if (!name && !links.length) return;
         products.push({ name, url, links });
       });
+      const featuredEl = card.querySelector('[data-k="featured"]');
       pinsData.pins[i] = {
         ...prev,
         title: get("title").trim() || prev.title,
@@ -1114,6 +1336,7 @@
         boardDesc: get("boardDesc").trim(),
         popupDesc: get("popupDesc").trim(),
         imageAlt: get("imageAlt").trim() || prev.imageAlt,
+        featured: featuredEl ? featuredEl.checked : !!prev.featured,
         products,
         image: prev.image,
         id: prev.id,
@@ -1176,11 +1399,16 @@
     if (!res.ok) throw new Error("load_failed");
     pinsData = await res.json();
     renderPinsEditor();
+    syncSavedFingerprints();
     applyI18n();
     show("pins");
   }
 
   async function savePins() {
+    if (!canWriteSession()) {
+      toast(t("viewerReadOnly"));
+      return;
+    }
     const status = $("#pins-status");
     readPinsForm();
     const bad = [];
@@ -1215,13 +1443,14 @@
     });
     if (!res.ok) {
       setStatus(status, t("pinsSaveFail"), "warn");
+      toast(t("pinsSaveFail"));
       return;
     }
-    setStatus(
-      status,
-      window.PK_AUTH.isCloud?.() ? t("pinsSavedCloud") : t("pinsSaved"),
-      "ok"
-    );
+    const okMsg = window.PK_AUTH.isCloud?.() ? t("pinsSavedCloud") : t("pinsSaved");
+    setStatus(status, okMsg, "ok");
+    toast(okMsg);
+    syncSavedFingerprints();
+    window.PK_OPS?.softReloadSeoLinks?.();
   }
 
   /* —— Products (sections + products) —— */
@@ -1316,9 +1545,12 @@
           p.ratingStars === 0 || p.ratingStars === "0" || p.ratingStars == null
             ? "0"
             : String(Math.min(5, Math.max(0, Number(p.ratingStars) || 0)));
-        return `<div class="product-item panel product-item--compact" data-product-index="${pi}">
+        const hiddenCls = p.hidden ? " product-item--hidden" : "";
+        return `<div class="product-item panel product-item--compact${hiddenCls}" data-product-index="${pi}">
               <div class="review-card-head">
-                <h4>${escapeAttr(t("labelProduct"))} #${pi + 1}</h4>
+                <h4>${escapeAttr(t("labelProduct"))} #${pi + 1}${
+                  p.hidden ? ` <span class="pill">${escapeAttr(t("productHiddenBadge"))}</span>` : ""
+                }</h4>
                 <div style="display:flex;gap:6px;flex-wrap:wrap">
                   <button type="button" class="btn btn-ghost btn-sm" data-product-up="${i}:${pi}" ${
                     pi === 0 ? "disabled" : ""
@@ -1349,6 +1581,10 @@
                   <p class="path-hint">${escapeAttr(p.image || "—")}</p>
                 </div>
                 <div class="review-fields">
+                  <label class="field-hint" style="display:inline-flex;align-items:center;gap:8px;margin:0 0 10px;cursor:pointer">
+                    <input type="checkbox" data-pk="hidden" ${p.hidden ? "checked" : ""}>
+                    <span>${escapeAttr(t("labelProductHidden"))}</span>
+                  </label>
                   <div class="field"><label>${escapeAttr(t("labelTitle"))}</label>
                     <input data-pk="title" value="${escapeAttr(p.title || "")}"></div>
                   ${buyLinksEditorHtml(normalizeBuyLinks(p), `data-product-links="${pi}"`)}
@@ -1631,8 +1867,8 @@
     if (!homeData) return;
     const status = $("#home-status");
     const latestReviews = readHomeForm();
-    if (!Array.isArray(latestReviews) || latestReviews.length !== 4) {
-      setStatus(status, t("homeOfflineNeedFour"), "warn");
+    if (!isValidLatestReviewsCount(latestReviews)) {
+      setStatus(status, t("homeReviewsCountInvalid"), "warn");
       return;
     }
     const topPicks = readTopPicksForm();
@@ -1731,6 +1967,7 @@
         const links = readBuyLinksFrom(pCard.querySelector(".buy-links"));
         const amazonUrl =
           links.find((l) => l.style === "amazon")?.url || links[0]?.url || pPrev.amazonUrl || "";
+        const hiddenEl = pCard.querySelector('[data-pk="hidden"]');
         list[pi] = {
           ...pPrev,
           title: gp("title").trim() || pPrev.title,
@@ -1744,6 +1981,7 @@
           image: pPrev.image,
           id: pPrev.id || `${newId}-${pi + 1}`,
           ratingStars,
+          hidden: hiddenEl ? hiddenEl.checked : !!pPrev.hidden,
         };
       });
       productsData.categoryProducts[oldId] = list;
@@ -1849,17 +2087,22 @@
     ensureCategoryProducts();
     productsActiveHub = 0;
     renderProductsEditor();
+    syncSavedFingerprints();
     applyI18n();
     show("products");
   }
 
   async function saveProducts() {
+    if (!canWriteSession()) {
+      toast(t("viewerReadOnly"));
+      return;
+    }
     const status = $("#products-status");
     readProductsForm();
     const bad = [];
     Object.values(productsData.categoryProducts || {}).forEach((list) => {
       (list || []).forEach((p) => {
-        if (!p || !p.title) return;
+        if (!p || !p.title || p.hidden) return;
         const links = normalizeBuyLinks(p).filter((l) => l.url);
         if (!links.length) {
           bad.push(p.title + " (no store link)");
@@ -1910,18 +2153,178 @@
     });
     if (!res.ok) {
       setStatus(status, t("productsSaveFail"), "warn");
+      toast(t("productsSaveFail"));
       return;
     }
-    setStatus(
-      status,
-      window.PK_AUTH.isCloud?.() ? t("productsSavedCloud") : t("productsSaved"),
-      "ok"
-    );
+    const okMsg = window.PK_AUTH.isCloud?.() ? t("productsSavedCloud") : t("productsSaved");
+    setStatus(status, okMsg, "ok");
+    toast(okMsg);
+    syncSavedFingerprints();
+    window.PK_OPS?.softReloadSeoLinks?.();
   }
+
+  function canWriteSession() {
+    const s = window.PK_AUTH?.getSession();
+    if (!s) return false;
+    if (s.owner) return true;
+    const role = String(s.role || "admin").toLowerCase();
+    return role === "admin" || role === "editor";
+  }
+
+  function toast(msg) {
+    const el = $("#pk-toast");
+    if (!el || !msg) return;
+    el.textContent = msg;
+    el.classList.add("is-visible");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove("is-visible"), 2000);
+  }
+
+  function captureHomeFp() {
+    if (!homeData) return "";
+    readHomeForm();
+    readTopPicksForm();
+    return JSON.stringify({ latestReviews: homeData.latestReviews, topPicks: homeData.topPicks });
+  }
+
+  function capturePinsFp() {
+    if (!pinsData) return "";
+    readPinsForm();
+    pinsData.shuffleOnLoad = $("#pins-shuffle-load")?.checked !== false;
+    return JSON.stringify({
+      filters: pinsData.filters,
+      pins: pinsData.pins,
+      shuffleOnLoad: pinsData.shuffleOnLoad,
+    });
+  }
+
+  function captureProductsFp() {
+    if (!productsData) return "";
+    readProductsForm();
+    const payload = productsDraftPayload();
+    delete payload.categoryProducts?._note;
+    return JSON.stringify(payload);
+  }
+
+  function isHomeDirty() {
+    return !!homeData && captureHomeFp() !== homeSavedFp;
+  }
+
+  function isPinsDirty() {
+    return !!pinsData && capturePinsFp() !== pinsSavedFp;
+  }
+
+  function isProductsDirty() {
+    return !!productsData && captureProductsFp() !== productsSavedFp;
+  }
+
+  function isAnyDirty() {
+    if (isHomeDirty() || isPinsDirty() || isProductsDirty()) return true;
+    if (window.PK_ARTICLES?.isDirty?.()) return true;
+    return false;
+  }
+
+  function syncSavedFingerprints() {
+    if (homeData) homeSavedFp = captureHomeFp();
+    if (pinsData) pinsSavedFp = capturePinsFp();
+    if (productsData) productsSavedFp = captureProductsFp();
+    updateDirtyUi();
+  }
+
+  function updateDirtyUi() {
+    const cw = canWriteSession();
+    const homeBtn = $("#btn-home-save");
+    if (homeBtn) homeBtn.disabled = !cw || !isHomeDirty();
+    const pinsBtn = $("#btn-pins-save");
+    if (pinsBtn) pinsBtn.disabled = !cw || !isPinsDirty();
+    const prodBtn = $("#btn-products-save");
+    if (prodBtn) prodBtn.disabled = !cw || !isProductsDirty();
+    window.PK_ARTICLES?.updateSaveButton?.();
+  }
+
+  function confirmLeaveIfDirty() {
+    if (!isAnyDirty()) return true;
+    return confirm(t("confirmLeaveDirty"));
+  }
+
+  function currentViewId() {
+    const view = $$(".studio-panel[data-view]").find((el) => !el.classList.contains("pk-hidden"));
+    return view?.getAttribute("data-view") || "dash";
+  }
+
+  async function saveCurrentView() {
+    if (!canWriteSession()) return;
+    const id = currentViewId();
+    if (id === "home") await saveHome();
+    else if (id === "pins") await savePins();
+    else if (id === "products") await saveProducts();
+    else if (id === "articles" && !$("#articles-wizard")?.classList.contains("pk-hidden")) {
+      const btn = $("#btn-article-save");
+      if (btn && !btn.disabled) btn.click();
+    }
+  }
+
+  function applyPermissionsUi() {
+    const s = window.PK_AUTH?.getSession();
+    const cw = canWriteSession();
+    const badge = $("#role-badge");
+    if (badge && s) {
+      let label = s.owner ? t("teamOwnerBadge") : t("teamRole_" + (s.role || "admin")) || s.role;
+      badge.textContent = label;
+      badge.classList.remove("pk-hidden");
+    }
+    const skipDirtySave = new Set([
+      "btn-home-save",
+      "btn-pins-save",
+      "btn-products-save",
+      "btn-article-save",
+    ]);
+    $$("[data-requires-write]").forEach((el) => {
+      if (skipDirtySave.has(el.id)) return;
+      if (el.tagName === "BUTTON" || el.tagName === "INPUT") el.disabled = !cw;
+    });
+    if (!cw) {
+      $("#media-dropzone")?.classList.add("pk-readonly");
+      $("#media-upload-input") && ($("#media-upload-input").disabled = true);
+    } else {
+      $("#media-dropzone")?.classList.remove("pk-readonly");
+      const up = $("#media-upload-input");
+      if (up) up.disabled = false;
+    }
+    updateDirtyUi();
+  }
+
+  async function loadDashStats() {
+    const box = $("#dash-stats");
+    if (!box) return;
+    try {
+      const res = await fetch(window.PK_AUTH.API + "/api/status", {
+        headers: authHeaders(false),
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!res.ok) return;
+      const ac = data.articleCounts || {};
+      box.innerHTML = `<span class="pill warn">${escapeHtml(t("statusDraft"))}: ${ac.draft || 0}</span>
+        <span class="pill">${escapeHtml(t("dashMediaCount"))}: ${data.mediaCount ?? 0}</span>`;
+    } catch {
+      /* optional */
+    }
+  }
+
+  function escapeHtml(s) {
+    return String(s ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  window.PK_STUDIO = { toast, canWrite: canWriteSession, isAnyDirty, updateDirtyUi };
 
   function openModule(name) {
     if (name === "Dash") {
       show("dash");
+      loadDashStats();
       return;
     }
     if (name === "Home") {
@@ -2037,13 +2440,23 @@
     }
     const who = $("#who-label");
     if (who) who.textContent = t("whoPrefix") + " " + me.user.login;
+    if (session?.token) {
+      window.PK_AUTH.setSession({
+        token: session.token,
+        login: me.user.login,
+        role: me.user.role,
+        owner: !!me.user.owner,
+      });
+    }
     const modePill = document.querySelector('[data-i18n="statusLocal"]');
     if (modePill && window.PK_AUTH.isCloud?.()) {
       modePill.textContent = t("statusCloud");
       modePill.classList.add("ok");
     }
+    applyPermissionsUi();
     updatePreviewLinks();
     show("dash");
+    loadDashStats();
   }
 
   function bind() {
@@ -2080,6 +2493,7 @@
       if (s && $("#who-label")) {
         $("#who-label").textContent = t("whoPrefix") + " " + s.login;
       }
+      applyPermissionsUi();
       const view = $$(".studio-panel[data-view]").find(
         (el) => !el.classList.contains("pk-hidden")
       );
@@ -2137,6 +2551,72 @@
     $("#btn-pin-add")?.addEventListener("click", () => addPin());
     $("#btn-hub-add")?.addEventListener("click", () => addHubSection());
 
+    $("#btn-products-bulk-apply")?.addEventListener("click", () => {
+      const status = $("#products-status");
+      if (!productsData) return;
+      readProductsForm();
+      clampProductsActiveHub();
+      const hub = productsData.hubCategories[productsActiveHub];
+      if (!hub?.id) return;
+      const text = $("#products-bulk-text")?.value || "";
+      try {
+        const items = parseBulkProductsInput(text, hub.id);
+        if (!items.length) {
+          setStatus(status, t("productsBulkEmpty"), "warn");
+          return;
+        }
+        const n = applyBulkProductsToHub(hub.id, items);
+        renderProductsEditor();
+        setStatus(status, t("productsBulkApplied").replace("{n}", String(n)), "ok");
+      } catch (err) {
+        setStatus(status, t("productsBulkParseFail") + (err?.message ? ": " + err.message : ""), "warn");
+      }
+    });
+
+    $("#btn-products-import-preview")?.addEventListener("click", () => {
+      const status = $("#products-status");
+      const text = $("#products-import-json")?.value || "";
+      try {
+        const pack = JSON.parse(text);
+        const hubId = String(pack?.hubId || "").trim();
+        const products = pack?.products;
+        if (!hubId || !Array.isArray(products)) throw new Error("invalid_pack");
+        const rows = products.map((p, i) => normalizeHubProduct(p, hubId, i));
+        renderAgentImportPreview(rows);
+        $("#products-import-pack").dataset.hubId = hubId;
+        $("#products-import-pack").dataset.previewCount = String(rows.length);
+        setStatus(status, t("productsImportPreviewOk").replace("{n}", String(rows.length)), "ok");
+      } catch (err) {
+        renderAgentImportPreview([]);
+        setStatus(status, t("productsImportParseFail"), "warn");
+      }
+    });
+
+    $("#btn-products-import-apply")?.addEventListener("click", () => {
+      const status = $("#products-status");
+      if (!productsData) return;
+      readProductsForm();
+      const text = $("#products-import-json")?.value || "";
+      try {
+        const pack = JSON.parse(text);
+        const hubId = String(pack?.hubId || "").trim();
+        const products = pack?.products;
+        if (!hubId || !Array.isArray(products)) throw new Error("invalid_pack");
+        const items = products.map((p, i) => normalizeHubProduct(p, hubId, i));
+        if (!items.length) {
+          setStatus(status, t("productsBulkEmpty"), "warn");
+          return;
+        }
+        const tabIdx = productsData.hubCategories.findIndex((h) => h.id === hubId);
+        if (tabIdx >= 0) productsActiveHub = tabIdx;
+        const n = applyBulkProductsToHub(hubId, items);
+        renderProductsEditor();
+        setStatus(status, t("productsImportApplied").replace("{n}", String(n)), "ok");
+      } catch {
+        setStatus(status, t("productsImportParseFail"), "warn");
+      }
+    });
+
     $("#btn-sidebar-toggle")?.addEventListener("click", () => {
       const sb = $("#studio-sidebar");
       const bd = $("#sidebar-backdrop");
@@ -2153,8 +2633,29 @@
     $$("[data-module]").forEach((btn) => {
       btn.addEventListener("click", () => {
         if (btn.disabled) return;
+        if (!confirmLeaveIfDirty()) return;
         openModule(btn.getAttribute("data-module"));
       });
+    });
+
+    $("#studio-content")?.addEventListener("input", () => updateDirtyUi());
+    $("#studio-content")?.addEventListener("change", () => updateDirtyUi());
+
+    window.addEventListener("beforeunload", (e) => {
+      if (isAnyDirty()) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+        e.preventDefault();
+        saveCurrentView();
+      }
+      if (e.key === "Escape" && $("#art-settings")?.classList.contains("is-open")) {
+        $("#btn-art-settings-close")?.click();
+      }
     });
   }
 

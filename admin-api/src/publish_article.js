@@ -245,6 +245,51 @@ export function upsertSitemapUrl(sitemapXml, path, lastmod) {
  * @param {string} cardHtml           - The <article>…</article> block to insert
  * @returns {string} Updated HTML
  */
+/**
+ * Remove hub card for a slug (soft archive / noindex republish).
+ * @param {string} articlesIndexHtml
+ * @param {string} slug
+ * @param {string} [canonical]
+ */
+export function removeHubCard(articlesIndexHtml, slug, canonical) {
+  const s = String(slug || "").trim();
+  if (!s || !articlesIndexHtml) return articlesIndexHtml;
+  const canon = String(canonical || `https://pickora.shop/${s}/`).trim();
+  const patterns = [
+    new RegExp(
+      `\\s*<article\\s+class="pk-card"[^>]*>[\\s\\S]*?href="${canon.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"[\\s\\S]*?</article>`,
+      "i"
+    ),
+    new RegExp(
+      `\\s*<article\\s+class="pk-card"[^>]*>[\\s\\S]*?href="/${s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/"[\\s\\S]*?</article>`,
+      "i"
+    ),
+    new RegExp(
+      `\\s*<article\\s+class="pk-card"[^>]*>[\\s\\S]*?href="https://pickora\\.shop/${s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/"[\\s\\S]*?</article>`,
+      "i"
+    ),
+  ];
+  let html = articlesIndexHtml;
+  for (const re of patterns) {
+    if (re.test(html)) {
+      html = html.replace(re, "");
+      break;
+    }
+  }
+  return html;
+}
+
+/**
+ * Remove sitemap entry for a path if present.
+ */
+export function removeSitemapUrl(sitemapXml, path) {
+  const normPath = "/" + String(path || "").replace(/^\/|\/$/g, "") + "/";
+  const fullUrl = `https://pickora.shop${normPath}`;
+  const escapedUrl = fullUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const blockRe = new RegExp(`\\s*<url>[\\s\\S]*?<loc>${escapedUrl}<\\/loc>[\\s\\S]*?<\\/url>`, "gi");
+  return String(sitemapXml || "").replace(blockRe, "");
+}
+
 export function prependHubCard(articlesIndexHtml, cardHtml) {
   const NEWLINE_CARD = "\n\n" + cardHtml + "\n";
 
@@ -451,7 +496,8 @@ export function buildArticlePage(draft, options = {}) {
   // Chips stay on hub cards only — never under the article hero on live pages.
 
   const pageTitle = preview ? `[Preview] ${title} – Pickora` : `${title} – Pickora`;
-  const robotsMeta = preview
+  const isArchived = String(draft.status || "").trim() === "archived";
+  const robotsMeta = preview || isArchived
     ? `<meta name="robots" content="noindex,nofollow">`
     : `<meta name="robots" content="max-image-preview:large">`;
   const baseTag = preview ? `<base href="https://pickora.shop/">\n` : "";
@@ -1258,6 +1304,8 @@ export async function publishArticleDraft(env, draft) {
   const today     = todayISO();
   const commits   = [];
   const urls      = [];
+  const isArchived = String(draft.status || "").trim() === "archived";
+  const includeInSitemap = draft.includeInSitemap !== false && !isArchived;
 
   // ── 1. Write content/articles/{slug}.json ──────────────────────────────────
   const jsonPath    = `content/articles/${slug}.json`;
@@ -1289,15 +1337,22 @@ export async function publishArticleDraft(env, draft) {
     hubHtml.includes(`href="/${slug}/"`) ||
     hubHtml.includes(`href="https://pickora.shop/${slug}/"`);
 
-  if (!alreadyLinked) {
-    const cardHtml    = buildArticlesHubCard(draft);
-    const updatedHub  = prependHubCard(hubHtml, cardHtml);
+  let updatedHub = hubHtml;
+  if (isArchived) {
+    updatedHub = removeHubCard(hubHtml, slug, canonical);
+  } else if (!alreadyLinked) {
+    const cardHtml = buildArticlesHubCard(draft);
+    updatedHub = prependHubCard(hubHtml, cardHtml);
+  }
 
+  if (updatedHub !== hubHtml) {
     const hubResult = await putFile(
       env,
       hubPath,
       updatedHub,
-      `publish(article): ${slug} — add hub card`,
+      isArchived
+        ? `publish(article): ${slug} — remove hub card (archived)`
+        : `publish(article): ${slug} — add hub card`,
       hubSha
     );
     commits.push(hubResult.commit.sha);
@@ -1308,7 +1363,12 @@ export async function publishArticleDraft(env, draft) {
   const sitemapPath = "sitemap.xml";
   const smFile = await getFile(env, sitemapPath);
   if (smFile) {
-    const updatedSitemap = upsertSitemapUrl(smFile.content, `/${slug}/`, today);
+    let updatedSitemap = smFile.content;
+    if (includeInSitemap) {
+      updatedSitemap = upsertSitemapUrl(updatedSitemap, `/${slug}/`, today);
+    } else {
+      updatedSitemap = removeSitemapUrl(updatedSitemap, `/${slug}/`);
+    }
 
     // Only write if content actually changed
     if (updatedSitemap !== smFile.content) {
@@ -1316,7 +1376,9 @@ export async function publishArticleDraft(env, draft) {
         env,
         sitemapPath,
         updatedSitemap,
-        `publish(article): ${slug} — sitemap`,
+        includeInSitemap
+          ? `publish(article): ${slug} — sitemap`
+          : `publish(article): ${slug} — sitemap skip/remove`,
         smFile.sha
       );
       commits.push(sitemapResult.commit.sha);

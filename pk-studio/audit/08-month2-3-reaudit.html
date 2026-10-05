@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Месяц 2–3 — re-audit</title>
+  <style>
+    :root { --ink:#0f172a; --muted:#475569; --line:#e2e8f0; --bg:#f8fafc; --ok:#047857; --warn:#b45309; }
+    body { margin:0; font:15px/1.55 "Segoe UI",system-ui,sans-serif; color:var(--ink); background:var(--bg); }
+    .wrap { max-width:920px; margin:0 auto; padding:32px 18px 80px; }
+    h1 { font-size:1.6rem; margin:0 0 8px; }
+    .dek { color:var(--muted); }
+    table { width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:16px 0; font-size:13.5px; }
+    th, td { border-bottom:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top; }
+    th { background:#f1f5f9; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+    .ok { color:var(--ok); font-weight:650; }
+    .warn { color:var(--warn); font-weight:650; }
+    code { font-family:ui-monospace,Consolas,monospace; font-size:.88em; background:#f1f5f9; padding:1px 5px; border-radius:4px; }
+    ul { padding-left:1.2em; }
+    a { color:#1d4ed8; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p><a href="./07-month2-3-plan.html">← План М2–3</a> · <a href="./index.html">Audit hub</a></p>
+    <h1>Re-audit Месяц 2 + 3</h1>
+    <p class="dek">Проход после имплементации. Цель: баги → фикс → ship.</p>
+
+    <h2>Acceptance map</h2>
+    <table>
+      <tr><th>Пакет</th><th>Статус</th><th>Доказательство</th></tr>
+      <tr><td>B1 search / dup / archive</td><td class="ok">OK</td><td><code>articles.js</code> draft search, duplicateDraft, setDraftArchived; publish_article removeHub/noindex</td></tr>
+      <tr><td>B2 blocks / templates / autosave</td><td class="ok">OK</td><td><code>blocks.js</code> templateBlocks + duplicateAt; autosave banner in wizard</td></tr>
+      <tr><td>B3 SEO cockpit</td><td class="ok">OK</td><td>meters, chips checkboxes, includeInSitemap, internal suggester</td></tr>
+      <tr><td>C3–C5 catalog</td><td class="ok">OK</td><td>bulk paste, product.hidden, pin.featured, home reviews 3–6, top picks drag</td></tr>
+      <tr><td>G import</td><td class="ok">OK</td><td>products JSON pack preview/apply</td></tr>
+      <tr><td>D2 rollback UX</td><td class="ok">OK</td><td>confirm detail + snapshot label + file counts</td></tr>
+      <tr><td>D3 links batch</td><td class="ok">OK</td><td>API slice 50 + client chunkSize 50 + progress i18n</td></tr>
+      <tr><td>E1 roles</td><td class="ok">OK</td><td>canWrite/canPublish/forbidWrite; invite editor/viewer; role-badge + data-requires-write</td></tr>
+      <tr><td>F polish</td><td class="ok">OK</td><td>toast, dirty Save, beforeunload, Ctrl+S, sticky actions</td></tr>
+    </table>
+
+    <h2>Bugs found &amp; fixed this pass</h2>
+    <ul>
+      <li class="ok">FIXED: orphan <code>#btn-review-add</code> / count after toolbar-only HTML — restored controls + bind-once click.</li>
+      <li class="ok">FIXED: API hard-4 → assert 3–6 in publish_home + content save + preview.</li>
+      <li class="ok">FIXED: duplicate draft-search / hide-archived IDs in index.html.</li>
+      <li class="ok">FIXED: missing canWrite helpers referenced by route guards.</li>
+      <li class="ok">FIXED: links check raised 20→50; seoOpsDek copy updated.</li>
+      <li class="ok">FIXED: duplicate i18n keys for leave/seo dek cleaned.</li>
+    </ul>
+
+    <h2>Residual risks (acceptable for ship)</h2>
+    <ul>
+      <li class="warn">A-20 public media GET remains by design.</li>
+      <li class="warn">Import HTML-only live articles without draft still out of scope.</li>
+      <li class="warn">Viewer dry-run allowed (read-like); actual Publish blocked.</li>
+    </ul>
+
+    <h2>Ship gate</h2>
+    <ol>
+      <li><code>node --check</code> API + Studio JS — pass</li>
+      <li>Bump Studio assets <code>?v=20261005e</code></li>
+      <li>commit + push main</li>
+      <li><code>npx wrangler deploy</code> in admin-api → <code>/api/health</code> ok</li>
+    </ol>
+  </div>
+</body>
+</html>

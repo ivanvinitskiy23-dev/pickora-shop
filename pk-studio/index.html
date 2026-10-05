@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/pk-studio/css/studio.css?v=20261005d">
+  <link rel="stylesheet" href="/pk-studio/css/studio.css?v=20261005e">
 </head>
 <body>
   
@@ -85,6 +85,7 @@
         <div class="topbar-title studio-topbar-title" id="topbar-title">Studio</div>
         <div class="topbar-actions studio-topbar-actions">
           <span class="who" id="who-label"></span>
+          <span class="pill pill-compact pk-hidden" id="role-badge"></span>
           <button type="button" class="lang-toggle" id="btn-lang">EN</button>
           <button type="button" class="btn btn-ghost btn-sm" id="btn-logout" data-i18n="btnLogout">Выйти</button>
         </div>
@@ -100,6 +101,7 @@
             <span class="pill ok" data-i18n="statusLocal">Режим: LOCAL</span>
             <span class="pill" data-i18n="statusCf">Cloudflare: готов</span>
           </div>
+          <div class="status-row" id="dash-stats" style="margin-top:10px"></div>
         </div>
         <div class="dash-actions">
           <button type="button" class="btn btn-primary" data-module="Publish" data-i18n="modPublish">Publish</button>
@@ -122,9 +124,13 @@
 <div class="dash-hero">
         <div class="eyebrow">Home</div>
         <h2 data-i18n="homeEditorTitle">Latest Reviews</h2>
-        <p data-i18n="homeEditorDek">Ровно 4 карточки на главной. Newest сверху. После Save пересобирается lab preview.</p>
+        <p data-i18n="homeEditorDek">3–6 карточек Latest Reviews на главной. Newest сверху.</p>
       </div>
       <div id="home-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
+      <div id="home-reviews-toolbar" style="margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-review-add" data-requires-write style="width:auto;padding-inline:16px" data-i18n="btnAddReview">+ Review</button>
+        <span class="field-hint" id="home-reviews-count" style="margin:0"></span>
+      </div>
       <div id="home-reviews" class="module-grid" style="grid-template-columns:1fr"></div>
 
       <div class="dash-hero" style="margin-top:36px">
@@ -134,15 +140,15 @@
       </div>
       <div id="home-top-picks" class="module-grid" style="grid-template-columns:1fr"></div>
       <div style="margin-top:12px">
-        <button type="button" class="btn btn-ghost btn-sm" id="btn-top-pick-add" style="width:auto;padding-inline:16px" data-i18n="btnAddTopPick">+ Top pick</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-top-pick-add" style="width:auto;padding-inline:16px" data-i18n="btnAddTopPick" data-requires-write>+ Top pick</button>
       </div>
 
-      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
-        <button type="button" class="btn btn-primary" id="btn-home-save" style="width:auto;padding-inline:28px" data-i18n="btnSaveHome">Сохранить черновик</button>
-        <div class="preview-bar"><button type="button" class="btn btn-ghost" id="btn-home-offline" data-i18n="btnOfflineHub">Проверить офлайн</button>
+      <div class="preview-bar module-sticky-actions">
+        <button type="button" class="btn btn-primary" id="btn-home-save" data-requires-write style="width:auto;padding-inline:28px" data-i18n="btnSaveHome">Сохранить черновик</button>
+        <button type="button" class="btn btn-ghost" id="btn-home-offline" data-i18n="btnOfflineHub">Проверить офлайн</button>
         <button type="button" class="btn btn-ghost" id="btn-home-compare-live" data-i18n="btnCompareLive">Compare Live</button>
         <a class="btn btn-ghost" id="link-preview-home" href="/" target="_blank" rel="noopener" data-i18n="btnOpenLiveHome">Открыть Live</a>
-        <a class="btn btn-ghost pk-hidden" id="link-lab-home" href="http://127.0.0.1:8765/admin-lab/site/" target="_blank" rel="noopener" data-i18n="btnOpenLab">Открыть Lab</a></div>
+        <a class="btn btn-ghost pk-hidden" id="link-lab-home" href="http://127.0.0.1:8765/admin-lab/site/" target="_blank" rel="noopener" data-i18n="btnOpenLab">Открыть Lab</a>
       </div>
       </section>
 
@@ -154,20 +160,20 @@
       </div>
       <div id="pins-status" class="pill pk-hidden" style="margin-bottom:14px"></div>
       <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-        <button type="button" class="btn btn-primary" id="btn-pin-add" style="width:auto;padding-inline:22px" data-i18n="btnAddPin">+ Добавить pin</button>
+        <button type="button" class="btn btn-primary" id="btn-pin-add" data-requires-write style="width:auto;padding-inline:22px" data-i18n="btnAddPin">+ Добавить pin</button>
         <label class="field-hint" style="display:inline-flex;align-items:center;gap:8px;margin:0;cursor:pointer">
           <input type="checkbox" id="pins-shuffle-load" checked>
           <span data-i18n="pinsShuffleOnLoad">Перемешивать пины на Live при загрузке</span>
         </label>
+      </div>
+      <div id="pins-filters" class="panel" style="margin-bottom:14px;padding:14px"></div>
+      <div id="pins-list" class="module-grid" style="grid-template-columns:1fr"></div>
+      <div class="preview-bar module-sticky-actions">
+        <button type="button" class="btn btn-primary" id="btn-pins-save" data-requires-write style="width:auto;padding-inline:28px" data-i18n="btnSavePins">Сохранить черновик</button>
         <button type="button" class="btn btn-ghost" id="btn-pins-offline" data-i18n="btnOfflineHub">Проверить офлайн</button>
         <button type="button" class="btn btn-ghost" id="btn-pins-compare-live" data-i18n="btnCompareLive">Compare Live</button>
         <a class="btn btn-ghost" id="link-preview-pins" href="/categories/" target="_blank" rel="noopener" data-i18n="btnOpenLivePins">Открыть Live</a>
         <a class="btn btn-ghost pk-hidden" id="link-lab-pins" href="http://127.0.0.1:8765/admin-lab/site/categories/" target="_blank" rel="noopener" data-i18n="btnOpenLabPins">Открыть Lab</a>
-      </div>
-      <div id="pins-filters" class="panel" style="margin-bottom:14px;padding:14px"></div>
-      <div id="pins-list" class="module-grid" style="grid-template-columns:1fr"></div>
-      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
-        <button type="button" class="btn btn-primary" id="btn-pins-save" style="width:auto;padding-inline:28px" data-i18n="btnSavePins">Сохранить черновик</button>
       </div>
       </section>
 
@@ -179,21 +185,39 @@
           <h2 data-i18n="articlesTitle">Статьи</h2>
           <p data-i18n="articlesDek">Черновик → SEO-шлюз → seo_ready → Publish.</p>
         </div>
-        <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
-          <button type="button" class="btn btn-primary" id="btn-article-new" style="width:auto;padding-inline:22px" data-i18n="btnNewArticle">+ Новый черновик</button>
+        <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <button type="button" class="btn btn-primary" id="btn-article-new" data-requires-write style="width:auto;padding-inline:22px" data-i18n="btnNewArticle">+ Новый черновик</button>
           <a class="btn btn-ghost" href="/articles/" target="_blank" rel="noopener" data-i18n="btnOpenLiveArticles">Открыть Live</a>
           <a class="btn btn-ghost pk-hidden" id="link-lab-articles" href="http://127.0.0.1:8765/admin-lab/site/articles/" target="_blank" rel="noopener" data-i18n="btnOpenLabArticles">Открыть Lab</a>
         </div>
+        <details class="panel" id="articles-brief-import" style="margin-bottom:14px;padding:14px">
+          <summary data-i18n="articlesBriefImportTitle">Import from brief (markdown)</summary>
+          <p class="hint" data-i18n="articlesBriefImportDek">Вставьте brief → получите skeleton черновика (без Publish).</p>
+          <textarea id="articles-brief-text" rows="8" class="mono" style="width:100%;margin:10px 0" placeholder="# Title&#10;&#10;## Section…"></textarea>
+          <button type="button" class="btn btn-primary btn-sm" id="btn-articles-brief-import" data-requires-write style="width:auto;padding-inline:18px" data-i18n="btnImportBrief">Создать черновик</button>
+        </details>
         <h3 data-i18n="articlesDraftsTitle">Черновики</h3>
+        <div style="margin-bottom:10px;display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <input id="articles-draft-search" type="search" data-i18n-placeholder="articlesDraftSearchPh" placeholder="Search drafts…" style="max-width:320px">
+          <label class="pk-check-inline">
+            <input type="checkbox" id="articles-hide-archived" checked>
+            <span data-i18n="articlesHideArchived">Скрыть archived</span>
+          </label>
+        </div>
         <div id="articles-drafts" class="module-grid" style="grid-template-columns:1fr;margin-bottom:24px"></div>
         <h3 data-i18n="articlesLiveTitle">Уже на сайте</h3>
         <div style="margin-bottom:10px">
-          <input id="articles-live-search" type="search" placeholder="Search live…" style="max-width:320px">
+          <input id="articles-live-search" type="search" data-i18n-placeholder="articlesLiveSearchPh" placeholder="Search live…" style="max-width:320px">
         </div>
         <div id="articles-live" class="module-grid" style="grid-template-columns:1fr"></div>
       </div>
 
       <div id="articles-wizard" class="pk-hidden art-studio">
+        <div id="art-autosave-banner" class="art-autosave-banner pk-hidden" role="status">
+          <span data-i18n="articlesAutosaveFound">Есть локальная копия</span>
+          <button type="button" class="btn btn-primary btn-xs" id="btn-art-restore-autosave" data-i18n="articlesAutosaveRestore">Восстановить</button>
+          <button type="button" class="btn btn-ghost btn-xs" id="btn-art-dismiss-autosave" data-i18n="articlesAutosaveDismiss">Скрыть</button>
+        </div>
         <header class="art-studio-top">
           <div class="art-studio-top-left">
             <button type="button" class="btn btn-ghost btn-xs" id="btn-article-cancel" data-i18n="btnCancelShort">← Список</button>
@@ -206,8 +230,8 @@
             <button type="button" class="btn btn-ghost btn-xs" id="btn-article-gate" data-i18n="btnRunSeoGateShort">SEO</button>
             <button type="button" class="btn btn-ghost btn-xs" id="btn-article-preview" data-i18n="btnPreviewArticle" title="Как будет на сайте — без Publish">Превью</button>
             <button type="button" class="btn btn-ghost btn-xs" id="btn-article-compare-live" data-i18n="btnCompareLive" title="Live + draft preview">Compare Live</button>
-            <button type="button" class="btn btn-primary btn-xs" id="btn-article-seo-ready" data-i18n="btnMarkSeoReadyShort">SEO ready</button>
-            <button type="button" class="btn btn-primary btn-xs" id="btn-article-save" data-i18n="btnSaveDraftShort">Сохранить</button>
+            <button type="button" class="btn btn-primary btn-xs" id="btn-article-seo-ready" data-i18n="btnMarkSeoReadyShort" data-requires-write>SEO ready</button>
+            <button type="button" class="btn btn-primary btn-xs" id="btn-article-save" data-i18n="btnSaveDraftShort" data-requires-write>Сохранить</button>
           </div>
         </header>
 
@@ -216,7 +240,18 @@
             <div class="art-paper" id="art-canvas">
               <div class="art-hero-fields">
                 <input id="art-title" class="art-title-input" placeholder="Article title…" data-i18n-placeholder="artTitlePh">
+                <p class="seo-char-meter" id="art-title-meter" aria-live="polite"></p>
                 <input id="art-dek" class="art-dek-input" placeholder="Short dek under the title…" data-i18n-placeholder="artDekPh">
+                <p class="seo-char-meter" id="art-dek-meter" aria-live="polite"></p>
+              </div>
+              <div class="art-template-bar">
+                <label class="art-template-label" for="art-block-template" data-i18n="artBlockTemplate">Шаблон блоков</label>
+                <select id="art-block-template" class="art-template-select">
+                  <option value="blank" data-i18n="artTemplateBlank">Пустой</option>
+                  <option value="microwave" data-i18n="artTemplateMicrowave">Microwave guide</option>
+                  <option value="vs" data-i18n="artTemplateVs">VS compare</option>
+                  <option value="mistakes" data-i18n="artTemplateMistakes">Mistakes</option>
+                </select>
               </div>
               <div id="art-blocks" class="blocks-host"></div>
             </div>
@@ -252,8 +287,12 @@
                 </select>
                 <p class="field-hint" data-i18n="hintType">Шаблон стартовых блоков. Смена типа на пустом черновике предлагает пересобрать набор.</p>
               </div>
-              <div class="field"><label data-i18n="labelMeta">Meta description</label><textarea id="art-meta" rows="3" placeholder="150–160 chars: who this guide helps + what you compare"></textarea><p class="field-hint" data-i18n="hintMeta">Текст в Google под заголовком. ~150–160 символов, без «Best!!!».</p></div>
-              <div class="field"><label>H1 HTML</label><input id="art-h1" placeholder="How to choose a microwave in 2026"><p class="field-hint" data-i18n="hintH1">Большой заголовок на странице. Обычно = Title. Можно чуть короче.</p></div>
+              <div class="field"><label data-i18n="labelMeta">Meta description</label><textarea id="art-meta" rows="3" placeholder="150–160 chars: who this guide helps + what you compare"></textarea><p class="seo-char-meter" id="art-meta-meter" aria-live="polite"></p><p class="field-hint" data-i18n="hintMeta">Текст в Google под заголовком. ~150–160 символов, без «Best!!!».</p></div>
+              <div class="field"><label>H1 HTML</label><input id="art-h1" placeholder="How to choose a microwave in 2026"><p class="seo-char-meter" id="art-h1-meter" aria-live="polite"></p><p class="field-hint" data-i18n="hintH1">Большой заголовок на странице. Обычно = Title. Можно чуть короче.</p></div>
+              <div class="field">
+                <label class="pk-check-inline"><input type="checkbox" id="art-include-sitemap" checked> <span data-i18n="labelIncludeSitemap">В sitemap.xml при Publish</span></label>
+                <p class="field-hint" data-i18n="hintIncludeSitemap">Выключите для тестовых или noindex-страниц.</p>
+              </div>
               <div class="field"><label data-i18n="labelHub">Hub category</label>
                 <select id="art-hub">
                   <option value="Articles">Articles</option>
@@ -265,8 +304,15 @@
                 <p class="field-hint" data-i18n="hintHub">Вкладка Articles с фильтром по теме (не каталог Products).</p>
               </div>
               <div class="field"><label>Hub URL</label><input id="art-hub-url" placeholder="/articles/?cat=kitchen"><p class="field-hint" data-i18n="hintHubUrl">Авто: /articles/?cat=kitchen|electronics|fitness|pets. Ведёт на фильтр статей.</p></div>
-              <div class="field"><label data-i18n="labelChips">Chips (1–3)</label><input id="art-chips" placeholder="kitchen cleaning"><p class="field-hint" data-i18n="hintChips">Фильтры на /articles/. 1–3 slug через пробел или запятую (см. chips.md).</p></div>
-              <div class="field"><label data-i18n="labelInternal">Internal links</label><textarea id="art-internal" rows="2" placeholder="/articles/&#10;/pet-supplies/"></textarea><p class="field-hint" data-i18n="hintInternal">Ссылки на свои страницы Pickora — по одной в строке.</p></div>
+              <div class="field"><label data-i18n="labelChips">Chips (1–3)</label>
+                <input type="hidden" id="art-chips" value="">
+                <div id="art-chips-checkboxes" class="chips-checkboxes" role="group" aria-label="Chips"></div>
+                <p class="field-hint" data-i18n="hintChips">Фильтры на /articles/. 1–3 slug через пробел или запятую (см. chips.md).</p>
+              </div>
+              <div class="field"><label data-i18n="labelInternal">Internal links</label><textarea id="art-internal" rows="2" placeholder="/articles/&#10;/pet-supplies/"></textarea>
+                <div id="art-internal-suggest" class="internal-suggest"></div>
+                <p class="field-hint" data-i18n="hintInternal">Ссылки на свои страницы Pickora — по одной в строке.</p>
+              </div>
               <div class="field pk-hidden"><label data-i18n="labelAmazon">Affiliate links</label><textarea id="art-affiliate" rows="3" placeholder="https://amzn.to/…"></textarea></div>
               <div class="art-amazon-note">
                 <strong data-i18n="amazonNoteTitle">Amazon-ссылки</strong>
@@ -289,9 +335,9 @@
       <div class="hub-tabs-bar">
         <div id="products-hub-tabs" class="hub-tabs" role="tablist" aria-label="Hubs"></div>
         <aside class="hub-tabs-actions" aria-label="Products actions">
-          <button type="button" class="btn btn-primary hub-action-btn" id="btn-hub-add" data-i18n="btnAddSection">+ Новый раздел</button>
+          <button type="button" class="btn btn-primary hub-action-btn" id="btn-hub-add" data-requires-write data-i18n="btnAddSection">+ Новый раздел</button>
           <div class="hub-actions-stack">
-            <button type="button" class="btn btn-primary hub-action-btn" id="btn-products-save" data-i18n="btnSaveProducts">Сохранить черновик</button>
+            <button type="button" class="btn btn-primary hub-action-btn" id="btn-products-save" data-requires-write data-i18n="btnSaveProducts">Сохранить черновик</button>
             <button type="button" class="btn btn-ghost hub-action-btn" id="btn-products-offline" data-i18n="btnOfflineHub">Проверить офлайн</button>
             <button type="button" class="btn btn-ghost hub-action-btn" id="btn-products-compare-live" data-i18n="btnCompareLive">Compare Live</button>
             <a class="btn btn-ghost hub-action-btn" id="link-preview-products" href="/products/" target="_blank" rel="noopener" data-i18n="btnOpenLiveProducts">Открыть Live</a>
@@ -299,6 +345,22 @@
           </div>
         </aside>
       </div>
+      <details class="panel products-tool-panel" id="products-bulk-panel" style="margin-bottom:14px;padding:14px">
+        <summary data-i18n="productsBulkTitle">Bulk paste (current hub)</summary>
+        <p class="field-hint" data-i18n="productsBulkHint">JSON array of products or lines: Name | https://amzn.to/… — prepends to the active hub (Save to persist).</p>
+        <textarea id="products-bulk-text" rows="6" class="mono" style="width:100%;margin:10px 0" placeholder='[{"title":"…","links":[{"url":"https://amzn.to/…"}]}]'></textarea>
+        <button type="button" class="btn btn-primary btn-sm" id="btn-products-bulk-apply" style="width:auto;padding-inline:18px" data-i18n="btnProductsBulkApply" data-requires-write>Apply to draft</button>
+      </details>
+      <details class="panel products-tool-panel" id="products-import-pack" style="margin-bottom:14px;padding:14px">
+        <summary data-i18n="productsImportPackTitle">Import agent pack</summary>
+        <p class="field-hint" data-i18n="productsImportPackHint">Paste JSON: { "hubId": "home-kitchen", "products": [ … ] } — preview, then Apply (no Publish).</p>
+        <textarea id="products-import-json" rows="8" class="mono" style="width:100%;margin:10px 0"></textarea>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+          <button type="button" class="btn btn-ghost btn-sm" id="btn-products-import-preview" style="width:auto" data-i18n="btnProductsImportPreview">Preview</button>
+          <button type="button" class="btn btn-primary btn-sm" id="btn-products-import-apply" style="width:auto;padding-inline:18px" data-i18n="btnProductsImportApply" data-requires-write>Apply to draft</button>
+        </div>
+        <div id="products-import-preview"></div>
+      </details>
       <div id="products-list" class="module-grid" style="grid-template-columns:1fr"></div>
       </section>
 
@@ -364,9 +426,11 @@
             <span class="field-label" data-i18n="labelInviteRole">Роль</span>
             <select id="team-invite-role" class="field-input">
               <option value="admin">admin</option>
+              <option value="editor">editor</option>
+              <option value="viewer">viewer</option>
             </select>
           </label>
-          <button type="submit" class="btn btn-primary" id="btn-team-invite" style="width:auto;padding-inline:22px" data-i18n="btnInvite">Пригласить</button>
+          <button type="submit" class="btn btn-primary" id="btn-team-invite" style="width:auto;padding-inline:22px" data-i18n="btnInvite" data-requires-write>Пригласить</button>
         </form>
       </div>
       </section>
@@ -430,13 +494,15 @@
     </div>
   </div>
 
-  <script src="/pk-studio/js/i18n.js?v=20261005d"></script>
-  <script src="/pk-studio/js/seo-gate.js?v=20261005d"></script>
-  <script src="/pk-studio/js/auth.js?v=20261005d"></script>
-  <script src="/pk-studio/js/media.js?v=20261005d"></script>
-  <script src="/pk-studio/js/blocks.js?v=20261005d"></script>
-  <script src="/pk-studio/js/articles.js?v=20261005d"></script>
-  <script src="/pk-studio/js/ops.js?v=20261005d"></script>
-  <script src="/pk-studio/js/app.js?v=20261005d"></script>
+  <div id="pk-toast" class="pk-toast" role="status" aria-live="polite"></div>
+
+  <script src="/pk-studio/js/i18n.js?v=20261005e"></script>
+  <script src="/pk-studio/js/seo-gate.js?v=20261005e"></script>
+  <script src="/pk-studio/js/auth.js?v=20261005e"></script>
+  <script src="/pk-studio/js/media.js?v=20261005e"></script>
+  <script src="/pk-studio/js/blocks.js?v=20261005e"></script>
+  <script src="/pk-studio/js/articles.js?v=20261005e"></script>
+  <script src="/pk-studio/js/ops.js?v=20261005e"></script>
+  <script src="/pk-studio/js/app.js?v=20261005e"></script>
 </body>
 </html>

@@ -262,8 +262,16 @@ class Handler(BaseHTTPRequestHandler):
                 return
             payload = self._read_json()
             reviews = payload.get("latestReviews")
-            if not isinstance(reviews, list) or len(reviews) != 4:
-                return self._send(*json_bytes({"error": "latestReviews_must_be_4"}, 400))
+            if not isinstance(reviews, list) or len(reviews) < 3 or len(reviews) > 6:
+                return self._send(
+                    *json_bytes(
+                        {
+                            "error": "latestReviews_invalid_count",
+                            "hint": "Need 3..6 latest review cards",
+                        },
+                        400,
+                    )
+                )
             path_home = ROOT / "content" / "home.json"
             current = json.loads(path_home.read_text(encoding="utf-8"))
             current["latestReviews"] = reviews

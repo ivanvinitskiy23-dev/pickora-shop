@@ -372,7 +372,8 @@ export function replaceProductCards(html, products) {
     injectAt = styleBefore;
   }
 
-  const cards = products.map((p, i) => buildProductCard(p, i === 0)).join("\n\n");
+  const visible = (products || []).filter((p) => !p?.hidden);
+  const cards = visible.map((p, i) => buildProductCard(p, i === 0)).join("\n\n");
   const block  = STYLE_ONCE + "\n" + cards + "\n";
 
   return html.slice(0, injectAt) + block + html.slice(endIdx);

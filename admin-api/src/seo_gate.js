@@ -98,6 +98,13 @@ export function validateArticleDraft(draft) {
   const warnings = [];
   const d = draft || {};
 
+  if (String(d.status || "").trim() === "archived") {
+    blockers.push({
+      id: "archived",
+      label: "Archived drafts cannot pass SEO gate until restored",
+    });
+  }
+
   // ── Slug ──────────────────────────────────────────────────────────────────
   const slug = String(d.slug || "").trim();
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
