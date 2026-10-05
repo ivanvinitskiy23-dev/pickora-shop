@@ -548,6 +548,9 @@
                         d.slug
                       )}"${canWrite ? "" : " disabled"}>${escapeAttr(t("btnArchiveDraft"))}</button>`
                 }
+                <button type="button" class="btn btn-ghost btn-xs btn-delete" data-delete-draft="${escapeAttr(
+                  d.slug
+                )}" data-delete-title="${escapeAttr(d.title || d.slug)}"${canWrite ? "" : " disabled"}>${escapeAttr(t("btnDeleteDraft"))}</button>
               </div>
             </div>`
             )
@@ -572,6 +575,15 @@
         btn.addEventListener("click", (e) => {
           e.stopPropagation();
           setDraftArchived(btn.getAttribute("data-restore-draft"), false);
+        });
+      });
+      $$("[data-delete-draft]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          deleteDraftRecord(
+            btn.getAttribute("data-delete-draft"),
+            btn.getAttribute("data-delete-title")
+          );
         });
       });
     }
@@ -714,6 +726,39 @@
       setStatus(archived ? t("articlesArchivedOk") : t("articlesRestoredOk"), "ok");
     } catch (err) {
       setStatus(t("articlesSaveFail") + (err?.message ? ": " + err.message : ""), "warn");
+    }
+  }
+
+  async function deleteDraftRecord(slug, title) {
+    if (!slug) return;
+    if (window.PK_STUDIO?.canWrite?.() === false) {
+      setStatus(t("viewerReadOnly"), "warn");
+      return;
+    }
+    const label = String(title || slug).trim() || slug;
+    const msg = t("articlesDeleteConfirm")
+      .replace("{title}", label)
+      .replace("{slug}", slug);
+    if (!confirm(msg)) return;
+    setStatus(t("loading"));
+    try {
+      const res = await fetch(
+        window.PK_AUTH.API + "/api/content/articles/" + encodeURIComponent(slug),
+        { method: "DELETE", headers: authHeaders(), credentials: "include" }
+      );
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setStatus(data.error || t("articlesDeleteFail"), "warn");
+        return;
+      }
+      if (current?.slug === slug) {
+        current = null;
+        showWizard(false);
+      }
+      await loadLists();
+      setStatus(t("articlesDeleteOk"), "ok");
+    } catch (err) {
+      setStatus(t("articlesDeleteFail") + (err?.message ? ": " + err.message : ""), "warn");
     }
   }
 

@@ -2958,6 +2958,8 @@ body.studio-app {
   width: 100%;
 }
 .draft-card-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.btn-delete { color: var(--pk-danger); }
+.btn-delete:hover:not(:disabled) { background: #fef3f2; color: var(--pk-danger); }
 .pk-check-inline {
   display: inline-flex;
   align-items: center;

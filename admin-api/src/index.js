@@ -270,6 +270,12 @@ export default {
           }
           return cors(await saveDraft(env, "home", await readJson(request), user), request);
         }
+        if (request.method === "DELETE") {
+          if (!canWrite(user)) {
+            return cors(json({ error: "forbidden", hint: "viewer_read_only" }, 403), request);
+          }
+          return cors(await deleteDraftKey(env, "home", user), request);
+        }
       }
 
       if (url.pathname === "/api/content/pins") {
@@ -282,6 +288,12 @@ export default {
             return cors(json({ error: "forbidden", hint: "viewer_read_only" }, 403), request);
           }
           return cors(await saveDraft(env, "pins", await readJson(request), user), request);
+        }
+        if (request.method === "DELETE") {
+          if (!canWrite(user)) {
+            return cors(json({ error: "forbidden", hint: "viewer_read_only" }, 403), request);
+          }
+          return cors(await deleteDraftKey(env, "pins", user), request);
         }
       }
 
@@ -301,6 +313,12 @@ export default {
             await saveDraft(env, "products", await readJson(request), user),
             request
           );
+        }
+        if (request.method === "DELETE") {
+          if (!canWrite(user)) {
+            return cors(json({ error: "forbidden", hint: "viewer_read_only" }, 403), request);
+          }
+          return cors(await deleteDraftKey(env, "products", user), request);
         }
       }
 
@@ -324,6 +342,12 @@ export default {
         const slug = decodeURIComponent(artMatch[1]);
         if (request.method === "GET") {
           return cors(await getArticleDraft(env, slug), request);
+        }
+        if (request.method === "DELETE") {
+          if (!canWrite(user)) {
+            return cors(json({ error: "forbidden", hint: "viewer_read_only" }, 403), request);
+          }
+          return cors(await deleteArticleDraft(env, slug, user), request);
         }
       }
 
@@ -423,6 +447,45 @@ async function saveArticleDraft(env, payload, user) {
     .bind(user.login, slug)
     .run();
   return json({ ok: true, draft, mode: "cloudflare" });
+}
+
+async function deleteDraftKey(env, key, user) {
+  const row = await env.DB.prepare(`SELECT key FROM content_drafts WHERE key = ?`)
+    .bind(key)
+    .first();
+  if (!row?.key) {
+    return json({ error: "not_found", key }, 404);
+  }
+  await env.DB.prepare(`DELETE FROM content_drafts WHERE key = ?`).bind(key).run();
+  await env.DB.prepare(
+    `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'delete_draft', ?)`
+  )
+    .bind(user.login, key)
+    .run();
+  return json({ ok: true, deleted: key, mode: "cloudflare" });
+}
+
+async function deleteArticleDraft(env, slug, user) {
+  const clean = String(slug || "")
+    .trim()
+    .toLowerCase();
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(clean)) {
+    return json({ error: "invalid_slug" }, 400);
+  }
+  const key = `article:${clean}`;
+  const row = await env.DB.prepare(`SELECT key FROM content_drafts WHERE key = ?`)
+    .bind(key)
+    .first();
+  if (!row?.key) {
+    return json({ error: "not_found", slug: clean }, 404);
+  }
+  await env.DB.prepare(`DELETE FROM content_drafts WHERE key = ?`).bind(key).run();
+  await env.DB.prepare(
+    `INSERT INTO audit_log (user_login, action, detail) VALUES (?, 'delete_article_draft', ?)`
+  )
+    .bind(user.login, clean)
+    .run();
+  return json({ ok: true, slug: clean, mode: "cloudflare" });
 }
 
 async function getDraft(env, key, seedUrl) {

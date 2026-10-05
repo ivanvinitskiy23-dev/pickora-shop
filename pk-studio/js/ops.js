@@ -79,6 +79,12 @@
               ' data-dry-run-mod="' + mod + '">' +
               escapeHtml(t("btnDryRun")) +
               "</button>" +
+              '<button type="button" class="btn btn-ghost btn-sm btn-delete"' +
+              ' data-reset-mod="' + mod + '"' +
+              (canWriteOps() ? "" : " disabled") +
+              ">" +
+              escapeHtml(t("btnResetModuleDraft")) +
+              "</button>" +
               '<button type="button" class="btn btn-primary btn-sm"' +
               ' data-publish-mod="' + mod + '">' +
               cta + "</button>" +
@@ -147,6 +153,16 @@
                 hintExtra +
                 "</p>" +
                 '<div class="publish-card__actions">' +
+                  '<button type="button" class="btn btn-ghost btn-sm btn-delete"' +
+                  ' data-delete-pub-slug="' +
+                  slug +
+                  '" data-delete-pub-title="' +
+                  title +
+                  '"' +
+                  (canWriteOps() ? "" : " disabled") +
+                  ">" +
+                  escapeHtml(t("btnDeleteDraft")) +
+                  "</button>" +
                   '<button type="button" class="btn btn-primary btn-sm"' +
                   ' data-publish-slug="' +
                   slug +
@@ -199,11 +215,79 @@
         publishSlug(btn.getAttribute("data-publish-slug"), btn)
       );
     });
+    wrap.querySelectorAll("[data-reset-mod]").forEach((btn) => {
+      btn.addEventListener("click", () =>
+        resetModuleDraft(btn.getAttribute("data-reset-mod"), btn)
+      );
+    });
+    wrap.querySelectorAll("[data-delete-pub-slug]").forEach((btn) => {
+      btn.addEventListener("click", () =>
+        deletePublishArticleDraft(
+          btn.getAttribute("data-delete-pub-slug"),
+          btn.getAttribute("data-delete-pub-title"),
+          btn
+        )
+      );
+    });
     wrap.querySelectorAll("[data-dry-run-mod]").forEach((btn) => {
       /* dry-run is read-only */
     });
 
     await loadSnapshots();
+  }
+
+  async function resetModuleDraft(mod, btn) {
+    if (!mod || !canWriteOps()) {
+      setPill("#publish-status", t("viewerReadOnly"), "warn");
+      return;
+    }
+    const name = t("pubMod_" + mod) || mod;
+    if (!confirm(t("pubModuleResetConfirm").replace("{name}", name))) return;
+    if (btn) btn.disabled = true;
+    try {
+      const res = await apiFetch("/api/content/" + mod, { method: "DELETE" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        if (res.status === 404) {
+          setPill("#publish-status", t("pubModuleResetNone"), "ok");
+          return;
+        }
+        throw new Error(data.error || t("pubModuleResetFail"));
+      }
+      setPill("#publish-status", t("pubModuleResetOk").replace("{name}", name), "ok");
+    } catch (err) {
+      setPill("#publish-status", t("pubModuleResetFail") + ": " + err.message, "warn");
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  async function deletePublishArticleDraft(slug, title, btn) {
+    if (!slug || !canWriteOps()) {
+      setPill("#publish-status", t("viewerReadOnly"), "warn");
+      return;
+    }
+    const label = String(title || slug).trim() || slug;
+    const msg = t("articlesDeleteConfirm")
+      .replace("{title}", label)
+      .replace("{slug}", slug);
+    if (!confirm(msg)) return;
+    if (btn) btn.disabled = true;
+    try {
+      const res = await apiFetch(
+        "/api/content/articles/" + encodeURIComponent(slug),
+        { method: "DELETE" }
+      );
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.error || t("articlesDeleteFail"));
+      }
+      setPill("#publish-status", t("articlesDeleteOk"), "ok");
+      await loadPublish();
+    } catch (err) {
+      setPill("#publish-status", t("articlesDeleteFail") + ": " + err.message, "warn");
+      if (btn) btn.disabled = false;
+    }
   }
 
   async function runPublishDryRun(mod, publishBody) {
