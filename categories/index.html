@@ -1080,7 +1080,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
 
   <div class="pickora-board-grid" id="pins-grid">
     
-    <div class="pickora-board-pin" data-category="work" onclick="openPin(1)">
+    <div class="pickora-board-pin" data-category="work" data-pin-slug="sunlit-simplicity" onclick="openPin('sunlit-simplicity')">
       <img src="https://pickora.shop/wp-content/uploads/2026/07/Desk_with_MacBook_and_keyboard_202607011350.webp" alt="Minimalist Japandi home office setup featuring an Apple MacBook Pro on an aluminum Rain Design mStand laptop stand, light oak desk with soft morning window shadows, and a Keychron mechanical keyboard" width="896" height="1200" loading="eager" fetchpriority="high" decoding="async">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">Sunlit Simplicity</h4>
@@ -1088,7 +1088,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
       </div>
     </div>
 
-    <div class="pickora-board-pin" data-category="kitchen" onclick="openPin(2)">
+    <div class="pickora-board-pin" data-category="kitchen" data-pin-slug="morning-alchemist" onclick="openPin('morning-alchemist')">
       <img src="https://pickora.shop/wp-content/uploads/2026/07/Digen_image_1782918584661.webp" alt="Minimalist coffee setup featuring a Fellow Stagg white electric kettle and Ember smart mug on a light wood counter with morning window shadows." width="2048" height="2048" loading="lazy" decoding="async">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">The Morning Alchemist </h4>
@@ -1096,7 +1096,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
       </div>
     </div>
 
-    <div class="pickora-board-pin" data-category="work" onclick="openPin(3)">
+    <div class="pickora-board-pin" data-category="work" data-pin-slug="neon-noir-command" onclick="openPin('neon-noir-command')">
       <img src="https://pickora.shop/wp-content/uploads/2026/07/Desk_setup_with_cyan_reflection_202607011648.webp" alt="Monitor setup" width="896" height="1200" loading="lazy" decoding="async">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">Neon Noir Command</h4>
@@ -1104,7 +1104,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
       </div>
     </div>
 
-    <div class="pickora-board-pin" data-category="travel" onclick="openPin(4)">
+    <div class="pickora-board-pin" data-category="travel" data-pin-slug="urban-explorer-edc" onclick="openPin('urban-explorer-edc')">
       <img src="https://pickora.shop/wp-content/uploads/2026/06/Aesthetic_flatlay_product_photography_of_202606262059-scaled.webp" alt="Travel gear accessories flatlay" width="1200" height="1608" loading="lazy" decoding="async">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">Urban Explorer EDC</h4>
@@ -1112,21 +1112,21 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
       </div>
     </div>
     
-    <div class="pickora-board-pin" data-category="work" onclick="openPin(5)">
+    <div class="pickora-board-pin" data-category="work" data-pin-slug="scholars-corner" onclick="openPin('scholars-corner')">
       <img src="https://pickora.shop/wp-content/uploads/2026/07/Digen_image_1782915940164.webp" alt="Cozy dark academia study setup featuring an Azio Retro Classic mechanical keyboard with wood accents on a cognac leather Harber London desk mat, illuminated by a warm brass Edison bulb lamp." width="1728" height="2304" loading="lazy" decoding="async">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">The Scholar’s Corner</h4>
         <p class="pickora-board-desc">Disconnect from the noise and reconnect with tactile craftsmanship. A warm, inviting desk that blends timeless analog tools with modern tech.</p>
       </div>
     </div>
-    <div class="pickora-board-pin" data-category="kitchen" onclick="openPin(6)">
+    <div class="pickora-board-pin" data-category="kitchen" data-pin-slug="midnight-speakeasy" onclick="openPin('midnight-speakeasy')">
       <img src="https://pickora.shop/wp-content/uploads/2026/07/A_moody_cinematic_close-up_of_202607011921.webp" alt="Moody home bar scene with a cocktail smoker kit, crystal decanter, and matte black ice tools on dark marble under cinematic lighting." width="896" height="1200" loading="lazy" decoding="async">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">The Midnight Speakeasy </h4>
         <p class="pickora-board-desc">Sophisticated cocktail tech for the modern nocturnal host.</p>
       </div>
     </div>
-   <div class="pickora-board-pin" data-category="home" onclick="openPin(7)">
+   <div class="pickora-board-pin" data-category="home" data-pin-slug="plaster-mohair-hideaway" onclick="openPin('plaster-mohair-hideaway')">
      <img src="../wp-content/uploads/2026/07/Sleek_Dyson_Hot_Cool_purifier_standing_on_slate_flagstone_flooring_beside.webp" alt="Sleek Dyson Hot+Cool purifier standing on slate flagstone flooring beside a rust-colored mohair armchair, enclosed in curved bone-colored plaster walls during a moody, rainy afternoon.." width="896" height="1200" loading="lazy" decoding="async">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">Plaster & Mohair Hideaway </h4>
@@ -1165,7 +1165,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
   // ТВОЯ БАЗА ДАННЫХ (Просто добавляй блоки по порядку)
   // =======================================================
   const pinData = {
-    1: {
+    "sunlit-simplicity": {
       title: "Sunlit Simplicity",
       desc: "Find your flow in a space defined by light and clarity. Minimalist Apple tech meets the organic warmth of a Japandi-inspired workspace.",
       image: "https://pickora.shop/wp-content/uploads/2026/07/Desk_with_MacBook_and_keyboard_202607011350.webp",
@@ -1175,7 +1175,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
         { name: "Keychron K3 Ultra-Slim Wireless Mechanical Keyboard", url: "https://amzn.to/4xUKp9f" }
       ]
     },
-    2: {
+    "morning-alchemist": {
       title: "The Morning Alchemist",
       desc: "Elevate your morning ritual with precision-engineered tools that double as kitchen sculpture. This minimalist setup blends raw concrete textures with high-tech temperature control for a sensory coffee experience.",
       image: "https://pickora.shop/wp-content/uploads/2026/07/Digen_image_1782918584661.webp",
@@ -1185,7 +1185,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
         { name: "Maestri House S2", url: "https://amzn.to/4vIRTus" }
       ]
     },
-    3: {
+    "neon-noir-command": {
       title: "Neon Noir Command",
       desc: "Embrace the night with a setup built for deep focus and futuristic vibes. A stealthy, all-black battle station illuminated by the glow of the screen.",
       image: "https://pickora.shop/wp-content/uploads/2026/07/Desk_setup_with_cyan_reflection_202607011648.webp",
@@ -1195,7 +1195,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
         { name: "BenQ ScreenBar Halo with Wireless Controller", url: "https://amzn.to/4wm4lAd" }
       ]
     },
-    4: {
+    "urban-explorer-edc": {
       title: "Urban Explorer EDC Set",
       desc: "Never compromise on style or utility. This curated everyday carry collection combines premium water-resistant organization with cutting-edge charging tech.",
       image: "https://pickora.shop/wp-content/uploads/2026/06/Aesthetic_flatlay_product_photography_of_202606262059-scaled.webp",
@@ -1206,7 +1206,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
         { name: "Fellow Carter Move Travel Mug", url: "https://amazon.com" }
       ]
     },
-    5: {
+    "scholars-corner": {
       title: "The Scholar's Corner",
       desc: "Disconnect from the noise and reconnect with tactile craftsmanship. A warm, inviting desk that blends timeless analog tools with modern tech.",
       image: "https://pickora.shop/wp-content/uploads/2026/07/Digen_image_1782915940164.webp",
@@ -1214,10 +1214,9 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
         { name: "Harber London Leather Desk Mat (Cognac)", url: "https://amzn.to/4wjIRDW" },
         { name: "Azio Retro Classic Mechanical Keyboard (Elwood)", url: "https://amzn.to/3Tdmf9O" },
         { name: " Industrial Edison Bulb Desk Lamp (Brass)", url: "https://amzn.to/4p2YRIi" }
-        
       ]
     },
-    6: {
+    "midnight-speakeasy": {
       title: "The Midnight Speakeasy",
       desc: "Transform your home bar into a moody lounge with shadow-heavy aesthetics and smoke-infused mixology. Precision ice-shaping and premium glassware turn every drink into a cinematic event.",
       image: "https://pickora.shop/wp-content/uploads/2026/07/A_moody_cinematic_close-up_of_202607011921.webp",
@@ -1225,10 +1224,9 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
         { name: "Cocktail Smoker Kit", url: "https://amzn.to/4fdAgNp" },
         { name: "Viski Admiral Decanter", url: "https://amzn.to/4gRAVFr" },
         { name: " Ice Ball Press Kit", url: "https://amzn.to/4eZ1KFr" }
-        
       ]
     },
-    7: {
+    "plaster-mohair-hideaway": {
       title: "Plaster & Mohair Hideaway",
       desc: "Designed for the ultimate introvert, this cavernous reading nook is tucked beneath a sweeping architectural staircase. Walls of seamless, bone-colored Tadelakt plaster meet a cool slate flagstone floor, while a plush rust-toned mohair armchair invites you to stay. A sleek, intelligent space heater emits a subtle, radiant warmth, piercing through the moody, diffused daylight of a rainy afternoon.",
       image: "../wp-content/uploads/2026/07/Sleek_Dyson_Hot_Cool_purifier_standing_on_slate_flagstone_flooring_beside.webp",
@@ -1236,15 +1234,8 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
         { name: "Dyson Purifier Hot+Cool Formaldehyde", url: "https://amzn.to/4f7U97d" },
         { name: "Kindle Scribe", url: "https://amzn.to/3RwqKfg" },
         { name: "DREO Space Heater", url: "https://amzn.to/4w2Q5g6" }
-        
       ]
-    },
-    
-    
-    
-    
-    
-    
+    }
   };
 
   // ТЕХНИЧЕСКАЯ ЧАСТЬ (НЕ ТРОГАТЬ)
@@ -1278,8 +1269,19 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
       pin.style.display = (category === 'all' || pin.getAttribute('data-category') === category) ? 'inline-block' : 'none';
     });
   }
-  function openPin(id) {
-    const data = pinData[id];
+  let pinPopupOpen = false;
+
+  function pinSlugFromHash() {
+    return String(location.hash || "")
+      .replace(/^#/, "")
+      .trim()
+      .toLowerCase();
+  }
+
+  function openPin(slug, opts) {
+    opts = opts || {};
+    const key = String(slug || "").trim();
+    const data = pinData[key];
     if (!data) return;
     document.getElementById('popup-title').innerText = data.title;
     document.getElementById('popup-desc').innerText = data.desc;
@@ -1294,27 +1296,61 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
       listContainer.appendChild(item);
     });
     document.getElementById('pin-popup').classList.add('active');
+    pinPopupOpen = true;
+    if (!opts.fromHash && location.hash !== '#' + key) {
+      history.pushState({ pinSlug: key }, '', '#' + key);
+    }
   }
-  function forceClosePin() { document.getElementById('pin-popup').classList.remove('active'); }
-  function handleOverlayClick(e) { if (e.target.id === 'pin-popup') forceClosePin(); }
+
+  function forceClosePin() {
+    document.getElementById('pin-popup').classList.remove('active');
+    pinPopupOpen = false;
+    if (!location.hash) return;
+    if (history.state && history.state.pinSlug) {
+      history.back();
+    } else {
+      history.replaceState(null, '', location.pathname + location.search);
+    }
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target.id === 'pin-popup') forceClosePin();
+  }
+
+  function syncPinFromLocation() {
+    const slug = pinSlugFromHash();
+    if (slug && pinData[slug]) {
+      openPin(slug, { fromHash: true });
+      return;
+    }
+    document.getElementById('pin-popup').classList.remove('active');
+    pinPopupOpen = false;
+  }
+
+  window.addEventListener('popstate', syncPinFromLocation);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && pinPopupOpen) forceClosePin();
+  });
+
 // =======================================================
   // ФУНКЦИЯ ДЛЯ РАНДОМНОГО ПЕРЕМЕШИВАНИЯ КАРТОЧЕК ПРИ ЗАГРУЗКЕ
   // =======================================================
   const PICKORA_SHUFFLE_PINS = true;
   document.addEventListener("DOMContentLoaded", function() {
-    if (!PICKORA_SHUFFLE_PINS) return;
-    const grid = document.getElementById('pins-grid');
-    if (!grid) return;
-    
-    const pins = Array.from(grid.querySelectorAll('.pickora-board-pin'));
-    
-    for (let i = pins.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [pins[i], pins[j]] = [pins[j], pins[i]];
+    if (PICKORA_SHUFFLE_PINS) {
+      const grid = document.getElementById('pins-grid');
+      if (grid) {
+        const pins = Array.from(grid.querySelectorAll('.pickora-board-pin'));
+        for (let i = pins.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [pins[i], pins[j]] = [pins[j], pins[i]];
+        }
+        pins.forEach(pin => grid.appendChild(pin));
+      }
     }
-    
-    pins.forEach(pin => grid.appendChild(pin));
+    syncPinFromLocation();
   });
+
 </script>
 
 

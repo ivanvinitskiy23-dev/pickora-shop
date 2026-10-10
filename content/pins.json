@@ -12,6 +12,7 @@
   "pins": [
     {
       "id": 1,
+      "slug": "sunlit-simplicity",
       "category": "work",
       "title": "Sunlit Simplicity",
       "boardDesc": "Find your flow in a space defined by light and clarity. Minimalist Apple tech meets the organic warmth of a Japandi-inspired workspace.",
@@ -28,6 +29,7 @@
     },
     {
       "id": 2,
+      "slug": "morning-alchemist",
       "category": "kitchen",
       "title": "The Morning Alchemist",
       "boardDesc": "Master the art of the slow pour in a sun-drenched sanctuary.",
@@ -44,6 +46,7 @@
     },
     {
       "id": 3,
+      "slug": "neon-noir-command",
       "category": "work",
       "title": "Neon Noir Command",
       "boardDesc": "Embrace the night with a setup built for deep focus and futuristic vibes. A stealthy, all-black battle station illuminated by the glow of the screen.",
@@ -60,6 +63,7 @@
     },
     {
       "id": 4,
+      "slug": "urban-explorer-edc",
       "category": "travel",
       "title": "Urban Explorer EDC",
       "boardDesc": "Premium travel gear and minimalist essentials for life on the move.",
@@ -77,6 +81,7 @@
     },
     {
       "id": 5,
+      "slug": "scholars-corner",
       "category": "work",
       "title": "The Scholar’s Corner",
       "boardDesc": "Disconnect from the noise and reconnect with tactile craftsmanship. A warm, inviting desk that blends timeless analog tools with modern tech.",
@@ -93,6 +98,7 @@
     },
     {
       "id": 6,
+      "slug": "midnight-speakeasy",
       "category": "kitchen",
       "title": "The Midnight Speakeasy",
       "boardDesc": "Sophisticated cocktail tech for the modern nocturnal host.",
@@ -109,6 +115,7 @@
     },
     {
       "id": 7,
+      "slug": "plaster-mohair-hideaway",
       "category": "home",
       "title": "Plaster & Mohair Hideaway",
       "boardDesc": "Shelter from the rain in a cavernous, heated reading alcove wrapped in tactile warmth.",

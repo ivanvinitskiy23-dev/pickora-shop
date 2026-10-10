@@ -7,7 +7,7 @@
  *
  * draft shape (from D1 key 'pins'):
  *   filters: Array<{ id, label }>
- *   pins:    Array<{ id, category, image, imageAlt, title, boardDesc, popupDesc,
+ *   pins:    Array<{ id, slug, category, image, imageAlt, title, boardDesc, popupDesc,
  *                    products, width, height }>
  *
  * Files written to GitHub:
@@ -49,6 +49,24 @@ function escHtml(str) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+const PIN_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+/** Stable deep-link slug for /categories/#{slug} */
+export function resolvePinSlug(pin) {
+  const raw = String(pin?.slug || "")
+    .trim()
+    .toLowerCase();
+  if (PIN_SLUG_RE.test(raw)) return raw;
+  const fromTitle = String(pin?.title || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 64);
+  if (PIN_SLUG_RE.test(fromTitle)) return fromTitle;
+  const id = Number(pin?.id);
+  return Number.isFinite(id) && id > 0 ? `pin-${id}` : "pin";
 }
 
 function isAmazonUrl(url) {
@@ -112,14 +130,14 @@ export function buildBoardPin(pin, eager = false) {
   const title  = escHtml(pin.title || "");
   const desc   = escHtml(pin.boardDesc || pin.popupDesc || "");
   const cat    = escHtml(pin.category || "");
-  const id     = Number(pin.id);
+  const slug   = escHtml(resolvePinSlug(pin));
   const width  = pin.width  || 896;
   const height = pin.height || 1200;
 
   const featCls = pin.featured ? " pickora-board-pin--featured" : "";
   const featAttr = pin.featured ? ' data-featured="true"' : "";
 
-  return `    <div class="pickora-board-pin${featCls}" data-category="${cat}"${featAttr} onclick="openPin(${id})">
+  return `    <div class="pickora-board-pin${featCls}" data-category="${cat}" data-pin-slug="${slug}"${featAttr} onclick="openPin('${slug}')">
       <img src="${img}" alt="${alt}" width="${width}" height="${height}" ${loading} decoding="async">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">${title}</h4>
@@ -144,24 +162,22 @@ export function buildFiltersHtml(filters) {
 // ---------------------------------------------------------------------------
 // buildPinDataJs — mirrors render_pins.py pin_data_js()
 //
-// Returns a JS object literal string  { 1: {...}, 2: {...} }
-// (numeric keys are unquoted, string values use JSON quoting — valid JS)
+// Returns a JS object literal string keyed by slug:
+//   { "midnight-speakeasy": { title, desc, image, products }, ... }
 // ---------------------------------------------------------------------------
 
 export function buildPinDataJs(pins) {
   const obj = {};
   for (const p of pins) {
-    obj[String(p.id)] = {
+    const slug = resolvePinSlug(p);
+    obj[slug] = {
       title:    p.title || "",
       desc:     p.popupDesc || p.boardDesc || "",
       image:    absUrl(p.image || ""),
       products: (p.products || []).map(normalizePinProduct),
     };
   }
-  // 2-space JSON, then strip quotes around pure-numeric keys
-  let raw = JSON.stringify(obj, null, 2);
-  raw = raw.replace(/"(\d+)":/g, "$1:");
-  return raw;
+  return JSON.stringify(obj, null, 2);
 }
 
 // ---------------------------------------------------------------------------

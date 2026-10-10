@@ -528,6 +528,35 @@ async function getDraft(env, key, seedUrl) {
   return json({ error: "seed_unavailable", key }, 503);
 }
 
+function assertPinsDraft(payload) {
+  const PIN_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  const seen = new Set();
+  for (const pin of payload.pins || []) {
+    const slug = String(pin?.slug || "")
+      .trim()
+      .toLowerCase();
+    if (!PIN_SLUG_RE.test(slug)) {
+      return {
+        ok: false,
+        error: "invalid_pin_slug",
+        hint: "Each pin needs a unique kebab-case slug (e.g. midnight-speakeasy)",
+        detail: { id: pin?.id, title: pin?.title, slug: pin?.slug || "" },
+      };
+    }
+    if (seen.has(slug)) {
+      return {
+        ok: false,
+        error: "duplicate_pin_slug",
+        hint: "Pin slugs must be unique",
+        detail: { slug },
+      };
+    }
+    seen.add(slug);
+    pin.slug = slug;
+  }
+  return { ok: true };
+}
+
 async function saveDraft(env, key, payload, user) {
   if (!payload || typeof payload !== "object") {
     return json({ error: "invalid_payload" }, 400);
@@ -545,8 +574,17 @@ async function saveDraft(env, key, payload, user) {
       );
     }
   }
-  if (key === "pins" && !Array.isArray(payload.pins)) {
-    return json({ error: "pins_required" }, 400);
+  if (key === "pins") {
+    if (!Array.isArray(payload.pins)) {
+      return json({ error: "pins_required" }, 400);
+    }
+    const pinGate = assertPinsDraft(payload);
+    if (!pinGate.ok) {
+      return json(
+        { error: pinGate.error, hint: pinGate.hint, detail: pinGate.detail },
+        400
+      );
+    }
   }
   if (key === "products" && !Array.isArray(payload.hubCategories)) {
     return json({ error: "hubCategories_required" }, 400);

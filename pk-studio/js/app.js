@@ -1203,6 +1203,30 @@
             <div class="review-fields">
               <div class="field"><label>${escapeAttr(t("labelTitle"))}</label>
                 <input data-k="title" value="${escapeAttr(p.title || "")}"></div>
+              <div class="field"><label>${escapeAttr(t("labelPinSlug"))}</label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                  <input data-k="slug" value="${escapeAttr(p.slug || "")}" placeholder="midnight-speakeasy" style="flex:1;min-width:160px">
+                  <button type="button" class="btn btn-ghost btn-sm" data-pin-slug-from-title="${i}">${escapeAttr(
+                    t("pinSlugFromTitle")
+                  )}</button>
+                </div>
+                <p class="field-hint" style="margin:6px 0 0">${escapeAttr(t("pinSlugHint"))}</p>
+              </div>
+              <div class="field"><label>${escapeAttr(t("pinDeepLink"))}</label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                  <input readonly data-pin-deeplink="${i}" value="${escapeAttr(
+                    pinDeepLink(p.slug)
+                  )}" style="flex:1;min-width:200px;font-size:12px">
+                  <button type="button" class="btn btn-ghost btn-sm" data-pin-copy-link="${i}" ${
+                    p.slug ? "" : "disabled"
+                  }>${escapeAttr(t("btnCopyPinLink"))}</button>
+                  <a class="btn btn-ghost btn-sm" href="${escapeAttr(
+                    pinDeepLink(p.slug) || "#"
+                  )}" target="_blank" rel="noopener" ${p.slug ? "" : 'aria-disabled="true" tabindex="-1" style="pointer-events:none;opacity:.5"'}>${escapeAttr(
+                    t("btnOpenPinLink")
+                  )}</a>
+                </div>
+              </div>
               <div class="field"><label>${escapeAttr(t("labelPinFilter"))}</label>
                 <select data-k="category">${filterOptions(p.category)}</select></div>
               <div class="field"><label>${escapeAttr(t("labelBoardDesc"))}</label>
@@ -1223,6 +1247,46 @@
       .join("");
 
     bindBuyLinksEditor(wrap);
+
+    $$("[data-pin-slug-from-title]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const idx = Number(btn.getAttribute("data-pin-slug-from-title"));
+        const card = wrap.querySelector(`[data-pin-index="${idx}"]`);
+        if (!card) return;
+        const title = card.querySelector('[data-k="title"]')?.value || "";
+        const slugEl = card.querySelector('[data-k="slug"]');
+        if (slugEl) slugEl.value = slugifyPinTitle(title);
+        const linkEl = card.querySelector(`[data-pin-deeplink="${idx}"]`);
+        if (linkEl) linkEl.value = pinDeepLink(slugEl?.value);
+        const copyBtn = card.querySelector(`[data-pin-copy-link="${idx}"]`);
+        if (copyBtn) copyBtn.disabled = !slugEl?.value;
+      });
+    });
+    $$("[data-pin-copy-link]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const idx = Number(btn.getAttribute("data-pin-copy-link"));
+        const card = wrap.querySelector(`[data-pin-index="${idx}"]`);
+        const slug = card?.querySelector('[data-k="slug"]')?.value?.trim() || "";
+        const url = pinDeepLink(slug);
+        if (!url) return;
+        try {
+          await navigator.clipboard.writeText(url);
+          toast(t("pinLinkCopied"));
+        } catch {
+          window.prompt(t("btnCopyPinLink"), url);
+        }
+      });
+    });
+    $$('#pins-list [data-k="slug"]').forEach((input) => {
+      input.addEventListener("input", () => {
+        const card = input.closest("[data-pin-index]");
+        const idx = card?.getAttribute("data-pin-index");
+        const linkEl = card?.querySelector(`[data-pin-deeplink="${idx}"]`);
+        if (linkEl) linkEl.value = pinDeepLink(input.value);
+        const copyBtn = card?.querySelector(`[data-pin-copy-link="${idx}"]`);
+        if (copyBtn) copyBtn.disabled = !String(input.value || "").trim();
+      });
+    });
 
     $$("[data-pin-up]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -1332,6 +1396,7 @@
       pinsData.pins[i] = {
         ...prev,
         title: get("title").trim() || prev.title,
+        slug: get("slug").trim().toLowerCase() || prev.slug || "",
         category: get("category").trim() || prev.category,
         boardDesc: get("boardDesc").trim(),
         popupDesc: get("popupDesc").trim(),
@@ -1344,6 +1409,42 @@
         height: prev.height,
       };
     });
+  }
+
+  function slugifyPinTitle(s) {
+    return (
+      String(s || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 64) || ""
+    );
+  }
+
+  function pinDeepLink(slug) {
+    const s = String(slug || "")
+      .trim()
+      .toLowerCase();
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(s)) return "";
+    return "https://pickora.shop/categories/#" + s;
+  }
+
+  function validatePinsSlugs(pins) {
+    const seen = new Set();
+    for (const pin of pins || []) {
+      const slug = String(pin.slug || "")
+        .trim()
+        .toLowerCase();
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+        return { ok: false, msg: t("pinSlugInvalid") + ": " + (pin.title || pin.id || "?") };
+      }
+      if (seen.has(slug)) {
+        return { ok: false, msg: t("pinSlugDuplicate") + ": " + slug };
+      }
+      seen.add(slug);
+      pin.slug = slug;
+    }
+    return { ok: true };
   }
 
   async function uploadPinImage(index, file, card) {
@@ -1376,10 +1477,12 @@
     readPinsForm();
     const nextId = pinsData.pins.reduce((m, p) => Math.max(m, Number(p.id) || 0), 0) + 1;
     const firstCat = (pinsData.filters || []).find((f) => f.id !== "all")?.id || "work";
+    const title = "New pin";
     pinsData.pins.unshift({
       id: nextId,
+      slug: slugifyPinTitle(title) || "new-pin-" + nextId,
       category: firstCat,
-      title: "New pin",
+      title,
       boardDesc: "",
       popupDesc: "",
       image: "",
@@ -1398,6 +1501,9 @@
     });
     if (!res.ok) throw new Error("load_failed");
     pinsData = await res.json();
+    (pinsData.pins || []).forEach((pin) => {
+      if (!pin.slug) pin.slug = slugifyPinTitle(pin.title) || "pin-" + pin.id;
+    });
     renderPinsEditor();
     syncSavedFingerprints();
     applyI18n();
@@ -1411,6 +1517,16 @@
     }
     const status = $("#pins-status");
     readPinsForm();
+    (pinsData.pins || []).forEach((pin) => {
+      if (!pin.slug) pin.slug = slugifyPinTitle(pin.title) || "pin-" + pin.id;
+    });
+    const slugGate = validatePinsSlugs(pinsData.pins);
+    if (!slugGate.ok) {
+      setStatus(status, slugGate.msg, "warn");
+      toast(slugGate.msg);
+      renderPinsEditor();
+      return;
+    }
     const bad = [];
     (pinsData.pins || []).forEach((pin) => {
       (pin.products || []).forEach((prod) => {
@@ -1442,8 +1558,15 @@
       }),
     });
     if (!res.ok) {
-      setStatus(status, t("pinsSaveFail"), "warn");
-      toast(t("pinsSaveFail"));
+      const errBody = await res.json().catch(() => ({}));
+      const msg =
+        errBody.error === "duplicate_pin_slug"
+          ? t("pinSlugDuplicate") + (errBody.detail?.slug ? ": " + errBody.detail.slug : "")
+          : errBody.error === "invalid_pin_slug"
+            ? t("pinSlugInvalid")
+            : t("pinsSaveFail");
+      setStatus(status, msg, "warn");
+      toast(msg);
       return;
     }
     const okMsg = window.PK_AUTH.isCloud?.() ? t("pinsSavedCloud") : t("pinsSaved");

@@ -10,9 +10,20 @@ sys.path.insert(0, str(Path(__file__).parent))
 from common import LAB_SITE, abs_url, esc, load_json  # noqa: E402
 
 
+def pin_slug(pin: dict) -> str:
+    raw = str(pin.get("slug") or "").strip().lower()
+    if re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", raw):
+        return raw
+    from_title = re.sub(r"[^a-z0-9]+", "-", str(pin.get("title") or "").lower()).strip("-")[:64]
+    if re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", from_title):
+        return from_title
+    return f"pin-{pin.get('id', 'x')}"
+
+
 def board_pin(pin: dict, eager: bool = False) -> str:
     loading = 'loading="eager" fetchpriority="high"' if eager else 'loading="lazy"'
-    return f"""    <div class="pickora-board-pin" data-category="{esc(pin['category'])}" onclick="openPin({pin['id']})">
+    slug = pin_slug(pin)
+    return f"""    <div class="pickora-board-pin" data-category="{esc(pin['category'])}" data-pin-slug="{esc(slug)}" onclick="openPin('{esc(slug)}')">
       <img src="{abs_url(pin['image'])}" alt="{esc(pin.get('imageAlt') or pin['title'])}" width="{pin.get('width', 896)}" height="{pin.get('height', 1200)}" {loading} decoding="async">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">{esc(pin['title'])}</h4>
@@ -46,16 +57,13 @@ def filters_html(filters: list[dict]) -> str:
 def pin_data_js(pins: list[dict]) -> str:
     obj = {}
     for p in pins:
-        obj[str(p["id"])] = {
+        obj[pin_slug(p)] = {
             "title": p["title"],
             "desc": p.get("popupDesc") or p.get("boardDesc") or "",
             "image": abs_url(p["image"]),
             "products": p.get("products") or [],
         }
-    # Emit as JS object literal via json (keys quoted) then strip quotes on numeric keys
-    raw = json.dumps(obj, ensure_ascii=False, indent=2)
-    raw = re.sub(r'"(\d+)":', r"\1:", raw)
-    return raw
+    return json.dumps(obj, ensure_ascii=False, indent=2)
 
 
 def main() -> None:
