@@ -255,6 +255,82 @@
     }
   }
 
+  function defaultSocialLinks() {
+    const cat = window.PK_SOCIAL_CATALOG || [];
+    const on = new Set(window.PK_SOCIAL_DEFAULT_ENABLED || []);
+    return cat.map((s) => ({ id: s.id, url: "", enabled: on.has(s.id) }));
+  }
+
+  function ensureSocialLinks() {
+    if (!homeData) return;
+    const cat = window.PK_SOCIAL_CATALOG || [];
+    if (!cat.length) {
+      homeData.socialLinks = [];
+      return;
+    }
+    const incoming = Array.isArray(homeData.socialLinks) ? homeData.socialLinks : [];
+    if (!incoming.length) {
+      homeData.socialLinks = defaultSocialLinks();
+      return;
+    }
+    const byId = Object.fromEntries(
+      incoming.map((row) => [String(row?.id || "").toLowerCase(), row])
+    );
+    homeData.socialLinks = cat.map((s) => {
+      const row = byId[s.id];
+      if (!row) return { id: s.id, url: "", enabled: false };
+      return {
+        id: s.id,
+        url: String(row.url || "").trim(),
+        enabled: row.enabled !== false && row.enabled !== "false" && row.enabled !== 0,
+      };
+    });
+  }
+
+  function readSocialLinksForm() {
+    ensureSocialLinks();
+    const wrap = $("#home-socials");
+    if (!wrap) return homeData.socialLinks;
+    wrap.querySelectorAll(".social-row").forEach((row) => {
+      const id = row.getAttribute("data-id");
+      const slot = homeData.socialLinks.find((s) => s.id === id);
+      if (!slot) return;
+      const en = row.querySelector(".social-enabled");
+      const url = row.querySelector(".social-url");
+      slot.enabled = !!(en && en.checked);
+      slot.url = url ? String(url.value || "").trim() : "";
+    });
+    return homeData.socialLinks;
+  }
+
+  function renderSocialLinksEditor() {
+    const wrap = $("#home-socials");
+    if (!wrap || !homeData) return;
+    ensureSocialLinks();
+    const cat = window.PK_SOCIAL_CATALOG || [];
+    const byId = Object.fromEntries(homeData.socialLinks.map((s) => [s.id, s]));
+    const ro = !canWriteSession();
+    wrap.innerHTML = cat
+      .map((meta) => {
+        const slot = byId[meta.id] || { id: meta.id, url: "", enabled: false };
+        const checked = slot.enabled ? " checked" : "";
+        return (
+          `<div class="social-row" data-id="${escapeAttr(meta.id)}">` +
+          `<label class="social-toggle"><input type="checkbox" class="social-enabled"${checked}${ro ? " disabled" : ""}>` +
+          `<span class="social-name">${escapeAttr(meta.label)}</span></label>` +
+          `<input type="url" class="social-url" inputmode="url" autocomplete="off" ` +
+          `placeholder="${escapeAttr(meta.placeholder)}" value="${escapeAttr(slot.url || "")}"` +
+          `${ro ? " disabled" : ""}>` +
+          `</div>`
+        );
+      })
+      .join("");
+    wrap.querySelectorAll(".social-enabled, .social-url").forEach((el) => {
+      el.addEventListener("change", () => updateDirtyUi());
+      el.addEventListener("input", () => updateDirtyUi());
+    });
+  }
+
   function applyArticleToSlot(index, article) {
     if (!homeData?.latestReviews?.[index] || !article) return;
     const prev = homeData.latestReviews[index];
@@ -307,7 +383,9 @@
     const wrap = $("#home-reviews");
     if (!wrap || !homeData) return;
     ensureHomeReviewSlots();
+    ensureSocialLinks();
     renderHomeReviewsToolbar();
+    renderSocialLinksEditor();
     const badges = ["none", "new", "hot", "updated", "must-read", "editors-pick"];
     const canRemoveReview = homeData.latestReviews.length > HOME_REVIEWS_MIN;
 
@@ -713,6 +791,17 @@
     const status = $("#home-status");
     const latestReviews = readHomeForm();
     const topPicks = readTopPicksForm();
+    const socialLinks = readSocialLinksForm();
+    const badSocial = (socialLinks || []).filter((s) => {
+      if (!s.enabled) return false;
+      const u = String(s.url || "").trim();
+      if (!u) return false;
+      return !/^https:\/\//i.test(u);
+    });
+    if (badSocial.length) {
+      setStatus(status, t("socialsBadUrl"), "warn");
+      return;
+    }
     const bad = [];
     (topPicks.picks || []).forEach((p, i) => {
       const links = normalizeBuyLinks({ ...p, url: p.amazonUrl }).filter((l) => l.url);
@@ -757,7 +846,7 @@
       method: "POST",
       headers: authHeaders(),
       credentials: "include",
-      body: JSON.stringify({ latestReviews, topPicks }),
+      body: JSON.stringify({ latestReviews, topPicks, socialLinks }),
     });
     if (!res.ok) {
       setStatus(status, t("homeSaveFail"), "warn");
@@ -766,6 +855,7 @@
     }
     homeData.latestReviews = latestReviews;
     homeData.topPicks = topPicks;
+    homeData.socialLinks = socialLinks;
     const okMsg = window.PK_AUTH.isCloud?.() ? t("homeSavedCloud") : t("homeSaved");
     setStatus(status, okMsg, "ok");
     toast(okMsg);
@@ -1995,9 +2085,10 @@
       return;
     }
     const topPicks = readTopPicksForm();
+    const socialLinks = readSocialLinksForm();
     await openHtmlOfflinePreview({
       apiPath: "/api/preview/home",
-      body: { draft: { latestReviews, topPicks } },
+      body: { draft: { latestReviews, topPicks, socialLinks } },
       statusEl: status,
       windowName: "pk-home-preview",
     });
@@ -2307,7 +2398,12 @@
     if (!homeData) return "";
     readHomeForm();
     readTopPicksForm();
-    return JSON.stringify({ latestReviews: homeData.latestReviews, topPicks: homeData.topPicks });
+    readSocialLinksForm();
+    return JSON.stringify({
+      latestReviews: homeData.latestReviews,
+      topPicks: homeData.topPicks,
+      socialLinks: homeData.socialLinks,
+    });
   }
 
   function capturePinsFp() {
@@ -2625,6 +2721,7 @@
       if (id === "home" && homeData) {
         homeData.latestReviews = readHomeForm();
         readTopPicksForm();
+        readSocialLinksForm();
         renderHomeEditor();
       }
       if (id === "pins" && pinsData) {

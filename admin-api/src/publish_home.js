@@ -18,6 +18,11 @@
 
 import { getFile, putFile } from "./github.js";
 import { injectStudioPreviewChrome } from "./publish_products.js";
+import {
+  normalizeSocialLinks,
+  patchHtmlSocials,
+  socialsPublicJson,
+} from "./socials.js";
 
 // Marker preserved after the 4 cards (mirrors Python KEEP_COMMENT)
 const KEEP_COMMENT =
@@ -212,6 +217,9 @@ export function applyHomeDraftToHtml(html, draft) {
     };
     updated = patchTopPickShell(updated, first);
   }
+  if (draft.socialLinks) {
+    updated = patchHtmlSocials(updated, draft.socialLinks).html;
+  }
   return updated;
 }
 
@@ -246,14 +254,14 @@ export function buildHomePreviewHtml(templateHtml, draft, meta = {}) {
 
 export function planHomePublish(draft) {
   assertLatestReviewsCount(draft.latestReviews);
-  const files = ["content/home.json", "index.html"];
+  const files = ["content/home.json", "index.html", "assets/data/socials.json"];
   if (draft.topPicks) files.push("assets/data/top-picks.json");
   return {
     ok: true,
     files,
     note:
-      "Reviews grid + top-pick shell patched in index.html; " +
-      "content/home.json and assets/data/top-picks.json updated.",
+      "Reviews grid + top-pick shell + footer socials; " +
+      "content/home.json, socials.json, top-picks.json updated.",
   };
 }
 
@@ -276,7 +284,8 @@ export async function publishHomeDraft(env, draft, opts = {}) {
 
   const dryRun = !!opts.dryRun;
   const today = todayISO();
-  const urls = ["content/home.json", "index.html"];
+  draft.socialLinks = normalizeSocialLinks(draft.socialLinks);
+  const urls = ["content/home.json", "index.html", "assets/data/socials.json"];
   if (draft.topPicks) urls.push("assets/data/top-picks.json");
 
   // Validate patch even on dry-run
@@ -314,11 +323,24 @@ export async function publishHomeDraft(env, draft, opts = {}) {
     env,
     "index.html",
     updatedHome,
-    "publish(home): update reviews grid + top-pick shell",
+    "publish(home): update reviews grid + top-pick shell + socials",
     homePage.sha
   );
   commits.push(homeResult.commit.sha);
   written.push("index.html");
+
+  const socialsPath = "assets/data/socials.json";
+  const socialsExisting = await getFile(env, socialsPath);
+  const socialsPayload = socialsPublicJson(draft.socialLinks);
+  const socialsResult = await putFile(
+    env,
+    socialsPath,
+    JSON.stringify(socialsPayload, null, 2) + "\n",
+    "publish(home): update socials.json",
+    socialsExisting?.sha
+  );
+  commits.push(socialsResult.commit.sha);
+  written.push(socialsPath);
 
   if (draft.topPicks) {
     const tpPath = "assets/data/top-picks.json";
@@ -343,8 +365,8 @@ export async function publishHomeDraft(env, draft, opts = {}) {
     urls: written,
     commits,
     note:
-      "Reviews grid + top-pick shell patched in index.html; " +
-      "content/home.json and assets/data/top-picks.json updated.",
+      "Home reviews/top-picks + sitewide socials.json updated. " +
+      "Footer icons refresh via pickora-socials.js on all pages.",
   };
 }
 

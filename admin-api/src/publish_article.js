@@ -594,6 +594,7 @@ body.pk-is-preview header.site-header {
   const footerAssets = `<!-- site chrome scripts (CSS loaded in LIVE_CHROME_HEAD) -->
 <script src="https://pickora.shop/assets/js/pickora-nav.js?v=5" defer></script>
 <script src="https://pickora.shop/assets/js/pickora-product-anchors.js" defer></script>
+<script src="https://pickora.shop/assets/js/pickora-socials.js?v=1" defer></script>
 ${
   preview
     ? ""

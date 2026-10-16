@@ -22,6 +22,7 @@ Live reviews already on site (do not re-brief) — **all marked live / done**:
 - `how-to-choose-wireless-earbuds` — type 2 — chips `audio electronics` — **live ✓**
 - `wireless-earbud-buying-mistakes` — type 6 — chips `audio electronics` — **live ✓**
 - `best-noise-cancelling-headphones-2026` — type 1 — chips `audio electronics` — **live ✓**
+- `air-fryer-buying-mistakes` — type 6 — chips `kitchen` — **live ✓**
 
 **Next in progress:** pick next P1 `idea` from the table below.
 Mix target for the first 50 new ideas: ~40% roundup, ~25% buyer guide, ~15% vs, ~10% single, ~10% problem/mistakes.
@@ -38,7 +39,7 @@ Mix target for the first 50 new ideas: ~40% roundup, ~25% buyer guide, ~15% vs, 
 | 8 | Best stand mixers 2026 | best-stand-mixers-2026 | 1 | Home & Kitchen | `kitchen` | P2 | idea | |
 | 9 | Best electric kettles 2026 | best-electric-kettles-2026 | 1 | Home & Kitchen | `kitchen` | P2 | idea | |
 | 10 | Best instant pots and multicookers 2026 | best-instant-pots-2026 | 1 | Home & Kitchen | `kitchen` | P2 | idea | |
-| 11 | Air fryer buying mistakes to avoid | air-fryer-buying-mistakes | 6 | Home & Kitchen | `kitchen` | P1 | idea | |
+| 11 | Air fryer buying mistakes to avoid | air-fryer-buying-mistakes | 6 | Home & Kitchen | `kitchen` | P1 | live | `briefs/drafts/air-fryer-buying-mistakes.md` |
 | 12 | Best air fryer for a small kitchen | best-air-fryer-for-small-kitchen | 5 | Home & Kitchen | `kitchen` | P1 | idea | |
 | 13 | Best stick vacuums 2026 | best-stick-vacuums-2026 | 1 | Home & Kitchen | `cleaning` | P1 | idea | |
 | 14 | Robot vacuum vs stick vacuum | robot-vacuum-vs-stick-vacuum | 3 | Home & Kitchen | `cleaning smart-home` | P2 | idea | |

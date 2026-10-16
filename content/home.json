@@ -131,5 +131,72 @@
         "guideUrl": "/best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews/"
       }
     ]
-  }
+  },
+  "socialLinks": [
+    {
+      "id": "facebook",
+      "url": "",
+      "enabled": true
+    },
+    {
+      "id": "instagram",
+      "url": "",
+      "enabled": true
+    },
+    {
+      "id": "x",
+      "url": "",
+      "enabled": true
+    },
+    {
+      "id": "tiktok",
+      "url": "",
+      "enabled": true
+    },
+    {
+      "id": "youtube",
+      "url": "",
+      "enabled": false
+    },
+    {
+      "id": "pinterest",
+      "url": "",
+      "enabled": false
+    },
+    {
+      "id": "linkedin",
+      "url": "",
+      "enabled": false
+    },
+    {
+      "id": "threads",
+      "url": "",
+      "enabled": false
+    },
+    {
+      "id": "telegram",
+      "url": "",
+      "enabled": false
+    },
+    {
+      "id": "bluesky",
+      "url": "",
+      "enabled": false
+    },
+    {
+      "id": "whatsapp",
+      "url": "",
+      "enabled": false
+    },
+    {
+      "id": "discord",
+      "url": "",
+      "enabled": false
+    },
+    {
+      "id": "reddit",
+      "url": "",
+      "enabled": false
+    }
+  ]
 }
