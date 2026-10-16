@@ -17,6 +17,7 @@
  */
 
 import { getFile, putFile } from "./github.js";
+import { toSiteMediaUrl, rewriteMediaUrlsInData } from "./media_urls.js";
 
 // ---------------------------------------------------------------------------
 // One-shot style block injected before the product cards.
@@ -102,24 +103,7 @@ const STYLE_ONCE = `
 // ---------------------------------------------------------------------------
 
 function absUrl(path) {
-  if (!path) return "";
-  const p = String(path).trim();
-  const WORKER_MEDIA =
-    "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/";
-  if (/\/api\/media\/file\//i.test(p)) {
-    try {
-      if (/^https?:\/\//i.test(p)) {
-        const u = new URL(p);
-        return WORKER_MEDIA + u.pathname.replace(/^\/api\/media\/file\//i, "");
-      }
-    } catch {
-      /* fall through */
-    }
-    return WORKER_MEDIA + p.replace(/^\/?api\/media\/file\//i, "");
-  }
-  if (p.startsWith("http://") || p.startsWith("https://")) return p;
-  if (p.startsWith("/")) return "https://pickora.shop" + p;
-  return p;
+  return toSiteMediaUrl(path);
 }
 
 function escHtml(str) {
@@ -600,6 +584,7 @@ export function planProductsPublish(draft, options = {}) {
  * @returns {Promise<{ ok, urls, commits, skipped, note }>}
  */
 export async function publishProductsDraft(env, draft, opts = {}) {
+  draft = rewriteMediaUrlsInData(draft);
   const cats = draft.hubCategories;
   if (!Array.isArray(cats)) throw new Error("hubCategories must be an array");
 

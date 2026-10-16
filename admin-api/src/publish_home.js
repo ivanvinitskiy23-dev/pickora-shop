@@ -18,6 +18,7 @@
 
 import { getFile, putFile } from "./github.js";
 import { injectStudioPreviewChrome } from "./publish_products.js";
+import { toSiteMediaUrl, rewriteMediaUrlsInData } from "./media_urls.js";
 import {
   normalizeSocialLinks,
   patchHtmlSocials,
@@ -46,31 +47,12 @@ export function assertLatestReviewsCount(reviews) {
   }
 }
 
-const WORKER_MEDIA =
-  "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/";
-
 /**
- * Absolute image URL for Home cards.
- * Rewrites broken /api/media (and pickora.shop/api/media) to the Worker host —
- * GitHub Pages has no /api/media route.
+ * Absolute image URL for published Home cards — always pickora.shop /wp-content.
+ * (Studio may still preview via Worker; publish never ships workers.dev URLs.)
  */
 function absUrl(path) {
-  if (!path) return "";
-  const p = String(path).trim();
-  if (/\/api\/media\/file\//i.test(p)) {
-    try {
-      if (/^https?:\/\//i.test(p)) {
-        const u = new URL(p);
-        return WORKER_MEDIA + u.pathname.replace(/^\/api\/media\/file\//i, "");
-      }
-    } catch {
-      /* fall through */
-    }
-    return WORKER_MEDIA + p.replace(/^\/?api\/media\/file\//i, "");
-  }
-  if (p.startsWith("http://") || p.startsWith("https://")) return p;
-  if (p.startsWith("/")) return "https://pickora.shop" + p;
-  return p;
+  return toSiteMediaUrl(path);
 }
 
 function escHtml(str) {
@@ -280,6 +262,7 @@ export function planHomePublish(draft) {
  * @returns {Promise<{ ok, urls, commits, note }>}
  */
 export async function publishHomeDraft(env, draft, opts = {}) {
+  draft = rewriteMediaUrlsInData(draft);
   assertLatestReviewsCount(draft.latestReviews);
 
   const dryRun = !!opts.dryRun;

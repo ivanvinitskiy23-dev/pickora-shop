@@ -142,7 +142,7 @@
       {
         "id": "consumer-electronics-musm8386",
         "title": "BenQ ScreenBar Halo 2",
-        "image": "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/uploads/2026/10/benq-screenbar-halo-2-musm86ou.webp",
+        "image": "https://pickora.shop/wp-content/uploads/2026/10/benq-screenbar-halo-2-musm86ou.webp",
         "imageAlt": "Monitor light bar on top of a screen, with a small wireless remote on the desk and a soft backlight behind the display.",
         "description": "A light that sits on the monitor, lights the desk, and throws a soft glow behind the screen without a glare stripe. Auto brightness and a sensor that switches off when you leave are what owners actually use. It is a poor buy if you only wanted a cheap stick of LEDs.",
         "pros": [
@@ -158,7 +158,7 @@
       {
         "id": "consumer-electronics-musm5yu6",
         "title": "SanDisk 2TB Portable SSD",
-        "image": "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/uploads/2026/10/sandisk-2tb-portable-ssd.webp",
+        "image": "https://pickora.shop/wp-content/uploads/2026/10/sandisk-2tb-portable-ssd.webp",
         "imageAlt": "Pocket-size portable SSD with a short USB-C cable on a marble table.",
         "description": "A pocket drive for moving big folders without a spinning disk. Owners plug it in over USB-C and get speeds in the 10Gbps range when the port and cable match. Confirm you are buying the 2TB listing: the most detailed speed notes here were written about a 1TB stick in the same family.",
         "pros": [
@@ -174,7 +174,7 @@
       {
         "id": "consumer-electronics-musm4ggm",
         "title": "Anker 737 Power Bank (PowerCore 24K)",
-        "image": "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/uploads/2026/10/anker-737-power-bank-musm4sou.webp",
+        "image": "https://pickora.shop/wp-content/uploads/2026/10/anker-737-power-bank-musm4sou.webp",
         "imageAlt": "Thick rectangular power bank with a small front display and USB ports on a white oak desk.",
         "description": "This is a laptop brick, not a pocket phone bank. The screen shows what is going in and out, and owners have topped up a Surface, a MacBook Air, a phone, and headphones on one charge. Get it when a normal bank cannot lift a tablet or laptop. Leave it if you want something light for a jacket pocket.",
         "pros": [
@@ -190,7 +190,7 @@
       {
         "id": "consumer-electronics-musm2i1c",
         "title": "Apple AirPods Pro 3",
-        "image": "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/uploads/2026/10/airpods-pro-3.webp",
+        "image": "https://pickora.shop/wp-content/uploads/2026/10/airpods-pro-3.webp",
         "imageAlt": "Open white charging case with two short-stem earbuds and soft foam tips on a walnut sideboard.",
         "description": "These are the Pro buds to get if you live on an iPhone and the old pair falls out or dies mid-meeting. Owners describe a tighter foam fit, stronger noise cancelling, and clearer sound than the first Pros, including during workouts. Skip them if you jump between Android and Apple, or if your Pro 2s still fit and still hold a charge.",
         "pros": [
@@ -206,7 +206,7 @@
       {
         "id": "consumer-electronics-muslzodc",
         "title": "Insta360 Link 2",
-        "image": "https://pickora-admin-api.pickara-admin.workers.dev/api/media/file/uploads/2026/10/insta360-link-2.webp",
+        "image": "https://pickora.shop/wp-content/uploads/2026/10/insta360-link-2.webp",
         "imageAlt": "Compact webcam on a magnetic monitor mount, lens tilted down, on a dark desk.",
         "description": "A desk webcam for people who are on camera all day and are tired of a fixed 1080p brick. Face tracking, saved angles, and a lens that points down when the call ends are the reasons to buy it. The good controls live in Insta360’s app, so a locked work laptop keeps the basics and loses the rest.",
         "pros": [

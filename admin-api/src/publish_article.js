@@ -28,6 +28,19 @@ import {
   LIVE_HEADER_HTML,
   buildLiveFooterHtml,
 } from "./live_chrome.js";
+import {
+  toSiteMediaUrl,
+  rewriteMediaUrlsInText,
+  rewriteMediaUrlsInData,
+} from "./media_urls.js";
+
+/** Normalize draft media to pickora.shop /wp-content before HTML/JSON publish. */
+function normalizeDraftMedia(draft) {
+  const d = rewriteMediaUrlsInData({ ...(draft || {}) });
+  if (typeof d.bodyHtml === "string") d.bodyHtml = rewriteMediaUrlsInText(d.bodyHtml);
+  if (d.coverImage) d.coverImage = toSiteMediaUrl(d.coverImage);
+  return d;
+}
 
 export { compileBlocksToHtml, ensureBlueH1 };
 
@@ -117,7 +130,7 @@ const CHIP_LABELS = {
  *   - data-categories: space-separated chip slugs (1–3)
  *   - First chip tag has class "pk-card-tag" (primary, no modifier)
  *   - Additional chips get class "pk-card-tag pk-card-tag--soft"
- *   - Image src: draft.coverImage (may be absolute workers.dev URL — kept as-is)
+ *   - Image src: draft.coverImage → always pickora.shop /wp-content (never workers.dev)
  *   - Card link: article canonical URL only (no Amazon links on hub card)
  *   - No AggregateRating
  *
@@ -125,6 +138,7 @@ const CHIP_LABELS = {
  * @returns {string} Full <article>…</article> HTML, indented with 8 spaces
  */
 export function buildArticlesHubCard(draft) {
+  draft = normalizeDraftMedia(draft);
   const slug      = String(draft.slug     || "").trim();
   const title     = escHtml(String(draft.title || "").trim());
   const excerpt   = escHtml(String(draft.dek || draft.excerpt || draft.metaDescription || "").trim());
@@ -455,6 +469,8 @@ ${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }, null, 2)
 export function buildArticlePage(draft, options = {}) {
   const preview     = !!(options && options.preview);
   const previewBy   = String((options && options.previewBy) || "studio");
+  // Live publish: permanent pickora.shop paths. Studio offline preview may keep Worker URLs.
+  if (!preview) draft = normalizeDraftMedia(draft);
   const slug        = String(draft.slug || "");
   const canonical   = String(draft.canonical || `https://pickora.shop/${slug}/`);
   const title       = String(draft.title     || slug);
@@ -1300,6 +1316,7 @@ ${footerAssets}
  * @throws Error if GitHub writes fail
  */
 export async function publishArticleDraft(env, draft) {
+  draft = normalizeDraftMedia(draft);
   const slug      = String(draft.slug || "").trim();
   const canonical = draft.canonical || `https://pickora.shop/${slug}/`;
   const today     = todayISO();
