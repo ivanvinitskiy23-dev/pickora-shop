@@ -16,7 +16,14 @@
         "Probe cooking"
       ],
       "amazonUrl": "https://amzn.to/4vOr083",
-      "guideUrl": "/best-air-fryers-of-2026-which-one-should-you-buy/"
+      "guideUrl": "/best-air-fryers-of-2026-which-one-should-you-buy/",
+      "links": [
+        {
+          "label": "Amazon",
+          "url": "https://amzn.to/4vOr083",
+          "style": "amazon"
+        }
+      ]
     },
     {
       "id": "sony-xm6",
@@ -33,7 +40,14 @@
         "Long battery"
       ],
       "amazonUrl": "https://link.amazon/B0j6GjBg9",
-      "guideUrl": "/best-noise-cancelling-headphones-2026/"
+      "guideUrl": "/best-noise-cancelling-headphones-2026/",
+      "links": [
+        {
+          "label": "Amazon",
+          "url": "https://link.amazon/B0j6GjBg9",
+          "style": "amazon"
+        }
+      ]
     },
     {
       "id": "oxo-brew",
@@ -50,7 +64,14 @@
         "Daily reliability"
       ],
       "amazonUrl": "https://link.amazon/B09wqVQq0",
-      "guideUrl": "/best-coffee-makers-2026/"
+      "guideUrl": "/best-coffee-makers-2026/",
+      "links": [
+        {
+          "label": "Amazon",
+          "url": "https://link.amazon/B09wqVQq0",
+          "style": "amazon"
+        }
+      ]
     },
     {
       "id": "roborock-s8",
@@ -67,7 +88,14 @@
         "Pet-hair focus"
       ],
       "amazonUrl": "https://amzn.to/43Efa4h",
-      "guideUrl": "/best-robot-vacuums-2026-top-8-models-tested-honest-reviews/"
+      "guideUrl": "/best-robot-vacuums-2026-top-8-models-tested-honest-reviews/",
+      "links": [
+        {
+          "label": "Amazon",
+          "url": "https://amzn.to/43Efa4h",
+          "style": "amazon"
+        }
+      ]
     },
     {
       "id": "furbo-360",
@@ -84,7 +112,14 @@
         "360° tracking"
       ],
       "amazonUrl": "https://amzn.to/4uCT4KF",
-      "guideUrl": "/best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews/"
+      "guideUrl": "/best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews/",
+      "links": [
+        {
+          "label": "Amazon",
+          "url": "https://amzn.to/4uCT4KF",
+          "style": "amazon"
+        }
+      ]
     }
   ]
 }
