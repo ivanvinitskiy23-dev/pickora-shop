@@ -51,7 +51,17 @@ CREATE TABLE IF NOT EXISTS publish_snapshots (
   created_by   TEXT
 );
 
+-- Brute-force protection for POST /api/login (per-IP + per-login buckets).
+CREATE TABLE IF NOT EXISTS login_attempts (
+  bucket TEXT PRIMARY KEY,
+  fail_count INTEGER NOT NULL DEFAULT 0,
+  window_started_at TEXT NOT NULL DEFAULT (datetime('now')),
+  locked_until TEXT
+);
+
 -- Migration for existing databases (safe to re-run; SQLite ignores duplicate-column errors
 -- when executed via: wrangler d1 execute pickora-admin --remote --file=schema.sql)
 -- Run once manually if the table already exists without payload_json:
 --   ALTER TABLE publish_snapshots ADD COLUMN payload_json TEXT;
+-- Remote login_attempts (if DB already existed before this table):
+--   npx wrangler d1 execute pickora-admin --remote --command="CREATE TABLE IF NOT EXISTS login_attempts (bucket TEXT PRIMARY KEY, fail_count INTEGER NOT NULL DEFAULT 0, window_started_at TEXT NOT NULL DEFAULT (datetime('now')), locked_until TEXT);"

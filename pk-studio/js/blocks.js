@@ -67,22 +67,28 @@ window.PK_BLOCKS = (function () {
     return `<a class="${cls}" href="${esc(href)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${esc(text)}</a>`;
   }
 
-  /** Allow only safe inline tags from the Studio RTE. */
+  /** Allow only safe inline tags from the Studio RTE (no DOMPurify — keep in sync with article_blocks.js). */
   function sanitizeRichHtml(html) {
     let s = String(html || "");
     if (!s.trim()) return "";
-    // Normalize common editor output
+    if (s.length > 100000) s = s.slice(0, 100000);
     s = s
+      .replace(/\u0000/g, "")
+      .replace(/<!--[\s\S]*?-->/g, "")
+      .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "")
+      .replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, "")
+      .replace(/<\/?(?:script|style|iframe|object|embed|link|meta|form|input|button|textarea|svg|math)[^>]*>/gi, "")
+      .replace(/\son[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
       .replace(/<\/?(div|span)([^>]*)>/gi, "")
       .replace(/<br\s*\/?>/gi, "<br>")
       .replace(/&nbsp;/gi, " ");
-    // Drop everything except p/br/strong/b/em/i/a
     s = s.replace(/<\/?(?!\/?(?:p|br|strong|b|em|i|a)\b)[a-z][^>]*>/gi, "");
-    // Clean <a> to href only (http/https)
     s = s.replace(/<a\b[^>]*>/gi, (tag) => {
       const m = tag.match(/href\s*=\s*["']([^"']+)["']/i);
-      const href = m ? m[1].trim() : "";
-      if (!/^https?:\/\//i.test(href)) return "<a>";
+      let href = m ? m[1].trim() : "";
+      href = href.replace(/[\u0000-\u001f\u007f]/g, "");
+      if (!/^https?:\/\//i.test(href)) return "";
+      if (/^(javascript|data|vbscript):/i.test(href)) return "";
       return `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">`;
     });
     s = s.replace(/<(strong|b|em|i|p)\b[^>]*>/gi, "<$1>");

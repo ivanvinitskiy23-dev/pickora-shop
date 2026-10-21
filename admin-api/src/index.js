@@ -33,8 +33,15 @@ import { validateArticleDraft } from "./seo_gate.js";
 import { getFile, getFileSha, putBinaryFile, deleteFile } from "./github.js";
 
 const SESSION_TTL_SEC = 60 * 60 * 12;
+/** Login brute-force: sliding window + temporary lock (per IP and per login). */
+const LOGIN_WINDOW_SEC = 15 * 60;
+const LOGIN_MAX_FAILS_IP = 12;
+const LOGIN_MAX_FAILS_LOGIN = 8;
+const LOGIN_LOCK_SEC = 15 * 60;
+const LOGIN_FAIL_DELAY_MS = 350;
 const RAW_CONTENT =
   "https://raw.githubusercontent.com/ivanvinitskiy23-dev/pickora-shop/main/content";
+const ALLOWED_IMAGE_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
 
 export default {
   async fetch(request, env) {
@@ -61,17 +68,8 @@ export default {
       }
 
       if (url.pathname === "/api/health") {
-        return cors(
-          json({
-            ok: true,
-            mode: "cloudflare",
-            hasDb: !!env.DB,
-            hasOwner: !!(env.OWNER_LOGIN && env.OWNER_PASSWORD),
-            hasMedia: true,
-            hasGithub: !!env.GITHUB_TOKEN,
-          }),
-          request
-        );
+        // Public surface: no capability fingerprinting (hasOwner / hasGithub / …).
+        return cors(json({ ok: true, mode: "cloudflare" }), request);
       }
 
       if (url.pathname.startsWith("/api/media/file/")) {
@@ -154,6 +152,8 @@ export default {
       );
       if (publishDryMatch && request.method === "POST") {
         if (!user) return cors(json({ error: "unauthorized" }, 401), request);
+        const fwDry = forbidWrite(user);
+        if (fwDry) return cors(fwDry, request);
         const body = await readJson(request);
         body.dryRun = true;
         const mod = publishDryMatch[1];
@@ -360,10 +360,9 @@ export default {
 
       return cors(json({ error: "not_found" }, 404), request);
     } catch (err) {
-      return cors(
-        json({ error: "server_error", detail: String(err?.message || err) }, 500),
-        request
-      );
+      // Never echo internals to clients (stack / D1 / GitHub messages).
+      console.error("admin-api", String(err?.message || err));
+      return cors(json({ error: "server_error" }, 500), request);
     }
   },
 };
@@ -732,23 +731,24 @@ async function handleMediaUpload(request, env, user) {
     return json({ error: "bad_base64" }, 400);
   }
 
+  const detected = detectImageMagic(bytes);
+  if (!detected) {
+    return json(
+      {
+        error: "unsupported_image_type",
+        hint: "Only PNG, JPEG, and WebP are allowed (detected from file bytes).",
+      },
+      400
+    );
+  }
+  let ext = detected.ext;
+  let contentType = detected.contentType;
+
   const now = new Date();
   const yyyy = String(now.getUTCFullYear());
   const mm = String(now.getUTCMonth() + 1).padStart(2, "0");
   const baseStem = slugify(preferred || filename) || "upload";
   let base = baseStem;
-  let ext = "jpg";
-  let contentType = "image/jpeg";
-  if (bytes[0] === 0x89 && bytes[1] === 0x50) {
-    ext = "png";
-    contentType = "image/png";
-  } else if (bytes[0] === 0xff && bytes[1] === 0xd8) {
-    ext = "jpg";
-    contentType = "image/jpeg";
-  } else if (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[8] === 0x57 && bytes[9] === 0x45) {
-    ext = "webp";
-    contentType = "image/webp";
-  }
   // Keep owner's SEO filename when free; never overwrite an existing D1/GitHub asset.
   let finalKey = `uploads/${yyyy}/${mm}/${base}.${ext}`;
   let ghPathProbe = `wp-content/uploads/${yyyy}/${mm}/${base}.${ext}`;
@@ -858,21 +858,69 @@ async function handleMediaUpload(request, env, user) {
 }
 
 async function handleMediaGet(pathname, env) {
+  // Public GET is intentional: Studio <img> thumbs cannot send Bearer.
+  // Publish rewrites to pickora.shop/wp-content; keys are non-guessable SEO slugs + date path.
   const key = decodeURIComponent(pathname.replace(/^\/api\/media\/file\//, ""));
-  if (!key || key.includes("..")) return json({ error: "bad_key" }, 400);
+  if (!key || key.includes("..") || key.includes("\\") || key.startsWith("/")) {
+    return json({ error: "bad_key" }, 400);
+  }
+  if (!/^uploads\/\d{4}\/\d{2}\/[a-z0-9._-]+$/i.test(key)) {
+    return json({ error: "bad_key" }, 400);
+  }
   const row = await env.DB.prepare(
     `SELECT content_type, data_b64 FROM media_files WHERE key = ?`
   )
     .bind(key)
     .first();
   if (!row?.data_b64) return json({ error: "not_found" }, 404);
-  const bytes = Uint8Array.from(atob(row.data_b64), (c) => c.charCodeAt(0));
+  const ctype = String(row.content_type || "").toLowerCase();
+  if (!ALLOWED_IMAGE_TYPES.has(ctype)) {
+    return json({ error: "unsupported_stored_type" }, 415);
+  }
+  let bytes;
+  try {
+    bytes = Uint8Array.from(atob(row.data_b64), (c) => c.charCodeAt(0));
+  } catch {
+    return json({ error: "corrupt_blob" }, 500);
+  }
+  // Re-verify magic so a poisoned row cannot be served as a wrong MIME.
+  const magic = detectImageMagic(bytes);
+  if (!magic || magic.contentType !== ctype) {
+    return json({ error: "content_mismatch" }, 415);
+  }
   return new Response(bytes, {
     headers: {
-      "Content-Type": row.content_type || "application/octet-stream",
+      "Content-Type": ctype,
+      "X-Content-Type-Options": "nosniff",
+      "Content-Disposition": "inline",
       "Cache-Control": "public, max-age=86400",
     },
   });
+}
+
+/** @returns {{ ext: string, contentType: string } | null} */
+function detectImageMagic(bytes) {
+  if (!bytes || bytes.length < 12) return null;
+  if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) {
+    return { ext: "png", contentType: "image/png" };
+  }
+  if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+    return { ext: "jpg", contentType: "image/jpeg" };
+  }
+  // RIFF....WEBP
+  if (
+    bytes[0] === 0x52 &&
+    bytes[1] === 0x49 &&
+    bytes[2] === 0x46 &&
+    bytes[3] === 0x46 &&
+    bytes[8] === 0x57 &&
+    bytes[9] === 0x45 &&
+    bytes[10] === 0x42 &&
+    bytes[11] === 0x50
+  ) {
+    return { ext: "webp", contentType: "image/webp" };
+  }
+  return null;
 }
 
 async function recordSnapshot(env, module, detail, commits, user, payloadDraft) {
@@ -1636,12 +1684,19 @@ async function handleLogin(request, env) {
   if (!env.DB) return json({ error: "d1_missing" }, 503);
 
   const body = await readJson(request);
-  const login = String(body.login || "").trim();
+  const login = String(body.login || "").trim().slice(0, 80);
   const password = String(body.password || "");
+  const ip = clientIp(request);
+  const buckets = [`ip:${ip}`, login ? `login:${login.toLowerCase()}` : null].filter(Boolean);
+
+  const gate = await assertLoginAllowed(env, buckets);
+  if (gate) return gate;
+
   const { login: ownerLogin, password: ownerPassword } = ownerEnvCredentials(env);
 
   // ── Path 1: Owner via environment secrets ────────────────────────────────
   if (timingSafeEqual(login, ownerLogin) && timingSafeEqual(password, ownerPassword)) {
+    await clearLoginFailures(env, buckets);
     const token = cryptoRandomToken();
     const expires = new Date(Date.now() + SESSION_TTL_SEC * 1000).toISOString();
 
@@ -1689,9 +1744,12 @@ async function handleLogin(request, env) {
     dbUser.password_hash === "secret-backed" ||
     !(await verifyPassword(password, dbUser.password_hash))
   ) {
+    await recordLoginFailure(env, buckets);
+    await sleep(LOGIN_FAIL_DELAY_MS);
     return json({ error: "invalid_credentials" }, 401);
   }
 
+  await clearLoginFailures(env, buckets);
   const token = cryptoRandomToken();
   const expires = new Date(Date.now() + SESSION_TTL_SEC * 1000).toISOString();
 
@@ -1711,6 +1769,125 @@ async function handleLogin(request, env) {
     token,
     user: { login: dbUser.login, role: dbUser.role || "admin", owner: !!dbUser.is_owner },
   });
+}
+
+function clientIp(request) {
+  const cf = (request.headers.get("CF-Connecting-IP") || "").trim();
+  if (cf) return cf.slice(0, 64);
+  const xff = (request.headers.get("X-Forwarded-For") || "").split(",")[0].trim();
+  if (xff) return xff.slice(0, 64);
+  return "unknown";
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function ensureLoginAttemptsTable(env) {
+  try {
+    await env.DB.prepare(
+      `CREATE TABLE IF NOT EXISTS login_attempts (
+         bucket TEXT PRIMARY KEY,
+         fail_count INTEGER NOT NULL DEFAULT 0,
+         window_started_at TEXT NOT NULL DEFAULT (datetime('now')),
+         locked_until TEXT
+       )`
+    ).run();
+  } catch {
+    /* ignore — table may already exist or D1 briefly unavailable */
+  }
+}
+
+/** @returns {Response|null} 429 when locked */
+async function assertLoginAllowed(env, buckets) {
+  await ensureLoginAttemptsTable(env);
+  const now = Date.now();
+  for (const bucket of buckets) {
+    let row;
+    try {
+      row = await env.DB.prepare(
+        `SELECT fail_count, window_started_at, locked_until FROM login_attempts WHERE bucket = ?`
+      )
+        .bind(bucket)
+        .first();
+    } catch {
+      continue;
+    }
+    if (!row) continue;
+    if (row.locked_until) {
+      const until = Date.parse(row.locked_until);
+      if (Number.isFinite(until) && until > now) {
+        await sleep(LOGIN_FAIL_DELAY_MS);
+        return json(
+          {
+            error: "too_many_attempts",
+            hint: "Try again later",
+            retryAfterSec: Math.ceil((until - now) / 1000),
+          },
+          429
+        );
+      }
+    }
+  }
+  return null;
+}
+
+async function recordLoginFailure(env, buckets) {
+  await ensureLoginAttemptsTable(env);
+  const now = Date.now();
+  const nowIso = new Date(now).toISOString();
+  for (const bucket of buckets) {
+    const isIp = bucket.startsWith("ip:");
+    const maxFails = isIp ? LOGIN_MAX_FAILS_IP : LOGIN_MAX_FAILS_LOGIN;
+    let row;
+    try {
+      row = await env.DB.prepare(
+        `SELECT fail_count, window_started_at, locked_until FROM login_attempts WHERE bucket = ?`
+      )
+        .bind(bucket)
+        .first();
+    } catch {
+      continue;
+    }
+    let failCount = 1;
+    let windowStarted = nowIso;
+    if (row) {
+      const started = Date.parse(row.window_started_at);
+      const inWindow = Number.isFinite(started) && now - started < LOGIN_WINDOW_SEC * 1000;
+      if (inWindow) {
+        failCount = (Number(row.fail_count) || 0) + 1;
+        windowStarted = row.window_started_at;
+      }
+    }
+    const lockedUntil =
+      failCount >= maxFails
+        ? new Date(now + LOGIN_LOCK_SEC * 1000).toISOString()
+        : null;
+    try {
+      await env.DB.prepare(
+        `INSERT INTO login_attempts (bucket, fail_count, window_started_at, locked_until)
+         VALUES (?, ?, ?, ?)
+         ON CONFLICT(bucket) DO UPDATE SET
+           fail_count = excluded.fail_count,
+           window_started_at = excluded.window_started_at,
+           locked_until = excluded.locked_until`
+      )
+        .bind(bucket, failCount, windowStarted, lockedUntil)
+        .run();
+    } catch {
+      /* non-fatal — login still returns 401 */
+    }
+  }
+}
+
+async function clearLoginFailures(env, buckets) {
+  for (const bucket of buckets) {
+    try {
+      await env.DB.prepare(`DELETE FROM login_attempts WHERE bucket = ?`).bind(bucket).run();
+    } catch {
+      /* ignore */
+    }
+  }
 }
 
 /* ── Team management ──────────────────────────────────────────────────── */
