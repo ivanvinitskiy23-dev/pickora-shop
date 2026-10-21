@@ -74,7 +74,7 @@ Open a **new chat** and say: `агент Growth` / `Growth agent` / `SEO и Pint
 - Claim fake rankings or traffic numbers  
 - Scrape Amazon  
 - Replace Article agent (no full `выпусти статью` pipeline here)  
-- Link pins straight to `amzn.to` by default — pin → **pickora.shop article**  
+- Link Pinterest straight to `amzn.to` by default — Ideas pins → **`https://pickora.shop/categories/#{pin-slug}`** (Amazon CTAs on that pin). Guide → article only when doing a separate article pin pack  
 
 ### Starter prompt (paste into a new chat)
 

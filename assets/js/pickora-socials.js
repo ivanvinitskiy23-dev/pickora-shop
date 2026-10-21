@@ -40,6 +40,46 @@
     );
   }
 
+  function buildSimple(links) {
+    if (!links || !links.length) return "";
+    return links
+      .map(function (s) {
+        return (
+          '<a href="' +
+          esc(s.url) +
+          '" aria-label="' +
+          esc(s.label || s.id || "Social") +
+          '" target="_blank" rel="noopener noreferrer">' +
+          (s.svg || "") +
+          "</a>"
+        );
+      })
+      .join("");
+  }
+
+  function applySimple(links) {
+    var mounts = document.querySelectorAll("[data-pk-socials-simple]");
+    for (var i = 0; i < mounts.length; i++) {
+      var mount = mounts[i];
+      var col = mount.closest("[data-pk-socials-col]");
+      if (!links.length) {
+        mount.innerHTML = "";
+        mount.setAttribute("data-pk-socials", "empty");
+        if (col) {
+          col.setAttribute("hidden", "");
+          col.style.display = "none";
+        }
+        continue;
+      }
+      mount.innerHTML = buildSimple(links);
+      mount.setAttribute("data-pk-socials", "live");
+      if (col) {
+        col.removeAttribute("hidden");
+        col.style.display = "";
+      }
+    }
+  }
+
   function apply(data) {
     var links = (data && data.links) || [];
     var html = buildUl(links);
@@ -50,6 +90,7 @@
       var next = wrap.firstChild;
       if (next) nodes[i].parentNode.replaceChild(next, nodes[i]);
     }
+    applySimple(links);
     // Hide / show "Socials" heading with icons
     var headings = document.querySelectorAll("h3.wp-block-heading, h3[data-pk-socials-heading]");
     for (var h = 0; h < headings.length; h++) {

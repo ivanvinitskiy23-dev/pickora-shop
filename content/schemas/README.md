@@ -5,7 +5,7 @@
 | Файл | Что это на сайте | Кто правит |
 |------|------------------|------------|
 | `content/home.json` | Latest Reviews (ровно 4) + Top picks (Reader’s selection / карусель) | Home в админке |
-| `content/pins.json` | Доска Ideas на `/categories/` + товары в попапе | Pins |
+| `content/pins.json` | Доска Ideas на `/categories/` + товары в попапе (`amzn.to`). Отдельный продукт от гайдов: Pinterest → `/categories/#{slug}` → Amazon на сайте | Pins |
 | `content/products.json` | Карточки категорий на `/products/` + товары внутри хабов | Products |
 | `content/seo/*.json` | title / description хабов | SEO |
 | `content/articles/*.json` | Обзоры (Phase 3) | Articles |
