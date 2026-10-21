@@ -89,7 +89,11 @@ window.PK_BLOCKS = (function () {
       href = href.replace(/[\u0000-\u001f\u007f]/g, "");
       if (!/^https?:\/\//i.test(href)) return "";
       if (/^(javascript|data|vbscript):/i.test(href)) return "";
-      return `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">`;
+      // Amazon short links (amzn.to / link.amazon) and store CTAs need sponsored.
+      const rel = isAmazonUrl(href)
+        ? "sponsored nofollow noopener noreferrer"
+        : "noopener noreferrer";
+      return `<a href="${esc(href)}" target="_blank" rel="${rel}">`;
     });
     s = s.replace(/<(strong|b|em|i|p)\b[^>]*>/gi, "<$1>");
     return s.trim();

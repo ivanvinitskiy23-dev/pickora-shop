@@ -11,7 +11,14 @@
     window.gtag = function () { window.dataLayer.push(arguments); };
   }
 
-  var AFFILIATE_HOSTS = ['amzn.to', 'amazon.com', 'www.amazon.com', 'amazon.co.uk', 'geni.us'];
+  var AFFILIATE_HOSTS = [
+    'amzn.to',
+    'link.amazon',
+    'amazon.com',
+    'www.amazon.com',
+    'amazon.co.uk',
+    'geni.us',
+  ];
 
   function isAffiliate(url) {
     try {

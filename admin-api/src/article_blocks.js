@@ -84,7 +84,8 @@ function sanitizeRichHtml(html) {
     }
     if (!/^https?:\/\//i.test(href)) return "";
     if (/^(javascript|data|vbscript):/i.test(href)) return "";
-    return `<a href="${escAttr(href)}" target="_blank" rel="noopener noreferrer">`;
+    const rel = isAmazonUrl(href) ? AFFILIATE_REL : "noopener noreferrer";
+    return `<a href="${escAttr(href)}" target="_blank" rel="${rel}">`;
   });
   s = s.replace(/<\/a>/gi, "</a>");
   s = s.replace(/<(strong|b|em|i|p)\b[^>]*>/gi, "<$1>");
@@ -121,10 +122,32 @@ function amazonBtn(url, label) {
   return buyBtn(url, label || "Check on Amazon →", "amazon");
 }
 
-function isAmazonUrl(url) {
+export const AFFILIATE_REL = "sponsored nofollow noopener noreferrer";
+
+export function isAmazonUrl(url) {
   return /^https?:\/\/(amzn\.to\/|www\.amazon\.|amazon\.|link\.amazon\/)/i.test(
     String(url || "").trim()
   );
+}
+
+/** Force canonical affiliate rel/target on Amazon short + dp links in HTML. */
+export function ensureAffiliateLinkRels(html) {
+  return String(html || "").replace(/<a\b([^>]*?)>/gi, (full, attrs) => {
+    const hrefM = attrs.match(/\bhref\s*=\s*"([^"]+)"/i);
+    if (!hrefM || !isAmazonUrl(hrefM[1])) return full;
+    let next = attrs;
+    if (/\brel\s*=\s*"/i.test(next)) {
+      next = next.replace(/\brel\s*=\s*"[^"]*"/i, `rel="${AFFILIATE_REL}"`);
+    } else {
+      next += ` rel="${AFFILIATE_REL}"`;
+    }
+    if (!/\btarget\s*=\s*"/i.test(next)) {
+      next += ` target="_blank"`;
+    } else {
+      next = next.replace(/\btarget\s*=\s*"[^"]*"/i, `target="_blank"`);
+    }
+    return `<a${next}>`;
+  });
 }
 
 const LINK_STYLES = ["amazon", "blue", "outline", "walmart", "dark"];
@@ -150,7 +173,7 @@ function buyBtn(url, label, style) {
           : st === "dark"
             ? "pk-aff-btn pk-aff-btn--dark"
             : "pk-aff-btn pk-aff-btn--primary";
-  return `<a class="${cls}" href="${escAttr(href)}" target="_blank" rel="sponsored nofollow noopener noreferrer">${escHtml(text)}</a>`;
+  return `<a class="${cls}" href="${escAttr(href)}" target="_blank" rel="${AFFILIATE_REL}">${escHtml(text)}</a>`;
 }
 
 /**
@@ -312,7 +335,7 @@ export function compileBlocksToHtml(blocks) {
     .filter(Boolean)
     .join("\n\n");
 
-  return `<div class="pk-mw-guide">\n${html}\n</div>`;
+  return ensureAffiliateLinkRels(`<div class="pk-mw-guide">\n${html}\n</div>`);
 }
 
 /** Live guide CSS (from how-to-choose-an-espresso-machine). */

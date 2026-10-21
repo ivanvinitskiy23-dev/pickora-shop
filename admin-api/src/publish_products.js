@@ -266,7 +266,7 @@ export function buildProductCard(product, eager = false) {
             l.style === "amazon"
               ? ""
               : ` pickora-final-btn--${escHtml(l.style)}`;
-          return `    <a href="${escHtml(l.url)}" class="pickora-final-btn${mod}" target="_blank" rel="nofollow sponsored noopener noreferrer">${escHtml(l.label)} →</a>`;
+          return `    <a href="${escHtml(l.url)}" class="pickora-final-btn${mod}" target="_blank" rel="sponsored nofollow noopener noreferrer">${escHtml(l.label)} →</a>`;
         })
         .join("\n")}\n    </div>`
     : "";

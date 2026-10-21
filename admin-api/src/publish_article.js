@@ -18,6 +18,7 @@
 import { getFile, putFile } from "./github.js";
 import {
   compileBlocksToHtml,
+  ensureAffiliateLinkRels,
   ensureBlueH1,
   PK_MW_GUIDE_CSS,
   escHtml,
@@ -484,9 +485,9 @@ export function buildArticlePage(draft, options = {}) {
   // Badge + breadcrumb always open Articles filter — never product hubs
   const hubUrl = resolveArticlesHubUrl({ ...draft, hubCategory });
   const hasBlocks   = Array.isArray(draft.blocks) && draft.blocks.length > 0;
-  const bodyHtml    = hasBlocks
-    ? compileBlocksToHtml(draft.blocks)
-    : String(draft.bodyHtml || "");
+  const bodyHtml = ensureAffiliateLinkRels(
+    hasBlocks ? compileBlocksToHtml(draft.blocks) : String(draft.bodyHtml || "")
+  );
   const hasBlockProducts = hasBlocks && draft.blocks.some((b) => b && (b.type === "product" || b.type === "cta"));
   const hasBlockFaq = hasBlocks && draft.blocks.some((b) => b && b.type === "faq");
   const pubDate     = String(draft.publishedAt || todayISO()).slice(0, 10);

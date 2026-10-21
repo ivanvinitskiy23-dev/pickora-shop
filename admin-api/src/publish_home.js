@@ -169,6 +169,24 @@ export function patchTopPickShell(html, pick) {
   html = html.replace(
     /(class="pk-btn-blue pk-btn-amazon"[^>]*href=")[^"]+(")/, `$1${amazon}$2`
   );
+  // Keep Associates disclosure attrs on the Amazon CTA after href patch.
+  html = html.replace(
+    /<a([^>]*class="[^"]*pk-btn-amazon[^"]*"[^>]*)>/i,
+    (full, attrs) => {
+      let next = attrs;
+      if (/\brel\s*=\s*"/i.test(next)) {
+        next = next.replace(
+          /\brel\s*=\s*"[^"]*"/i,
+          `rel="sponsored nofollow noopener noreferrer"`
+        );
+      } else {
+        next += ` rel="sponsored nofollow noopener noreferrer"`;
+      }
+      if (!/\btarget\s*=\s*"/i.test(next)) next += ` target="_blank"`;
+      else next = next.replace(/\btarget\s*=\s*"[^"]*"/i, `target="_blank"`);
+      return `<a${next}>`;
+    }
+  );
   html = html.replace(
     /(class="pk-btn-ghost pk-btn-guide"[^>]*href=")[^"]+(")/, `$1${guide}$2`
   );
