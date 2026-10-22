@@ -35,6 +35,65 @@
   ],
   "pins": [
     {
+      "id": 8,
+      "slug": "kitchen-weeknight-staples",
+      "category": "kitchen",
+      "title": "Weeknight kitchen staples",
+      "boardDesc": "Weeknight meal prep made simple: a lived-in kitchen counter with the staples you actually reach for after work.",
+      "popupDesc": "Weeknight meal prep made simple: a lived-in kitchen counter with the staples you actually reach for after work. Soft evening light, chopping board ready, dinner underway — recreatable tools for real weeknights, not a show kitchen.",
+      "image": "https://pickora.shop/wp-content/uploads/2026/10/kitchen-weeknight-staples-ideas-nowm.webp",
+      "imageAlt": "Lived-in kitchen counter with weeknight cooking staples under soft evening light",
+      "width": 896,
+      "height": 1200,
+      "products": [
+        {
+          "name": "Instant Pot Duo",
+          "url": "https://link.amazon/B05z1wuLQ",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://link.amazon/B05z1wuLQ",
+              "style": "amazon"
+            }
+          ]
+        },
+        {
+          "name": "Zwilling Knife Block",
+          "url": "https://link.amazon/B09A1AvJv",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://link.amazon/B09A1AvJv",
+              "style": "amazon"
+            }
+          ]
+        },
+        {
+          "name": "Lodge Cast Iron",
+          "url": "https://link.amazon/B0dh82WRX",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://link.amazon/B0dh82WRX",
+              "style": "amazon"
+            }
+          ]
+        },
+        {
+          "name": "Ball Mason Jars",
+          "url": "https://link.amazon/B02rHJoxr",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://link.amazon/B02rHJoxr",
+              "style": "amazon"
+            }
+          ]
+        }
+      ],
+      "featured": false
+    },
+    {
       "id": 1,
       "slug": "sunlit-simplicity",
       "category": "work",
@@ -48,17 +107,39 @@
       "products": [
         {
           "name": "Apple MacBook Pro (Space Gray)",
-          "url": "https://amzn.to/4xXKw3B"
+          "url": "https://amzn.to/4xXKw3B",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/4xXKw3B",
+              "style": "amazon"
+            }
+          ]
         },
         {
           "name": "Rain Design mStand Laptop Stand",
-          "url": "https://amzn.to/3SGEAfk"
+          "url": "https://amzn.to/3SGEAfk",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/3SGEAfk",
+              "style": "amazon"
+            }
+          ]
         },
         {
           "name": "Keychron K3 Ultra-Slim Wireless Mechanical Keyboard",
-          "url": "https://amzn.to/4xUKp9f"
+          "url": "https://amzn.to/4xUKp9f",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/4xUKp9f",
+              "style": "amazon"
+            }
+          ]
         }
-      ]
+      ],
+      "featured": false
     },
     {
       "id": 2,
@@ -74,17 +155,39 @@
       "products": [
         {
           "name": "Greater Goods Electric Gooseneck Kettle",
-          "url": "https://amzn.to/4fdWjU9"
+          "url": "https://amzn.to/4fdWjU9",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/4fdWjU9",
+              "style": "amazon"
+            }
+          ]
         },
         {
           "name": "Ember Temperature Control Smart",
-          "url": "https://amzn.to/4va01TF"
+          "url": "https://amzn.to/4va01TF",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/4va01TF",
+              "style": "amazon"
+            }
+          ]
         },
         {
           "name": "Maestri House S2",
-          "url": "https://amzn.to/4vIRTus"
+          "url": "https://amzn.to/4vIRTus",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/4vIRTus",
+              "style": "amazon"
+            }
+          ]
         }
-      ]
+      ],
+      "featured": false
     },
     {
       "id": 3,
@@ -100,17 +203,39 @@
       "products": [
         {
           "name": "Razer Huntsman Mini Analog Keyboard",
-          "url": "https://amzn.to/4gbXtAA"
+          "url": "https://amzn.to/4gbXtAA",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/4gbXtAA",
+              "style": "amazon"
+            }
+          ]
         },
         {
           "name": "Logitech MX Master 3S Mouse (Graphite)",
-          "url": "https://amzn.to/4gb4B05"
+          "url": "https://amzn.to/4gb4B05",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/4gb4B05",
+              "style": "amazon"
+            }
+          ]
         },
         {
           "name": "BenQ ScreenBar Halo with Wireless Controller",
-          "url": "https://amzn.to/4wm4lAd"
+          "url": "https://amzn.to/4wm4lAd",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/4wm4lAd",
+              "style": "amazon"
+            }
+          ]
         }
-      ]
+      ],
+      "featured": false
     },
     {
       "id": 5,
@@ -126,17 +251,39 @@
       "products": [
         {
           "name": "Harber London Leather Desk Mat (Cognac)",
-          "url": "https://amzn.to/4wjIRDW"
+          "url": "https://amzn.to/4wjIRDW",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/4wjIRDW",
+              "style": "amazon"
+            }
+          ]
         },
         {
           "name": "Azio Retro Classic Mechanical Keyboard (Elwood)",
-          "url": "https://amzn.to/3Tdmf9O"
+          "url": "https://amzn.to/3Tdmf9O",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/3Tdmf9O",
+              "style": "amazon"
+            }
+          ]
         },
         {
           "name": "Industrial Edison Bulb Desk Lamp (Brass)",
-          "url": "https://amzn.to/4p2YRIi"
+          "url": "https://amzn.to/4p2YRIi",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/4p2YRIi",
+              "style": "amazon"
+            }
+          ]
         }
-      ]
+      ],
+      "featured": false
     },
     {
       "id": 6,
@@ -152,17 +299,39 @@
       "products": [
         {
           "name": "Cocktail Smoker Kit",
-          "url": "https://amzn.to/4fdAgNp"
+          "url": "https://amzn.to/4fdAgNp",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/4fdAgNp",
+              "style": "amazon"
+            }
+          ]
         },
         {
           "name": "Viski Admiral Decanter",
-          "url": "https://amzn.to/4gRAVFr"
+          "url": "https://amzn.to/4gRAVFr",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/4gRAVFr",
+              "style": "amazon"
+            }
+          ]
         },
         {
           "name": "Ice Ball Press Kit",
-          "url": "https://amzn.to/4eZ1KFr"
+          "url": "https://amzn.to/4eZ1KFr",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/4eZ1KFr",
+              "style": "amazon"
+            }
+          ]
         }
-      ]
+      ],
+      "featured": false
     },
     {
       "id": 7,
@@ -178,17 +347,40 @@
       "products": [
         {
           "name": "Dyson Purifier Hot+Cool Formaldehyde",
-          "url": "https://amzn.to/4f7U97d"
+          "url": "https://amzn.to/4f7U97d",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/4f7U97d",
+              "style": "amazon"
+            }
+          ]
         },
         {
           "name": "Kindle Scribe",
-          "url": "https://amzn.to/3RwqKfg"
+          "url": "https://amzn.to/3RwqKfg",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/3RwqKfg",
+              "style": "amazon"
+            }
+          ]
         },
         {
           "name": "DREO Space Heater",
-          "url": "https://amzn.to/4w2Q5g6"
+          "url": "https://amzn.to/4w2Q5g6",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://amzn.to/4w2Q5g6",
+              "style": "amazon"
+            }
+          ]
         }
-      ]
+      ],
+      "featured": false
     }
-  ]
+  ],
+  "shuffleOnLoad": true
 }
