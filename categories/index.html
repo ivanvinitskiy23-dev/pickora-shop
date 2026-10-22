@@ -1069,6 +1069,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
   
   <div class="pickora-filters">
     
+    
     <button class="pickora-filter-btn active" onclick="filterPins('all')">All Ideas</button>
     <button class="pickora-filter-btn" onclick="filterPins('work')">Work &amp; Study</button>
     <button class="pickora-filter-btn" onclick="filterPins('kitchen')">Kitchen &amp; Dining</button>
@@ -1082,8 +1083,17 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
   <div class="pickora-board-grid" id="pins-grid">
     
     
+    
+    <div class="pickora-board-pin" data-category="kitchen" data-pin-slug="kitchen-weeknight-staples" onclick="openPin('kitchen-weeknight-staples')">
+      <img src="https://pickora.shop/wp-content/uploads/2026/10/kitchen-weeknight-staples-ideas-nowm.webp" alt="Lived-in kitchen counter with weeknight cooking staples under soft evening light" width="896" height="1200" loading="eager" fetchpriority="high" decoding="async">
+      <div class="pickora-board-info">
+        <h4 class="pickora-board-title">Weeknight kitchen staples</h4>
+        <p class="pickora-board-desc">Weeknight meal prep made simple: a lived-in kitchen counter with the staples you actually reach for after work.</p>
+      </div>
+    </div>
+
     <div class="pickora-board-pin" data-category="work" data-pin-slug="sunlit-simplicity" onclick="openPin('sunlit-simplicity')">
-      <img src="https://pickora.shop/wp-content/uploads/2026/07/Desk_with_MacBook_and_keyboard_202607011350.webp" alt="Minimalist Japandi home office setup featuring an Apple MacBook Pro on an aluminum Rain Design mStand laptop stand, light oak desk with soft morning window shadows, and a Keychron mechanical keyboard" width="896" height="1200" loading="eager" fetchpriority="high" decoding="async">
+      <img src="https://pickora.shop/wp-content/uploads/2026/07/Desk_with_MacBook_and_keyboard_202607011350.webp" alt="Minimalist Japandi home office setup featuring an Apple MacBook Pro on an aluminum Rain Design mStand laptop stand, light oak desk with soft morning window shadows, and a Keychron mechanical keyboard" width="896" height="1200" loading="lazy" decoding="async">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">Sunlit Simplicity</h4>
         <p class="pickora-board-desc">Find your flow in a space defined by light and clarity. Minimalist Apple tech meets the organic warmth of a Japandi-inspired workspace.</p>
@@ -1154,6 +1164,57 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
   // =======================================================
   const pinData = {
 
+  "kitchen-weeknight-staples": {
+    "title": "Weeknight kitchen staples",
+    "desc": "Weeknight meal prep made simple: a lived-in kitchen counter with the staples you actually reach for after work. Soft evening light, chopping board ready, dinner underway — recreatable tools for real weeknights, not a show kitchen.",
+    "image": "https://pickora.shop/wp-content/uploads/2026/10/kitchen-weeknight-staples-ideas-nowm.webp",
+    "products": [
+      {
+        "name": "Instant Pot Duo",
+        "url": "https://link.amazon/B05z1wuLQ",
+        "links": [
+          {
+            "label": "Amazon",
+            "url": "https://link.amazon/B05z1wuLQ",
+            "style": "amazon"
+          }
+        ]
+      },
+      {
+        "name": "Zwilling Knife Block",
+        "url": "https://link.amazon/B09A1AvJv",
+        "links": [
+          {
+            "label": "Amazon",
+            "url": "https://link.amazon/B09A1AvJv",
+            "style": "amazon"
+          }
+        ]
+      },
+      {
+        "name": "Lodge Cast Iron",
+        "url": "https://link.amazon/B0dh82WRX",
+        "links": [
+          {
+            "label": "Amazon",
+            "url": "https://link.amazon/B0dh82WRX",
+            "style": "amazon"
+          }
+        ]
+      },
+      {
+        "name": "Ball Mason Jars",
+        "url": "https://link.amazon/B02rHJoxr",
+        "links": [
+          {
+            "label": "Amazon",
+            "url": "https://link.amazon/B02rHJoxr",
+            "style": "amazon"
+          }
+        ]
+      }
+    ]
+  },
   "sunlit-simplicity": {
     "title": "Sunlit Simplicity",
     "desc": "Find your flow in a space defined by light and clarity. Minimalist Apple tech meets the organic warmth of a Japandi-inspired workspace.",
