@@ -1070,6 +1070,7 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
   <div class="pickora-filters">
     
     
+    
     <button class="pickora-filter-btn active" onclick="filterPins('all')">All Ideas</button>
     <button class="pickora-filter-btn" onclick="filterPins('work')">Work &amp; Study</button>
     <button class="pickora-filter-btn" onclick="filterPins('kitchen')">Kitchen &amp; Dining</button>
@@ -1084,8 +1085,17 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
     
     
     
+    
+    <div class="pickora-board-pin" data-category="travel" data-pin-slug="carry-on-night-edc" onclick="openPin('carry-on-night-edc')">
+      <img src="https://pickora.shop/wp-content/uploads/2026/10/carry-on-night-edc-ideas.webp" alt="Open carry-on and travel EDC essentials laid out on a bed in soft evening light" width="896" height="1200" loading="eager" fetchpriority="high" decoding="async">
+      <div class="pickora-board-info">
+        <h4 class="pickora-board-title">Carry-on night EDC — sling, bottle &amp; power bank</h4>
+        <p class="pickora-board-desc">Carry-on night: soft light, open bag, and the EDC essentials you actually pack for a short trip.</p>
+      </div>
+    </div>
+
     <div class="pickora-board-pin" data-category="kitchen" data-pin-slug="kitchen-weeknight-staples" onclick="openPin('kitchen-weeknight-staples')">
-      <img src="https://pickora.shop/wp-content/uploads/2026/10/kitchen-weeknight-staples-ideas-nowm.webp" alt="Lived-in kitchen counter with weeknight cooking staples under soft evening light" width="896" height="1200" loading="eager" fetchpriority="high" decoding="async">
+      <img src="https://pickora.shop/wp-content/uploads/2026/10/kitchen-weeknight-staples-ideas-nowm.webp" alt="Lived-in kitchen counter with weeknight cooking staples under soft evening light" width="896" height="1200" loading="lazy" decoding="async">
       <div class="pickora-board-info">
         <h4 class="pickora-board-title">Weeknight kitchen staples</h4>
         <p class="pickora-board-desc">Weeknight meal prep made simple: a lived-in kitchen counter with the staples you actually reach for after work.</p>
@@ -1164,6 +1174,46 @@ footer.site-footer > .wp-block-group.has-color-2-background-color {
   // =======================================================
   const pinData = {
 
+  "carry-on-night-edc": {
+    "title": "Carry-on night EDC — sling, bottle & power bank",
+    "desc": "Carry-on night: soft light, open bag, and the EDC essentials you actually pack for a short trip. Sling, power bank, earbuds, and flat toiletries — a recreatable packing scene, not luxury luggage porn.",
+    "image": "https://pickora.shop/wp-content/uploads/2026/10/carry-on-night-edc-ideas.webp",
+    "products": [
+      {
+        "name": "Peak Design Everyday Sling 6L",
+        "url": "https://link.amazon/B09mLWhbw",
+        "links": [
+          {
+            "label": "Amazon",
+            "url": "https://link.amazon/B09mLWhbw",
+            "style": "amazon"
+          }
+        ]
+      },
+      {
+        "name": "Yeti Rambler 26 oz Bottle",
+        "url": "https://link.amazon/B0fvvpExR",
+        "links": [
+          {
+            "label": "Amazon",
+            "url": "https://link.amazon/B0fvvpExR",
+            "style": "amazon"
+          }
+        ]
+      },
+      {
+        "name": "Anker 737 Power Bank (PowerCore 24K)",
+        "url": "https://link.amazon/B0evyc94L",
+        "links": [
+          {
+            "label": "Amazon",
+            "url": "https://link.amazon/B0evyc94L",
+            "style": "amazon"
+          }
+        ]
+      }
+    ]
+  },
   "kitchen-weeknight-staples": {
     "title": "Weeknight kitchen staples",
     "desc": "Weeknight meal prep made simple: a lived-in kitchen counter with the staples you actually reach for after work. Soft evening light, chopping board ready, dinner underway — recreatable tools for real weeknights, not a show kitchen.",
