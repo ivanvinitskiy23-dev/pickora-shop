@@ -35,6 +35,54 @@
   ],
   "pins": [
     {
+      "id": 9,
+      "slug": "carry-on-night-edc",
+      "category": "travel",
+      "title": "Carry-on night EDC — sling, bottle & power bank",
+      "boardDesc": "Carry-on night: soft light, open bag, and the EDC essentials you actually pack for a short trip.",
+      "popupDesc": "Carry-on night: soft light, open bag, and the EDC essentials you actually pack for a short trip. Sling, power bank, earbuds, and flat toiletries — a recreatable packing scene, not luxury luggage porn.",
+      "image": "https://pickora.shop/wp-content/uploads/2026/10/carry-on-night-edc-ideas.webp",
+      "imageAlt": "Open carry-on and travel EDC essentials laid out on a bed in soft evening light",
+      "width": 896,
+      "height": 1200,
+      "products": [
+        {
+          "name": "Peak Design Everyday Sling 6L",
+          "url": "https://link.amazon/B09mLWhbw",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://link.amazon/B09mLWhbw",
+              "style": "amazon"
+            }
+          ]
+        },
+        {
+          "name": "Yeti Rambler 26 oz Bottle",
+          "url": "https://link.amazon/B0fvvpExR",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://link.amazon/B0fvvpExR",
+              "style": "amazon"
+            }
+          ]
+        },
+        {
+          "name": "Anker 737 Power Bank (PowerCore 24K)",
+          "url": "https://link.amazon/B0evyc94L",
+          "links": [
+            {
+              "label": "Amazon",
+              "url": "https://link.amazon/B0evyc94L",
+              "style": "amazon"
+            }
+          ]
+        }
+      ],
+      "featured": false
+    },
+    {
       "id": 8,
       "slug": "kitchen-weeknight-staples",
       "category": "kitchen",
