@@ -25,7 +25,7 @@ You audit **pickora.shop** (static GitHub Pages + Cloudflare Worker Studio/`admi
 | Wave | Name | Scope |
 |---|---|---|
 | **A** | Security | `admin-api/`, `pk-studio/`, secrets patterns, CORS, auth, media, login rate limits, XSS in Studio |
-| **B** | Live money/HTML | Affiliate URLs on live `*/index.html`, OG/cover hosts, disclosure, schema (no fake AggregateRating), Worker media leftovers |
+| **B** | Live money/HTML | Affiliate URLs on live `*/index.html`, OG/cover hosts, disclosure, schema (no fake AggregateRating; no Offer/offers without real price), Worker media leftovers |
 | **C** | SEO site-wide | `sitemap.xml` vs dirs, canonical/title/meta samples, hubs, internal links, robots.txt — follow [../pickora-growth/seo.md](../pickora-growth/seo.md) |
 | **D** | Growth readiness | Ideas: Pinterest→`/categories/#{slug}` (not bare amzn); optional Guide→article; analytics hooks if present; CONTENT-BANK hygiene notes; 404 — no inventing GSC numbers |
 

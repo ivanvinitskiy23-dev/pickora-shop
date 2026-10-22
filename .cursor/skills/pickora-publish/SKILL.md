@@ -48,7 +48,7 @@ If no draft yet, run writer skill. Prefer existing draft in `briefs/drafts/` if 
 
 1. Copy chrome from nearest sibling review, default:
    `best-air-fryers-of-2026-which-one-should-you-buy/index.html`
-2. Replace: `<title>`, meta description, canonical, OG/Twitter, JSON-LD (`Article` + `BreadcrumbList`; `ItemList`/`Product` only from brief; **no AggregateRating**)
+2. Replace: `<title>`, meta description, canonical, OG/Twitter, JSON-LD (`Article` + `BreadcrumbList`; optional `ItemList`/`Product` **without** `offers`/`Offer`/`priceCurrency`; **no AggregateRating**; never invent Amazon prices)
 3. Replace hero: crumbs, badge, H1, dek
 4. Replace cover `<img>` src/srcset/alt → new cover (eager + `fetchpriority="high"` + width/height)
 5. Replace article body inside the text-editor widget container

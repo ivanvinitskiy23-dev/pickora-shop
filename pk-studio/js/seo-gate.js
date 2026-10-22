@@ -54,6 +54,10 @@
     /hours? (of )?testing/i,
     /verified buyer/i,
     /AggregateRating/i,
+    // Affiliate: never ship schema.org Offer (needs live price; do not invent)
+    /"@type"\s*:\s*"Offer"/i,
+    /"offers"\s*:/i,
+    /priceCurrency/i,
     /TODO/i,
     /example\.com/i,
     /amzn\.to\/TODO/i,
@@ -250,6 +254,16 @@
         id: "schema_rating",
         label: "Do not include AggregateRating in markup",
       });
+    }
+
+    if (/"@type"\s*:\s*"Offer"/i.test(hay) || /"offers"\s*:/i.test(hay)) {
+      if (!blockers.some((b) => b.id === "schema_offer")) {
+        blockers.push({
+          id: "schema_offer",
+          label:
+            "Do not include schema.org Offer/offers (no stable Amazon price; use Article CTAs only)",
+        });
+      }
     }
 
     const type = Number(d.type);

@@ -38,6 +38,10 @@ const BANNED = [
   /hours? (of )?testing/i,
   /verified buyer/i,
   /AggregateRating/i,
+  // Affiliate site: never ship schema.org Offer (needs live price; inventing price = GSC/merchant risk)
+  /"@type"\s*:\s*"Offer"/i,
+  /"offers"\s*:/i,
+  /priceCurrency/i,
   /TODO/i,
   /example\.com/i,
   /amzn\.to\/TODO/i,
@@ -241,11 +245,21 @@ export function validateArticleDraft(draft) {
 
   // ── Explicit AggregateRating check (belt-and-suspenders) ─────────────────
   if (/AggregateRating/i.test(body)) {
-    // May already be caught by BANNED[3], deduplicate by id
+    // May already be caught by BANNED, deduplicate by id
     if (!blockers.some((b) => b.id === "schema_rating")) {
       blockers.push({
         id:    "schema_rating",
         label: "Do not include AggregateRating in markup",
+      });
+    }
+  }
+
+  // ── No schema.org Offer without a real merchant price (affiliate) ────────
+  if (/"@type"\s*:\s*"Offer"/i.test(haystack) || /"offers"\s*:/i.test(haystack)) {
+    if (!blockers.some((b) => b.id === "schema_offer")) {
+      blockers.push({
+        id:    "schema_offer",
+        label: "Do not include schema.org Offer/offers (no stable Amazon price; use Article CTAs only)",
       });
     }
   }

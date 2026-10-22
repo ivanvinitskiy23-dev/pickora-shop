@@ -390,6 +390,9 @@ ${faq
 
 /**
  * Build JSON-LD structured data for an article page.
+ * Affiliate rule: WebPage + Article (+ optional FAQPage) only.
+ * Never emit Product/Offer/offers/priceCurrency — Pickora is not the merchant
+ * and must not invent Amazon prices (GSC Product/Merchant errors).
  * @returns {string} <script type="application/ld+json">…</script>
  */
 function _buildArticleJsonLd(draft, canonical, pubDate) {

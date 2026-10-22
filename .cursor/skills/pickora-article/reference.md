@@ -121,7 +121,7 @@ Products: optional 2–3 supporting CTAs from brief.
 - Title: `Working title – Pickora` (≤60 chars when possible)
 - Meta description: 140–160 chars, Flesch-friendly, no banned hype (“miracle”, “guaranteed”, fake lab)
 - `og:type`: `article`
-- JSON-LD when wiring page: `Article` + `BreadcrumbList`; add `ItemList`/`Product` only from brief products; **never** `AggregateRating`
+- JSON-LD when wiring page: `Article` + `BreadcrumbList`; optional `ItemList`/`Product` from brief **without** `offers`/`Offer` (affiliate — no stable price); **never** `AggregateRating`
 
 ## Publish checklist (when wiring)
 
