@@ -16,6 +16,7 @@ Live reviews already on site (do not re-brief) — **all marked live / done**:
 - `best-robot-vacuums-2026-top-8-models-tested-honest-reviews` — type 1 — chips `cleaning smart-home` — **live ✓**
 - `best-pet-cameras-2026-top-7-smart-cameras-for-dogs-and-cats-tested-honest-reviews` — type 1 — chips `pets smart-home` — **live ✓**
 - `how-to-choose-a-microwave-2026` — type 2 — chips `kitchen` — **live ✓**
+- `best-microwaves-2026` — type 1 — chips `kitchen` — **live ✓**
 - `best-coffee-makers-2026` — type 1 — chips `kitchen` — **live ✓**
 - `how-to-choose-an-espresso-machine` — type 2 — chips `kitchen` — **live ✓**
 - `ninja-vs-cosori-air-fryer` — type 3 — chips `kitchen` — **live ✓**
@@ -30,7 +31,7 @@ Mix target for the first 50 new ideas: ~40% roundup, ~25% buyer guide, ~15% vs, 
 | # | Working title | Slug idea | Type | Category | Chips | Priority | Status | Brief file |
 |---|---|---|---|---|---|---|---|---|
 | 1 | How to choose a microwave in 2026 | how-to-choose-a-microwave-2026 | 2 | Home & Kitchen | `kitchen` | P1 | live | `briefs/2026-how-to-choose-a-microwave.md` |
-| 2 | Best microwaves 2026 | best-microwaves-2026 | 1 | Home & Kitchen | `kitchen` | P1 | idea | |
+| 2 | Best microwaves 2026 | best-microwaves-2026 | 1 | Home & Kitchen | `kitchen` | P1 | live | `briefs/2026-best-microwaves.md` |
 | 3 | Best coffee makers 2026 | best-coffee-makers-2026 | 1 | Home & Kitchen | `kitchen` | P1 | live | `briefs/2026-best-coffee-makers.md` |
 | 4 | How to choose an espresso machine | how-to-choose-an-espresso-machine | 2 | Home & Kitchen | `kitchen` | P1 | live | `briefs/2026-how-to-choose-an-espresso-machine.md` |
 | 5 | Ninja vs Cosori air fryer | ninja-vs-cosori-air-fryer | 3 | Home & Kitchen | `kitchen` | P1 | live | `briefs/2026-ninja-vs-cosori-air-fryer.md` |

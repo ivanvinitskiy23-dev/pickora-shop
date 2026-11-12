@@ -161,6 +161,10 @@ Indexable pages have conversational meta descriptions (Flesch 60.7–68.9, 140�
 - Cover policy: owner photo or Cursor GenerateImage → WebP under `wp-content/uploads/YYYY/MM/{slug}-cover.webp` (no Amazon CDN hotlinks).
 - Commands: draft → cover → publish → commit/push on request.
 
+### 2026-11-12 — Publish best-microwaves-2026
+- Wired `/best-microwaves-2026/` (Type 1), cover + product WebPs, articles hub + homepage Latest Reviews, sitemap, CONTENT-BANK → live.
+- Cross-link from `/how-to-choose-a-microwave-2026/`; Studio JSON `content/articles/best-microwaves-2026.json`.
+
 ### 2026-09-17 — Article factory (Phase 5 kickoff)
 - Added `CONTENT-BANK.md` (~50+ mixed-type topics), `briefs/_TEMPLATE.md`, and project skill `pickora-article` (research brief → Pickora draft).
 - Dry-run buyer guide: microwave how-to brief + draft under `briefs/` / `briefs/drafts/` (not published; TODO affiliate links).
