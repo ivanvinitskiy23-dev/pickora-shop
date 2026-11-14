@@ -54,9 +54,13 @@ Fill in the brief before publish:
 6. Hero img: `loading="eager"` `fetchpriority="high"` `decoding="async"` `width="1200"` `height="670"`.
 7. Hub/related imgs: `loading="lazy"`.
 
+## Quality bar (covers)
+
+**Ultra-realistic** only: looks like a real camera photo (depth of field, natural light, believable materials). Reject plastic CGI, waxy skin, warped hands, purple AI-slop gradients, fake UI, or readable brand packaging. Both Article writer and Article Editor must enforce this before publish.
+
 ## GenerateImage prompt recipe
 
-Lifestyle editorial photo, no logos, no watermarks, no readable brand names on packaging, natural light, product category in real use, 16:9, clean commercial look matching Pickora (navy/blue site, not purple AI-slop gradients). Example:
+Ultra-realistic lifestyle editorial photo, no logos, no watermarks, no readable brand names on packaging, natural light, product category in real use, 16:9, clean commercial look matching Pickora (navy/blue site, not purple AI-slop gradients). Example:
 
 > Ultra-realistic editorial photo of a modern apartment kitchen counter with a closed stainless countertop microwave beside a plate of leftovers, soft daylight, no logos, no text, 16:9
 

@@ -25,8 +25,16 @@ Live reviews already on site (do not re-brief) — **all marked live / done**:
 - `best-noise-cancelling-headphones-2026` — type 1 — chips `audio electronics` — **live ✓**
 - `air-fryer-buying-mistakes` — type 6 — chips `kitchen` — **live ✓**
 
-**Next in progress:** pick next P1 `idea` from the table below.
-Mix target for the first 50 new ideas: ~40% roundup, ~25% buyer guide, ~15% vs, ~10% single, ~10% problem/mistakes.
+**Next in progress (demand-led):** finish **pet-camera cluster** before new kitchen/fitness roundups. Write what people already search — not random bank filler.
+Mix target still applies long-term; **short-term queue = P0 pets only**.
+
+### GSC snapshot (28d → 2026-11-14) + bank policy
+
+- ~8.0k impressions / **3 clicks** — almost all signal = `best-pet-cameras-2026-…` (**refreshed 2026-11-14**: research-only voice, CTR title/meta, FAQ, no star ratings/schema ratings)
+- **Write next for real queries:** `best pet camera 2026` · budget / under $200 · how to choose · Furbo vs Petcube · dog camera · large dogs · buying mistakes · subscription skip
+- **Do not add** junk SERP spam (`ceramic` / `organic` / `bamboo` pet camera, etc.)
+- Live kitchen/audio guides ≈ low impressions → keep live, promote with pins/links; **do not jump new P1 kitchen ideas ahead of pets**
+- **Ship order:** `#45` how-to-choose → `#49` Furbo vs Petcube → `#55` budget → `#50` large dogs → `#57` mistakes → `#56` dog camera → `#52` Furbo 360 worth it
 
 | # | Working title | Slug idea | Type | Category | Chips | Priority | Status | Brief file |
 |---|---|---|---|---|---|---|---|---|
@@ -41,47 +49,50 @@ Mix target for the first 50 new ideas: ~40% roundup, ~25% buyer guide, ~15% vs, 
 | 9 | Best electric kettles 2026 | best-electric-kettles-2026 | 1 | Home & Kitchen | `kitchen` | P2 | idea | |
 | 10 | Best instant pots and multicookers 2026 | best-instant-pots-2026 | 1 | Home & Kitchen | `kitchen` | P2 | idea | |
 | 11 | Air fryer buying mistakes to avoid | air-fryer-buying-mistakes | 6 | Home & Kitchen | `kitchen` | P1 | live | `briefs/drafts/air-fryer-buying-mistakes.md` |
-| 12 | Best air fryer for a small kitchen | best-air-fryer-for-small-kitchen | 5 | Home & Kitchen | `kitchen` | P1 | idea | |
-| 13 | Best stick vacuums 2026 | best-stick-vacuums-2026 | 1 | Home & Kitchen | `cleaning` | P1 | idea | |
+| 12 | Best air fryer for a small kitchen | best-air-fryer-for-small-kitchen | 5 | Home & Kitchen | `kitchen` | P2 | brief | `briefs/2026-best-air-fryer-for-small-kitchen.md` |
+| 13 | Best stick vacuums 2026 | best-stick-vacuums-2026 | 1 | Home & Kitchen | `cleaning` | P2 | brief | `briefs/2026-best-stick-vacuums.md` |
 | 14 | Robot vacuum vs stick vacuum | robot-vacuum-vs-stick-vacuum | 3 | Home & Kitchen | `cleaning smart-home` | P2 | idea | |
-| 15 | How to choose a robot vacuum | how-to-choose-a-robot-vacuum | 2 | Home & Kitchen | `cleaning smart-home` | P1 | idea | |
+| 15 | How to choose a robot vacuum | how-to-choose-a-robot-vacuum | 2 | Home & Kitchen | `cleaning smart-home` | P2 | brief | `briefs/2026-how-to-choose-a-robot-vacuum.md` |
 | 16 | Best dishwashers under mid-range 2026 | best-mid-range-dishwashers-2026 | 1 | Home & Kitchen | `kitchen` | P3 | idea | |
 | 17 | Best mattress toppers 2026 | best-mattress-toppers-2026 | 1 | Home & Kitchen | `home` | P3 | idea | |
 | 18 | Best noise cancelling headphones 2026 | best-noise-cancelling-headphones-2026 | 1 | Consumer Electronics | `audio electronics` | P1 | live | `briefs/2026-best-noise-cancelling-headphones.md` |
 | 19 | How to choose wireless earbuds | how-to-choose-wireless-earbuds | 2 | Consumer Electronics | `audio electronics` | P1 | live | `briefs/2026-how-to-choose-wireless-earbuds.md` |
-| 20 | AirPods vs Sony WF earbuds | airpods-vs-sony-wf-earbuds | 3 | Consumer Electronics | `audio electronics` | P1 | idea | |
-| 21 | Best Bluetooth speakers 2026 | best-bluetooth-speakers-2026 | 1 | Consumer Electronics | `audio electronics` | P1 | idea | |
+| 20 | AirPods vs Sony WF earbuds | airpods-vs-sony-wf-earbuds | 3 | Consumer Electronics | `audio electronics` | P2 | brief | `briefs/2026-airpods-vs-sony-wf-earbuds.md` |
+| 21 | Best Bluetooth speakers 2026 | best-bluetooth-speakers-2026 | 1 | Consumer Electronics | `audio electronics` | P2 | brief | `briefs/2026-best-bluetooth-speakers.md` |
 | 22 | Best power banks 2026 | best-power-banks-2026 | 1 | Consumer Electronics | `mobile electronics` | P2 | idea | |
 | 23 | Best phone chargers and cables 2026 | best-phone-chargers-2026 | 1 | Consumer Electronics | `mobile electronics` | P2 | idea | |
-| 24 | Best iPhone cases 2026 | best-iphone-cases-2026 | 1 | Consumer Electronics | `mobile electronics` | P1 | idea | |
+| 24 | Best iPhone cases 2026 | best-iphone-cases-2026 | 1 | Consumer Electronics | `mobile electronics` | P2 | idea | |
 | 25 | How to choose a mechanical keyboard | how-to-choose-a-mechanical-keyboard | 2 | Consumer Electronics | `electronics` | P2 | idea | |
 | 26 | Best mechanical keyboards 2026 | best-mechanical-keyboards-2026 | 1 | Consumer Electronics | `electronics` | P2 | idea | |
 | 27 | Best webcams for calls 2026 | best-webcams-2026 | 1 | Consumer Electronics | `electronics` | P2 | idea | |
 | 28 | Best USB-C hubs for laptops 2026 | best-usb-c-hubs-2026 | 1 | Consumer Electronics | `electronics mobile` | P2 | idea | |
 | 29 | Best e-readers 2026 | best-e-readers-2026 | 1 | Consumer Electronics | `electronics` | P3 | idea | |
 | 30 | Wireless earbud buying mistakes | wireless-earbud-buying-mistakes | 6 | Consumer Electronics | `audio electronics` | P1 | live | `briefs/2026-wireless-earbud-buying-mistakes.md` |
-| 31 | Best earbuds for the gym | best-earbuds-for-gym | 5 | Consumer Electronics | `audio fitness` | P1 | idea | |
+| 31 | Best earbuds for the gym | best-earbuds-for-gym | 5 | Consumer Electronics | `audio fitness` | P2 | brief | `briefs/2026-best-earbuds-for-gym.md` |
 | 32 | Is the Sony WH-1000XM worth it | sony-wh-1000xm-worth-it | 4 | Consumer Electronics | `audio electronics` | P2 | idea | |
-| 33 | Best fitness trackers 2026 | best-fitness-trackers-2026 | 1 | Fitness & Health | `wearables fitness` | P1 | idea | |
-| 34 | How to choose a smartwatch for fitness | how-to-choose-fitness-smartwatch | 2 | Fitness & Health | `wearables fitness` | P1 | idea | |
-| 35 | Best yoga mats 2026 | best-yoga-mats-2026 | 1 | Fitness & Health | `fitness` | P2 | idea | |
-| 36 | Best adjustable dumbbells 2026 | best-adjustable-dumbbells-2026 | 1 | Fitness & Health | `fitness` | P1 | idea | |
-| 37 | Best resistance bands 2026 | best-resistance-bands-2026 | 1 | Fitness & Health | `fitness` | P2 | idea | |
+| 33 | Best fitness trackers 2026 | best-fitness-trackers-2026 | 1 | Fitness & Health | `wearables fitness` | P2 | brief | `briefs/2026-best-fitness-trackers.md` |
+| 34 | How to choose a smartwatch for fitness | how-to-choose-fitness-smartwatch | 2 | Fitness & Health | `wearables fitness` | P2 | brief | `briefs/2026-how-to-choose-fitness-smartwatch.md` |
+| 35 | Best yoga mats 2026 | best-yoga-mats-2026 | 1 | Fitness & Health | `fitness` | P3 | idea | |
+| 36 | Best adjustable dumbbells 2026 | best-adjustable-dumbbells-2026 | 1 | Fitness & Health | `fitness` | P2 | idea | |
+| 37 | Best resistance bands 2026 | best-resistance-bands-2026 | 1 | Fitness & Health | `fitness` | P3 | idea | |
 | 38 | Best foam rollers 2026 | best-foam-rollers-2026 | 1 | Fitness & Health | `fitness` | P3 | idea | |
 | 39 | Best jump ropes 2026 | best-jump-ropes-2026 | 1 | Fitness & Health | `fitness` | P3 | idea | |
-| 40 | Best home gym setup under a budget | best-home-gym-on-a-budget | 5 | Fitness & Health | `fitness` | P1 | idea | |
+| 40 | Best home gym setup under a budget | best-home-gym-on-a-budget | 5 | Fitness & Health | `fitness` | P2 | idea | |
 | 41 | Fitbit vs Garmin for beginners | fitbit-vs-garmin-beginners | 3 | Fitness & Health | `wearables fitness` | P2 | idea | |
 | 42 | Is the Oura Ring worth it | oura-ring-worth-it | 4 | Fitness & Health | `wearables fitness` | P2 | idea | |
 | 43 | Fitness tracker buying mistakes | fitness-tracker-buying-mistakes | 6 | Fitness & Health | `wearables fitness` | P2 | idea | |
-| 44 | Best automatic pet feeders 2026 | best-automatic-pet-feeders-2026 | 1 | Pet Supplies | `pets smart-home` | P1 | idea | |
-| 45 | How to choose a pet camera | how-to-choose-a-pet-camera | 2 | Pet Supplies | `pets smart-home` | P1 | idea | |
+| 44 | Best automatic pet feeders 2026 | best-automatic-pet-feeders-2026 | 1 | Pet Supplies | `pets smart-home` | P1 | brief | `briefs/2026-best-automatic-pet-feeders.md` |
+| 45 | How to choose a pet camera | how-to-choose-a-pet-camera | 2 | Pet Supplies | `pets smart-home` | **P0** | idea | |
 | 46 | Best dog beds 2026 | best-dog-beds-2026 | 1 | Pet Supplies | `pets` | P2 | idea | |
 | 47 | Best cat litter boxes 2026 | best-cat-litter-boxes-2026 | 1 | Pet Supplies | `pets` | P2 | idea | |
 | 48 | Best pet water fountains 2026 | best-pet-water-fountains-2026 | 1 | Pet Supplies | `pets` | P2 | idea | |
-| 49 | Furbo vs Petcube camera | furbo-vs-petcube | 3 | Pet Supplies | `pets smart-home` | P1 | idea | |
-| 50 | Best pet camera for large dogs | best-pet-camera-for-large-dogs | 5 | Pet Supplies | `pets smart-home` | P1 | idea | |
+| 49 | Furbo vs Petcube camera | furbo-vs-petcube | 3 | Pet Supplies | `pets smart-home` | **P0** | brief | `briefs/2026-furbo-vs-petcube.md` |
+| 50 | Best pet camera for large dogs | best-pet-camera-for-large-dogs | 5 | Pet Supplies | `pets smart-home` | **P0** | idea | |
 | 51 | Pet feeder buying mistakes | pet-feeder-buying-mistakes | 6 | Pet Supplies | `pets smart-home` | P2 | idea | |
-| 52 | Is the Furbo 360 worth it | furbo-360-worth-it | 4 | Pet Supplies | `pets smart-home` | P2 | idea | |
+| 52 | Is the Furbo 360 worth it | furbo-360-worth-it | 4 | Pet Supplies | `pets smart-home` | P1 | idea | |
+| 55 | Best budget pet camera (under $100–200) | best-budget-pet-camera-2026 | 5 | Pet Supplies | `pets smart-home` | **P0** | idea | |
+| 56 | Best dog camera 2026 | best-dog-camera-2026 | 1 | Pet Supplies | `pets smart-home` | P1 | idea | |
+| 57 | Pet camera buying mistakes | pet-camera-buying-mistakes | 6 | Pet Supplies | `pets smart-home` | P1 | idea | |
 | 53 | Best grooming kits for dogs 2026 | best-dog-grooming-kits-2026 | 1 | Pet Supplies | `pets` | P3 | idea | |
 | 54 | Best GPS dog collars 2026 | best-gps-dog-collars-2026 | 1 | Pet Supplies | `pets smart-home` | P2 | idea | |
 

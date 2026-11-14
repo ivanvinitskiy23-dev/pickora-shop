@@ -1,8 +1,14 @@
 # Local planning docs (not shipped to GitHub Pages)
 automation-plan.html
 
-# Local agent brains (not shipped to GitHub yet)
+# Ideas pin staging (Creative saves binaries here; upload via Studio)
+ideas-inbox/*
+!ideas-inbox/.gitkeep
+!ideas-inbox/README.md
+
+# Local agent brains (not shipped to GitHub Pages / origin)
 pickora-agents/
+antigravity/
 
 # Admin lab secrets and local env (never commit)
 admin-lab/secrets/

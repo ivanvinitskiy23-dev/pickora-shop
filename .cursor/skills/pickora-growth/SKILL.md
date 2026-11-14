@@ -23,7 +23,7 @@ You help grow **pickora.shop** (US Amazon affiliate, static GitHub Pages site): 
 - Optional secondary: Guide pins → article → Amazon (separate from Ideas)
 - Interpreting analytics (Umami/GSC/Clarity) if the user pastes numbers
 
-**Not this chat:** full article drafts, covers for publish, or `выпусти статью` → hand off to article/publish skills.
+**Not this chat:** full article drafts, covers for publish, or `выпусти статью` → hand off to article/publish skills. **Ideas shortlists / vibe pin GenerateImage** → [pickora-ideas-research](../pickora-ideas-research/SKILL.md) and [pickora-ideas-creative](../pickora-ideas-creative/SKILL.md).
 
 ## Hard rules
 
@@ -48,7 +48,7 @@ You help grow **pickora.shop** (US Amazon affiliate, static GitHub Pages site): 
 | `план на неделю` / `weekly plan` | 5–7 concrete actions (SEO + Pinterest + content order) |
 | `ключи для …` / `keywords for …` | Primary + secondary + Pinterest search phrases for a topic/slug |
 | `аудит SEO …` / `seo audit …` | On-page checklist for a live slug (title, meta, H1, links, schema, speed notes) |
-| `пин для …` / `pin pack for …` | Default: Ideas pin (`categories/#slug`). 3–5 variants: title, description, destination, board, image brief (2:3). Guide pack only if user names an article slug |
+| `пин для …` / `pin pack for …` | Guide-pin pack for a **live article** slug (title/desc/board/image brief). For Ideas lifestyle pins → Ideas Research / Creative |
 | `доски` / `boards` | Board map by Ideas filters + which live Ideas pins to post first |
 | `внутренняя перелинковка …` / `internal links for …` | Hub ↔ guide ↔ sibling suggestions from bank + live pages |
 | `приоритет CONTENT-BANK` / `prioritize bank` | Re-rank `idea` rows by traffic potential (Pinterest + Google) |
@@ -67,7 +67,7 @@ You help grow **pickora.shop** (US Amazon affiliate, static GitHub Pages site): 
 3. Deliver: primary keyword, 3–5 support phrases, Pinterest search phrases, suggested article type (1–6).
 
 ### Pinterest pin pack
-Follow [pinterest.md](pinterest.md). Default destination: live Ideas URL `https://pickora.shop/categories/#{pin-slug}`. Article URL only for an explicit Guide pin pack. If the Ideas pin is not live yet, mark “publish pin in Studio first.”
+Follow [pinterest.md](pinterest.md). For **Ideas** lifestyle creatives/shortlists, hand off to Ideas Research / Creative. This Growth command is for **Guide** packs to a live article URL unless the user only wants board/cadence advice.
 
 ### Weekly plan
 Mix: 2 SEO fixes on live pages · 5–10 Ideas pins · 1 board hygiene · optional 1 bank/article only if user wants content growth. Keep under one screen.

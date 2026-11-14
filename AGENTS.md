@@ -1,54 +1,99 @@
 # Pickora agents
 
-Two focused chats. Say which mode you want at the start of a **new** chat (or use the commands below).
+Focused chats. Say which mode you want at the start of a **new** chat (or use the commands below).
 
 | Mode | Open when you want… | Skill |
 |---|---|---|
-| **Article** | Draft / cover / publish guides to the live static site | [pickora-article](.cursor/skills/pickora-article/SKILL.md) + [pickora-publish](.cursor/skills/pickora-publish/SKILL.md) |
-| **Growth** | Traffic, SEO, Pinterest, weekly plans, keyword priority | [pickora-growth](.cursor/skills/pickora-growth/SKILL.md) |
+| **Article Editor** | Review / edit drafts before live; brief help; Growth packet; publish gate (chief) | [pickora-article-editor](.cursor/skills/pickora-article-editor/SKILL.md) + [pickora-publish](.cursor/skills/pickora-publish/SKILL.md) |
+| **Article (writer)** | Draft a guide from a filled brief (often Antigravity; Cursor OK if needed) | [pickora-article](.cursor/skills/pickora-article/SKILL.md) |
+| **Growth** | Traffic, SEO, weekly plans, keyword priority, Guide-pin strategy | [pickora-growth](.cursor/skills/pickora-growth/SKILL.md) |
+| **Ideas** | Visual Ideas pins (Pinterest + `/categories/`) — Research then Creative | [pickora-ideas-research](.cursor/skills/pickora-ideas-research/SKILL.md) → [pickora-ideas-creative](.cursor/skills/pickora-ideas-creative/SKILL.md) |
+
+**Production split:** Antigravity = high-token research/draft/Ideas. Cursor **Article Editor** = chief editor before publish. User supplies all `amzn.to` and runs commit/push.
+
+**Antigravity local workspace:** `antigravity/` (Researcher + Writer prompts/skills) — listed in `.gitignore`, not on GitHub. Shared handoff files stay in `briefs/` / `briefs/drafts/`.
+
+**Ideas funnel:** Pinterest → `https://pickora.shop/categories/#{slug}` → Amazon CTAs on the site pin. Ideas are **not** article guides.
 
 ---
 
-## Article agent
+## Article Editor (chief)
 
-Use this repo chat for **articles** when you want drafts published to the live static site.
+Default Cursor mode for guides. Reviews AG (or writer) handoffs, edits for Pickora voice + SEO, checks cannibalization, emits Growth packet after draft, knows Studio JSON **and** chrome HTML publish.
 
 ### Skills
 
-1. [`.cursor/skills/pickora-article/SKILL.md`](.cursor/skills/pickora-article/SKILL.md) — write from a research brief  
-2. [`.cursor/skills/pickora-article/chips.md`](.cursor/skills/pickora-article/chips.md) — article filter chips / multi-tags  
-3. [`.cursor/skills/pickora-article/media.md`](.cursor/skills/pickora-article/media.md) — covers and image rules (free)  
-4. [`.cursor/skills/pickora-publish/SKILL.md`](.cursor/skills/pickora-publish/SKILL.md) — wire HTML, hubs, sitemap, commit/push  
+1. [`.cursor/skills/pickora-article-editor/SKILL.md`](.cursor/skills/pickora-article-editor/SKILL.md) — chief editor workflow  
+2. [handoff.md](.cursor/skills/pickora-article-editor/handoff.md) — AG → Editor files + chat  
+3. [growth-packet.md](.cursor/skills/pickora-article-editor/growth-packet.md) — keywords, title/meta, 3 pin angles, destination URL  
+4. [studio-json.md](.cursor/skills/pickora-article-editor/studio-json.md) — JSON vs HTML publish  
+5. [SOURCES.md](.cursor/skills/pickora-article-editor/SOURCES.md) + `vendor/` — installed SEO/editorial checklists  
+6. [pickora-publish](.cursor/skills/pickora-publish/SKILL.md) — ship when you say publish  
+
+Writer/chips/media still apply: [pickora-article](.cursor/skills/pickora-article/SKILL.md), [chips.md](.cursor/skills/pickora-article/chips.md), [media.md](.cursor/skills/pickora-article/media.md) (covers = **ultra-realistic**).
 
 ### Commands
 
 | Command (RU / EN) | What the agent does |
 |---|---|
-| `черновик из brief …` / `draft from brief …` | Writes draft only (no site files) |
-| `обложку для …` / `generate cover for …` | Creates cover via Cursor image tool, saves under uploads |
-| `положи моё фото` + path | Converts/places your file as the article cover |
-| `выпусти статью …` / `publish article …` | Full wire: page + media + articles hub + sitemap + bank status |
-| `закоммить и запушь` / `commit and push` | Ships to `origin main` (GitHub Pages) |
+| `ревью …` / `review draft …` | Full editorial + SEO + cannibalization report |
+| `правь …` / `edit …` | Apply edits to draft / JSON |
+| `brief из …` | Help fill brief from your links/notes (affiliate slots left for you) |
+| `пакет Growth` / `Growth packet` | Keywords + title/meta + 3 pin angles + article URL |
+| `готово к публикации?` / `publish-ready?` | Gate checklist |
+| `обложку для …` / `generate cover for …` | Ultra-realistic cover → uploads |
+| `следующий P1` / `next P1` | Propose next bank priority |
+| `выпусти статью …` / `publish article …` | Full wire after gate (HTML and/or Studio JSON path) |
+| `закоммить и запушь` / `commit and push` | **Only you** ask this — ships to `origin main` |
+
+### Handoff (AG → Editor)
+
+Files in `briefs/` + `briefs/drafts/` (+ optional JSON) **and/or** a chat HANDOFF message. See [handoff.md](.cursor/skills/pickora-article-editor/handoff.md).
 
 ### Preconditions before `выпусти`
 
-- Filled brief in `briefs/` (not `_TEMPLATE.md`) including **Chips** (1–3 allowed slugs)
-- Real `amzn.to` links (no `TODO`)
-- Cover decided: your photo in `briefs/media-inbox/` **or** `generate cover` **or** path already in brief
+- Filled brief (not `_TEMPLATE.md`) including **Chips** (1–3 allowed slugs)
+- Real `amzn.to` from **you** only (no `TODO`)
+- Cover decided: photo in `briefs/media-inbox/` **or** generate **or** path in brief (ultra-realistic)
+- Editor cannibalization check vs live + `CONTENT-BANK.md`
+- Growth packet already emitted for the draft
 
-### Do not (Article)
+### Do not (Article Editor)
 
-- Scrape Amazon  
+- Scrape Amazon or invent referral links  
 - Publish without a brief  
-- Hotlink Amazon CDN images as permanent site media  
+- Hotlink Amazon CDN as permanent site media  
 - Invent lab tests or fake testimonials  
+- Run Ideas pin pipelines  
+- Commit/push unless you explicitly ask  
 - Touch Telegram CMS plans or invent unpaid social profile URLs  
+
+### Starter prompt
+
+```
+Агент Article Editor (шеф-редактор). Следуй .cursor/skills/pickora-article-editor/SKILL.md
+Сайт: pickora.shop. Сейчас: [ревью draft … / brief из … / пакет Growth / выпусти …]
+```
 
 ---
 
-## Growth agent (SEO · Traffic · Pinterest)
+## Article writer (draft factory)
+
+Use when you need a **new draft from a filled brief**. Prefer Antigravity for this; Cursor can still run [pickora-article](.cursor/skills/pickora-article/SKILL.md) if needed. After draft → hand to **Article Editor**.
+
+| Command | Action |
+|---|---|
+| `черновик из brief …` / `draft from brief …` | Writes draft only → `briefs/drafts/` |
+
+AG skills for writing/SEO stay in the **Antigravity workspace** (not required in this git repo).
+
+---
+
+## Growth agent (SEO · Traffic · Pinterest strategy)
 
 Open a **new chat** and say: `агент Growth` / `Growth agent` / `SEO и Pinterest`.
+
+For **Ideas pin creatives / shortlists**, use Ideas Research / Creative instead (below). Growth may still plan cadence and boards at a high level. Guide pins use the **Growth packet** from Article Editor (article URL, not `amzn.to`).
 
 ### Skills
 
@@ -63,8 +108,8 @@ Open a **new chat** and say: `агент Growth` / `Growth agent` / `SEO и Pint
 | `план на неделю` / `weekly plan` | SEO + Pinterest + content priorities for 7 days |
 | `ключи для …` / `keywords for …` | Google + Pinterest phrases for a topic |
 | `аудит SEO …` / `seo audit …` | On-page audit for a live slug |
-| `пин для …` / `pin pack for …` | 3–5 pin titles/descriptions + image briefs |
-| `доски` / `boards` | Board map + which live articles to pin first |
+| `пин для …` / `pin pack for …` | Guide-pin pack for a **live article** slug (not Ideas Research) |
+| `доски` / `boards` | Board map + priorities |
 | `приоритет CONTENT-BANK` / `prioritize bank` | Rank ideas by traffic potential |
 | `разбор GSC` / `analyze GSC` | Opportunities from pasted Search Console data |
 
@@ -73,8 +118,9 @@ Open a **new chat** and say: `агент Growth` / `Growth agent` / `SEO и Pint
 - Invent Pinterest/profile URLs the user did not give  
 - Claim fake rankings or traffic numbers  
 - Scrape Amazon  
-- Replace Article agent (no full `выпусти статью` pipeline here)  
-- Link Pinterest straight to `amzn.to` by default — Ideas pins → **`https://pickora.shop/categories/#{pin-slug}`** (Amazon CTAs on that pin). Guide → article only when doing a separate article pin pack  
+- Replace Article Editor (no full `выпусти статью` pipeline here)  
+- Replace Ideas Research/Creative (no Ideas shortlist / GenerateImage Ideas pipeline here)  
+- Link Pinterest straight to `amzn.to` by default — Ideas pins → **`https://pickora.shop/categories/#{pin-slug}`**. Guide → article only when doing a separate article pin pack  
 
 ### Starter prompt (paste into a new chat)
 
@@ -83,3 +129,46 @@ Open a **new chat** and say: `агент Growth` / `Growth agent` / `SEO и Pint
 Сайт: pickora.shop (Amazon affiliate, статика).
 Сейчас помоги с: [план на неделю / пин для {slug} / аудит SEO {slug} / приоритет CONTENT-BANK]
 ```
+
+---
+
+## Ideas agents (Visual Ideas · Pinterest)
+
+Two **separate** chats / skill folders so instructions do not mix. Handoff = **paste the packet in chat** (no required brief file).
+
+| Step | Chat | Skill |
+|---|---|---|
+| 1 | Ideas Research | [pickora-ideas-research](.cursor/skills/pickora-ideas-research/SKILL.md) |
+| 2 | Ideas Creative | [pickora-ideas-creative](.cursor/skills/pickora-ideas-creative/SKILL.md) + [hallmark-lite](.cursor/skills/pickora-ideas-creative/hallmark-lite.md) |
+
+### Flow
+
+1. **Research:** you give a filter (`kitchen` / `work` / …) + optional vibe → agent shortlists **5–8** products (brand + model; ASIN optional) → **you** pick **1–5** → agent outputs Creative handoff packet in chat.  
+2. **You** find real `amzn.to` + product photos (usually Amazon main images).  
+3. **Creative:** paste packet (or your own prompt) + photos → on ask, generates **2:3** vibe scene → saves to `ideas-inbox/` → you upload via Studio.  
+
+Creative may also run **without** Research if you bring your own prompt + photos.
+
+### Starter prompts
+
+**Research**
+
+```
+Агент Ideas Research. Следуй .cursor/skills/pickora-ideas-research/SKILL.md
+Фильтр: kitchen
+(опционально вайб: …)
+```
+
+**Creative**
+
+```
+Агент Ideas Creative. Следуй .cursor/skills/pickora-ideas-creative/SKILL.md
+(вставь HANDOFF пакет и/или свои фото + «сгенерируй»)
+```
+
+### Do not (Ideas)
+
+- Scrape Amazon or invent `amzn.to` / product photos  
+- Publish `pins.json` unless you explicitly ask  
+- Treat Ideas as article guides  
+- Put giant headlines in the pin by default (arrows/labels only when you ask)  
