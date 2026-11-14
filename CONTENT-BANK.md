@@ -82,17 +82,17 @@ Mix target still applies long-term; **short-term queue = P0 pets only**.
 | 42 | Is the Oura Ring worth it | oura-ring-worth-it | 4 | Fitness & Health | `wearables fitness` | P2 | idea | |
 | 43 | Fitness tracker buying mistakes | fitness-tracker-buying-mistakes | 6 | Fitness & Health | `wearables fitness` | P2 | idea | |
 | 44 | Best automatic pet feeders 2026 | best-automatic-pet-feeders-2026 | 1 | Pet Supplies | `pets smart-home` | P1 | brief | `briefs/2026-best-automatic-pet-feeders.md` |
-| 45 | How to choose a pet camera | how-to-choose-a-pet-camera | 2 | Pet Supplies | `pets smart-home` | **P0** | idea | |
+| 45 | How to choose a pet camera | how-to-choose-a-pet-camera | 2 | Pet Supplies | `pets smart-home` | live| idea | |
 | 46 | Best dog beds 2026 | best-dog-beds-2026 | 1 | Pet Supplies | `pets` | P2 | idea | |
 | 47 | Best cat litter boxes 2026 | best-cat-litter-boxes-2026 | 1 | Pet Supplies | `pets` | P2 | idea | |
 | 48 | Best pet water fountains 2026 | best-pet-water-fountains-2026 | 1 | Pet Supplies | `pets` | P2 | idea | |
-| 49 | Furbo vs Petcube camera | furbo-vs-petcube | 3 | Pet Supplies | `pets smart-home` | **P0** | brief | `briefs/2026-furbo-vs-petcube.md` |
-| 50 | Best pet camera for large dogs | best-pet-camera-for-large-dogs | 5 | Pet Supplies | `pets smart-home` | **P0** | idea | |
+| 49 | Furbo vs Petcube camera | furbo-vs-petcube | 3 | Pet Supplies | `pets smart-home` | live| brief | `briefs/2026-furbo-vs-petcube.md` |
+| 50 | Best pet camera for large dogs | best-pet-camera-for-large-dogs | 5 | Pet Supplies | `pets smart-home` | live| idea | |
 | 51 | Pet feeder buying mistakes | pet-feeder-buying-mistakes | 6 | Pet Supplies | `pets smart-home` | P2 | idea | |
-| 52 | Is the Furbo 360 worth it | furbo-360-worth-it | 4 | Pet Supplies | `pets smart-home` | P1 | idea | |
-| 55 | Best budget pet camera (under $100–200) | best-budget-pet-camera-2026 | 5 | Pet Supplies | `pets smart-home` | **P0** | idea | |
-| 56 | Best dog camera 2026 | best-dog-camera-2026 | 1 | Pet Supplies | `pets smart-home` | P1 | idea | |
-| 57 | Pet camera buying mistakes | pet-camera-buying-mistakes | 6 | Pet Supplies | `pets smart-home` | P1 | idea | |
+| 52 | Is the Furbo 360 worth it | furbo-360-worth-it | 4 | Pet Supplies | `pets smart-home` | live| idea | |
+| 55 | Best budget pet camera (under $100–200) | best-budget-pet-camera-2026 | 5 | Pet Supplies | `pets smart-home` | live| idea | |
+| 56 | Best dog camera 2026 | best-dog-camera-2026 | 1 | Pet Supplies | `pets smart-home` | live| idea | |
+| 57 | Pet camera buying mistakes | pet-camera-buying-mistakes | 6 | Pet Supplies | `pets smart-home` | live| idea | |
 | 53 | Best grooming kits for dogs 2026 | best-dog-grooming-kits-2026 | 1 | Pet Supplies | `pets` | P3 | idea | |
 | 54 | Best GPS dog collars 2026 | best-gps-dog-collars-2026 | 1 | Pet Supplies | `pets smart-home` | P2 | idea | |
 
