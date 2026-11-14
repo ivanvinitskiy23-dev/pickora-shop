@@ -340,14 +340,33 @@ export function prependHubCard(articlesIndexHtml, cardHtml) {
  * @param {Array<{name,url,role,price}>} links
  * @returns {string} HTML
  */
+function _normalizeAffiliateLink(link) {
+  if (typeof link === "string") {
+    const url = link.trim();
+    return url ? { url, name: "" } : null;
+  }
+  if (!link || typeof link !== "object") return null;
+  const url = String(link.url || "").trim();
+  if (!url) return null;
+  return {
+    url,
+    name: String(link.name || "").trim(),
+    role: String(link.role || "").trim(),
+    price: String(link.price || "").trim(),
+  };
+}
+
 function _buildAffiliateSectionHtml(links) {
   if (!Array.isArray(links) || links.length === 0) return "";
+  // Bare URL strings (Studio metadata) have no product name — never emit empty "Our Picks" cards.
   const cards = links
+    .map(_normalizeAffiliateLink)
+    .filter((link) => link && link.name)
     .map((link) => {
-      const name  = escHtml(String(link.name  || ""));
-      const url   = escAttr(String(link.url   || "#"));
-      const role  = escHtml(String(link.role  || ""));
-      const price = escHtml(String(link.price || ""));
+      const name  = escHtml(link.name);
+      const url   = escAttr(link.url);
+      const role  = escHtml(link.role || "");
+      const price = escHtml(link.price || "");
       return `    <div class="pk-aff-card">
       <div class="pk-aff-card-info">
         ${role  ? `<span class="pk-aff-card-role">${role}</span>` : ""}
@@ -359,6 +378,7 @@ function _buildAffiliateSectionHtml(links) {
     </div>`;
     })
     .join("\n");
+  if (!cards) return "";
   return `<div class="pk-affiliate-section">
   <h2>Our Picks</h2>
 ${cards}
@@ -372,17 +392,24 @@ ${cards}
  * @param {Array<{q,a}>} faq
  * @returns {string} HTML
  */
+function _faqQA(item) {
+  const q = item && (item.q ?? item.question);
+  const a = item && (item.a ?? item.answer);
+  return { q: q == null ? "" : String(q), a: a == null ? "" : String(a) };
+}
+
 function _buildFaqSectionHtml(faq) {
   if (!Array.isArray(faq) || faq.length === 0) return "";
   return `<div class="pk-faq-section">
   <h2>Frequently Asked Questions</h2>
 ${faq
-    .map(
-      (item) => `  <details class="pk-faq-acc">
-    <summary class="pk-faq-q">${escHtml(String(item.q || "Question"))}</summary>
-    <div class="pk-faq-a">${item.a || ""}</div>
-  </details>`
-    )
+    .map((item) => {
+      const { q, a } = _faqQA(item);
+      return `  <details class="pk-faq-acc">
+    <summary class="pk-faq-q">${escHtml(q || "Question")}</summary>
+    <div class="pk-faq-a">${a}</div>
+  </details>`;
+    })
     .join("\n")}
 </div>
 `;
@@ -442,11 +469,14 @@ function _buildArticleJsonLd(draft, canonical, pubDate) {
   if (Array.isArray(draft.faq) && draft.faq.length > 0) {
     graph.push({
       "@type": "FAQPage",
-      mainEntity: draft.faq.map((item) => ({
-        "@type": "Question",
-        name: item.q,
-        acceptedAnswer: { "@type": "Answer", text: item.a },
-      })),
+      mainEntity: draft.faq.map((item) => {
+        const { q, a } = _faqQA(item);
+        return {
+          "@type": "Question",
+          name: q,
+          acceptedAnswer: { "@type": "Answer", text: a },
+        };
+      }),
     });
   }
 
@@ -493,11 +523,13 @@ export function buildArticlePage(draft, options = {}) {
   );
   const hasBlockProducts = hasBlocks && draft.blocks.some((b) => b && (b.type === "product" || b.type === "cta"));
   const hasBlockFaq = hasBlocks && draft.blocks.some((b) => b && b.type === "faq");
+  // Body already has in-article Amazon CTAs / pick cards — skip duplicate empty "Our Picks".
+  const bodyHasAffCtas = /pk-aff-btn|pk-mw-pick|class="pk-product/.test(bodyHtml);
   const pubDate     = String(draft.publishedAt || todayISO()).slice(0, 10);
   const year        = new Date().getFullYear();
 
   const jsonLd          = _buildArticleJsonLd(draft, canonical, pubDate);
-  const affiliateSection = hasBlockProducts
+  const affiliateSection = hasBlockProducts || bodyHasAffCtas
     ? ""
     : _buildAffiliateSectionHtml(draft.affiliateLinks);
   const faqSection       = hasBlockFaq ? "" : _buildFaqSectionHtml(draft.faq);
